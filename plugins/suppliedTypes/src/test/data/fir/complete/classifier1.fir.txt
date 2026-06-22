@@ -1,0 +1,11 @@
+FILE: classifier1.kt
+    package foo.bar
+
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final class Baz<@R|dev/lounres/kone/suppliedTypes/Supply|() Gee> : R|kotlin/Any|, R|dev/lounres/kone/suppliedTypes/SuppliableClass| {
+        public constructor<@R|dev/lounres/kone/suppliedTypes/Supply|() Gee>(): R|foo/bar/Baz<Gee>| {
+            super<R|kotlin/Any|>()
+        }
+
+        public open var suppliedTypesStorage: R|kotlin/collections/Map<kotlin/String, kotlin/collections/List<dev/lounres/kone/suppliedTypes/SuppliedType>>|by R|dev/lounres/kone/suppliedTypes/suppliedTypesStorageDelegate|()
+
+    }

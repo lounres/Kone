@@ -1,0 +1,12 @@
+FILE: suppliedTypeOfUsage2.kt
+    public final fun box(): R|kotlin/String| {
+        ^box when () {
+            ==(R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|kotlin/collections/List<kotlin/collections/Map<out kotlin/String, kotlin/String?>>|>().R|kotlin/Any.toString|(), String(kotlin.collections.List<out kotlin.collections.Map<out kotlin.String, out kotlin.String?>>)) ->  {
+                String(OK)
+            }
+            else ->  {
+                String(INCORRECT)
+            }
+        }
+
+    }

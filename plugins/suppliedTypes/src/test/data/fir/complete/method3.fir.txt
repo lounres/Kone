@@ -1,0 +1,20 @@
+FILE: method3.kt
+    package foo.bar
+
+    public final object Foo : R|kotlin/Any| {
+        private constructor(): R|foo/bar/Foo| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final object Bar : R|kotlin/Any| {
+            private constructor(): R|foo/bar/Foo.Bar| {
+                super<R|kotlin/Any|>()
+            }
+
+            @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final fun <@R|dev/lounres/kone/suppliedTypes/Supply|() Gee> baz(): R|Gee?| {
+                ^baz Null(null)
+            }
+
+        }
+
+    }

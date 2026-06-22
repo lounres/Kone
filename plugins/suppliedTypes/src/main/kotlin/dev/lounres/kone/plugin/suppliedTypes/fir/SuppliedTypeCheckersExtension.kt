@@ -6,8 +6,10 @@
 package dev.lounres.kone.plugin.suppliedTypes.fir
 
 import dev.lounres.kone.plugin.suppliedTypes.suppliableAnnotationClassId
+import dev.lounres.kone.plugin.suppliedTypes.suppliableClassClassClassId
 import dev.lounres.kone.plugin.suppliedTypes.supplianceProvidedAnnotationClassId
 import dev.lounres.kone.plugin.suppliedTypes.supplyAnnotationClassId
+import dev.lounres.kone.plugin.suppliedTypes.withSuppliedFunctionCallableId
 import dev.lounres.kone.util.kotlinCompilerUtils.KtDiagnosticFactory1Delegate
 import dev.lounres.kone.util.kotlinCompilerUtils.KtDiagnosticFactory2Delegate
 import org.jetbrains.kotlin.diagnostics.DiagnosticReporter
@@ -29,12 +31,18 @@ import org.jetbrains.kotlin.fir.analysis.diagnostics.FirDiagnosticRenderers
 import org.jetbrains.kotlin.fir.analysis.diagnostics.joinToString
 import org.jetbrains.kotlin.fir.analysis.extensions.FirAdditionalCheckersExtension
 import org.jetbrains.kotlin.fir.declarations.FirClass
+import org.jetbrains.kotlin.fir.declarations.FirFunction
+import org.jetbrains.kotlin.fir.declarations.FirNamedFunction
+import org.jetbrains.kotlin.fir.declarations.FirProperty
 import org.jetbrains.kotlin.fir.declarations.FirTypeParameter
 import org.jetbrains.kotlin.fir.declarations.getConstructedClass
 import org.jetbrains.kotlin.fir.declarations.hasAnnotation
+import org.jetbrains.kotlin.fir.declarations.utils.isInner
 import org.jetbrains.kotlin.fir.expressions.FirFunctionCall
 import org.jetbrains.kotlin.fir.references.resolved
+import org.jetbrains.kotlin.fir.references.symbol
 import org.jetbrains.kotlin.fir.resolve.fullyExpandedType
+import org.jetbrains.kotlin.fir.resolve.providers.symbolProvider
 import org.jetbrains.kotlin.fir.resolve.toClassSymbol
 import org.jetbrains.kotlin.fir.resolve.toSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirClassLikeSymbol
@@ -57,11 +65,8 @@ import org.jetbrains.kotlin.fir.types.ConeTypeVariableType
 import org.jetbrains.kotlin.fir.types.renderReadable
 import org.jetbrains.kotlin.fir.types.toConeTypeProjection
 import org.jetbrains.kotlin.fir.types.unwrapLowerBound
-import org.jetbrains.kotlin.psi.KtElement
 
 
-// TODO: Сделать диагностики на:
-//  - наследование suppliable функций.
 class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckersExtension(session) {
     companion object {
         context(context: CheckerContext)
@@ -91,7 +96,7 @@ class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckers
     
     object SuppliedTypeExpressionCheckers : ExpressionCheckers() {
         override val functionCallCheckers: Set<FirFunctionCallChecker> = setOf(
-//            SuppliableFunctionCallChecker,
+            SuppliableFunctionCallChecker,
         )
     }
     
@@ -99,7 +104,8 @@ class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckers
         context(context: CheckerContext, reporter: DiagnosticReporter)
         override fun check(declaration: FirClass) {
             val declarationSymbol = declaration.symbol
-            val suppliableSuperTypesSymbols = declarationSymbol.resolvedSuperTypes.map { it.toClassSymbol()!! }.filter { it.isSuppliable }
+            val suppliableClassFirClassSymbol = context.session.symbolProvider.getClassLikeSymbolByClassId(suppliableClassClassClassId)!!
+            val suppliableSuperTypesSymbols = declarationSymbol.resolvedSuperTypes.map { it.toClassSymbol()!! }.filter { it.isSuppliable && it != suppliableClassFirClassSymbol }
             if (!declarationSymbol.isSuppliable && suppliableSuperTypesSymbols.isNotEmpty())
                 reporter.reportOn(
                     source = declaration.source,
@@ -186,8 +192,7 @@ class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckers
     }
     
     object SuppliableFunctionCallChecker : FirFunctionCallChecker(MppCheckerKind.Common) {
-        context(context: CheckerContext)
-        private fun ConeTypeProjection.checkFullSuppliance(): Boolean {
+        private fun ConeTypeProjection.checkFullSuppliance(availableSupplyTypeParameters: Set<FirTypeParameterSymbol>): Boolean {
             val typeProjectionsToCheck = ArrayDeque<ConeTypeProjection>()
             typeProjectionsToCheck.addLast(this)
             while (typeProjectionsToCheck.isNotEmpty()) {
@@ -201,11 +206,7 @@ class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckers
                         is ConeLookupTagBasedType -> when (type) {
                             is ConeClassLikeType -> typeProjectionsToCheck.addAll(type.typeArguments)
                             is ConeTypeParameterType -> {
-                                val typeParameterSymbol = type.lookupTag.typeParameterSymbol
-                                if (
-                                    !typeParameterSymbol.isSupply ||
-                                    !typeParameterSymbol.containingDeclarationSymbol.hasAnnotation(suppliableAnnotationClassId, context.session)
-                                ) return false
+                                if (type.lookupTag.typeParameterSymbol !in availableSupplyTypeParameters) return false
                             }
                             else -> error("Unexpected 'ConeLookupTagBasedType' inheritor: ${type::class.qualifiedName}")
                         }
@@ -218,44 +219,77 @@ class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckers
         }
         
         context(context: CheckerContext, reporter: DiagnosticReporter)
+        private fun FirFunctionCall.validateTypeArguments(
+            typeParameterSymbols: List<FirTypeParameterSymbol>,
+            availableSupplyTypeParameters: Set<FirTypeParameterSymbol>,
+        ) {
+            val supplyTypeParameterIndices = typeParameterSymbols.withIndex().filter { it.value.isSupply }.map { it.index }
+            for (index in supplyTypeParameterIndices) {
+                val typeArgumentConeTypeProjection = this.typeArguments[index].toConeTypeProjection() as ConeKotlinType
+                if (!typeArgumentConeTypeProjection.checkFullSuppliance(availableSupplyTypeParameters))
+                    reporter.reportOn(
+                        source = this.typeArguments[index].source ?: this.source,
+                        factory = Errors.NON_SUPPLIABLE_TYPE_IN_SUPPLY_ARGUMENT,
+                        a = typeParameterSymbols[index],
+                        b = typeArgumentConeTypeProjection,
+                        context = context,
+                    )
+            }
+        }
+        
+        context(context: CheckerContext, reporter: DiagnosticReporter)
         override fun check(expression: FirFunctionCall) {
-            val calleeSymbol = expression.calleeReference.resolved?.resolvedSymbol ?: return
-            when (calleeSymbol) {
-                is FirNamedFunctionSymbol -> when {
-                    calleeSymbol.isSuppliable -> {
-                        val supplyTypeParameterIndices = calleeSymbol.typeParameterSymbols.withIndex().filter { it.value.isSupply }.map { it.index }
-                        for (index in supplyTypeParameterIndices) {
-                            val typeArgumentConeTypeProjection = expression.typeArguments[index].toConeTypeProjection() as ConeKotlinType
-                            if (!typeArgumentConeTypeProjection.checkFullSuppliance())
-                                reporter.reportOn(
-                                    source = expression.typeArguments[index].source ?: expression.source,
-                                    factory = Errors.NON_SUPPLIABLE_TYPE_IN_SUPPLY_ARGUMENT,
-                                    a = calleeSymbol.typeParameterSymbols[index],
-                                    b = typeArgumentConeTypeProjection,
-                                    context = context,
-                                )
+            val availableSupplyTypeParameters by lazy(NONE) {
+                buildSet {
+                    val startIndices = context.containingElements.withIndex().filter { it.value is FirFunction || it.value is FirProperty }.map { it.index }
+                    for (startIndex in startIndices) {
+                        var currentPossibleDeclarationIndex = startIndex
+                        while (currentPossibleDeclarationIndex >= 0) {
+                            val element = context.containingElements[currentPossibleDeclarationIndex]
+                            when (element) {
+                                is FirClass -> {
+                                    if (element.symbol.isSuppliable) element.typeParameters.map { it.symbol }.filterTo(this) { it.isSupply }
+                                    if (!element.isInner) break
+                                }
+                                is FirNamedFunction -> {
+                                    if (element.symbol.isSuppliable) element.typeParameters.map { it.symbol }.filterTo(this) { it.isSupply }
+                                }
+                                is FirProperty -> {}
+                                else -> break
+                            }
+                            currentPossibleDeclarationIndex -= 1
                         }
                     }
-//                    calleeSymbol.isSupplianceProvided -> TODO()
+                    
+                    val withSuppliedFirNamedFunctionSymbols = context.session.symbolProvider.getTopLevelFunctionSymbols(packageFqName = withSuppliedFunctionCallableId.packageName, name = withSuppliedFunctionCallableId.callableName)
+                    
+                    for (element in context.containingElements) {
+                        if (element is FirFunctionCall && element.calleeReference.symbol in withSuppliedFirNamedFunctionSymbols) {
+                            element.typeArguments
+                                .dropLast(1)
+                                .map { it.toConeTypeProjection() }
+                                .filterIsInstance<ConeTypeParameterType>()
+                                .mapTo(this) { it.lookupTag.typeParameterSymbol }
+                        }
+                    }
+                }
+            }
+            
+            val calleeSymbol = expression.calleeReference.resolved?.resolvedSymbol ?: return
+            when (calleeSymbol) {
+                is FirNamedFunctionSymbol -> if (calleeSymbol.isSuppliable) {
+                    expression.validateTypeArguments(
+                        typeParameterSymbols = calleeSymbol.typeParameterSymbols,
+                        availableSupplyTypeParameters = availableSupplyTypeParameters,
+                    )
                 }
                 is FirConstructorSymbol -> {
                     val classSymbol = calleeSymbol.getConstructedClass(context.session)!!
-                    if (!classSymbol.isSuppliable) return
-                    if (!calleeSymbol.isSupplianceProvided) {
-                        val supplyTypeParameterIndices = classSymbol.typeParameterSymbols.withIndex().filter { it.value.isSupply }.map { it.index }
-                        for (index in supplyTypeParameterIndices) {
-                            val typeArgumentConeTypeProjection = expression.typeArguments[index].toConeTypeProjection() as ConeKotlinType
-                            if (!typeArgumentConeTypeProjection.checkFullSuppliance())
-                                reporter.reportOn(
-                                    source = expression.typeArguments[index].source ?: expression.source,
-                                    factory = Errors.NON_SUPPLIABLE_TYPE_IN_SUPPLY_ARGUMENT,
-                                    a = classSymbol.typeParameterSymbols[index],
-                                    b = typeArgumentConeTypeProjection,
-                                    context = context,
-                                )
-                        }
-                    } else {
-//                        TODO()
+                    if (classSymbol.isSuppliable) {
+                        expression.validateTypeArguments(
+                            typeParameterSymbols = classSymbol.typeParameterSymbols,
+                            availableSupplyTypeParameters = availableSupplyTypeParameters,
+                        )
                     }
                 }
             }

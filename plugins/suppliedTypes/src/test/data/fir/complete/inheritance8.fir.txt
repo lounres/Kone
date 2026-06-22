@@ -1,0 +1,28 @@
+FILE: inheritance8.kt
+    public abstract interface Raf : R|kotlin/Any| {
+        @R|dev/lounres/kone/suppliedTypes/Suppliable|() public abstract interface Foo<@R|dev/lounres/kone/suppliedTypes/Supply|() T> : R|kotlin/Any|, R|dev/lounres/kone/suppliedTypes/SuppliableClass| {
+        }
+
+    }
+    public final class Hou : R|kotlin/Any| {
+        public constructor(): R|Hou| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final class Kie : R|kotlin/Any| {
+            public constructor(): R|Hou.Kie| {
+                super<R|kotlin/Any|>()
+            }
+
+            @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final class Bar<@R|dev/lounres/kone/suppliedTypes/Supply|() U> : R|Raf.Foo<kotlin/collections/Map<out U, *>>|, R|dev/lounres/kone/suppliedTypes/SuppliableClass| {
+                public constructor<@R|dev/lounres/kone/suppliedTypes/Supply|() U>(): R|Hou.Kie.Bar<U>| {
+                    super<R|kotlin/Any|>()
+                }
+
+                public open var suppliedTypesStorage: R|kotlin/collections/Map<kotlin/String, kotlin/collections/List<dev/lounres/kone/suppliedTypes/SuppliedType>>|by R|dev/lounres/kone/suppliedTypes/suppliedTypesStorageDelegate|()
+
+            }
+
+        }
+
+    }

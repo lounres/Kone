@@ -1,0 +1,6 @@
+FILE: function1.kt
+    package foo.bar
+
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final fun <@R|dev/lounres/kone/suppliedTypes/Supply|() Gee> baz(): R|Gee?| {
+        ^baz Null(null)
+    }

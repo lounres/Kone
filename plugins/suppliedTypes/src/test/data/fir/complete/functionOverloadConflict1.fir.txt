@@ -1,0 +1,9 @@
+FILE: functionOverloadConflict1.kt
+    package foo.bar
+
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final fun <@R|dev/lounres/kone/suppliedTypes/Supply|() Gee> baz(): R|Gee?| {
+        ^baz Null(null)
+    }
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final fun <Gee> baz(suppliedTypeParameterForGee: R|dev/lounres/kone/suppliedTypes/SuppliedType|): R|Gee?| {
+        ^baz Null(null)
+    }

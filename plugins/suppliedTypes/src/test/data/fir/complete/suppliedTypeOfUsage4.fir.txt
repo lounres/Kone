@@ -1,0 +1,26 @@
+FILE: suppliedTypeOfUsage4.kt
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public abstract interface Foo<@R|dev/lounres/kone/suppliedTypes/Supply|() T> : R|kotlin/Any|, R|dev/lounres/kone/suppliedTypes/SuppliableClass| {
+        public open fun foo(): R|kotlin/String| {
+            ^foo R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|kotlin/collections/List<T>|>().R|kotlin/Any.toString|()
+        }
+
+    }
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final class Bar : R|Foo<kotlin/String>|, R|dev/lounres/kone/suppliedTypes/SuppliableClass| {
+        public constructor(): R|Bar| {
+            super<R|kotlin/Any|>()
+        }
+
+        public open var suppliedTypesStorage: R|kotlin/collections/Map<kotlin/String, kotlin/collections/List<dev/lounres/kone/suppliedTypes/SuppliedType>>|by R|dev/lounres/kone/suppliedTypes/suppliedTypesStorageDelegate|()
+
+    }
+    public final fun box(): R|kotlin/String| {
+        ^box when () {
+            ==(R|/Bar.Bar|().R|SubstitutionOverride</Bar.foo: R|kotlin/String|>|(), String(kotlin.collections.List<out kotlin.String>)) ->  {
+                String(OK)
+            }
+            else ->  {
+                String(INCORRECT)
+            }
+        }
+
+    }

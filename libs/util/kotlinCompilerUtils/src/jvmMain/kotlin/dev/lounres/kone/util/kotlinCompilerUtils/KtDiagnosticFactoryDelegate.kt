@@ -25,16 +25,16 @@ public class KtDiagnosticFactory0Delegate(
     private val defaultPositioningStrategy: AbstractSourceElementPositioningStrategy = SourceElementPositioningStrategies.DEFAULT,
     private val psiType: KClass<*> = KtElement::class,
 ) {
-    public operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<KtDiagnosticsContainer, KtDiagnosticFactory0> =
-        ReadOnlyProperty { thisRef, property ->
-            KtDiagnosticFactory0(
-                name = property.name,
-                severity = severity,
-                defaultPositioningStrategy = defaultPositioningStrategy,
-                psiType = psiType,
-                rendererFactory = thisRef.getRendererFactory()
-            )
-        }
+    public operator fun provideDelegate(thisRef: KtDiagnosticsContainer, property: KProperty<*>): ReadOnlyProperty<Any?, KtDiagnosticFactory0> {
+        val factory = KtDiagnosticFactory0(
+            name = property.name,
+            severity = severity,
+            defaultPositioningStrategy = defaultPositioningStrategy,
+            psiType = psiType,
+            rendererFactory = thisRef.getRendererFactory()
+        )
+        return ReadOnlyProperty { _, _ -> factory }
+    }
     
     public companion object {
         public fun ERROR(): KtDiagnosticFactory0Delegate = KtDiagnosticFactory0Delegate(severity = Severity.ERROR)
@@ -47,16 +47,16 @@ public class KtDiagnosticFactory1Delegate<A>(
     private val defaultPositioningStrategy: AbstractSourceElementPositioningStrategy = SourceElementPositioningStrategies.DEFAULT,
     private val psiType: KClass<*> = KtElement::class,
 ) {
-    public operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<KtDiagnosticsContainer, KtDiagnosticFactory1<A>> =
-        ReadOnlyProperty { thisRef, property ->
-            KtDiagnosticFactory1(
-                name = property.name,
-                severity = severity,
-                defaultPositioningStrategy = defaultPositioningStrategy,
-                psiType = psiType,
-                rendererFactory = thisRef.getRendererFactory()
-            )
-        }
+    public operator fun provideDelegate(thisRef: KtDiagnosticsContainer, property: KProperty<*>): ReadOnlyProperty<Any?, KtDiagnosticFactory1<A>> {
+        val factory = KtDiagnosticFactory1<A>(
+            name = property.name,
+            severity = severity,
+            defaultPositioningStrategy = defaultPositioningStrategy,
+            psiType = psiType,
+            rendererFactory = thisRef.getRendererFactory()
+        )
+        return ReadOnlyProperty { _, _ -> factory }
+    }
     
     public companion object {
         public fun <A> ERROR(): KtDiagnosticFactory1Delegate<A> = KtDiagnosticFactory1Delegate(severity = Severity.ERROR)
@@ -69,16 +69,16 @@ public class KtDiagnosticFactory2Delegate<A, B>(
     private val defaultPositioningStrategy: AbstractSourceElementPositioningStrategy = SourceElementPositioningStrategies.DEFAULT,
     private val psiType: KClass<*> = KtElement::class,
 ) {
-    public operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<KtDiagnosticsContainer, KtDiagnosticFactory2<A, B>> =
-        ReadOnlyProperty { thisRef, property ->
-            KtDiagnosticFactory2(
-                name = property.name,
-                severity = severity,
-                defaultPositioningStrategy = defaultPositioningStrategy,
-                psiType = psiType,
-                rendererFactory = thisRef.getRendererFactory()
-            )
-        }
+    public operator fun provideDelegate(thisRef: KtDiagnosticsContainer, property: KProperty<*>): ReadOnlyProperty<Any?, KtDiagnosticFactory2<A, B>> {
+        val factory = KtDiagnosticFactory2<A, B>(
+            name = property.name,
+            severity = severity,
+            defaultPositioningStrategy = defaultPositioningStrategy,
+            psiType = psiType,
+            rendererFactory = thisRef.getRendererFactory()
+        )
+        return ReadOnlyProperty { _, _ -> factory }
+    }
     
     public companion object {
         public fun <A, B> ERROR(): KtDiagnosticFactory2Delegate<A, B> = KtDiagnosticFactory2Delegate(severity = Severity.ERROR)
@@ -91,16 +91,16 @@ public class KtDiagnosticFactory3Delegate<A, B, C>(
     private val defaultPositioningStrategy: AbstractSourceElementPositioningStrategy = SourceElementPositioningStrategies.DEFAULT,
     private val psiType: KClass<*> = KtElement::class,
 ) {
-    public operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<KtDiagnosticsContainer, KtDiagnosticFactory3<A, B, C>> =
-        ReadOnlyProperty { thisRef, property ->
-            KtDiagnosticFactory3(
-                name = property.name,
-                severity = severity,
-                defaultPositioningStrategy = defaultPositioningStrategy,
-                psiType = psiType,
-                rendererFactory = thisRef.getRendererFactory()
-            )
-        }
+    public operator fun provideDelegate(thisRef: KtDiagnosticsContainer, property: KProperty<*>): ReadOnlyProperty<Any?, KtDiagnosticFactory3<A, B, C>> {
+        val factory = KtDiagnosticFactory3<A, B, C>(
+            name = property.name,
+            severity = severity,
+            defaultPositioningStrategy = defaultPositioningStrategy,
+            psiType = psiType,
+            rendererFactory = thisRef.getRendererFactory()
+        )
+        return ReadOnlyProperty { _, _ -> factory }
+    }
     
     public companion object {
         public fun <A, B, C> ERROR(): KtDiagnosticFactory3Delegate<A, B, C> = KtDiagnosticFactory3Delegate(severity = Severity.ERROR)
@@ -113,16 +113,16 @@ public class KtDiagnosticFactory4Delegate<A, B, C, D>(
     private val defaultPositioningStrategy: AbstractSourceElementPositioningStrategy = SourceElementPositioningStrategies.DEFAULT,
     private val psiType: KClass<*> = KtElement::class,
 ) {
-    public operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): ReadOnlyProperty<KtDiagnosticsContainer, KtDiagnosticFactory4<A, B, C, D>> =
-        ReadOnlyProperty { thisRef, property ->
-            KtDiagnosticFactory4(
-                name = property.name,
-                severity = severity,
-                defaultPositioningStrategy = defaultPositioningStrategy,
-                psiType = psiType,
-                rendererFactory = thisRef.getRendererFactory()
-            )
-        }
+    public operator fun provideDelegate(thisRef: KtDiagnosticsContainer, property: KProperty<*>): ReadOnlyProperty<Any?, KtDiagnosticFactory4<A, B, C, D>> {
+        val factory = KtDiagnosticFactory4<A, B, C, D>(
+            name = property.name,
+            severity = severity,
+            defaultPositioningStrategy = defaultPositioningStrategy,
+            psiType = psiType,
+            rendererFactory = thisRef.getRendererFactory()
+        )
+        return ReadOnlyProperty { _, _ -> factory }
+    }
     
     public companion object {
         public fun <A, B, C, D> ERROR(): KtDiagnosticFactory4Delegate<A, B, C, D> = KtDiagnosticFactory4Delegate(severity = Severity.ERROR)

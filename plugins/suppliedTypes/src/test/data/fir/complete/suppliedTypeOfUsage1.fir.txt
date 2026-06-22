@@ -1,0 +1,18 @@
+FILE: suppliedTypeOfUsage1.kt
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final fun <@R|dev/lounres/kone/suppliedTypes/Supply|() T> foo(): R|kotlin/String| {
+        ^foo R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|kotlin/collections/List<T>|>().R|kotlin/Any.toString|()
+    }
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final fun <@R|dev/lounres/kone/suppliedTypes/Supply|() T> bar(): R|kotlin/String| {
+        ^bar R|/foo|<R|kotlin/collections/Map<out T, T?>|>()
+    }
+    public final fun box(): R|kotlin/String| {
+        ^box when () {
+            ==(R|/bar|<R|kotlin/String|>(), String(kotlin.collections.List<out kotlin.collections.Map<out kotlin.String, out kotlin.String?>>)) ->  {
+                String(OK)
+            }
+            else ->  {
+                String(INCORRECT)
+            }
+        }
+
+    }

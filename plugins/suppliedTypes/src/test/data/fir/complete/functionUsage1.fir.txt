@@ -1,0 +1,9 @@
+FILE: functionUsage1.kt
+    package foo.bar
+
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final fun <@R|dev/lounres/kone/suppliedTypes/Supply|() Gee> baz(): R|Gee?| {
+        ^baz Null(null)
+    }
+    public final fun bar(): R|kotlin/Unit| {
+        R|kotlin/io/println|(R|foo/bar/baz<Inapplicable(INAPPLICABLE_ARGUMENTS_MAPPING_ERROR): foo/bar/baz>#|<R|kotlin/Int|>(R|kotlin/TODO|()))
+    }
