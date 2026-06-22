@@ -225,7 +225,7 @@ gradle.projectsEvaluated {
         for (project in bundleMainProjects + bundleMiscProjects + bundleUtilProjects)
             library(project.alias, koneGroup, project.artifact).versionRef("kone")
         for (project in pluginProjects)
-            plugin(project.alias, project.artifact).versionRef("kone")
+            plugin(project.alias, "${group as String}.${project.artifact}").versionRef("kone")
 
         bundle("main", bundleMainAliases)
         bundle("misc", bundleMiscAliases)
