@@ -12,7 +12,6 @@ import dev.lounres.kone.collections.set.addAllFrom
 import dev.lounres.kone.collections.set.of
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.graphs.Hypergraph.Provider
 import dev.lounres.kone.registry.*
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.absoluteFor
@@ -24,7 +23,7 @@ public interface Hypergraph {
     public val vertices: KoneReifiedSet<HypergraphVertex>
     public val edges: KoneReifiedSet<HypergraphEdge>
     
-    public val properties: ProviderRegistry get() = ProviderRegistry.Empty
+    public val properties: OwnedProviderRegistry<out Hypergraph> get() = OwnedProviderRegistry.empty()
     
     public companion object;
     
@@ -59,7 +58,7 @@ public interface Hypergraph {
 }
 
 @OptIn(Hypergraph.Factory.InternalApi::class)
-public inline fun Hypergraph.Factory.Hypergraph(block: HypergraphBuilder.(graph: Provider) -> Unit): Hypergraph {
+public inline fun Hypergraph.Factory.Hypergraph(block: HypergraphBuilder.(graph: Hypergraph.Provider) -> Unit): Hypergraph {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
@@ -75,23 +74,26 @@ public interface MutableHypergraph : Hypergraph {
     public fun remove(vertex: HypergraphVertex)
     public fun remove(edge: HypergraphEdge)
     
-    override val properties: MutableProviderRegistry
+    override val properties: MutableOwnedProviderRegistry<out MutableHypergraph>
     
     public companion object
 }
 
-public inline fun MutableHypergraph.properties(block: MutableOwnedProviderRegistry<Hypergraph>.() -> Unit) {
-    MutableOwnedProviderRegistry<Hypergraph>(this.properties).block()
+public inline fun MutableHypergraph.properties(block: MutableOwnedProviderRegistry<out MutableHypergraph>.() -> Unit) {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    this.properties.block()
 }
 
 public fun MutableHypergraph(
-    properties: MutableProviderRegistry = MutableProviderRegistry(),
+    properties: MutableOwnedProviderRegistry<MutableHypergraph> = MutableOwnedProviderRegistry(),
 ): MutableHypergraph = MutableHypergraphImpl(
     properties = properties,
 )
 
 private class MutableHypergraphImpl(
-    override val properties: MutableProviderRegistry
+    override val properties: MutableOwnedProviderRegistry<out MutableHypergraph>
 ) : MutableHypergraph {
     override val vertices: KoneMutableReifiedSet<HypergraphVertex> = KoneMutableReifiedSet.of(elementEquality = Equality.absoluteFor())
     override val edges: KoneMutableReifiedSet<HypergraphEdge> = KoneMutableReifiedSet.of(elementEquality = Equality.absoluteFor())
@@ -147,7 +149,7 @@ internal class HypergraphBuilderImpl : HypergraphBuilder {
         edges.remove(edge)
     }
     
-    override val properties = MutableProviderRegistry()
+    override val properties = MutableOwnedProviderRegistry<MutableHypergraph>()
 }
 
 public inline fun Hypergraph.Companion.build(block: HypergraphBuilder.() -> Unit): Hypergraph {
@@ -159,7 +161,7 @@ public inline fun Hypergraph.Companion.build(block: HypergraphBuilder.() -> Unit
 
 @OptIn(Hypergraph.Factory.InternalApi::class)
 public fun Hypergraph.Companion.Factory(
-    block: context(Provider) HypergraphBuilder.() -> Unit = {},
+    block: context(Hypergraph.Provider) HypergraphBuilder.() -> Unit = {},
 ): Hypergraph.Factory =
     Hypergraph.Factory {
         val builder = HypergraphBuilderImpl()
@@ -181,7 +183,7 @@ public fun Hypergraph.Companion.Factory(
 
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Hypergraph.Companion.setFactory(
-    block: context(Provider) HypergraphBuilder.() -> Unit = {},
+    block: context(Hypergraph.Provider) HypergraphBuilder.() -> Unit = {},
 ) {
     Hypergraph.Factory.Key correspondsTo RegisteredValueProvider.cached { Hypergraph.Factory(block) }
 }

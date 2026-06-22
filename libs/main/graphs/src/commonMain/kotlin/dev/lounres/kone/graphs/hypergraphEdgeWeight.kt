@@ -13,7 +13,7 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 @Suppliable
 public class HypergraphEdgeWeightKey<@Supply Weight> : SuppliedTypeRegistryKey<Weight>() {
-    override fun toString(): String = "dev.lounres.kone.relations.Equality.Key<${suppliedTypeOf<Weight>()}>"
+    override fun toString(): String = "dev.lounres.kone.graphs.HypergraphEdgeWeightKey.Key<${suppliedTypeOf<Weight>()}>"
 }
 
 @Suppliable

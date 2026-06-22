@@ -7,7 +7,6 @@ package dev.lounres.kone.contexts
 
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.OwnedProviderRegistry
-import dev.lounres.kone.registry.ProviderRegistry
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.build
 import kotlin.contracts.InvocationKind
@@ -25,7 +24,7 @@ public value class KoneContextRegistry(
      * Underlying type-safe registry.
      */
     public val contexts: OwnedProviderRegistry<KoneContextRegistry>
-) : ProviderRegistry by contexts {
+) : OwnedProviderRegistry<KoneContextRegistry> by contexts {
     public companion object;
     
     public fun interface Provider {
@@ -34,7 +33,7 @@ public value class KoneContextRegistry(
 }
 
 public fun KoneContextRegistry.tryToGetAll() {
-    @Suppress("ControlFlowWithEmptyBody")
+    @Suppress("ControlFlowWithEmptyBody", "DestructuringDeclaration")
     for (_ in this.asRegistrationIterable()) {}
 }
 

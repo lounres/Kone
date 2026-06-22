@@ -138,8 +138,8 @@ internal class RegistryBuilder : MutableRegistry {
     @PublishedApi
     internal fun build(): Registry {
         val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
-        val result = MutableRegistryImpl(content)
         this.content = null
+        val result = MutableRegistryImpl(content)
         return result
     }
     

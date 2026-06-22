@@ -163,8 +163,8 @@ internal class ProviderRegistryBuilder : MutableProviderRegistry {
     @PublishedApi
     internal fun build(): ProviderRegistry {
         val content = content ?: error("The registry builder is already finalized. Apply the operation to the built result.")
-        val result = MutableProviderRegistryImpl(content)
         this.content = null
+        val result = MutableProviderRegistryImpl(content)
         return result
     }
     
