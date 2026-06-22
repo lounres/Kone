@@ -27,7 +27,8 @@ public fun suppliedTypesPluginExceptionForPluginMachinery(message: String? = nul
 @Retention(AnnotationRetention.BINARY)
 internal annotation class SupplianceProvided
 
-internal object NoSuppliedTypeParameterInClassStub
+@Deprecated(message = internalsDeprecationAnnotationMessage, level = HIDDEN)
+public object NoSuppliedTypeParameterInClassStub
 
 private class SuppliedTypesStorageDelegate : ReadWriteProperty<Any?, Map<String, List<SuppliedType>>> {
     private val field = AtomicReference<Map<String, List<SuppliedType>>?>(null)
@@ -40,4 +41,5 @@ private class SuppliedTypesStorageDelegate : ReadWriteProperty<Any?, Map<String,
     private class InitializationException(message: String? = null, reason: Throwable? = null) : IllegalStateException(message, reason)
 }
 
-internal fun suppliedTypesStorageDelegate(): ReadWriteProperty<Any?, Map<String, List<SuppliedType>>> = SuppliedTypesStorageDelegate()
+@Deprecated(message = internalsDeprecationAnnotationMessage, level = HIDDEN)
+public fun suppliedTypesStorageDelegate(): ReadWriteProperty<Any?, Map<String, List<SuppliedType>>> = SuppliedTypesStorageDelegate()

@@ -31,7 +31,7 @@ class ConstructorSuppliancesGenerationTransformer(
         val supplianceToSuppliableMapping: MutableMap<IrConstructor, IrConstructor>,
     ) {
         companion object {
-            val INIT: TransformationContext = TransformationContext(
+            val INIT: TransformationContext get() = TransformationContext(
                 suppliableToSupplianceMapping = mutableMapOf(),
                 supplianceToSuppliableMapping = mutableMapOf(),
             )

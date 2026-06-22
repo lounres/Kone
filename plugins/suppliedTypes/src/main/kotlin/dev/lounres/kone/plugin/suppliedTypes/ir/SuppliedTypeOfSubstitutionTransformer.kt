@@ -33,7 +33,7 @@ class SuppliedTypeOfSubstitutionTransformer(
         val localSymbol: IrSymbol?,
     ) {
         companion object {
-            val INIT: TransformationContext = TransformationContext(
+            val INIT: TransformationContext get() = TransformationContext(
                 suppliedTypes = emptyMap(),
                 localSymbol = null,
             )

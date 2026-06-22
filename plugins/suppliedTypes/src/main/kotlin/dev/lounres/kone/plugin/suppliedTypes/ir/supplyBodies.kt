@@ -34,16 +34,16 @@ fun supplyFunctionsBodies(
 ) {
     for ([suppliance, suppliable] in suppliabilityMapper.moduleFunctionsSupplianceToSuppliableMapping) {
         check(suppliance.body == null) { TODO() }
-        suppliance.body = suppliable.body!!
-            .deepCopyWithSymbols(initialParent = suppliance)
-            .transform(
+        suppliance.body = suppliable.body
+            ?.deepCopyWithSymbols(initialParent = suppliance)
+            ?.transform(
                 ParametersSubstitutionTransformer(
                     typeParametersSubstitution = suppliable.typeParameters.zip(suppliance.typeParameters).toMap(),
                     valueParametersSubstitution = suppliable.parameters.zip(suppliance.parameters.filter { !it.isSupplianceProvided }).toMap(),
                 ),
                 null
             )
-            .transform(
+            ?.transform(
                 FunctionSubstitutionTransformer(
                     symbolSubstitution = mapOf(suppliable.symbol to suppliance.symbol),
                 ),
