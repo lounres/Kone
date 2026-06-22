@@ -76,6 +76,9 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
 //    val errorIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(CallableId(packageName = FqName("kotlin"), callableName = Name.identifier("error"))) {
 //        it.owner.parameters[0].type == pluginContext.irBuiltIns.anyType
 //    }
+    val runIrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(CallableId(packageName = FqName("kotlin"), callableName = Name.identifier("run"))) {
+        it.owner.parameters.size == 1
+    }
     val readWritePropertyIrClassSymbol = finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin.properties"), topLevelName = Name.identifier("ReadWriteProperty")))
     val readWritePropertyGetValueIrSimpleFunctionSymbol = readWritePropertyIrClassSymbol.referenceFunctionThatOrFail("getValue")
     val readWritePropertySetValueIrSimpleFunctionSymbol = readWritePropertyIrClassSymbol.referenceFunctionThatOrFail("setValue")

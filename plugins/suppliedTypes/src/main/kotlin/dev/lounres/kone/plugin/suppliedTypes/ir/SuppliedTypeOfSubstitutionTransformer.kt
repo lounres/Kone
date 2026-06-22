@@ -209,7 +209,7 @@ class SuppliedTypeOfSubstitutionTransformer(
                 check(suppliedBody is IrBlockBody) { TODO() }
                 
                 DeclarationIrBuilder(pluginContext, data.localSymbol!!).irBlock {
-                    val suppliedTypes = suppliances.map { irTemporary(it) }
+                    val suppliedTypes = suppliances.map { irTemporary(it.transform(this@SuppliedTypeOfSubstitutionTransformer, data)) }
                     
                     val data = TransformationContext(
                         suppliedTypes = buildMap {
@@ -220,7 +220,9 @@ class SuppliedTypeOfSubstitutionTransformer(
                         localSymbol = data.localSymbol,
                     )
                     
-                    +visitExpression(suppliedScope, data)
+                    +irCall(irRuntimeReferences.runIrSimpleFunctionSymbol).apply {
+                        arguments[0] = suppliedScope.transform(this@SuppliedTypeOfSubstitutionTransformer, data)
+                    }
                 }
             }
             else -> super.visitCall(expression, data)
