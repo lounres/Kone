@@ -553,7 +553,12 @@ stal {
                     val runtimeDependency = "${rootProject.properties["group"] as String}:${parentProject.childProjects["runtime"]!!.extra["artifactId"] as String}:${project.version as String}"
                     constsSourceDirectory.also { it.mkdirs() }.resolve("Consts.kt").writeText(
                         """
+                            internal val dependencyVersion: String = "${project.version as String}"
+                            internal val plguinDependencyGroup: String = "${rootProject.properties["group"] as String}"
+                            internal val plguinDependencyArtifact: String = "${parentProject.extra["artifactId"] as String}"
                             internal val plguinDependency: String = "$pluginDependency"
+                            internal val runtimeDependencyGroup: String = "${rootProject.properties["group"] as String}"
+                            internal val runtimeDependencyArtifact: String = "${parentProject.childProjects["runtime"]!!.extra["artifactId"] as String}"
                             internal val runtimeDependency: String = "$runtimeDependency"
                         """.trimIndent()
                     )
