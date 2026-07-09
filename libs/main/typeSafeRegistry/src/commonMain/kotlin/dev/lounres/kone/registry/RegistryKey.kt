@@ -15,4 +15,6 @@ public interface RegistryKey<T> {
      */
     public val context: RegistryKeyContext get() = NaiveRegistryKeyContext
     public val impliedKeys: ImpliedKeysRegistry<T> get() = Empty
+    
+    public companion object;
 }

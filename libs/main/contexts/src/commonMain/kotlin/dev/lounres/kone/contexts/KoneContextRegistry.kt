@@ -7,6 +7,7 @@ package dev.lounres.kone.contexts
 
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.OwnedProviderRegistry
+import dev.lounres.kone.registry.ProviderRegistryWrapper
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.build
 import kotlin.contracts.InvocationKind
@@ -23,12 +24,16 @@ public value class KoneContextRegistry(
     /**
      * Underlying type-safe registry.
      */
-    public val contexts: OwnedProviderRegistry<KoneContextRegistry>
-) : OwnedProviderRegistry<KoneContextRegistry> by contexts {
+    override val registry: OwnedProviderRegistry<KoneContextRegistry>
+) : ProviderRegistryWrapper<KoneContextRegistry> {
     public companion object;
     
     public fun interface Provider {
         public fun get(): KoneContextRegistry
+    }
+    
+    public data object Key : RegistryKey<KoneContextRegistry> {
+        override fun toString(): String = "dev.lounres.kone.contexts.KoneContextRegistry.Key"
     }
 }
 

@@ -29,7 +29,27 @@ private data object EmptyOwnedRegistry : OwnedRegistry<Any?> {
 
 public fun <Owner> OwnedRegistry.Companion.empty(): OwnedRegistry<Owner> = EmptyOwnedRegistry as OwnedRegistry<Owner>
 
-public interface MutableOwnedRegistry<Owner> : OwnedRegistry<Owner>, MutableRegistry
+public interface RegistryWrapper<Owner> : OwnedRegistry<Owner> {
+    public val registry: Registry
+    
+    override fun contains(registryKey: RegistryKey<*>): Boolean = registryKey in registry
+    override fun <T> get(registryKey: RegistryKey<out T>): T = registry[registryKey]
+    override fun asRegistrationIterable(): Iterable<Registration<*>> = registry.asRegistrationIterable()
+}
+
+public fun <Owner> OwnedRegistry.Companion.wrapFor(registry: Registry): OwnedRegistry<Owner> {
+    var registry = registry
+    while (registry is RegistryWrapper<*>) {
+        registry = registry.registry
+    }
+    return object : RegistryWrapper<Owner> {
+        override val registry: Registry = registry
+    }
+}
+
+public interface MutableOwnedRegistry<Owner> : OwnedRegistry<Owner>, MutableRegistry {
+    public companion object
+}
 
 private class MutableOwnedRegistryImpl<Owner>(private val content: MutableMap<RegistryKeyMapWrapper<*>, Any?>) : MutableOwnedRegistry<Owner> {
     override operator fun contains(registryKey: RegistryKey<*>): Boolean =
@@ -53,6 +73,24 @@ private class MutableOwnedRegistryImpl<Owner>(private val content: MutableMap<Re
 }
 
 public fun <Owner> MutableOwnedRegistry(): MutableOwnedRegistry<Owner> = MutableOwnedRegistryImpl(mutableMapOf())
+
+public interface MutableRegistryWrapper<Owner> : RegistryWrapper<Owner>, MutableOwnedRegistry<Owner> {
+    override val registry: MutableRegistry
+    
+    override fun <T> set(registryKey: RegistryKey<in T>, value: T) { registry[registryKey] = value }
+    override fun remove(registryKey: RegistryKey<*>) { registry.remove(registryKey) }
+    override fun setFrom(from: Registry) { registry.setFrom(from) }
+}
+
+public fun <Owner> MutableOwnedRegistry.Companion.wrapFor(registry: MutableRegistry): MutableOwnedRegistry<Owner> {
+    var registry = registry
+    while (registry is MutableRegistryWrapper<*>) {
+        registry = registry.registry
+    }
+    return object : MutableRegistryWrapper<Owner> {
+        override val registry: MutableRegistry = registry
+    }
+}
 
 @PublishedApi
 internal class OwnedRegistryBuilder<Owner> : MutableOwnedRegistry<Owner> {
@@ -127,7 +165,26 @@ private object EmptyOwnedProviderRegistry : OwnedProviderRegistry<Any?> {
 
 public fun <Owner> OwnedProviderRegistry.Companion.empty(): OwnedProviderRegistry<Owner> = EmptyOwnedProviderRegistry as OwnedProviderRegistry<Owner>
 
-public interface MutableOwnedProviderRegistry<Owner> : OwnedProviderRegistry<Owner>, MutableOwnedRegistry<Owner>, MutableProviderRegistry
+public interface ProviderRegistryWrapper<Owner> : RegistryWrapper<Owner>, OwnedProviderRegistry<Owner> {
+    override val registry: ProviderRegistry
+    
+    override fun <T> provide(registryKey: RegistryKey<out T>): RegisteredValueProvider<T> = registry.provide(registryKey)
+    override fun asProvidingRegistrationIterable(): Iterable<ProvidingRegistration<*>> = registry.asProvidingRegistrationIterable()
+}
+
+public fun <Owner> OwnedProviderRegistry.Companion.wrapFor(registry: ProviderRegistry): OwnedProviderRegistry<Owner> {
+    var registry = registry
+    while (registry is ProviderRegistryWrapper<*>) {
+        registry = registry.registry
+    }
+    return object : ProviderRegistryWrapper<Owner> {
+        override val registry: ProviderRegistry = registry
+    }
+}
+
+public interface MutableOwnedProviderRegistry<Owner> : OwnedProviderRegistry<Owner>, MutableOwnedRegistry<Owner>, MutableProviderRegistry {
+    public companion object
+}
 
 @Suppress("UNCHECKED_CAST")
 private class MutableOwnedProviderRegistryImpl<Owner>(private val content: MutableMap<RegistryKeyMapWrapper<*>, RegisteredValueProvider<*>>) : MutableOwnedProviderRegistry<Owner> {
@@ -161,6 +218,23 @@ private class MutableOwnedProviderRegistryImpl<Owner>(private val content: Mutab
 }
 
 public fun <Owner> MutableOwnedProviderRegistry(): MutableOwnedProviderRegistry<Owner> = MutableOwnedProviderRegistryImpl(mutableMapOf())
+
+public interface MutableProviderRegistryWrapper<Owner> : ProviderRegistryWrapper<Owner>, MutableRegistryWrapper<Owner>, MutableOwnedProviderRegistry<Owner> {
+    override val registry: MutableProviderRegistry
+    
+    override fun <T> set(registryKey: RegistryKey<in T>, provider: RegisteredValueProvider<T>) { registry[registryKey] = provider }
+    override fun setFrom(from: ProviderRegistry) { registry.setFrom(from) }
+}
+
+public fun <Owner> MutableOwnedProviderRegistry.Companion.wrapFor(registry: MutableProviderRegistry): MutableOwnedProviderRegistry<Owner> {
+    var registry = registry
+    while (registry is MutableProviderRegistryWrapper<*>) {
+        registry = registry.registry
+    }
+    return object : MutableProviderRegistryWrapper<Owner> {
+        override val registry: MutableProviderRegistry = registry
+    }
+}
 
 @PublishedApi
 internal class OwnedProviderRegistryBuilder<Owner> : MutableOwnedProviderRegistry<Owner> {
