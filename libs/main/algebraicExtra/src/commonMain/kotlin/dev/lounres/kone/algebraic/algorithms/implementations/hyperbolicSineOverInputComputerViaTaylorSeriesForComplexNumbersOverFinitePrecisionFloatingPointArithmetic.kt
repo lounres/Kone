@@ -18,14 +18,14 @@ import dev.lounres.kone.suppliedTypes.Supply
 
 
 private class HyperbolicSineOverInputComputerViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>(
-    private val complexNumbersFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
+    private val complexNumbersField: Field<ComplexNumber<Number>>,
 ) : HyperbolicSineOverInputComputer<ComplexNumber<Number>> {
     override fun ComplexNumber<Number>.sinhOverThis(): ComplexNumber<Number> =
         context(
-            complexNumbersFieldExtension,
+            complexNumbersField,
         ) {
-            var result = complexNumbersFieldExtension.one
-            var step = complexNumbersFieldExtension.one
+            var result = complexNumbersField.one
+            var step = complexNumbersField.one
             var stepNumber = 1u
             while (true) {
                 stepNumber++
@@ -43,9 +43,9 @@ private class HyperbolicSineOverInputComputerViaTaylorSeriesForComplexNumbersOve
 }
 
 public fun <Number> HyperbolicSineOverInputComputer.Companion.viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
-    complexNumbersFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
+    complexNumbersField: Field<ComplexNumber<Number>>,
 ): HyperbolicSineOverInputComputer<ComplexNumber<Number>> = HyperbolicSineOverInputComputerViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
-    complexNumbersFieldExtension = complexNumbersFieldExtension,
+    complexNumbersField = complexNumbersField,
 )
 
 @Suppliable
@@ -53,18 +53,18 @@ context(koneContextRegistry: KoneContextRegistry.Provider)
 public fun <@Supply Number> HyperbolicSineOverInputComputer.Companion.viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(): HyperbolicSineOverInputComputer<ComplexNumber<Number>> {
     val koneContextRegistry = koneContextRegistry.get()
     return viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>(
-        complexNumbersFieldExtension = koneContextRegistry[FieldExtension.Key<Number, ComplexNumber<Number>>()],
+        complexNumbersField = koneContextRegistry[Field.Key<ComplexNumber<Number>>()],
     )
 }
 
 @Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <@Supply Number> HyperbolicSineOverInputComputer.Companion.setViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
-    complexNumbersFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
+    complexNumbersField: Field<ComplexNumber<Number>>,
 ) {
     HyperbolicSineOverInputComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
         viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>(
-            complexNumbersFieldExtension = complexNumbersFieldExtension,
+            complexNumbersField = complexNumbersField,
         )
     }
 }

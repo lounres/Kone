@@ -25,7 +25,7 @@ import dev.lounres.kone.suppliedTypes.Supply
 private class LogarithmOnePlusInputOverInputComputerViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>(
     private val numberRing: CommutativeRing<Number>,
     private val numberOrder: Order<Number>,
-    private val complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
+    private val complexNumberField: Field<ComplexNumber<Number>>,
     private val numberPositiveSquareRootComputer: PositiveSquareRootComputer<Number>,
     private val complexNumberLogarithmComputer: LogarithmComputer<ComplexNumber<Number>>,
     private val threshold: Number,
@@ -34,13 +34,13 @@ private class LogarithmOnePlusInputOverInputComputerViaTaylorSeriesForComplexNum
         context(
             numberRing,
             numberOrder,
-            complexNumberFieldExtension,
+            complexNumberField,
             numberPositiveSquareRootComputer,
             complexNumberLogarithmComputer,
         ) {
             if (this.absoluteValue() leq threshold) {
-                var result = complexNumberFieldExtension.one
-                var stepNumerator = complexNumberFieldExtension.one
+                var result = complexNumberField.one
+                var stepNumerator = complexNumberField.one
                 var stepDenominator = 1u
                 while (true) {
                     stepDenominator++
@@ -60,14 +60,14 @@ private class LogarithmOnePlusInputOverInputComputerViaTaylorSeriesForComplexNum
 public fun <Number> LogarithmComputer.Companion.viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
     numberRing: CommutativeRing<Number>,
     numberOrder: Order<Number>,
-    complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
+    complexNumberField: Field<ComplexNumber<Number>>,
     numberPositiveSquareRootComputer: PositiveSquareRootComputer<Number>,
     complexNumberLogarithmComputer: LogarithmComputer<ComplexNumber<Number>>,
     threshold: Number,
 ): LogarithmOnePlusInputOverInputComputer<ComplexNumber<Number>> = LogarithmOnePlusInputOverInputComputerViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
     numberRing = numberRing,
     numberOrder = numberOrder,
-    complexNumberFieldExtension = complexNumberFieldExtension,
+    complexNumberField = complexNumberField,
     numberPositiveSquareRootComputer = numberPositiveSquareRootComputer,
     complexNumberLogarithmComputer = complexNumberLogarithmComputer,
     threshold = threshold,
@@ -82,7 +82,7 @@ public fun <@Supply Number> LogarithmComputer.Companion.viaTaylorSeriesForComple
     return viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
         numberRing = koneContextRegistry[CommutativeRing.Key<Number>()],
         numberOrder = koneContextRegistry[Order.Key<Number>()],
-        complexNumberFieldExtension = koneContextRegistry[FieldExtension.Key<Number, ComplexNumber<Number>>()],
+        complexNumberField = koneContextRegistry[Field.Key<ComplexNumber<Number>>()],
         numberPositiveSquareRootComputer = koneContextRegistry[PositiveSquareRootComputer.Key<Number>()],
         complexNumberLogarithmComputer = koneContextRegistry[LogarithmComputer.Key<ComplexNumber<Number>>()],
         threshold = threshold,
@@ -94,7 +94,7 @@ context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <@Supply Number> LogarithmComputer.Companion.setViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
     numberRing: CommutativeRing<Number>,
     numberOrder: Order<Number>,
-    complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
+    complexNumberField: Field<ComplexNumber<Number>>,
     numberPositiveSquareRootComputer: PositiveSquareRootComputer<Number>,
     complexNumberLogarithmComputer: LogarithmComputer<ComplexNumber<Number>>,
     threshold: Number,
@@ -103,7 +103,7 @@ public fun <@Supply Number> LogarithmComputer.Companion.setViaTaylorSeriesForCom
         viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>(
             numberRing = numberRing,
             numberOrder = numberOrder,
-            complexNumberFieldExtension = complexNumberFieldExtension,
+            complexNumberField = complexNumberField,
             numberPositiveSquareRootComputer = numberPositiveSquareRootComputer,
             complexNumberLogarithmComputer = complexNumberLogarithmComputer,
             threshold = threshold,

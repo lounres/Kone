@@ -37,7 +37,7 @@ private class ExponentMatrixComputerViaSchurParlettUsingScalingAndSquaring<Matri
     private val matrixFactory: MatrixFactory<ComplexNumber<Double>, Matrix>,
     private val field: Field<Double>,
     private val order: Order<Double>,
-    private val complexNumberFieldExtension: FieldExtension<Double, ComplexNumber<Double>>,
+    private val complexNumberField: Field<ComplexNumber<Double>>,
     private val positiveSquareRootComputer: PositiveSquareRootComputer<Double>,
     private val complexNumberExponentComputer: ExponentComputer<ComplexNumber<Double>>,
     private val complexNumberHyperbolicSineOverInputComputer: HyperbolicSineOverInputComputer<ComplexNumber<Double>>,
@@ -54,7 +54,7 @@ private class ExponentMatrixComputerViaSchurParlettUsingScalingAndSquaring<Matri
             matrixFactory = matrixFactory,
             field = field,
             order = order,
-            complexNumberFieldExtension = complexNumberFieldExtension,
+            complexNumberField = complexNumberField,
             matrixCategoryOverField = matrixCategoryOverField,
             matrixProductComputer = matrixProductComputer,
             inverseMatrixComputer = inverseMatrixComputer,
@@ -64,7 +64,7 @@ private class ExponentMatrixComputerViaSchurParlettUsingScalingAndSquaring<Matri
                     context(
                         field,
                         order,
-                        complexNumberFieldExtension,
+                        complexNumberField,
                         positiveSquareRootComputer,
                         complexNumberExponentComputer,
                         complexNumberHyperbolicSineOverInputComputer,
@@ -92,7 +92,7 @@ private class ExponentMatrixComputerViaSchurParlettUsingScalingAndSquaring<Matri
                                 }
                             )
                             else -> {
-                                val unitMatrix = matrixFactory.generateMatrix(size, size) { row, column -> if (row == column) complexNumberFieldExtension.one else complexNumberFieldExtension.zero }
+                                val unitMatrix = matrixFactory.generateMatrix(size, size) { row, column -> if (row == column) complexNumberField.one else complexNumberField.zero }
                                 val thisOneNorm = this.sumOf<_, Double> { it.absoluteValue() }
                                 // Attempt m = 3
                                 if (thisOneNorm leq 1.5E-2) {
@@ -159,7 +159,7 @@ public fun <Matrix : MDList2<ComplexNumber<Double>>> ExponentComputer.Companion.
     matrixFactory: MatrixFactory<ComplexNumber<Double>, Matrix>,
     field: Field<Double>,
     order: Order<Double>,
-    complexNumberFieldExtension: FieldExtension<Double, ComplexNumber<Double>>,
+    complexNumberField: Field<ComplexNumber<Double>>,
     positiveSquareRootComputer: PositiveSquareRootComputer<Double>,
     complexNumberExponentComputer: ExponentComputer<ComplexNumber<Double>>,
     complexNumberHyperbolicSineOverInputComputer: HyperbolicSineOverInputComputer<ComplexNumber<Double>>,
@@ -173,7 +173,7 @@ public fun <Matrix : MDList2<ComplexNumber<Double>>> ExponentComputer.Companion.
     matrixFactory = matrixFactory,
     field = field,
     order = order,
-    complexNumberFieldExtension = complexNumberFieldExtension,
+    complexNumberField = complexNumberField,
     positiveSquareRootComputer = positiveSquareRootComputer,
     complexNumberExponentComputer = complexNumberExponentComputer,
     complexNumberHyperbolicSineOverInputComputer = complexNumberHyperbolicSineOverInputComputer,
@@ -201,7 +201,7 @@ public fun <@Supply Matrix : MDList2<ComplexNumber<Double>>> ExponentComputer.Co
         order = koneContextRegistry.requestFor(Order.Key<Double>()) {
             "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${suppliedTypeOf<Matrix>()}>"
         },
-        complexNumberFieldExtension = koneContextRegistry.requestFor(FieldExtension.Key<Double, ComplexNumber<Double>>()) {
+        complexNumberField = koneContextRegistry.requestFor(Field.Key<ComplexNumber<Double>>()) {
             "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${suppliedTypeOf<Matrix>()}>"
         },
         positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Double>()) {
@@ -238,7 +238,7 @@ public fun <@Supply Matrix : MDList2<ComplexNumber<Double>>> ExponentComputer.Co
     matrixFactory: MatrixFactory<ComplexNumber<Double>, Matrix>,
     field: Field<Double>,
     order: Order<Double>,
-    complexNumberFieldExtension: FieldExtension<Double, ComplexNumber<Double>>,
+    complexNumberField: Field<ComplexNumber<Double>>,
     positiveSquareRootComputer: PositiveSquareRootComputer<Double>,
     complexNumberExponentComputer: ExponentComputer<ComplexNumber<Double>>,
     complexNumberHyperbolicSineOverInputComputer: HyperbolicSineOverInputComputer<ComplexNumber<Double>>,
@@ -254,7 +254,7 @@ public fun <@Supply Matrix : MDList2<ComplexNumber<Double>>> ExponentComputer.Co
             matrixFactory = matrixFactory,
             field = field,
             order = order,
-            complexNumberFieldExtension = complexNumberFieldExtension,
+            complexNumberField = complexNumberField,
             positiveSquareRootComputer = positiveSquareRootComputer,
             complexNumberExponentComputer = complexNumberExponentComputer,
             complexNumberHyperbolicSineOverInputComputer = complexNumberHyperbolicSineOverInputComputer,
@@ -286,7 +286,7 @@ public fun <@Supply Matrix : MDList2<ComplexNumber<Double>>> ExponentComputer.Co
     matrixFactory: MatrixFactory<ComplexNumber<Double>, MatrixWithProperties<ComplexNumber<Double>, Matrix>>,
     field: Field<Double>,
     order: Order<Double>,
-    complexNumberFieldExtension: FieldExtension<Double, ComplexNumber<Double>>,
+    complexNumberField: Field<ComplexNumber<Double>>,
     positiveSquareRootComputer: PositiveSquareRootComputer<Double>,
     complexNumberExponentComputer: ExponentComputer<ComplexNumber<Double>>,
     complexNumberHyperbolicSineOverInputComputer: HyperbolicSineOverInputComputer<ComplexNumber<Double>>,
@@ -302,7 +302,7 @@ public fun <@Supply Matrix : MDList2<ComplexNumber<Double>>> ExponentComputer.Co
             matrixFactory = matrixFactory,
             field = field,
             order = order,
-            complexNumberFieldExtension = complexNumberFieldExtension,
+            complexNumberField = complexNumberField,
             positiveSquareRootComputer = positiveSquareRootComputer,
             complexNumberExponentComputer = complexNumberExponentComputer,
             complexNumberHyperbolicSineOverInputComputer = complexNumberHyperbolicSineOverInputComputer,

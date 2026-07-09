@@ -25,7 +25,7 @@ private class ScalarBasedMatrixFunctionApplierViaSchurParlettForComplexNumbers<N
     private val matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
     private val field: Field<Number>,
     private val order: Order<Number>,
-    private val complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
+    private val complexNumberField: Field<ComplexNumber<Number>>,
     private val matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, Matrix>,
     private val matrixProductComputer: MatrixProductComputer<ComplexNumber<Number>, Matrix>,
     private val inverseMatrixComputer: InverseMatrixComputer<ComplexNumber<Number>, Matrix>,
@@ -43,7 +43,7 @@ private class ScalarBasedMatrixFunctionApplierViaSchurParlettForComplexNumbers<N
                 matrixFactory = matrixFactory,
                 field = field,
                 order = order,
-                complexNumberFieldExtension = complexNumberFieldExtension,
+                complexNumberField = complexNumberField,
                 matrixCategoryOverField = matrixCategoryOverField,
                 matrixProductComputer = matrixProductComputer,
                 inverseMatrixComputer = inverseMatrixComputer,
@@ -52,7 +52,7 @@ private class ScalarBasedMatrixFunctionApplierViaSchurParlettForComplexNumbers<N
                     matrixFactory = matrixFactory,
                     field = field,
                     order = order,
-                    complexNumberFieldExtension = complexNumberFieldExtension,
+                    complexNumberField = complexNumberField,
                     matrixCategoryOverField = matrixCategoryOverField,
                     matrixProductComputer = matrixProductComputer,
                     atomicBlockImageComputationTolerance = atomicBlockImageComputationTolerance,
@@ -69,7 +69,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>, Function : ScalarBa
     matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
     field: Field<Number>,
     order: Order<Number>,
-    complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
+    complexNumberField: Field<ComplexNumber<Number>>,
     matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, Matrix>,
     matrixProductComputer: MatrixProductComputer<ComplexNumber<Number>, Matrix>,
     inverseMatrixComputer: InverseMatrixComputer<ComplexNumber<Number>, Matrix>,
@@ -81,7 +81,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>, Function : ScalarBa
     matrixFactory = matrixFactory,
     field = field,
     order = order,
-    complexNumberFieldExtension = complexNumberFieldExtension,
+    complexNumberField = complexNumberField,
     matrixCategoryOverField = matrixCategoryOverField,
     matrixProductComputer = matrixProductComputer,
     inverseMatrixComputer = inverseMatrixComputer,
@@ -108,7 +108,7 @@ public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>, @Su
         order = koneContextRegistry.requestFor(Order.Key<Number>()) {
             "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
         },
-        complexNumberFieldExtension = koneContextRegistry.requestFor(FieldExtension.Key<Number, ComplexNumber<Number>>()) {
+        complexNumberField = koneContextRegistry.requestFor(Field.Key<ComplexNumber<Number>>()) {
             "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
         },
         matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<ComplexNumber<Number>, Matrix>()) {
@@ -137,7 +137,7 @@ public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>, @Su
     matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
     field: Field<Number>,
     order: Order<Number>,
-    complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
+    complexNumberField: Field<ComplexNumber<Number>>,
     matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, Matrix>,
     matrixProductComputer: MatrixProductComputer<ComplexNumber<Number>, Matrix>,
     inverseMatrixComputer: InverseMatrixComputer<ComplexNumber<Number>, Matrix>,
@@ -151,7 +151,7 @@ public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>, @Su
             matrixFactory = matrixFactory,
             field = field,
             order = order,
-            complexNumberFieldExtension = complexNumberFieldExtension,
+            complexNumberField = complexNumberField,
             matrixCategoryOverField = matrixCategoryOverField,
             matrixProductComputer = matrixProductComputer,
             inverseMatrixComputer = inverseMatrixComputer,

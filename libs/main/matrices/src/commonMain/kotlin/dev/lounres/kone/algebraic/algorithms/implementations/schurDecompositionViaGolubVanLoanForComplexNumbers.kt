@@ -60,7 +60,7 @@ private class SchurDecompositionComputerViaGolubVanLoanForComplexNumbers<Number,
         
         context(
             numberField,
-            complexNumberFieldExtension,
+            complexNumberFieldExtension as Field<ComplexNumber<Number>>,
             numberOrder,
             positiveSquareRootComputer,
             complexNumberSquareRootComputer,
@@ -166,7 +166,7 @@ private class SchurDecompositionComputerViaGolubVanLoanForComplexNumbers<Number,
                         rowNumber = 3u,
                         columnNumber = 1u,
                         numbers = KoneMap.build(keyEquality = MDIndex.equality(), keyHashing = MDIndex.hashing()) {
-                            this[MDIndex.of(0u, 0u)] = x + norm * x / x.absoluteValue()
+                            this[MDIndex.of(0u, 0u)] = context(complexNumberFieldExtension) { x + norm * x / x.absoluteValue() }
                             this[MDIndex.of(1u, 0u)] = y
                             this[MDIndex.of(2u, 0u)] = z
                         },
@@ -241,7 +241,7 @@ private class SchurDecompositionComputerViaGolubVanLoanForComplexNumbers<Number,
                         rowNumber = 2u,
                         columnNumber = 1u,
                         numbers = KoneMap.build(keyEquality = MDIndex.equality(), keyHashing = MDIndex.hashing()) {
-                            this[MDIndex.of(0u, 0u)] = x + norm * x / x.absoluteValue()
+                            this[MDIndex.of(0u, 0u)] = context(complexNumberFieldExtension) { x + norm * x / x.absoluteValue() }
                             this[MDIndex.of(1u, 0u)] = y
                         },
                     )

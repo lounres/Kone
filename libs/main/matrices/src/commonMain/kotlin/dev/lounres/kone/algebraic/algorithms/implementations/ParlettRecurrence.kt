@@ -56,7 +56,7 @@ public class ParlettRecurrenceAtomicBlockImageComputerViaTaylorSeriesForComplexN
     private val matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
     private val field: Field<Number>,
     private val order: Order<Number>,
-    private val complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
+    private val complexNumberField: Field<ComplexNumber<Number>>,
     private val matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, Matrix>,
     private val matrixProductComputer: MatrixProductComputer<ComplexNumber<Number>, Matrix>,
     private val atomicBlockImageComputationTolerance: Number,
@@ -72,7 +72,7 @@ public class ParlettRecurrenceAtomicBlockImageComputerViaTaylorSeriesForComplexN
         context(
             field,
             order,
-            complexNumberFieldExtension,
+            complexNumberField,
             matrixCategoryOverField,
             matrixProductComputer,
         ) {
@@ -96,7 +96,7 @@ public class ParlettRecurrenceAtomicBlockImageComputerViaTaylorSeriesForComplexN
                     y.add(
                         (0u ..< i)
                             .asKoneSequence()
-                            .fold(complexNumberFieldExtension.one) { accumulator, j -> accumulator + y[j] * this[size - 1u - i, size - 1u - j] }
+                            .fold(complexNumberField.one) { accumulator, j -> accumulator + y[j] * this[size - 1u - i, size - 1u - j] }
                     )
                 }
                 y.maxOf<_, Number> { it.norm() }
@@ -142,7 +142,7 @@ public class ParlettRecurrence<Number, Matrix : MDList2<ComplexNumber<Number>>>(
     private val matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
     private val field: Field<Number>,
     private val order: Order<Number>,
-    private val complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
+    private val complexNumberField: Field<ComplexNumber<Number>>,
     private val matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, Matrix>,
     private val matrixProductComputer: MatrixProductComputer<ComplexNumber<Number>, Matrix>,
     private val inverseMatrixComputer: InverseMatrixComputer<ComplexNumber<Number>, Matrix>,
@@ -225,7 +225,7 @@ public class ParlettRecurrence<Number, Matrix : MDList2<ComplexNumber<Number>>>(
         context(
             field,
             order,
-            complexNumberFieldExtension,
+            complexNumberField,
         ) {
             val blockIndices = KoneMutableUIntArray.fill(this.size, UInt.MAX_VALUE)
             var setsNumber = 0u
@@ -329,7 +329,7 @@ public class ParlettRecurrence<Number, Matrix : MDList2<ComplexNumber<Number>>>(
             }
             
             matrixFactory.generateMatrix(rowNumber = totalSize, columnNumber = totalSize) { row, column ->
-                if (row > column) complexNumberFieldExtension.zero else resultMatrixElements[row, column]!!
+                if (row > column) complexNumberField.zero else resultMatrixElements[row, column]!!
             }
         }
     
