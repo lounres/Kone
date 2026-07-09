@@ -5,45 +5,36 @@
 
 package dev.lounres.kone.plugin.suppliedTypes.gradle
 
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.invoke
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.PLUGIN_CLASSPATH_CONFIGURATION_NAME
-import plguinDependency
+import dependencyVersion
+import org.gradle.api.provider.Provider
+import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
+import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
+import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
+import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
+import plguinDependencyArtifact
+import plguinDependencyGroup
 import runtimeDependency
 
 
 @Suppress("unused")
-class SuppliedTypesPlugin : Plugin<Project> {
-    override fun apply(target: Project) {
-        target.dependencies {
-            add(PLUGIN_CLASSPATH_CONFIGURATION_NAME, plguinDependency)
+class SuppliedTypesPlugin : KotlinCompilerPluginSupportPlugin {
+    override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean = true
+    
+    override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
+        val project = kotlinCompilation.target.project
+        
+        kotlinCompilation.defaultSourceSet.dependencies { api(runtimeDependency) }
+        if (kotlinCompilation.defaultSourceSet.implementationConfigurationName == "metadataCompilationImplementation") {
+            project.dependencies.add("commonMainImplementation", runtimeDependency)
         }
-        target.pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
-            target.configure<KotlinMultiplatformExtension> {
-                sourceSets {
-                    commonMain {
-                        dependencies {
-                            api(runtimeDependency)
-                        }
-                    }
-                }
-            }
-        }
-        target.pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
-            target.configure<KotlinJvmProjectExtension> {
-                sourceSets {
-                    named("main") {
-                        dependencies {
-                            api(runtimeDependency)
-                        }
-                    }
-                }
-            }
-        }
+        
+        return project.provider { emptyList() }
     }
+    
+    override fun getCompilerPluginId(): String = "$plguinDependencyGroup.$plguinDependencyArtifact"
+    override fun getPluginArtifact(): SubpluginArtifact = SubpluginArtifact(
+        groupId = plguinDependencyGroup,
+        artifactId = plguinDependencyArtifact,
+        version = dependencyVersion,
+    )
 }
