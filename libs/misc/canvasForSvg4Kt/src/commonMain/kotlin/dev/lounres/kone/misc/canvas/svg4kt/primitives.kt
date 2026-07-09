@@ -42,6 +42,7 @@ import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.registry.getOrNull
+import dev.lounres.kone.scope
 import kotlin.jvm.JvmInline
 import kotlin.math.PI
 import kotlin.math.abs
@@ -82,7 +83,7 @@ internal class KoneCanvasSvg4ktTransformationContext(private val context: Attrib
     }
     
     override fun scale(pivot: Point2<Double>, scaleX: Double, scaleY: Double) {
-        TODO()
+        result.add("matrix($scaleX 0 0 $scaleY ${pivot.x * (1 - scaleX)} ${pivot.y * (1 - scaleY)})")
     }
     
     override fun commit() {
@@ -130,7 +131,7 @@ public fun KoneCanvasSvg4ktContext.line(
         euclideanSpace {
             val data = contextRegistry.getOrNull(KoneCanvasData.Key)
             val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
-            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 0.0
+            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
             val start = (start - shift) * zoom
             val end = (end - shift) * zoom
             if (strokeColor != null) context(G) {
@@ -182,12 +183,16 @@ public fun KoneCanvasSvg4ktContext.rectangle(
         context(field, euclideanSpace, G) {
             val data = contextRegistry.getOrNull(KoneCanvasData.Key)
             val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
-            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 0.0
+            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
             val center = (center - shift) * zoom
             val size = size * zoom
             val topLeftVector = center - size / 2
             val _ = rect {
-//                contextOf<AttributeConsumer>()["transform"] = "matrix()" // TODO: Add rotation
+                contextOf<AttributeConsumer>()["transform"] = scope {
+                    val cos = cos(rotation)
+                    val sin = sin(rotation)
+                    "matrix($cos $sin ${-sin} $cos ${sin * center.y + (1 - cos) * center.x} ${-sin * center.x + (1 - cos) * center.y})"
+                }
                 contextOf<AttributeConsumer>()["x"] = Length.None(topLeftVector.x)
                 contextOf<AttributeConsumer>()["y"] = Length.None(topLeftVector.y)
                 contextOf<AttributeConsumer>()["width"] = Length.None(size.x)
@@ -242,7 +247,7 @@ public fun KoneCanvasSvg4ktContext.circle(
         val data = contextRegistry.getOrNull(KoneCanvasData.Key)
         context(field, euclideanSpace, G) {
             val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
-            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 0.0
+            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
             val center = (center - shift) * zoom
             val radius = radius * zoom
             circle {
@@ -298,11 +303,15 @@ public fun KoneCanvasSvg4ktContext.ellipse(
         context(field, euclideanSpace, G) {
             val data = contextRegistry.getOrNull(KoneCanvasData.Key)
             val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
-            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 0.0
+            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
             val center = (center - shift) * zoom
             val size = size * zoom
             val _ = ellipse {
-//                contextOf<AttributeConsumer>()["transform"] = "matrix()" // TODO: Add rotation
+                contextOf<AttributeConsumer>()["transform"] = scope {
+                    val cos = cos(rotation)
+                    val sin = sin(rotation)
+                    "matrix($cos $sin ${-sin} $cos ${sin * center.y + (1 - cos) * center.x} ${-sin * center.x + (1 - cos) * center.y})"
+                }
                 cx = Length.None(center.x)
                 cy = Length.None(center.y)
                 contextOf<AttributeConsumer>()["rx"] = Length.None(size.x)
@@ -356,7 +365,7 @@ public fun KoneCanvasSvg4ktContext.polygon(
         context(field, euclideanSpace, G) {
             val data = contextRegistry.getOrNull(KoneCanvasData.Key)
             val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
-            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 0.0
+            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
             val vertices = vertices.map { (it - shift) * zoom }
             val _ = polygon {
                 points = vertices.map { Point(it.x, it.y) }.toList()
@@ -479,7 +488,7 @@ public inline fun KoneCanvasSvg4ktContext.path(
         ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
     val data = contextRegistry.getOrNull(KoneCanvasData.Key)
     val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
-    val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 0.0
+    val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
     val pathBuilder = KoneMutableList.of<String>()
     KoneCanvasSvg4ktPathContext(
         context = pathBuilder,
@@ -524,7 +533,7 @@ public object KoneCanvasSvg4ktPath : KoneCanvasPath {
             ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
         val data = context.getOrNull(KoneCanvasData.Key)
         val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
-        val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 0.0
+        val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
         val pathBuilder = KoneMutableList.of<String>()
         return PathContextDelegate(
             tagConsumer = tagConsumer,

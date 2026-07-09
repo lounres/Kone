@@ -157,7 +157,7 @@ public fun KoneCanvasComposeMultiplatformContext.line(
         euclideanSpace {
             val data = contextRegistry.getOrNull(KoneCanvasData.Key)
             val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
-            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 0.0
+            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
             val start = (start - shift) * zoom
             val end = (end - shift) * zoom
             if (strokeColor != null) stack.drawScope.drawLine(
@@ -205,7 +205,7 @@ public fun KoneCanvasComposeMultiplatformContext.rectangle(
         context(field, euclideanSpace) {
             val data = contextRegistry.getOrNull(KoneCanvasData.Key)
             val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
-            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 0.0
+            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
             val center = (center - shift) * zoom
             val size = size * zoom
             val topLeftVector = center - size / 2
@@ -272,7 +272,7 @@ public fun KoneCanvasComposeMultiplatformContext.circle(
         val data = contextRegistry.getOrNull(KoneCanvasData.Key)
         context(field, euclideanSpace) {
             val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
-            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 0.0
+            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
             val center = (center - shift) * zoom
             val radius = radius * zoom
             if (fillColor != null) stack.drawScope.drawCircle(
@@ -328,7 +328,7 @@ public fun KoneCanvasComposeMultiplatformContext.ellipse(
         context(field, euclideanSpace) {
             val data = contextRegistry.getOrNull(KoneCanvasData.Key)
             val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
-            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 0.0
+            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
             val center = (center - shift) * zoom
             val size = size * zoom
             val topLeftVector = center - size / 2
@@ -396,7 +396,7 @@ public fun KoneCanvasComposeMultiplatformContext.polygon(
         context(field, euclideanSpace) {
             val data = contextRegistry.getOrNull(KoneCanvasData.Key)
             val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
-            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 0.0
+            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
             val vertices = vertices.map { (it - shift) * zoom }
             val path = Path().apply {
                 if (vertices.isNotEmpty()) {
@@ -534,7 +534,7 @@ public inline fun KoneCanvasComposeMultiplatformContext.path(
         ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
     val data = contextRegistry.getOrNull(KoneCanvasData.Key)
     val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
-    val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 0.0
+    val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
     val pathBuilder = PathBuilder()
     KoneCanvasComposeMultiplatformPathContext(
         context = pathBuilder,
@@ -583,7 +583,7 @@ public object KoneCanvasComposeMultiplatformPath : KoneCanvasPath {
             ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
         val data = context.getOrNull(KoneCanvasData.Key)
         val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
-        val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 0.0
+        val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
         val pathBuilder = PathBuilder()
         return PathContextDelegate(
             stack = stack,
