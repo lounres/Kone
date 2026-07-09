@@ -199,12 +199,20 @@ private class MDList1EuclideanSpaceOverField<Number>(
         require(this.contentSize == dimension) { TODO() }
         return this.map { field { it * other } }
     }
+    override operator fun MDList1<Number>.div(other: UInt): MDList1<Number> {
+        require(this.contentSize == dimension) { TODO() }
+        return this.map { field { it / other } }
+    }
     // endregion
     
     // region Vector-Int operations
     override operator fun MDList1<Number>.times(other: Int): MDList1<Number> {
         require(this.contentSize == dimension) { TODO() }
         return this.map { field { it * other } }
+    }
+    override operator fun MDList1<Number>.div(other: Int): MDList1<Number> {
+        require(this.contentSize == dimension) { TODO() }
+        return this.map { field { it / other } }
     }
     // endregion
     
@@ -213,12 +221,20 @@ private class MDList1EuclideanSpaceOverField<Number>(
         require(this.contentSize == dimension) { TODO() }
         return this.map { field { it * other } }
     }
+    override operator fun MDList1<Number>.div(other: Long): MDList1<Number> {
+        require(this.contentSize == dimension) { TODO() }
+        return this.map { field { it / other } }
+    }
     // endregion
     
     // region Vector-ULong operations
     override operator fun MDList1<Number>.times(other: ULong): MDList1<Number> {
         require(this.contentSize == dimension) { TODO() }
         return this.map { field { it * other } }
+    }
+    override operator fun MDList1<Number>.div(other: ULong): MDList1<Number> {
+        require(this.contentSize == dimension) { TODO() }
+        return this.map { field { it / other } }
     }
     // endregion
     

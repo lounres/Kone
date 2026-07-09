@@ -197,21 +197,29 @@ public class EuclideanSpace2OverField<Number>(
     // region Vector-UInt operations
     override operator fun Vector2<Number>.times(other: UInt): Vector2<Number> =
         Vector2(this.content.map { field { it * other } })
+    override operator fun Vector2<Number>.div(other: UInt): Vector2<Number> =
+        Vector2(this.content.map { field { it / other } })
     // endregion
     
     // region Vector-Int operations
     override operator fun Vector2<Number>.times(other: Int): Vector2<Number> =
         Vector2(this.content.map { field { it * other } })
+    override operator fun Vector2<Number>.div(other: Int): Vector2<Number> =
+        Vector2(this.content.map { field { it / other } })
     // endregion
     
     // region Vector-Long operations
     override operator fun Vector2<Number>.times(other: Long): Vector2<Number> =
         Vector2(this.content.map { field { it * other } })
+    override operator fun Vector2<Number>.div(other: Long): Vector2<Number> =
+        Vector2(this.content.map { field { it / other } })
     // endregion
     
     // region Vector-ULong operations
     override operator fun Vector2<Number>.times(other: ULong): Vector2<Number> =
         Vector2(this.content.map { field { it * other } })
+    override operator fun Vector2<Number>.div(other: ULong): Vector2<Number> =
+        Vector2(this.content.map { field { it / other } })
     // endregion
     
     // region Vector-Number operations

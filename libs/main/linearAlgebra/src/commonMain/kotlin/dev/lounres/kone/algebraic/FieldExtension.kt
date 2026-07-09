@@ -17,6 +17,10 @@ import kotlin.jvm.JvmName
 public interface FieldExtension<Number, Vector> : CommutativeAlgebra<Number, Vector>, Field<Vector>, VectorSpace<Number, Vector> {
     @JvmName("divNumberVector")
     public operator fun Number.div(other: Vector): Vector = valueOf(this) / other
+    public override fun Vector.div(other: Int): Vector = this / valueOf(other)
+    override fun Vector.div(other: UInt): Vector = this / valueOf(other)
+    override fun Vector.div(other: Long): Vector = this / valueOf(other)
+    override fun Vector.div(other: ULong): Vector = this / valueOf(other)
     
     public companion object;
     

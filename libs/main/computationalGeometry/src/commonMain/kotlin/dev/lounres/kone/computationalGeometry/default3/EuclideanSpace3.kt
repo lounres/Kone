@@ -217,21 +217,29 @@ public class EuclideanSpace3OverField<Number>(
     // region Vector-UInt operations
     override operator fun Vector3<Number>.times(other: UInt): Vector3<Number> =
         Vector3(this.content.map { field { it * other } })
+    override operator fun Vector3<Number>.div(other: UInt): Vector3<Number> =
+        Vector3(this.content.map { field { it / other } })
     // endregion
     
     // region Vector-Int operations
     override operator fun Vector3<Number>.times(other: Int): Vector3<Number> =
         Vector3(this.content.map { field { it * other } })
+    override operator fun Vector3<Number>.div(other: Int): Vector3<Number> =
+        Vector3(this.content.map { field { it / other } })
     // endregion
     
     // region Vector-Long operations
     override operator fun Vector3<Number>.times(other: Long): Vector3<Number> =
         Vector3(this.content.map { field { it * other } })
+    override operator fun Vector3<Number>.div(other: Long): Vector3<Number> =
+        Vector3(this.content.map { field { it / other } })
     // endregion
     
     // region Vector-ULong operations
     override operator fun Vector3<Number>.times(other: ULong): Vector3<Number> =
         Vector3(this.content.map { field { it * other } })
+    override operator fun Vector3<Number>.div(other: ULong): Vector3<Number> =
+        Vector3(this.content.map { field { it / other } })
     // endregion
     
     // region Vector-Number operations

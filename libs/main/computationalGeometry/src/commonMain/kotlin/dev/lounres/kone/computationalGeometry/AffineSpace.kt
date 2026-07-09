@@ -44,13 +44,13 @@ public interface AffineSpaceOverRing<Number, Vector, Point> : Module<Number, Vec
 context(affineSpace: AffineSpaceOverRing<*, Vector, Point>)
 public operator fun <Vector, Point> Point.plus(other: Vector): Point = with(affineSpace) { this@plus + other }
 
-//@JvmName("pointMinusVector")
-//context(affineSpace: AffineSpaceOverRing<*, Vector, Point>)
-//public operator fun <Vector, Point> Point.minus(other: Vector): Point = with(affineSpace) { this@minus - other }
+@JvmName("pointMinusVector")
+context(affineSpace: AffineSpaceOverRing<*, Vector, Point>)
+public operator fun <Vector, Point> Point.minus(other: Vector): Point = with(affineSpace) { this@minus - other }
 
-//@JvmName("vectorPlusPoint")
-//context(affineSpace: AffineSpaceOverRing<*, Vector, Point>)
-//public operator fun <Vector, Point> Vector.plus(other: Point): Point = with(affineSpace) { this@plus + other }
+@JvmName("vectorPlusPoint")
+context(affineSpace: AffineSpaceOverRing<*, Vector, Point>)
+public operator fun <Vector, Point> Vector.plus(other: Point): Point = with(affineSpace) { this@plus + other }
 
 @JvmName("vectorMinusPoint")
 context(affineSpace: AffineSpaceOverRing<*, Vector, Point>)
