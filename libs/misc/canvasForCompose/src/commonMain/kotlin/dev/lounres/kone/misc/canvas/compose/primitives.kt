@@ -8,6 +8,7 @@ package dev.lounres.kone.misc.canvas.compose
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.PathBuilder
@@ -16,9 +17,13 @@ import dev.lounres.kone.algebraic.Field
 import dev.lounres.kone.algebraic.div
 import dev.lounres.kone.algebraic.minus
 import dev.lounres.kone.algebraic.times
+import dev.lounres.kone.collections.iterables.isNotEmpty
+import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.list.lastIndex
+import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.collections.utils.last
+import dev.lounres.kone.collections.utils.map
 import dev.lounres.kone.computationalGeometry.angles.*
 import dev.lounres.kone.computationalGeometry.default2.EuclideanSpace2OverField
 import dev.lounres.kone.computationalGeometry.default2.Point2
@@ -375,6 +380,64 @@ public object KoneCanvasComposeMultiplatformEllipse : KoneCanvasEllipse {
 
 // TODO: Arc
 
+context(controller: KoneCanvasController)
+public fun KoneCanvasComposeMultiplatformContext.polygon(
+    vertices: KoneList<Point2<Double>>,
+    fillColor: KoneColor? = null,
+    strokeColor: KoneColor? = null,
+    strokeWidth: Double = 0.0,
+) {
+    contextRegistry.getOrNull(KoneCanvasComposeMultiplatformStack.Key)?.let { stack ->
+        val providedKoneContextRegistry = controller.getOrNull(KoneContextRegistry.Key)
+        val field = providedKoneContextRegistry?.getOrNull(Field.Key<Double>())
+            ?: defaultKoneContextRegistry[Field.Key<Double>()]
+        val euclideanSpace = providedKoneContextRegistry?.getOrNull(EuclideanSpace2OverField.Key<Double>())
+            ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
+        context(field, euclideanSpace) {
+            val data = contextRegistry.getOrNull(KoneCanvasData.Key)
+            val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
+            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 0.0
+            val vertices = vertices.map { (it - shift) * zoom }
+            val path = Path().apply {
+                if (vertices.isNotEmpty()) {
+                    vertices.first().also { moveTo(it.x.toFloat(), it.y.toFloat()) }
+                    for (i in 1u ..< vertices.size) vertices[i].also { lineTo(it.x.toFloat(), it.y.toFloat()) }
+                    close()
+                }
+            }
+            stack.drawScope.apply {
+                if (fillColor != null) drawPath(
+                    path = path,
+                    color = fillColor.composeMultiplatform,
+                    style = Fill,
+                )
+                if (strokeColor != null) drawPath(
+                    path = path,
+                    color = strokeColor.composeMultiplatform,
+                    style = Stroke(width = strokeWidth.toFloat()),
+                )
+            }
+        }
+    }
+}
+
+public object KoneCanvasComposeMultiplatformPolygon : KoneCanvasPolygon {
+    context(controller: KoneCanvasController)
+    override fun KoneCanvasContextRegistry.polygon(
+        vertices: KoneList<Point2<Double>>,
+        fillColor: KoneColor?,
+        strokeColor: KoneColor?,
+        strokeWidth: Double
+    ) {
+        KoneCanvasComposeMultiplatformContext(this).polygon(
+            vertices = vertices,
+            fillColor = fillColor,
+            strokeColor = strokeColor,
+            strokeWidth = strokeWidth,
+        )
+    }
+}
+
 @PublishedApi
 internal class KoneCanvasComposeMultiplatformPathContext(
     private val context: PathBuilder,
@@ -542,6 +605,7 @@ public fun setDefaultPrimitives() {
     KoneCanvasRectangle.Key correspondsTo KoneCanvasComposeMultiplatformRectangle
     KoneCanvasCircle.Key correspondsTo KoneCanvasComposeMultiplatformCircle
     KoneCanvasEllipse.Key correspondsTo KoneCanvasComposeMultiplatformEllipse
+    KoneCanvasPolygon.Key correspondsTo KoneCanvasComposeMultiplatformPolygon
     KoneCanvasPath.Key correspondsTo KoneCanvasComposeMultiplatformPath
 }
 

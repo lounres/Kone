@@ -9,20 +9,24 @@ import dev.jamesyox.svg4kt.TagConsumer
 import dev.jamesyox.svg4kt.attr.AttributeConsumer
 import dev.jamesyox.svg4kt.attr.attrs.cx
 import dev.jamesyox.svg4kt.attr.attrs.cy
+import dev.jamesyox.svg4kt.attr.attrs.points
 import dev.jamesyox.svg4kt.attr.attrs.r
 import dev.jamesyox.svg4kt.attr.attrs.stroke
 import dev.jamesyox.svg4kt.attr.set
 import dev.jamesyox.svg4kt.attr.types.obj.Length
+import dev.jamesyox.svg4kt.attr.types.obj.Point
 import dev.jamesyox.svg4kt.attr.types.obj.SvgColor
 import dev.jamesyox.svg4kt.tags.*
 import dev.lounres.kone.algebraic.Field
 import dev.lounres.kone.algebraic.div
 import dev.lounres.kone.algebraic.minus
 import dev.lounres.kone.algebraic.times
+import dev.lounres.kone.collections.interop.toList
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.utils.joinToString
+import dev.lounres.kone.collections.utils.map
 import dev.lounres.kone.computationalGeometry.angles.*
 import dev.lounres.kone.computationalGeometry.default2.EuclideanSpace2OverField
 import dev.lounres.kone.computationalGeometry.default2.Point2
@@ -276,6 +280,7 @@ public object KoneCanvasSvg4ktCircle : KoneCanvasCircle {
     }
 }
 
+context(controller: KoneCanvasController)
 public fun KoneCanvasSvg4ktContext.ellipse(
     center: Point2<Double>,
     size: Vector2<Double>,
@@ -285,7 +290,7 @@ public fun KoneCanvasSvg4ktContext.ellipse(
     strokeWidth: Double = 0.0,
 ) {
     contextRegistry.getOrNull(KoneCanvasSvg4ktTagConsumerKey)?.apply {
-        val providedKoneContextRegistry = contextRegistry.getOrNull(KoneContextRegistry.Key)
+        val providedKoneContextRegistry = controller.getOrNull(KoneContextRegistry.Key)
         val field = providedKoneContextRegistry?.getOrNull(Field.Key<Double>())
             ?: defaultKoneContextRegistry[Field.Key<Double>()]
         val euclideanSpace = providedKoneContextRegistry?.getOrNull(EuclideanSpace2OverField.Key<Double>())
@@ -328,6 +333,55 @@ public object KoneCanvasSvg4ktEllipse : KoneCanvasEllipse {
             center = center,
             size = size,
             rotation = rotation,
+            fillColor = fillColor,
+            strokeColor = strokeColor,
+            strokeWidth = strokeWidth,
+        )
+    }
+}
+
+context(controller: KoneCanvasController)
+public fun KoneCanvasSvg4ktContext.polygon(
+    vertices: KoneList<Point2<Double>>,
+    fillColor: KoneColor? = null,
+    strokeColor: KoneColor? = null,
+    strokeWidth: Double = 0.0,
+) {
+    contextRegistry.getOrNull(KoneCanvasSvg4ktTagConsumerKey)?.apply {
+        val providedKoneContextRegistry = controller.getOrNull(KoneContextRegistry.Key)
+        val field = providedKoneContextRegistry?.getOrNull(Field.Key<Double>())
+            ?: defaultKoneContextRegistry[Field.Key<Double>()]
+        val euclideanSpace = providedKoneContextRegistry?.getOrNull(EuclideanSpace2OverField.Key<Double>())
+            ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
+        context(field, euclideanSpace, G) {
+            val data = contextRegistry.getOrNull(KoneCanvasData.Key)
+            val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
+            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 0.0
+            val vertices = vertices.map { (it - shift) * zoom }
+            val _ = polygon {
+                points = vertices.map { Point(it.x, it.y) }.toList()
+                
+                if (fillColor != null)
+                    contextOf<AttributeConsumer>()["fill"] = fillColor.svg4kt
+                if (strokeColor != null) {
+                    stroke(strokeColor.svg4kt)
+                    contextOf<AttributeConsumer>()["stroke-width"] = Length.None(strokeWidth)
+                }
+            }
+        }
+    }
+}
+
+public object KoneCanvasSvg4ktPolygon : KoneCanvasPolygon {
+    context(controller: KoneCanvasController)
+    override fun KoneCanvasContextRegistry.polygon(
+        vertices: KoneList<Point2<Double>>,
+        fillColor: KoneColor?,
+        strokeColor: KoneColor?,
+        strokeWidth: Double
+    ) {
+        KoneCanvasSvg4ktContext(this).polygon(
+            vertices = vertices,
             fillColor = fillColor,
             strokeColor = strokeColor,
             strokeWidth = strokeWidth,
@@ -492,6 +546,7 @@ public fun setDefaultPrimitives() {
     KoneCanvasRectangle.Key correspondsTo KoneCanvasSvg4ktRectangle
     KoneCanvasCircle.Key correspondsTo KoneCanvasSvg4ktCircle
     KoneCanvasEllipse.Key correspondsTo KoneCanvasSvg4ktEllipse
+    KoneCanvasPolygon.Key correspondsTo KoneCanvasSvg4ktPolygon
     KoneCanvasPath.Key correspondsTo KoneCanvasSvg4ktPath
 }
 

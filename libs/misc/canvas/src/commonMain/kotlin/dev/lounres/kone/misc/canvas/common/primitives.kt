@@ -219,7 +219,7 @@ public fun interface KoneCanvasLine {
     public companion object;
     
     public data object Key : RegistryKey<KoneCanvasLine> {
-        override fun toString(): String = "dev.lounres.kone.misc.canvas.common.KoneCanvasCommonLine.Key"
+        override fun toString(): String = "dev.lounres.kone.misc.canvas.common.KoneCanvasLine.Key"
     }
 }
 
@@ -257,7 +257,7 @@ public fun interface KoneCanvasRectangle {
     public companion object;
     
     public data object Key : RegistryKey<KoneCanvasRectangle> {
-        override fun toString(): String = "dev.lounres.kone.misc.canvas.common.KoneCanvasCommonRectangle.Key"
+        override fun toString(): String = "dev.lounres.kone.misc.canvas.common.KoneCanvasRectangle.Key"
     }
 }
 
@@ -298,7 +298,7 @@ public fun interface KoneCanvasCircle {
     public companion object;
     
     public data object Key : RegistryKey<KoneCanvasCircle> {
-        override fun toString(): String = "dev.lounres.kone.misc.canvas.common.KoneCanvasCommonCircle.Key"
+        override fun toString(): String = "dev.lounres.kone.misc.canvas.common.KoneCanvasCircle.Key"
     }
 }
 
@@ -338,7 +338,7 @@ public fun interface KoneCanvasEllipse {
     public companion object;
     
     public data object Key : RegistryKey<KoneCanvasEllipse> {
-        override fun toString(): String = "dev.lounres.kone.misc.canvas.common.KoneCanvasCommonEllipse.Key"
+        override fun toString(): String = "dev.lounres.kone.misc.canvas.common.KoneCanvasEllipse.Key"
     }
 }
 
@@ -358,6 +358,42 @@ public fun KoneCanvasCommonContext.ellipse(
                 center = center,
                 size = size,
                 rotation = rotation,
+                fillColor = fillColor,
+                strokeColor = strokeColor,
+                strokeWidth = strokeWidth,
+            )
+        }
+    }
+}
+
+public fun interface KoneCanvasPolygon {
+    context(controller: KoneCanvasController)
+    public fun KoneCanvasContextRegistry.polygon(
+        vertices: KoneList<Point2<Double>>,
+        fillColor: KoneColor?,
+        strokeColor: KoneColor?,
+        strokeWidth: Double,
+    )
+    
+    public companion object;
+    
+    public data object Key : RegistryKey<KoneCanvasPolygon> {
+        override fun toString(): String = "dev.lounres.kone.misc.canvas.common.KoneCanvasPolygon.Key"
+    }
+}
+
+context(controller: KoneCanvasController)
+public fun KoneCanvasCommonContext.polygon(
+    vertices: KoneList<Point2<Double>>,
+    fillColor: KoneColor? = null,
+    strokeColor: KoneColor? = null,
+    strokeWidth: Double = 0.0,
+) {
+    val primitivesRegistries = controller.getOrNull(KoneCanvasTargetsRegistry.Key) ?: return
+    for (key in contextRegistry.getOrNull(KoneCanvasTargetKey.SetKey) ?: KoneSet.empty()) {
+        primitivesRegistries.getOrNull(key)?.getOrNull(KoneCanvasPolygon.Key)?.run {
+            contextRegistry.polygon(
+                vertices = vertices,
                 fillColor = fillColor,
                 strokeColor = strokeColor,
                 strokeWidth = strokeWidth,
