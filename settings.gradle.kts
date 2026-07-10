@@ -109,6 +109,8 @@ stal {
 
     action {
         gradle.allprojects {
+            group = "${settings.extra["group"]}${project.path.replace(':', '.').let { if (it == ".") ".kone" else ".kone$it" }}"
+            project.extra["koneGroup"] = settings.extra["group"]
             extra["artifactId"] = ""
             extra["alias"] = ""
             extra["androidNamespace"] = ""
@@ -123,7 +125,6 @@ stal {
         }
         "libs main extra" {
             val parentProject = project.parent!!
-            group = "${settings.extra["group"]}${parentProject.path.replace(':', '.')}"
             extra["artifactId"] = "kone.${parentProject.name}.${project.name}"
             extra["alias"] = "${parentProject.name}.${project.name}"
             extra["androidNamespace"] = "dev.lounres.kone.${parentProject.name}.${project.name}"

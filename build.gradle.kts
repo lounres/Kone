@@ -64,7 +64,7 @@ val now: LocalDateTime = LocalDateTime.now(ZoneId.of("UTC"))
 // FIXME
 val koneVersion = "0.0.0-experiment-${now.year}.${now.month.value}.${now.dayOfMonth}.${now.hour}"
 //val koneVersion = "0.0.0-experiment"
-val koneGroup = project.properties["group"] as String
+val koneGroup = project.extra["koneGroup"] as String
 val koneUrl: String by project
 val koneBaseUrl: String by project
 
@@ -225,7 +225,7 @@ gradle.projectsEvaluated {
         for (project in bundleMainProjects + bundleMiscProjects + bundleUtilProjects)
             library(project.alias, koneGroup, project.artifact).versionRef("kone")
         for (project in pluginProjects)
-            plugin(project.alias, "${group as String}.${project.artifact}").versionRef("kone")
+            plugin(project.alias, "$koneGroup.${project.artifact}").versionRef("kone")
 
         bundle("main", bundleMainAliases)
         bundle("misc", bundleMiscAliases)
@@ -549,15 +549,15 @@ stal {
             val writePaths by tasks.registering {
                 doFirst {
                     val parentProject = project.parent!!
-                    val pluginDependency = "${rootProject.properties["group"] as String}:${parentProject.extra["artifactId"] as String}:${project.version as String}"
-                    val runtimeDependency = "${rootProject.properties["group"] as String}:${parentProject.childProjects["runtime"]!!.extra["artifactId"] as String}:${project.version as String}"
+                    val pluginDependency = "$koneGroup:${parentProject.extra["artifactId"] as String}:${project.version as String}"
+                    val runtimeDependency = "$koneGroup:${parentProject.childProjects["runtime"]!!.extra["artifactId"] as String}:${project.version as String}"
                     constsSourceDirectory.also { it.mkdirs() }.resolve("Consts.kt").writeText(
                         """
                             internal val dependencyVersion: String = "${project.version as String}"
-                            internal val plguinDependencyGroup: String = "${rootProject.properties["group"] as String}"
+                            internal val plguinDependencyGroup: String = "$koneGroup"
                             internal val plguinDependencyArtifact: String = "${parentProject.extra["artifactId"] as String}"
                             internal val plguinDependency: String = "$pluginDependency"
-                            internal val runtimeDependencyGroup: String = "${rootProject.properties["group"] as String}"
+                            internal val runtimeDependencyGroup: String = "$koneGroup"
                             internal val runtimeDependencyArtifact: String = "${parentProject.childProjects["runtime"]!!.extra["artifactId"] as String}"
                             internal val runtimeDependency: String = "$runtimeDependency"
                         """.trimIndent()
@@ -929,7 +929,7 @@ stal {
                 
                 signAllPublications()
                 
-                coordinates(groupId = rootProject.properties["group"] as String, artifactId = project.artifact, version = project.version as String)
+                coordinates(groupId = koneGroup, artifactId = project.artifact, version = project.version as String)
 
                 pom {
                     name = "Kone library"

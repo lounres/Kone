@@ -1,7 +1,7 @@
 gradlePlugin {
     plugins {
         register("kotlinCompilerPluginWrapper") {
-            id = "${properties["group"]}.${extra["artifactId"]}"
+            id = "${extra["koneGroup"]}.${extra["artifactId"]}"
 //            displayName = ""
 //            description = ""
 //            tags = listOf()
