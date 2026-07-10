@@ -1,0 +1,89 @@
+FILE fqName:foo.bar fileName:/simpleKoneContextHolderUnwrapLocallyAsExtensionReceiversUsage2.kt
+  CLASS INTERFACE name:CoolContext modality:ABSTRACT visibility:public [fun] superTypes:[kotlin.Any]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.CoolContext<X of foo.bar.CoolContext>
+    TYPE_PARAMETER name:X index:0 variance: superTypes:[kotlin.Any?] reified:false
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in kotlin.Any
+    FUN name:makeItCool visibility:public modality:ABSTRACT returnType:X of foo.bar.CoolContext
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.CoolContext<X of foo.bar.CoolContext>
+  CLASS OBJECT name:Foo modality:FINAL visibility:public superTypes:[dev.lounres.kone.contexts.KoneContextHolder]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Foo
+    PROPERTY name:bar visibility:public modality:FINAL [val]
+      annotations:
+        KoneContextHolderContext
+      FIELD PROPERTY_BACKING_FIELD name:bar type:foo.bar.CoolContext<kotlin.Int> visibility:private [final]
+        EXPRESSION_BODY
+          TYPE_OP type=foo.bar.CoolContext<kotlin.Int> origin=SAM_CONVERSION typeOperand=foo.bar.CoolContext<kotlin.Int>
+            FUN_EXPR type=kotlin.Function0<kotlin.Int> origin=LAMBDA
+              FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL returnType:kotlin.Int
+                BLOCK_BODY
+                  RETURN type=kotlin.Nothing from='local final fun <anonymous> (): kotlin.Int declared in foo.bar.Foo.bar'
+                    CONST Int type=kotlin.Int value=57
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-bar> visibility:public modality:FINAL returnType:foo.bar.CoolContext<kotlin.Int>
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Foo
+        correspondingProperty: PROPERTY name:bar visibility:public modality:FINAL [val]
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-bar> (): foo.bar.CoolContext<kotlin.Int> declared in foo.bar.Foo'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:bar type:foo.bar.CoolContext<kotlin.Int> visibility:private [final]' type=foo.bar.CoolContext<kotlin.Int> origin=null
+              receiver: GET_VAR '<this>: foo.bar.Foo declared in foo.bar.Foo.<get-bar>' type=foo.bar.Foo origin=null
+    PROPERTY name:baz visibility:public modality:FINAL [val]
+      FIELD PROPERTY_BACKING_FIELD name:baz type:foo.bar.CoolContext<kotlin.Int> visibility:private [final]
+        EXPRESSION_BODY
+          TYPE_OP type=foo.bar.CoolContext<kotlin.Int> origin=SAM_CONVERSION typeOperand=foo.bar.CoolContext<kotlin.Int>
+            FUN_EXPR type=kotlin.Function0<kotlin.Int> origin=LAMBDA
+              FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL returnType:kotlin.Int
+                BLOCK_BODY
+                  RETURN type=kotlin.Nothing from='local final fun <anonymous> (): kotlin.Int declared in foo.bar.Foo.baz'
+                    CONST Int type=kotlin.Int value=179
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-baz> visibility:public modality:FINAL returnType:foo.bar.CoolContext<kotlin.Int>
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Foo
+        correspondingProperty: PROPERTY name:baz visibility:public modality:FINAL [val]
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-baz> (): foo.bar.CoolContext<kotlin.Int> declared in foo.bar.Foo'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:baz type:foo.bar.CoolContext<kotlin.Int> visibility:private [final]' type=foo.bar.CoolContext<kotlin.Int> origin=null
+              receiver: GET_VAR '<this>: foo.bar.Foo declared in foo.bar.Foo.<get-baz>' type=foo.bar.Foo origin=null
+    CONSTRUCTOR visibility:private returnType:foo.bar.Foo [primary]
+      BLOCK_BODY
+        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS OBJECT name:Foo modality:FINAL visibility:public superTypes:[dev.lounres.kone.contexts.KoneContextHolder]' type=kotlin.Unit
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in dev.lounres.kone.contexts.KoneContextHolder
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in dev.lounres.kone.contexts.KoneContextHolder
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in dev.lounres.kone.contexts.KoneContextHolder
+  FUN name:box visibility:public modality:FINAL returnType:kotlin.String
+    BLOCK_BODY
+      CALL 'public final fun unwrapLocallyAsExtensionReceivers (<this>: dev.lounres.kone.contexts.KoneContextHolder.Companion, vararg koneContextHolder: dev.lounres.kone.contexts.KoneContextHolder): kotlin.Unit declared in dev.lounres.kone.contexts' type=kotlin.Unit origin=null
+        ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.contexts.KoneContextHolder.Companion
+        ARG koneContextHolder: VARARG type=kotlin.Array<out dev.lounres.kone.contexts.KoneContextHolder> varargElementType=dev.lounres.kone.contexts.KoneContextHolder
+          GET_OBJECT 'CLASS OBJECT name:Foo modality:FINAL visibility:public superTypes:[dev.lounres.kone.contexts.KoneContextHolder]' type=foo.bar.Foo
+      RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in foo.bar'
+        WHEN type=kotlin.String origin=IF
+          BRANCH
+            if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+              ARG arg0: CALL 'public abstract fun makeItCool (): X of foo.bar.CoolContext declared in foo.bar.CoolContext' type=kotlin.Int origin=null
+                ARG <this>: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts unwrapLocallyAsExtensionReceivers receiver holder>|' type=foo.bar.CoolContext<kotlin.Int>
+              ARG arg1: CONST Int type=kotlin.Int value=57
+            then: CONST String type=kotlin.String value="OK"
+          BRANCH
+            if: CONST Boolean type=kotlin.Boolean value=true
+            then: CONST String type=kotlin.String value="INCORRECT"

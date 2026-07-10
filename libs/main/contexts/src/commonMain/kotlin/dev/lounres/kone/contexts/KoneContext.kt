@@ -9,10 +9,16 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 
+public interface KoneContextHolder {
+    public companion object;
+}
+
 /**
  * Marker interface for Kone's contexts.
  */
-public interface KoneContext
+public interface KoneContext {
+    public companion object;
+}
 
 /**
  * Simple provider of [this] context as a context parameter in the following [block].

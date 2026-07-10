@@ -5,6 +5,11 @@ konePlugins {
 }
 
 kotlin {
+    jvmToolchain {
+        languageVersion = JavaLanguageVersion.of(project.extra["pluginRuntimeJvmTargetVersion"] as String)
+        vendor = JvmVendorSpec.matching(project.extra["pluginRuntimeJvmVendor"] as String)
+    }
+    
     sourceSets {
         commonMain {
             dependencies {

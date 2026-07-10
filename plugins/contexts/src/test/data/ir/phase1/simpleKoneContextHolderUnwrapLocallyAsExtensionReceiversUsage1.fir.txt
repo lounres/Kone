@@ -1,0 +1,31 @@
+FILE: simpleKoneContextHolderUnwrapLocallyAsExtensionReceiversUsage1.kt
+    package foo.bar
+
+    public final class Foo<X> : R|dev/lounres/kone/contexts/KoneContextHolder| {
+        public constructor<X>(): R|foo/bar/Foo<X>| {
+            super<R|kotlin/Any|>()
+        }
+
+        @R|dev/lounres/kone/contexts/KoneContextHolderContext|() public final val bar: R|kotlin/collections/List<X>|
+            public get(): R|kotlin/collections/List<X>| {
+                ^ R|kotlin/collections/emptyList|<R|X|>()
+            }
+
+        public final val baz: R|kotlin/collections/Set<X>|
+            public get(): R|kotlin/collections/Set<X>| {
+                ^ R|kotlin/collections/emptySet|<R|X|>()
+            }
+
+    }
+    public final fun box(): R|kotlin/String| {
+        Q|dev/lounres/kone/contexts/KoneContextHolder|.R|dev/lounres/kone/contexts/unwrapLocallyAsExtensionReceivers|(vararg(R|foo/bar/Foo.Foo|<R|kotlin/Int|>()))
+        ^box when () {
+            context(this@R|<local>/<Kone contexts unwrapLocallyAsExtensionReceivers receiver holder>|) R|kotlin/contextOf|<R|kotlin/collections/List<kotlin/Int>|>().R|SubstitutionOverride<kotlin/collections/List.isEmpty: R|kotlin/Boolean|>|() ->  {
+                String(OK)
+            }
+            else ->  {
+                String(INCORRECT)
+            }
+        }
+
+    }

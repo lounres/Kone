@@ -1,0 +1,2 @@
+FILE: test.kt
+    package foo.bar

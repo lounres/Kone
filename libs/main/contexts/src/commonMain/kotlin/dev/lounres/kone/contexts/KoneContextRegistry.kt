@@ -37,6 +37,36 @@ public value class KoneContextRegistry(
     }
 }
 
+@DslMarker
+@Target(AnnotationTarget.TYPE, AnnotationTarget.CLASS)
+public annotation class KoneContextRegistryBuilderDsl
+
+/**
+ * Builder function for [KoneContextRegistry].
+ */
+public inline fun KoneContextRegistry.Companion.build(block: (@KoneContextRegistryBuilderDsl MutableOwnedProviderRegistry<KoneContextRegistry>).() -> Unit): KoneContextRegistry {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    return KoneContextRegistry(OwnedProviderRegistry.build { this.block() })
+}
+
+public inline fun KoneContextRegistry.Companion.buildWithProvider(
+    block: context(KoneContextRegistry.Provider) (@KoneContextRegistryBuilderDsl MutableOwnedProviderRegistry<KoneContextRegistry>).() -> Unit
+): KoneContextRegistry {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    val provider = object : KoneContextRegistry.Provider {
+        var result: KoneContextRegistry? = null
+        override fun get(): KoneContextRegistry =
+            result ?: error("KoneContextRegistry is not yet initialized but was requested by its properties.")
+    }
+    val result = KoneContextRegistry(OwnedProviderRegistry.build { block(provider, this) })
+    provider.result = result
+    return result
+}
+
 public fun KoneContextRegistry.tryToGetAll() {
     @Suppress("ControlFlowWithEmptyBody", "DestructuringDeclaration")
     for (_ in this.asRegistrationIterable()) {}
@@ -799,34 +829,4 @@ public inline fun <Context1, Context2, Context3, Context4, Context5, Context6, C
         koneContextRegistry[key13],
         koneContextRegistry[key14],
     )
-}
-
-@DslMarker
-@Target(AnnotationTarget.TYPE, AnnotationTarget.CLASS)
-public annotation class KoneContextRegistryBuilderDsl
-
-/**
- * Builder function for [KoneContextRegistry].
- */
-public inline fun KoneContextRegistry.Companion.build(block: (@KoneContextRegistryBuilderDsl MutableOwnedProviderRegistry<KoneContextRegistry>).() -> Unit): KoneContextRegistry {
-    contract {
-        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-    }
-    return KoneContextRegistry(OwnedProviderRegistry.build { this.block() })
-}
-
-public inline fun KoneContextRegistry.Companion.buildWithProvider(
-    block: context(KoneContextRegistry.Provider) (@KoneContextRegistryBuilderDsl MutableOwnedProviderRegistry<KoneContextRegistry>).() -> Unit
-): KoneContextRegistry {
-    contract {
-        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-    }
-    val provider = object : KoneContextRegistry.Provider {
-        var result: KoneContextRegistry? = null
-        override fun get(): KoneContextRegistry =
-            result ?: error("KoneContextRegistry is not yet initialized but was requested by its properties.")
-    }
-    val result = KoneContextRegistry(OwnedProviderRegistry.build { block(provider, this) })
-    provider.result = result
-    return result
 }

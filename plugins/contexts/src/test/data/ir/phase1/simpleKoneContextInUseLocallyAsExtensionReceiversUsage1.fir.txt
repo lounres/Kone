@@ -1,0 +1,24 @@
+FILE: simpleKoneContextInUseLocallyAsExtensionReceiversUsage1.kt
+    package foo.bar
+
+    public final class Baz : R|dev/lounres/kone/contexts/KoneContext| {
+        public constructor(): R|foo/bar/Baz| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final val gee: R|kotlin/Int| = Int(57)
+            public get(): R|kotlin/Int|
+
+    }
+    public final fun box(): R|kotlin/String| {
+        Q|dev/lounres/kone/contexts/KoneContext|.R|dev/lounres/kone/contexts/useLocallyAsExtensionReceivers|(vararg(R|foo/bar/Baz.Baz|()))
+        ^box when () {
+            ==(this@R|<local>/<Kone contexts useLocallyAsExtensionReceivers receiver holder>|.R|foo/bar/Baz.gee|, Int(57)) ->  {
+                String(OK)
+            }
+            else ->  {
+                String(INCORRECT)
+            }
+        }
+
+    }

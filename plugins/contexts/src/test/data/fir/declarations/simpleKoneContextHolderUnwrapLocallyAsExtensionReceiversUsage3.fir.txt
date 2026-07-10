@@ -1,0 +1,31 @@
+FILE: simpleKoneContextHolderUnwrapLocallyAsExtensionReceiversUsage3.kt
+    package foo.bar
+
+    public abstract interface Bar : R|dev/lounres/kone/contexts/KoneContextHolder| {
+        @R|dev/lounres/kone/contexts/KoneContextHolderContext|() public open val bar: R|kotlin/Int|
+            public get(): R|kotlin/Int| {
+                ^ Int(57)
+            }
+
+    }
+    public final class Baz : R|foo/bar/Bar| {
+        public constructor(): R|foo/bar/Baz| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final val baz: R|kotlin/Int| = Int(179)
+            public get(): R|kotlin/Int|
+
+    }
+    public final fun box(): R|kotlin/String| {
+        Q|dev/lounres/kone/contexts/KoneContextHolder|.R|dev/lounres/kone/contexts/unwrapLocallyAsExtensionReceivers|(vararg(R|foo/bar/Baz.Baz|()))
+        ^box when () {
+            ==(context(this@R|<local>/<Kone contexts unwrapLocallyAsExtensionReceivers receiver holder>|) R|kotlin/contextOf|<R|kotlin/Int|>(), Int(57)) ->  {
+                String(OK)
+            }
+            else ->  {
+                String(INCORRECT)
+            }
+        }
+
+    }
