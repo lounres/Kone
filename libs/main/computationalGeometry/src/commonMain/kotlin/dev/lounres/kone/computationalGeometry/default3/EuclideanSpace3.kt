@@ -31,7 +31,6 @@ import dev.lounres.kone.multidimensionalCollections.utils.map
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
-import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
