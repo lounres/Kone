@@ -13,8 +13,6 @@ import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.PathBuilder
 import androidx.compose.ui.graphics.vector.toPath
-import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.div
 import dev.lounres.kone.algebraic.minus
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.collections.iterables.isNotEmpty
@@ -28,9 +26,9 @@ import dev.lounres.kone.computationalGeometry.angles.*
 import dev.lounres.kone.computationalGeometry.default2.EuclideanSpace2OverField
 import dev.lounres.kone.computationalGeometry.default2.Point2
 import dev.lounres.kone.computationalGeometry.default2.Vector2
-import dev.lounres.kone.computationalGeometry.minus
+import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
 import dev.lounres.kone.misc.canvas.*
 import dev.lounres.kone.misc.canvas.common.*
 import dev.lounres.kone.multidimensionalCollections.MDList2
@@ -154,19 +152,18 @@ public fun KoneCanvasComposeMultiplatformContext.line(
     contextRegistry.getOrNull(KoneCanvasComposeMultiplatformStack.Key)?.let { stack ->
         val euclideanSpace = controller.getOrNull(KoneContextRegistry.Key)?.getOrNull(EuclideanSpace2OverField.Key<Double>())
             ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
-        euclideanSpace {
-            val data = contextRegistry.getOrNull(KoneCanvasData.Key)
-            val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
-            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
-            val start = (start - shift) * zoom
-            val end = (end - shift) * zoom
-            if (strokeColor != null) stack.drawScope.drawLine(
-                color = strokeColor.composeMultiplatform,
-                start = Offset(start.x.toFloat(), start.y.toFloat()),
-                end = Offset(end.x.toFloat(), end.y.toFloat()),
-                strokeWidth = strokeWidth.toFloat(),
-            )
-        }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val data = contextRegistry.getOrNull(KoneCanvasData.Key)
+        val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
+        val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
+        val start = (start - shift) * zoom
+        val end = (end - shift) * zoom
+        if (strokeColor != null) stack.drawScope.drawLine(
+            color = strokeColor.composeMultiplatform,
+            start = Offset(start.x.toFloat(), start.y.toFloat()),
+            end = Offset(end.x.toFloat(), end.y.toFloat()),
+            strokeWidth = strokeWidth.toFloat(),
+        )
     }
 }
 
@@ -198,38 +195,35 @@ public fun KoneCanvasComposeMultiplatformContext.rectangle(
 ) {
     contextRegistry.getOrNull(KoneCanvasComposeMultiplatformStack.Key)?.let { stack ->
         val providedKoneContextRegistry = controller.getOrNull(KoneContextRegistry.Key)
-        val field = providedKoneContextRegistry?.getOrNull(Field.Key<Double>())
-            ?: defaultKoneContextRegistry[Field.Key<Double>()]
         val euclideanSpace = providedKoneContextRegistry?.getOrNull(EuclideanSpace2OverField.Key<Double>())
             ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
-        context(field, euclideanSpace) {
-            val data = contextRegistry.getOrNull(KoneCanvasData.Key)
-            val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
-            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
-            val center = (center - shift) * zoom
-            val size = size * zoom
-            val topLeftVector = center - size / 2
-            stack.drawScope.withTransform(
-                {
-                    rotate(
-                        degrees = rotation.inDegrees().toFloat(),
-                        pivot = Offset(center.x.toFloat(), center.y.toFloat())
-                    )
-                }
-            ) {
-                if (fillColor != null) drawRect(
-                    color = fillColor.composeMultiplatform,
-                    topLeft = Offset(topLeftVector.x.toFloat(), topLeftVector.y.toFloat()),
-                    size = Size(size.x.toFloat(), size.y.toFloat()),
-                    style = Fill,
-                )
-                if (strokeColor != null) drawRect(
-                    color = strokeColor.composeMultiplatform,
-                    topLeft = Offset(topLeftVector.x.toFloat(), topLeftVector.y.toFloat()),
-                    size = Size(size.x.toFloat(), size.y.toFloat()),
-                    style = Stroke(width = strokeWidth.toFloat()),
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val data = contextRegistry.getOrNull(KoneCanvasData.Key)
+        val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
+        val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
+        val center = (center - shift) * zoom
+        val size = size * zoom
+        val topLeftVector = center - size / 2
+        stack.drawScope.withTransform(
+            {
+                rotate(
+                    degrees = rotation.inDegrees().toFloat(),
+                    pivot = Offset(center.x.toFloat(), center.y.toFloat())
                 )
             }
+        ) {
+            if (fillColor != null) drawRect(
+                color = fillColor.composeMultiplatform,
+                topLeft = Offset(topLeftVector.x.toFloat(), topLeftVector.y.toFloat()),
+                size = Size(size.x.toFloat(), size.y.toFloat()),
+                style = Fill,
+            )
+            if (strokeColor != null) drawRect(
+                color = strokeColor.composeMultiplatform,
+                topLeft = Offset(topLeftVector.x.toFloat(), topLeftVector.y.toFloat()),
+                size = Size(size.x.toFloat(), size.y.toFloat()),
+                style = Stroke(width = strokeWidth.toFloat()),
+            )
         }
     }
 }
@@ -265,29 +259,26 @@ public fun KoneCanvasComposeMultiplatformContext.circle(
 ) {
     contextRegistry.getOrNull(KoneCanvasComposeMultiplatformStack.Key)?.let { stack ->
         val providedKoneContextRegistry = controller.getOrNull(KoneContextRegistry.Key)
-        val field = providedKoneContextRegistry?.getOrNull(Field.Key<Double>())
-            ?: defaultKoneContextRegistry[Field.Key<Double>()]
         val euclideanSpace = providedKoneContextRegistry?.getOrNull(EuclideanSpace2OverField.Key<Double>())
             ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
         val data = contextRegistry.getOrNull(KoneCanvasData.Key)
-        context(field, euclideanSpace) {
-            val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
-            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
-            val center = (center - shift) * zoom
-            val radius = radius * zoom
-            if (fillColor != null) stack.drawScope.drawCircle(
-                color = fillColor.composeMultiplatform,
-                radius = radius.toFloat(),
-                center = Offset(center.x.toFloat(), center.y.toFloat()),
-                style = Fill,
-            )
-            if (strokeColor != null) stack.drawScope.drawCircle(
-                color = strokeColor.composeMultiplatform,
-                radius = radius.toFloat(),
-                center = Offset(center.x.toFloat(), center.y.toFloat()),
-                style = Stroke(width = strokeWidth.toFloat()),
-            )
-        }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
+        val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
+        val center = (center - shift) * zoom
+        val radius = radius * zoom
+        if (fillColor != null) stack.drawScope.drawCircle(
+            color = fillColor.composeMultiplatform,
+            radius = radius.toFloat(),
+            center = Offset(center.x.toFloat(), center.y.toFloat()),
+            style = Fill,
+        )
+        if (strokeColor != null) stack.drawScope.drawCircle(
+            color = strokeColor.composeMultiplatform,
+            radius = radius.toFloat(),
+            center = Offset(center.x.toFloat(), center.y.toFloat()),
+            style = Stroke(width = strokeWidth.toFloat()),
+        )
     }
 }
 
@@ -321,38 +312,35 @@ public fun KoneCanvasComposeMultiplatformContext.ellipse(
 ) {
     contextRegistry.getOrNull(KoneCanvasComposeMultiplatformStack.Key)?.let { stack ->
         val providedKoneContextRegistry = controller.getOrNull(KoneContextRegistry.Key)
-        val field = providedKoneContextRegistry?.getOrNull(Field.Key<Double>())
-            ?: defaultKoneContextRegistry[Field.Key<Double>()]
         val euclideanSpace = providedKoneContextRegistry?.getOrNull(EuclideanSpace2OverField.Key<Double>())
             ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
-        context(field, euclideanSpace) {
-            val data = contextRegistry.getOrNull(KoneCanvasData.Key)
-            val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
-            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
-            val center = (center - shift) * zoom
-            val size = size * zoom
-            val topLeftVector = center - size / 2
-            stack.drawScope.withTransform(
-                {
-                    rotate(
-                        degrees = rotation.inDegrees().toFloat(),
-                        pivot = Offset(center.x.toFloat(), center.y.toFloat())
-                    )
-                }
-            ) {
-                if (fillColor != null) drawOval(
-                    color = fillColor.composeMultiplatform,
-                    topLeft = Offset(topLeftVector.x.toFloat(), topLeftVector.y.toFloat()),
-                    size = Size(size.x.toFloat(), size.y.toFloat()),
-                    style = Fill,
-                )
-                if (strokeColor != null) drawOval(
-                    color = strokeColor.composeMultiplatform,
-                    topLeft = Offset(topLeftVector.x.toFloat(), topLeftVector.y.toFloat()),
-                    size = Size(size.x.toFloat(), size.y.toFloat()),
-                    style = Stroke(width = strokeWidth.toFloat()),
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val data = contextRegistry.getOrNull(KoneCanvasData.Key)
+        val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
+        val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
+        val center = (center - shift) * zoom
+        val size = size * zoom
+        val topLeftVector = center - size / 2
+        stack.drawScope.withTransform(
+            {
+                rotate(
+                    degrees = rotation.inDegrees().toFloat(),
+                    pivot = Offset(center.x.toFloat(), center.y.toFloat())
                 )
             }
+        ) {
+            if (fillColor != null) drawOval(
+                color = fillColor.composeMultiplatform,
+                topLeft = Offset(topLeftVector.x.toFloat(), topLeftVector.y.toFloat()),
+                size = Size(size.x.toFloat(), size.y.toFloat()),
+                style = Fill,
+            )
+            if (strokeColor != null) drawOval(
+                color = strokeColor.composeMultiplatform,
+                topLeft = Offset(topLeftVector.x.toFloat(), topLeftVector.y.toFloat()),
+                size = Size(size.x.toFloat(), size.y.toFloat()),
+                style = Stroke(width = strokeWidth.toFloat()),
+            )
         }
     }
 }
@@ -389,34 +377,31 @@ public fun KoneCanvasComposeMultiplatformContext.polygon(
 ) {
     contextRegistry.getOrNull(KoneCanvasComposeMultiplatformStack.Key)?.let { stack ->
         val providedKoneContextRegistry = controller.getOrNull(KoneContextRegistry.Key)
-        val field = providedKoneContextRegistry?.getOrNull(Field.Key<Double>())
-            ?: defaultKoneContextRegistry[Field.Key<Double>()]
         val euclideanSpace = providedKoneContextRegistry?.getOrNull(EuclideanSpace2OverField.Key<Double>())
             ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
-        context(field, euclideanSpace) {
-            val data = contextRegistry.getOrNull(KoneCanvasData.Key)
-            val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
-            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
-            val vertices = vertices.map { (it - shift) * zoom }
-            val path = Path().apply {
-                if (vertices.isNotEmpty()) {
-                    vertices.first().also { moveTo(it.x.toFloat(), it.y.toFloat()) }
-                    for (i in 1u ..< vertices.size) vertices[i].also { lineTo(it.x.toFloat(), it.y.toFloat()) }
-                    close()
-                }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val data = contextRegistry.getOrNull(KoneCanvasData.Key)
+        val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
+        val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
+        val vertices = vertices.map { (it - shift) * zoom }
+        val path = Path().apply {
+            if (vertices.isNotEmpty()) {
+                vertices.first().also { moveTo(it.x.toFloat(), it.y.toFloat()) }
+                for (i in 1u ..< vertices.size) vertices[i].also { lineTo(it.x.toFloat(), it.y.toFloat()) }
+                close()
             }
-            stack.drawScope.apply {
-                if (fillColor != null) drawPath(
-                    path = path,
-                    color = fillColor.composeMultiplatform,
-                    style = Fill,
-                )
-                if (strokeColor != null) drawPath(
-                    path = path,
-                    color = strokeColor.composeMultiplatform,
-                    style = Stroke(width = strokeWidth.toFloat()),
-                )
-            }
+        }
+        stack.drawScope.apply {
+            if (fillColor != null) drawPath(
+                path = path,
+                color = fillColor.composeMultiplatform,
+                style = Fill,
+            )
+            if (strokeColor != null) drawPath(
+                path = path,
+                color = strokeColor.composeMultiplatform,
+                style = Stroke(width = strokeWidth.toFloat()),
+            )
         }
     }
 }
@@ -446,76 +431,67 @@ internal class KoneCanvasComposeMultiplatformPathContext(
     private val zoom: Double,
 ) : KoneCanvasPathContext {
     override fun moveTo(point: Point2<Double>) {
-        euclideanSpace {
-            val point = (point - shift) * zoom
-            val _ = context.moveTo(point.x.toFloat(), point.y.toFloat())
-        }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val point = (point - shift) * zoom
+        context.moveTo(point.x.toFloat(), point.y.toFloat())
     }
     override fun moveToRelative(vector: Vector2<Double>) {
-        euclideanSpace {
-            val vector = vector * zoom
-            val _ = context.moveToRelative(vector.x.toFloat(), vector.y.toFloat())
-        }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val vector = vector * zoom
+        context.moveToRelative(vector.x.toFloat(), vector.y.toFloat())
     }
     override fun lineTo(point: Point2<Double>) {
-        euclideanSpace {
-            val point = (point - shift) * zoom
-            val _ = context.lineTo(point.x.toFloat(), point.y.toFloat())
-        }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val point = (point - shift) * zoom
+        context.lineTo(point.x.toFloat(), point.y.toFloat())
     }
     override fun lineToRelative(vector: Vector2<Double>) {
-        euclideanSpace {
-            val vector = vector * zoom
-            val _ = context.lineToRelative(vector.x.toFloat(), vector.y.toFloat())
-        }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val vector = vector * zoom
+        context.lineToRelative(vector.x.toFloat(), vector.y.toFloat())
     }
     override fun quadraticBezierTo(point1: Point2<Double>, point2: Point2<Double>) {
-        euclideanSpace {
-            val point1 = (point1 - shift) * zoom
-            val point2 = (point2 - shift) * zoom
-            val _ = context.quadTo(point1.x.toFloat(), point1.y.toFloat(), point2.x.toFloat(), point2.y.toFloat())
-        }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val point1 = (point1 - shift) * zoom
+        val point2 = (point2 - shift) * zoom
+        context.quadTo(point1.x.toFloat(), point1.y.toFloat(), point2.x.toFloat(), point2.y.toFloat())
     }
     override fun quadraticBezierToRelative(vector1: Vector2<Double>, vector2: Vector2<Double>) {
-        euclideanSpace {
-            val vector1 = vector1 * zoom
-            val vector2 = vector2 * zoom
-            val _ = context.quadToRelative(vector1.x.toFloat(), vector1.y.toFloat(), vector2.x.toFloat(), vector2.y.toFloat())
-        }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val vector1 = vector1 * zoom
+        val vector2 = vector2 * zoom
+        context.quadToRelative(vector1.x.toFloat(), vector1.y.toFloat(), vector2.x.toFloat(), vector2.y.toFloat())
     }
     override fun cubicBezierTo(point1: Point2<Double>, point2: Point2<Double>, point3: Point2<Double>) {
-        euclideanSpace {
-            val point1 = (point1 - shift) * zoom
-            val point2 = (point2 - shift) * zoom
-            val point3 = (point3 - shift) * zoom
-            val _ = context.curveTo(point1.x.toFloat(), point1.y.toFloat(), point2.x.toFloat(), point2.y.toFloat(), point3.x.toFloat(), point3.y.toFloat())
-        }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val point1 = (point1 - shift) * zoom
+        val point2 = (point2 - shift) * zoom
+        val point3 = (point3 - shift) * zoom
+        context.curveTo(point1.x.toFloat(), point1.y.toFloat(), point2.x.toFloat(), point2.y.toFloat(), point3.x.toFloat(), point3.y.toFloat())
     }
     override fun cubicBezierToRelative(vector1: Vector2<Double>, vector2: Vector2<Double>, vector3: Vector2<Double>) {
-        euclideanSpace {
-            val vector1 = vector1 * zoom
-            val vector2 = vector2 * zoom
-            val vector3 = vector3 * zoom
-            val _ = context.curveToRelative(vector1.x.toFloat(), vector1.y.toFloat(), vector2.x.toFloat(), vector2.y.toFloat(), vector3.x.toFloat(), vector3.y.toFloat())
-        }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val vector1 = vector1 * zoom
+        val vector2 = vector2 * zoom
+        val vector3 = vector3 * zoom
+        context.curveToRelative(vector1.x.toFloat(), vector1.y.toFloat(), vector2.x.toFloat(), vector2.y.toFloat(), vector3.x.toFloat(), vector3.y.toFloat())
     }
     override fun arcRelative(size: Vector2<Double>, rotation: Angle, startAngle: Angle, sweepAngle: Angle) {
-        euclideanSpace {
-            val size = size * zoom
-            // TODO: It's incorrect!!! 'size' and 'rotation' are not took into account in 'startVector' and 'endVector'!
-            val startVector = Vector2(sin(startAngle), cos(startAngle))
-            val endVector = Vector2(sin(startAngle + sweepAngle), cos(startAngle + sweepAngle))
-            val finalPoint = endVector - startVector
-            val _ = context.arcToRelative(
-                a = size.x.toFloat(),
-                b = size.y.toFloat(),
-                theta = rotation.inDegrees().toFloat(),
-                isMoreThanHalf = abs(sweepAngle.inRadians()) >= PI,
-                isPositiveArc = sweepAngle.inRadians() > 0.0,
-                dx1 = finalPoint.x.toFloat(),
-                dy1 = finalPoint.y.toFloat(),
-            )
-        }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val size = size * zoom
+        // TODO: It's incorrect!!! 'size' and 'rotation' are not took into account in 'startVector' and 'endVector'!
+        val startVector = Vector2(sin(startAngle), cos(startAngle))
+        val endVector = Vector2(sin(startAngle + sweepAngle), cos(startAngle + sweepAngle))
+        val finalPoint = endVector - startVector
+        context.arcToRelative(
+            a = size.x.toFloat(),
+            b = size.y.toFloat(),
+            theta = rotation.inDegrees().toFloat(),
+            isMoreThanHalf = abs(sweepAngle.inRadians()) >= PI,
+            isPositiveArc = sweepAngle.inRadians() > 0.0,
+            dx1 = finalPoint.x.toFloat(),
+            dy1 = finalPoint.y.toFloat(),
+        )
     }
     override fun close() {
         context.close()

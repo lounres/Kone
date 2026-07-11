@@ -24,7 +24,7 @@ public class KonePluginsCollector(private val project: Project) {
                 sourceSets {
                     commonMain {
                         dependencies {
-                            api(project(":plugins:${this@unaryPlus}:runtime"))
+                            implementation(project(":plugins:${this@unaryPlus}:runtime"))
                         }
                     }
                 }
@@ -35,7 +35,7 @@ public class KonePluginsCollector(private val project: Project) {
                 sourceSets {
                     named("main") {
                         dependencies {
-                            api(project(":plugins:${this@unaryPlus}:runtime"))
+                            implementation(project(":plugins:${this@unaryPlus}:runtime"))
                         }
                     }
                 }

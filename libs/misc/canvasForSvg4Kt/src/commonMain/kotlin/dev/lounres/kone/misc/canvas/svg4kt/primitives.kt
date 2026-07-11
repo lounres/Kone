@@ -7,18 +7,12 @@ package dev.lounres.kone.misc.canvas.svg4kt
 
 import dev.jamesyox.svg4kt.TagConsumer
 import dev.jamesyox.svg4kt.attr.AttributeConsumer
-import dev.jamesyox.svg4kt.attr.attrs.cx
-import dev.jamesyox.svg4kt.attr.attrs.cy
-import dev.jamesyox.svg4kt.attr.attrs.points
-import dev.jamesyox.svg4kt.attr.attrs.r
-import dev.jamesyox.svg4kt.attr.attrs.stroke
+import dev.jamesyox.svg4kt.attr.attrs.*
 import dev.jamesyox.svg4kt.attr.set
 import dev.jamesyox.svg4kt.attr.types.obj.Length
 import dev.jamesyox.svg4kt.attr.types.obj.Point
 import dev.jamesyox.svg4kt.attr.types.obj.SvgColor
 import dev.jamesyox.svg4kt.tags.*
-import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.div
 import dev.lounres.kone.algebraic.minus
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.collections.interop.toList
@@ -31,9 +25,9 @@ import dev.lounres.kone.computationalGeometry.angles.*
 import dev.lounres.kone.computationalGeometry.default2.EuclideanSpace2OverField
 import dev.lounres.kone.computationalGeometry.default2.Point2
 import dev.lounres.kone.computationalGeometry.default2.Vector2
-import dev.lounres.kone.computationalGeometry.minus
+import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
 import dev.lounres.kone.misc.canvas.*
 import dev.lounres.kone.misc.canvas.common.*
 import dev.lounres.kone.multidimensionalCollections.MDList2
@@ -128,21 +122,20 @@ public fun KoneCanvasSvg4ktContext.line(
     contextRegistry.getOrNull(KoneCanvasSvg4ktTagConsumerKey)?.apply {
         val euclideanSpace = controller.getOrNull(KoneContextRegistry.Key)?.getOrNull(EuclideanSpace2OverField.Key<Double>())
             ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
-        euclideanSpace {
-            val data = contextRegistry.getOrNull(KoneCanvasData.Key)
-            val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
-            val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
-            val start = (start - shift) * zoom
-            val end = (end - shift) * zoom
-            if (strokeColor != null) context(G) {
-                line {
-                    contextOf<AttributeConsumer>()["x1"] = Length.None(start.x)
-                    contextOf<AttributeConsumer>()["y1"] = Length.None(start.y)
-                    contextOf<AttributeConsumer>()["x2"] = Length.None(end.x)
-                    contextOf<AttributeConsumer>()["y2"] = Length.None(end.y)
-                    stroke(strokeColor.svg4kt)
-                    contextOf<AttributeConsumer>()["stroke-width"] = Length.None(strokeWidth)
-                }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val data = contextRegistry.getOrNull(KoneCanvasData.Key)
+        val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
+        val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
+        val start = (start - shift) * zoom
+        val end = (end - shift) * zoom
+        if (strokeColor != null) context(G) {
+            line {
+                contextOf<AttributeConsumer>()["x1"] = Length.None(start.x)
+                contextOf<AttributeConsumer>()["y1"] = Length.None(start.y)
+                contextOf<AttributeConsumer>()["x2"] = Length.None(end.x)
+                contextOf<AttributeConsumer>()["y2"] = Length.None(end.y)
+                stroke(strokeColor.svg4kt)
+                contextOf<AttributeConsumer>()["stroke-width"] = Length.None(strokeWidth)
             }
         }
     }
@@ -176,11 +169,10 @@ public fun KoneCanvasSvg4ktContext.rectangle(
 ) {
     contextRegistry.getOrNull(KoneCanvasSvg4ktTagConsumerKey)?.apply {
         val providedKoneContextRegistry = controller.getOrNull(KoneContextRegistry.Key)
-        val field = providedKoneContextRegistry?.getOrNull(Field.Key<Double>())
-            ?: defaultKoneContextRegistry[Field.Key<Double>()]
         val euclideanSpace = providedKoneContextRegistry?.getOrNull(EuclideanSpace2OverField.Key<Double>())
             ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
-        context(field, euclideanSpace, G) {
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        context(G) {
             val data = contextRegistry.getOrNull(KoneCanvasData.Key)
             val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
             val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
@@ -240,12 +232,11 @@ public fun KoneCanvasSvg4ktContext.circle(
 ) {
     contextRegistry.getOrNull(KoneCanvasSvg4ktTagConsumerKey)?.apply {
         val providedKoneContextRegistry = controller.getOrNull(KoneContextRegistry.Key)
-        val field = providedKoneContextRegistry?.getOrNull(Field.Key<Double>())
-            ?: defaultKoneContextRegistry[Field.Key<Double>()]
         val euclideanSpace = providedKoneContextRegistry?.getOrNull(EuclideanSpace2OverField.Key<Double>())
             ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
         val data = contextRegistry.getOrNull(KoneCanvasData.Key)
-        context(field, euclideanSpace, G) {
+        context(G) {
             val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
             val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
             val center = (center - shift) * zoom
@@ -296,11 +287,10 @@ public fun KoneCanvasSvg4ktContext.ellipse(
 ) {
     contextRegistry.getOrNull(KoneCanvasSvg4ktTagConsumerKey)?.apply {
         val providedKoneContextRegistry = controller.getOrNull(KoneContextRegistry.Key)
-        val field = providedKoneContextRegistry?.getOrNull(Field.Key<Double>())
-            ?: defaultKoneContextRegistry[Field.Key<Double>()]
         val euclideanSpace = providedKoneContextRegistry?.getOrNull(EuclideanSpace2OverField.Key<Double>())
             ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
-        context(field, euclideanSpace, G) {
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        context(G) {
             val data = contextRegistry.getOrNull(KoneCanvasData.Key)
             val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
             val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
@@ -358,11 +348,10 @@ public fun KoneCanvasSvg4ktContext.polygon(
 ) {
     contextRegistry.getOrNull(KoneCanvasSvg4ktTagConsumerKey)?.apply {
         val providedKoneContextRegistry = controller.getOrNull(KoneContextRegistry.Key)
-        val field = providedKoneContextRegistry?.getOrNull(Field.Key<Double>())
-            ?: defaultKoneContextRegistry[Field.Key<Double>()]
         val euclideanSpace = providedKoneContextRegistry?.getOrNull(EuclideanSpace2OverField.Key<Double>())
             ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
-        context(field, euclideanSpace, G) {
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        context(G) {
             val data = contextRegistry.getOrNull(KoneCanvasData.Key)
             val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
             val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
@@ -406,70 +395,61 @@ internal class KoneCanvasSvg4ktPathContext(
     private val zoom: Double,
 ) : KoneCanvasPathContext {
     override fun moveTo(point: Point2<Double>) {
-        euclideanSpace {
-            val point = (point - shift) * zoom
-            context.add("M ${point.x} ${point.y}")
-        }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val point = (point - shift) * zoom
+        context.add("M ${point.x} ${point.y}")
     }
     override fun moveToRelative(vector: Vector2<Double>) {
-        euclideanSpace {
-            val vector = vector * zoom
-            context.add("m ${vector.x} ${vector.y}")
-        }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val vector = vector * zoom
+        context.add("m ${vector.x} ${vector.y}")
     }
     override fun lineTo(point: Point2<Double>) {
-        euclideanSpace {
-            val point = (point - shift) * zoom
-            context.add("L ${point.x} ${point.y}")
-        }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val point = (point - shift) * zoom
+        context.add("L ${point.x} ${point.y}")
     }
     override fun lineToRelative(vector: Vector2<Double>) {
-        euclideanSpace {
-            val vector = vector * zoom
-            context.add("l ${vector.x} ${vector.y}")
-        }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val vector = vector * zoom
+        context.add("l ${vector.x} ${vector.y}")
     }
     override fun quadraticBezierTo(point1: Point2<Double>, point2: Point2<Double>) {
-        euclideanSpace {
-            val point1 = (point1 - shift) * zoom
-            val point2 = (point2 - shift) * zoom
-            context.add("Q ${point1.x} ${point1.y} ${point2.x} ${point2.y}")
-        }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val point1 = (point1 - shift) * zoom
+        val point2 = (point2 - shift) * zoom
+        context.add("Q ${point1.x} ${point1.y} ${point2.x} ${point2.y}")
     }
     override fun quadraticBezierToRelative(vector1: Vector2<Double>, vector2: Vector2<Double>) {
-        euclideanSpace {
-            val vector1 = vector1 * zoom
-            val vector2 = vector2 * zoom
-            context.add("q ${vector1.x} ${vector1.y} ${vector2.x} ${vector2.y}")
-        }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val vector1 = vector1 * zoom
+        val vector2 = vector2 * zoom
+        context.add("q ${vector1.x} ${vector1.y} ${vector2.x} ${vector2.y}")
     }
     override fun cubicBezierTo(point1: Point2<Double>, point2: Point2<Double>, point3: Point2<Double>) {
-        euclideanSpace {
-            val point1 = (point1 - shift) * zoom
-            val point2 = (point2 - shift) * zoom
-            val point3 = (point3 - shift) * zoom
-            context.add("C ${point1.x} ${point1.y} ${point2.x} ${point2.y} ${point3.x} ${point3.y}")
-        }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val point1 = (point1 - shift) * zoom
+        val point2 = (point2 - shift) * zoom
+        val point3 = (point3 - shift) * zoom
+        context.add("C ${point1.x} ${point1.y} ${point2.x} ${point2.y} ${point3.x} ${point3.y}")
     }
     override fun cubicBezierToRelative(vector1: Vector2<Double>, vector2: Vector2<Double>, vector3: Vector2<Double>) {
-        euclideanSpace {
-            val vector1 = vector1 * zoom
-            val vector2 = vector2 * zoom
-            val vector3 = vector3 * zoom
-            context.add("c ${vector1.x} ${vector1.y} ${vector2.x} ${vector2.y} ${vector3.x} ${vector3.y}")
-        }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val vector1 = vector1 * zoom
+        val vector2 = vector2 * zoom
+        val vector3 = vector3 * zoom
+        context.add("c ${vector1.x} ${vector1.y} ${vector2.x} ${vector2.y} ${vector3.x} ${vector3.y}")
     }
     override fun arcRelative(size: Vector2<Double>, rotation: Angle, startAngle: Angle, sweepAngle: Angle) {
-        euclideanSpace {
-            val size = size * zoom
-            val isMoreThanHalf = abs(sweepAngle.inRadians()) >= PI
-            val isPositiveArc = sweepAngle.inRadians() > 0.0
-            // TODO: It's incorrect!!! 'size' and 'rotation' are not took into account in 'startVector' and 'endVector'!
-            val startVector = Vector2(sin(startAngle), cos(startAngle))
-            val endVector = Vector2(sin(startAngle + sweepAngle), cos(startAngle + sweepAngle))
-            val finalPoint = endVector - startVector
-            context.add("a ${size.x} ${size.y} ${rotation.inDegrees()} ${if (isMoreThanHalf) 1 else 0} ${if (isPositiveArc) 1 else 0} ${finalPoint.x} ${finalPoint.y}")
-        }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+        val size = size * zoom
+        val isMoreThanHalf = abs(sweepAngle.inRadians()) >= PI
+        val isPositiveArc = sweepAngle.inRadians() > 0.0
+        // TODO: It's incorrect!!! 'size' and 'rotation' are not took into account in 'startVector' and 'endVector'!
+        val startVector = Vector2(sin(startAngle), cos(startAngle))
+        val endVector = Vector2(sin(startAngle + sweepAngle), cos(startAngle + sweepAngle))
+        val finalPoint = endVector - startVector
+        context.add("a ${size.x} ${size.y} ${rotation.inDegrees()} ${if (isMoreThanHalf) 1 else 0} ${if (isPositiveArc) 1 else 0} ${finalPoint.x} ${finalPoint.y}")
     }
     override fun close() {
         context.add("Z")

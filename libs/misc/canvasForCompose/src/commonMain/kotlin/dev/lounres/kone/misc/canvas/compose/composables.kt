@@ -20,11 +20,10 @@ import dev.lounres.kone.algebraic.unaryMinus
 import dev.lounres.kone.computationalGeometry.default2.EuclideanSpace2OverField
 import dev.lounres.kone.computationalGeometry.default2.Point2
 import dev.lounres.kone.computationalGeometry.default2.Vector2
-import dev.lounres.kone.computationalGeometry.minus
-import dev.lounres.kone.computationalGeometry.plus
+import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.buildWithProvider
-import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
 import dev.lounres.kone.misc.canvas.*
 import dev.lounres.kone.registry.*
 import dev.lounres.kone.scope
@@ -177,9 +176,8 @@ public fun KoneComposeMapCanvas(modifier: Modifier = Modifier, canvasController:
         modifier = Modifier
             .pointerInput(null) {
                 detectDragGestures { _, [x, y] ->
-                    euclideanSpace {
-                        setOffset(getOffset() + -Vector2(x.toDouble(), -y.toDouble()) / getZoom())
-                    }
+                    KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+                    setOffset(getOffset() - Vector2(x.toDouble(), -y.toDouble()) / getZoom())
                 }
             }
             .let {
@@ -190,13 +188,12 @@ public fun KoneComposeMapCanvas(modifier: Modifier = Modifier, canvasController:
                         it.pointerInput(clickController, clickConsumer) {
                             detectTapGestures { coordinates ->
                                 val _ = runCatching {
-                                    euclideanSpace {
-                                        val coordinates = Vector2(
-                                            size.width.toDouble() / 2 - coordinates.x.toDouble(),
-                                            coordinates.y.toDouble() - size.height.toDouble() / 2
-                                        )
-                                        pointerPosition = getOffset() + -coordinates / getZoom()
-                                    }
+                                    KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+                                    val coordinates = Vector2(
+                                        size.width.toDouble() / 2 - coordinates.x.toDouble(),
+                                        coordinates.y.toDouble() - size.height.toDouble() / 2
+                                    )
+                                    pointerPosition = getOffset() - coordinates / getZoom()
                                     setClick(clickController.click(correctedCanvasData))
                                     clickConsumer?.onClick(correctedCanvasData)
                                 }
@@ -208,15 +205,14 @@ public fun KoneComposeMapCanvas(modifier: Modifier = Modifier, canvasController:
             .pointerInput(canvasData) {
                 val coercionRange = canvasData.getOrNull(KoneCanvasZoomCoercionRange)
                 awaitPointerEventScope {
+                    KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
                     var isHovered = true
-                    euclideanSpace {
-                        val change = currentEvent.changes.first()
-                        val coordinates = Vector2(
-                            size.width.toDouble() / 2 - change.position.x.toDouble(),
-                            change.position.y.toDouble() - size.height.toDouble() / 2
-                        )
-                        pointerPosition = getOffset() + -coordinates / getZoom()
-                    }
+                    val change = currentEvent.changes.first()
+                    val coordinates = Vector2(
+                        size.width.toDouble() / 2 - change.position.x.toDouble(),
+                        change.position.y.toDouble() - size.height.toDouble() / 2
+                    )
+                    pointerPosition = getOffset() + -coordinates / getZoom()
                     while (true) {
                         val event = awaitPointerEvent()
                         when (event.type) {
@@ -229,19 +225,17 @@ public fun KoneComposeMapCanvas(modifier: Modifier = Modifier, canvasController:
                                 if (isHovered) {
                                     val change = event.changes.first()
                                     val _ = runCatching {
-                                        euclideanSpace {
-                                            val coordinates = Vector2(
-                                                size.width.toDouble() / 2 - change.position.x.toDouble(),
-                                                change.position.y.toDouble() - size.height.toDouble() / 2
-                                            )
-                                            pointerPosition = getOffset() + -coordinates / getZoom()
-                                        }
+                                        val coordinates = Vector2(
+                                            size.width.toDouble() / 2 - change.position.x.toDouble(),
+                                            change.position.y.toDouble() - size.height.toDouble() / 2
+                                        )
+                                        pointerPosition = getOffset() + -coordinates / getZoom()
                                     }
                                 }
                             }
                             
                             PointerEventType.Scroll -> {
-                                if (isHovered) euclideanSpace {
+                                if (isHovered) {
                                     val change = event.changes.first()
                                     val coordinates = Vector2(
                                         size.width.toDouble() / 2 - change.position.x.toDouble(),
@@ -255,7 +249,7 @@ public fun KoneComposeMapCanvas(modifier: Modifier = Modifier, canvasController:
                                     setZoom(newZoom)
                                     
                                     val oldOffset = getOffset()
-                                    val zoomPosition = oldOffset + -coordinates / currentZoom
+                                    val zoomPosition = oldOffset - coordinates / currentZoom
                                     pointerPosition = zoomPosition
                                     val newOffset = zoomPosition + (oldOffset - zoomPosition) / (newZoom / currentZoom)
                                     setOffset(newOffset)
