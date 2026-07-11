@@ -5,19 +5,17 @@
 
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.contexts.KoneContextHolderContext
 import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.RegistryKey
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
 import dev.lounres.kone.suppliedTypes.suppliedTypeOf
-import kotlin.jvm.JvmName
 
 
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface LeftModule<Number, Vector> : CommutativeGroup<Vector> {
-    @JvmName("timesNumberVector")
-    public operator fun Number.times(other: Vector): Vector
+    @KoneContextHolderContext
+    public val numberTimesVector: Times<Number, Vector, Vector>
     
     public companion object;
     
@@ -32,13 +30,9 @@ public interface LeftModule<Number, Vector> : CommutativeGroup<Vector> {
     }
 }
 
-context(module: LeftModule<Number, Vector>)
-public operator fun <Number, Vector> Number.times(other: Vector): Vector = with(module) { this@times * other }
-
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface RightModule<Number, Vector> : CommutativeGroup<Vector> {
-    @JvmName("timesVectorNumber")
-    public operator fun Vector.times(other: Number): Vector
+    @KoneContextHolderContext
+    public val vectorTimesNumber: Times<Vector, Number, Vector>
     
     public companion object;
     
@@ -52,9 +46,6 @@ public interface RightModule<Number, Vector> : CommutativeGroup<Vector> {
         override fun toString(): String = "dev.lounres.kone.algebraic.RightModule.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}>"
     }
 }
-
-context(module: RightModule<Number, Vector>)
-public operator fun <Number, Vector> Vector.times(other: Number): Vector = with(module) { this@times * other }
 
 // The underlying ring is commutative
 public interface Module<Number, Vector> : LeftModule<Number, Vector>, RightModule<Number, Vector> {

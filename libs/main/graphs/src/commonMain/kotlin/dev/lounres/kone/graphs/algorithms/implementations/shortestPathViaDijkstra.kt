@@ -48,7 +48,7 @@ private class HypergraphShortestPathWithFixedEndsComputerByDijkstra<@Supply Weig
         end: HypergraphVertex
     ): HypergraphShortestPathWithFixedEndsProvider<Weight> {
         val lazyProvider = lazy {
-            context(weightMonoid, weightsOrder) {
+            context(weightMonoid.numberPlusNumber, weightsOrder) {
                 val verticesToCheck = KoneBinaryGCMinimumHeap<HypergraphVertex, Weight>(weightsOrder)
                 val queueNodes = KoneMutableMap.of<HypergraphVertex, HeapNode<HypergraphVertex, Weight>>(Equality.absoluteFor())
                 val paths = KoneMutableMap.of<HypergraphVertex, Path<Weight>>(Equality.absoluteFor())
@@ -154,7 +154,7 @@ private class HypergraphShortestPathWithFixedStartComputerByDijkstra<@Supply Wei
                 if (currentPath != null && weightsOrder { currentPath.weight lt currentProcessedWeight }) return currentPath
                 
                 synchronized(this) {
-                    context(weightMonoid, weightsOrder) {
+                    context(weightMonoid.numberPlusNumber, weightsOrder) {
                         var optimalPathToTarget: Path<Weight>? = paths.getOrNull(end)
                         
                         while (verticesToCheck.isNotEmpty()) {

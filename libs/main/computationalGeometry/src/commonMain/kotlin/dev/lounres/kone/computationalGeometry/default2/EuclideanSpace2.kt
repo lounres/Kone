@@ -6,10 +6,12 @@
 package dev.lounres.kone.computationalGeometry.default2
 
 import dev.lounres.kone.algebraic.*
+import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.collections.array.KoneDoubleArray
 import dev.lounres.kone.collections.array.of
 import dev.lounres.kone.collections.interop.toKoneList
 import dev.lounres.kone.collections.utils.sumOf
+import dev.lounres.kone.computationalGeometry.Dot
 import dev.lounres.kone.computationalGeometry.EuclideanSpaceOverField
 import dev.lounres.kone.computationalGeometry.EuclideanSpaceOverRing
 import dev.lounres.kone.contexts.KoneContextRegistry
@@ -18,7 +20,6 @@ import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.utils.all
 import dev.lounres.kone.multidimensionalCollections.utils.map
 import dev.lounres.kone.registry.*
-import dev.lounres.kone.relations.eq
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
 import dev.lounres.kone.suppliedTypes.suppliedTypeOf
@@ -76,86 +77,99 @@ public class EuclideanSpace2OverRing<Number>(
     // endregion
     
     // region Equality
-    override fun Vector2<Number>.equalsTo(other: Vector2<Number>): Boolean =
-        (0u ..< 2u).all { ring { this.content[it] eq other.content[it] } }
-    override fun Vector2<Number>.isZero(): Boolean =
-        this.content.all { ring { it.isZero() } }
-    override fun Vector2<Number>.isNotZero(): Boolean = !isZero()
-    // endregion
-    
-    // region Vector-UInt operations
-    override operator fun Vector2<Number>.times(other: UInt): Vector2<Number> =
-        Vector2(this.content.map { ring { it * other } })
+    override val numberIsZero: IsZero<Vector2<Number>> = IsZero {
+        this.content.all { ring.numberIsZero { it.isZero() } }
+    }
     // endregion
     
     // region Vector-Int operations
-    override operator fun Vector2<Number>.times(other: Int): Vector2<Number> =
-        Vector2(this.content.map { ring { it * other } })
+    override val numberTimesInt: Times<Vector2<Number>, Int, Vector2<Number>> = Times { other ->
+        Vector2(this.content.map { ring.numberTimesInt { it * other } })
+    }
+    // endregion
+    
+    // region Vector-UInt operations
+    override val numberTimesUInt: Times<Vector2<Number>, UInt, Vector2<Number>> = Times { other ->
+        Vector2(this.content.map { ring.numberTimesUInt { it * other } })
+    }
     // endregion
     
     // region Vector-Long operations
-    override operator fun Vector2<Number>.times(other: Long): Vector2<Number> =
-        Vector2(this.content.map { ring { it * other } })
+    override val numberTimesLong: Times<Vector2<Number>, Long, Vector2<Number>> = Times { other ->
+        Vector2(this.content.map { ring.numberTimesLong { it * other } })
+    }
     // endregion
     
     // region Vector-ULong operations
-    override operator fun Vector2<Number>.times(other: ULong): Vector2<Number> =
-        Vector2(this.content.map { ring { it * other } })
+    override val numberTimesULong: Times<Vector2<Number>, ULong, Vector2<Number>> = Times { other ->
+        Vector2(this.content.map { ring.numberTimesULong { it * other } })
+    }
     // endregion
     
     // region Vector-Number operations
-    override fun Vector2<Number>.times(other: Number): Vector2<Number> =
-        Vector2(this.content.map { ring { it * other } })
+    override val vectorTimesNumber: Times<Vector2<Number>, Number, Vector2<Number>> = Times { other ->
+        Vector2(this.content.map { ring.numberTimesNumber { it * other } })
+    }
     // endregion
     
     // region Int-Vector operations
-    override operator fun Int.times(other: Vector2<Number>): Vector2<Number> =
-        Vector2(other.content.map { ring { this * it } })
+    override val intTimesNumber: Times<Int, Vector2<Number>, Vector2<Number>> = Times { other ->
+        Vector2(other.content.map { ring.intTimesNumber { this * it } })
+    }
     // endregion
     
     // region UInt-Vector operations
-    override operator fun UInt.times(other: Vector2<Number>): Vector2<Number> =
-        Vector2(other.content.map { ring { this * it } })
+    override val uIntTimesNumber: Times<UInt, Vector2<Number>, Vector2<Number>> = Times { other ->
+        Vector2(other.content.map { ring.uIntTimesNumber { this * it } })
+    }
     // endregion
     
     // region Long-Vector operations
-    override operator fun Long.times(other: Vector2<Number>): Vector2<Number> =
-        Vector2(other.content.map { ring { this * it } })
+    override val longTimesNumber: Times<Long, Vector2<Number>, Vector2<Number>> = Times { other ->
+        Vector2(other.content.map { ring.longTimesNumber { this * it } })
+    }
     // endregion
     
     // region ULong-Vector operations
-    override operator fun ULong.times(other: Vector2<Number>): Vector2<Number> =
-        Vector2(other.content.map { ring { this * it } })
+    override val uLongTimesNumber: Times<ULong, Vector2<Number>, Vector2<Number>> = Times { other ->
+        Vector2(other.content.map { ring.uLongTimesNumber { this * it } })
+    }
     // endregion
     
     // region Number-Vector operations
-    override fun Number.times(other: Vector2<Number>): Vector2<Number> =
-        Vector2(other.content.map { ring { this * it } })
+    override val numberTimesVector: Times<Number, Vector2<Number>, Vector2<Number>> = Times { other ->
+        Vector2(other.content.map { ring.numberTimesNumber { this * it } })
+    }
     // endregion
     
     // region Vector-Vector operations
-    override operator fun Vector2<Number>.unaryMinus(): Vector2<Number> =
-        Vector2(this.content.map { ring { -it } })
-    override operator fun Vector2<Number>.plus(other: Vector2<Number>): Vector2<Number> =
-        Vector2(MDList1.generate(2u) { ring { this.content[it] + other.content[it] } })
-    override operator fun Vector2<Number>.minus(other: Vector2<Number>): Vector2<Number> =
-        Vector2(MDList1.generate(2u) { ring { this.content[it] - other.content[it] } })
+    override val numberUnaryMinus: UnaryMinus<Vector2<Number>, Vector2<Number>> = UnaryMinus {
+        Vector2(this.content.map { ring.numberUnaryMinus { -it } })
+    }
+    override val numberPlusNumber: Plus<Vector2<Number>, Vector2<Number>, Vector2<Number>> = Plus { other ->
+        Vector2(MDList1.generate(2u) { ring.numberPlusNumber { this.content[it] + other.content[it] } })
+    }
+    override val numberMinusNumber: Minus<Vector2<Number>, Vector2<Number>, Vector2<Number>> = Minus { other ->
+        Vector2(MDList1.generate(2u) { ring.numberMinusNumber { this.content[it] - other.content[it] } })
+    }
     // endregion
     
-    override fun Point2<Number>.plus(other: Vector2<Number>): Point2<Number> =
-        Point2(MDList1.generate(2u) { ring { this.content[it] + other.content[it] } })
+    override val pointPlusVector: Plus<Point2<Number>, Vector2<Number>, Point2<Number>> = Plus { other ->
+        Point2(MDList1.generate(2u) { ring.numberPlusNumber { this.content[it] + other.content[it] } })
+    }
+    override val vectorPlusPoint: Plus<Vector2<Number>, Point2<Number>, Point2<Number>> = Plus { other ->
+        Point2(MDList1.generate(2u) { ring.numberPlusNumber { this.content[it] + other.content[it] } })
+    }
+    override val pointMinusVector: Minus<Point2<Number>, Vector2<Number>, Point2<Number>> = Minus { other ->
+        Point2(MDList1.generate(2u) { ring.numberMinusNumber { this.content[it] - other.content[it] } })
+    }
+    override val pointMinusPoint: Minus<Point2<Number>, Point2<Number>, Vector2<Number>> = Minus { other ->
+        Vector2(MDList1.generate(2u) { ring.numberMinusNumber { this.content[it] - other.content[it] } })
+    }
     
-    override fun Vector2<Number>.plus(other: Point2<Number>): Point2<Number> =
-        Point2(MDList1.generate(2u) { ring { this.content[it] + other.content[it] } })
-    
-    override fun Point2<Number>.minus(other: Vector2<Number>): Point2<Number> =
-        Point2(MDList1.generate(2u) { ring { this.content[it] - other.content[it] } })
-    
-    override fun Point2<Number>.minus(other: Point2<Number>): Vector2<Number> =
-        Vector2(MDList1.generate(2u) { ring { this.content[it] - other.content[it] } })
-    
-    override fun Vector2<Number>.dot(other: Vector2<Number>): Number =
-        ring { (0u ..< 2u).toKoneList().sumOf { this.content[it] * other.content[it] } }
+    override val vectorDotVector: Dot<Vector2<Number>, Vector2<Number>, Number> = Dot { other ->
+        context(ring, ring.numberTimesNumber) { (0u ..< 2u).toKoneList().sumOf { this.content[it] * other.content[it] } }
+    }
     
     public companion object;
     
@@ -187,96 +201,114 @@ public class EuclideanSpace2OverField<Number>(
     // endregion
     
     // region Equality
-    override fun Vector2<Number>.equalsTo(other: Vector2<Number>): Boolean =
-        (0u ..< 2u).all { field { this.content[it] eq other.content[it] } }
-    override fun Vector2<Number>.isZero(): Boolean =
-        this.content.all { field { it.isZero() } }
-    override fun Vector2<Number>.isNotZero(): Boolean = !isZero()
-    // endregion
-    
-    // region Vector-UInt operations
-    override operator fun Vector2<Number>.times(other: UInt): Vector2<Number> =
-        Vector2(this.content.map { field { it * other } })
-    override operator fun Vector2<Number>.div(other: UInt): Vector2<Number> =
-        Vector2(this.content.map { field { it / other } })
+    override val numberIsZero: IsZero<Vector2<Number>> = IsZero {
+        this.content.all { field.numberIsZero { it.isZero() } }
+    }
     // endregion
     
     // region Vector-Int operations
-    override operator fun Vector2<Number>.times(other: Int): Vector2<Number> =
-        Vector2(this.content.map { field { it * other } })
-    override operator fun Vector2<Number>.div(other: Int): Vector2<Number> =
-        Vector2(this.content.map { field { it / other } })
+    override val numberTimesInt: Times<Vector2<Number>, Int, Vector2<Number>> = Times { other ->
+        Vector2(this.content.map { field.numberTimesInt { it * other } })
+    }
+    override val vectorDivideInt: Divide<Vector2<Number>, Int, Vector2<Number>> = Divide { other ->
+        Vector2(this.content.map { field.numberDivideInt { it / other } })
+    }
+    // endregion
+    
+    // region Vector-UInt operations
+    override val numberTimesUInt: Times<Vector2<Number>, UInt, Vector2<Number>> = Times { other ->
+        Vector2(this.content.map { field.numberTimesUInt { it * other } })
+    }
+    override val vectorDivideUInt: Divide<Vector2<Number>, UInt, Vector2<Number>> = Divide { other ->
+        Vector2(this.content.map { field.numberDivideUInt { it / other } })
+    }
     // endregion
     
     // region Vector-Long operations
-    override operator fun Vector2<Number>.times(other: Long): Vector2<Number> =
-        Vector2(this.content.map { field { it * other } })
-    override operator fun Vector2<Number>.div(other: Long): Vector2<Number> =
-        Vector2(this.content.map { field { it / other } })
+    override val numberTimesLong: Times<Vector2<Number>, Long, Vector2<Number>> = Times { other ->
+        Vector2(this.content.map { field.numberTimesLong { it * other } })
+    }
+    override val vectorDivideLong: Divide<Vector2<Number>, Long, Vector2<Number>> = Divide { other ->
+        Vector2(this.content.map { field.numberDivideLong { it / other } })
+    }
     // endregion
     
     // region Vector-ULong operations
-    override operator fun Vector2<Number>.times(other: ULong): Vector2<Number> =
-        Vector2(this.content.map { field { it * other } })
-    override operator fun Vector2<Number>.div(other: ULong): Vector2<Number> =
-        Vector2(this.content.map { field { it / other } })
+    override val numberTimesULong: Times<Vector2<Number>, ULong, Vector2<Number>> = Times { other ->
+        Vector2(this.content.map { field.numberTimesULong { it * other } })
+    }
+    override val vectorDivideULong: Divide<Vector2<Number>, ULong, Vector2<Number>> = Divide { other ->
+        Vector2(this.content.map { field.numberDivideULong { it / other } })
+    }
     // endregion
     
     // region Vector-Number operations
-    override fun Vector2<Number>.times(other: Number): Vector2<Number> =
-        Vector2(this.content.map { field { it * other } })
-    override fun Vector2<Number>.div(other: Number): Vector2<Number> =
-        Vector2(this.content.map { field { it / other } })
+    override val vectorTimesNumber: Times<Vector2<Number>, Number, Vector2<Number>> = Times { other ->
+        Vector2(this.content.map { field.numberTimesNumber { it * other } })
+    }
+    override val vectorDivideNumber: Divide<Vector2<Number>, Number, Vector2<Number>> = Divide { other ->
+        Vector2(this.content.map { field.numberDivideNumber { it / other } })
+    }
     // endregion
     
     // region Int-Vector operations
-    override operator fun Int.times(other: Vector2<Number>): Vector2<Number> =
-        Vector2(other.content.map { field { this * it } })
+    override val intTimesNumber: Times<Int, Vector2<Number>, Vector2<Number>> = Times { other ->
+        Vector2(other.content.map { field.intTimesNumber { this * it } })
+    }
     // endregion
     
     // region UInt-Vector operations
-    override operator fun UInt.times(other: Vector2<Number>): Vector2<Number> =
-        Vector2(other.content.map { field { this * it } })
+    override val uIntTimesNumber: Times<UInt, Vector2<Number>, Vector2<Number>> = Times { other ->
+        Vector2(other.content.map { field.uIntTimesNumber { this * it } })
+    }
     // endregion
     
     // region Long-Vector operations
-    override operator fun Long.times(other: Vector2<Number>): Vector2<Number> =
-        Vector2(other.content.map { field { this * it } })
+    override val longTimesNumber: Times<Long, Vector2<Number>, Vector2<Number>> = Times { other ->
+        Vector2(other.content.map { field.longTimesNumber { this * it } })
+    }
     // endregion
     
     // region ULong-Vector operations
-    override operator fun ULong.times(other: Vector2<Number>): Vector2<Number> =
-        Vector2(other.content.map { field { this * it } })
+    override val uLongTimesNumber: Times<ULong, Vector2<Number>, Vector2<Number>> = Times { other ->
+        Vector2(other.content.map { field.uLongTimesNumber { this * it } })
+    }
     // endregion
     
     // region Number-Vector operations
-    override fun Number.times(other: Vector2<Number>): Vector2<Number> =
-        Vector2(other.content.map { field { this * it } })
+    override val numberTimesVector: Times<Number, Vector2<Number>, Vector2<Number>> = Times { other ->
+        Vector2(other.content.map { field.numberTimesNumber { this * it } })
+    }
     // endregion
     
     // region Vector-Vector operations
-    override operator fun Vector2<Number>.unaryMinus(): Vector2<Number> =
-        Vector2(this.content.map { field { -it } })
-    override operator fun Vector2<Number>.plus(other: Vector2<Number>): Vector2<Number> =
-        Vector2(MDList1.generate(2u) { field { this.content[it] + other.content[it] } })
-    override operator fun Vector2<Number>.minus(other: Vector2<Number>): Vector2<Number> =
-        Vector2(MDList1.generate(2u) { field { this.content[it] - other.content[it] } })
+    override val numberUnaryMinus: UnaryMinus<Vector2<Number>, Vector2<Number>> = UnaryMinus {
+        Vector2(this.content.map { field.numberUnaryMinus { -it } })
+    }
+    override val numberPlusNumber: Plus<Vector2<Number>, Vector2<Number>, Vector2<Number>> = Plus { other ->
+        Vector2(MDList1.generate(2u) { field.numberPlusNumber { this.content[it] + other.content[it] } })
+    }
+    override val numberMinusNumber: Minus<Vector2<Number>, Vector2<Number>, Vector2<Number>> = Minus { other ->
+        Vector2(MDList1.generate(2u) { field.numberMinusNumber { this.content[it] - other.content[it] } })
+    }
     // endregion
     
-    override fun Point2<Number>.plus(other: Vector2<Number>): Point2<Number> =
-        Point2(MDList1.generate(2u) { field { this.content[it] + other.content[it] } })
+    override val pointPlusVector: Plus<Point2<Number>, Vector2<Number>, Point2<Number>> = Plus { other ->
+        Point2(MDList1.generate(2u) { field.numberPlusNumber { this.content[it] + other.content[it] } })
+    }
+    override val vectorPlusPoint: Plus<Vector2<Number>, Point2<Number>, Point2<Number>> = Plus { other ->
+        Point2(MDList1.generate(2u) { field.numberPlusNumber { this.content[it] + other.content[it] } })
+    }
+    override val pointMinusVector: Minus<Point2<Number>, Vector2<Number>, Point2<Number>> = Minus { other ->
+        Point2(MDList1.generate(2u) { field.numberMinusNumber { this.content[it] - other.content[it] } })
+    }
+    override val pointMinusPoint: Minus<Point2<Number>, Point2<Number>, Vector2<Number>> = Minus { other ->
+        Vector2(MDList1.generate(2u) { field.numberMinusNumber { this.content[it] - other.content[it] } })
+    }
     
-    override fun Vector2<Number>.plus(other: Point2<Number>): Point2<Number> =
-        Point2(MDList1.generate(2u) { field { this.content[it] + other.content[it] } })
-    
-    override fun Point2<Number>.minus(other: Vector2<Number>): Point2<Number> =
-        Point2(MDList1.generate(2u) { field { this.content[it] - other.content[it] } })
-    
-    override fun Point2<Number>.minus(other: Point2<Number>): Vector2<Number> =
-        Vector2(MDList1.generate(2u) { field { this.content[it] - other.content[it] } })
-    
-    override fun Vector2<Number>.dot(other: Vector2<Number>): Number =
-        field { (0u ..< 2u).toKoneList().sumOf { this.content[it] * other.content[it] } }
+    override val vectorDotVector: Dot<Vector2<Number>, Vector2<Number>, Number> = Dot { other ->
+        context(field, field.numberTimesNumber) { (0u ..< 2u).toKoneList().sumOf { this.content[it] * other.content[it] } }
+    }
     
     public companion object;
     

@@ -8,6 +8,8 @@ package dev.lounres.kone.computationalGeometry.algorithms.implementations
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.basis.ModuleBasis
 import dev.lounres.kone.algebraic.basis.ModuleBasisDecomposition
+import dev.lounres.kone.algebraic.minus
+import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.isNotEmpty
 import dev.lounres.kone.collections.iterables.next
@@ -25,8 +27,10 @@ import dev.lounres.kone.computationalGeometry.algorithms.DelaunayTriangulationOv
 import dev.lounres.kone.computationalGeometry.algorithms.convexHull
 import dev.lounres.kone.computationalGeometry.algorithms.gramSchmidtOrthogonalization
 import dev.lounres.kone.computationalGeometry.polytopes.*
+import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
@@ -58,138 +62,153 @@ private class ParaboloidEuclideanSpaceOverRing<Number, Vector, Point>(
     // endregion
     
     // region Equality
-    override fun ParaboloidVector<Number, Vector>.equalsTo(other: ParaboloidVector<Number, Vector>): Boolean =
-        initialEuclideanSpaceOverRing { this.vector eq other.vector } && ring { this.extraCoordinate eq other.extraCoordinate }
-    override fun ParaboloidVector<Number, Vector>.isZero(): Boolean =
-        initialEuclideanSpaceOverRing { this.vector.isZero() } && ring { this.extraCoordinate.isZero() }
-    // FIXME: KT-5351
-    override fun ParaboloidVector<Number, Vector>.isNotZero(): Boolean = !isZero()
-    // endregion
-    
-    // region Vector-UInt operations
-    override operator fun ParaboloidVector<Number, Vector>.times(other: UInt): ParaboloidVector<Number, Vector> =
-        ParaboloidVector(
-            vector = initialEuclideanSpaceOverRing { this.vector * other },
-            extraCoordinate = ring { this.extraCoordinate * other }
-        )
+    override val numberIsZero: IsZero<ParaboloidVector<Number, Vector>> = IsZero {
+        ring.numberIsZero { extraCoordinate.isZero() } && initialEuclideanSpaceOverRing.numberIsZero { vector.isZero() }
+    }
     // endregion
     
     // region Vector-Int operations
-    override operator fun ParaboloidVector<Number, Vector>.times(other: Int): ParaboloidVector<Number, Vector> =
+    override val numberTimesInt: Times<ParaboloidVector<Number, Vector>, Int, ParaboloidVector<Number, Vector>> = Times { other ->
         ParaboloidVector(
-            vector = initialEuclideanSpaceOverRing { this.vector * other },
-            extraCoordinate = ring { this.extraCoordinate * other }
+            vector = initialEuclideanSpaceOverRing.numberTimesInt { this.vector * other },
+            extraCoordinate = ring.numberTimesInt { this.extraCoordinate * other }
         )
+    }
+    // endregion
+    
+    // region Vector-UInt operations
+    override val numberTimesUInt: Times<ParaboloidVector<Number, Vector>, UInt, ParaboloidVector<Number, Vector>> = Times { other ->
+        ParaboloidVector(
+            vector = initialEuclideanSpaceOverRing.numberTimesUInt { this.vector * other },
+            extraCoordinate = ring.numberTimesUInt { this.extraCoordinate * other }
+        )
+    }
     // endregion
     
     // region Vector-Long operations
-    override operator fun ParaboloidVector<Number, Vector>.times(other: Long): ParaboloidVector<Number, Vector> =
+    override val numberTimesLong: Times<ParaboloidVector<Number, Vector>, Long, ParaboloidVector<Number, Vector>> = Times { other ->
         ParaboloidVector(
-            vector = initialEuclideanSpaceOverRing { this.vector * other },
-            extraCoordinate = ring { this.extraCoordinate * other }
+            vector = initialEuclideanSpaceOverRing.numberTimesLong { this.vector * other },
+            extraCoordinate = ring.numberTimesLong { this.extraCoordinate * other }
         )
+    }
     // endregion
     
     // region Vector-ULong operations
-    override operator fun ParaboloidVector<Number, Vector>.times(other: ULong): ParaboloidVector<Number, Vector> =
+    override val numberTimesULong: Times<ParaboloidVector<Number, Vector>, ULong, ParaboloidVector<Number, Vector>> = Times { other ->
         ParaboloidVector(
-            vector = initialEuclideanSpaceOverRing { this.vector * other },
-            extraCoordinate = ring { this.extraCoordinate * other }
+            vector = initialEuclideanSpaceOverRing.numberTimesULong { this.vector * other },
+            extraCoordinate = ring.numberTimesULong { this.extraCoordinate * other }
         )
+    }
     // endregion
     
     // region Vector-Number operations
-    override fun ParaboloidVector<Number, Vector>.times(other: Number): ParaboloidVector<Number, Vector> =
+    override val vectorTimesNumber: Times<ParaboloidVector<Number, Vector>, Number, ParaboloidVector<Number, Vector>> = Times { other ->
         ParaboloidVector(
-            vector = initialEuclideanSpaceOverRing { this.vector * other },
-            extraCoordinate = ring { this.extraCoordinate * other }
+            vector = initialEuclideanSpaceOverRing.vectorTimesNumber { this.vector * other },
+            extraCoordinate = ring.numberTimesNumber { this.extraCoordinate * other }
         )
+    }
     // endregion
     
     // region Int-Vector operations
-    override operator fun Int.times(other: ParaboloidVector<Number, Vector>): ParaboloidVector<Number, Vector> =
+    override val intTimesNumber: Times<Int, ParaboloidVector<Number, Vector>, ParaboloidVector<Number, Vector>> = Times { other ->
         ParaboloidVector(
-            vector = initialEuclideanSpaceOverRing { this * other.vector },
-            extraCoordinate = ring { this * other.extraCoordinate }
+            vector = initialEuclideanSpaceOverRing.intTimesNumber { this * other.vector },
+            extraCoordinate = ring.intTimesNumber { this * other.extraCoordinate }
         )
+    }
     // endregion
     
     // region UInt-Vector operations
-    override operator fun UInt.times(other: ParaboloidVector<Number, Vector>): ParaboloidVector<Number, Vector> =
+    override val uIntTimesNumber: Times<UInt, ParaboloidVector<Number, Vector>, ParaboloidVector<Number, Vector>> = Times { other ->
         ParaboloidVector(
-            vector = initialEuclideanSpaceOverRing { this * other.vector },
-            extraCoordinate = ring { this * other.extraCoordinate }
+            vector = initialEuclideanSpaceOverRing.uIntTimesNumber { this * other.vector },
+            extraCoordinate = ring.uIntTimesNumber { this * other.extraCoordinate }
         )
+    }
     // endregion
     
     // region Long-Vector operations
-    override operator fun Long.times(other: ParaboloidVector<Number, Vector>): ParaboloidVector<Number, Vector> =
+    override val longTimesNumber: Times<Long, ParaboloidVector<Number, Vector>, ParaboloidVector<Number, Vector>> = Times { other ->
         ParaboloidVector(
-            vector = initialEuclideanSpaceOverRing { this * other.vector },
-            extraCoordinate = ring { this * other.extraCoordinate }
+            vector = initialEuclideanSpaceOverRing.longTimesNumber { this * other.vector },
+            extraCoordinate = ring.longTimesNumber { this * other.extraCoordinate }
         )
+    }
     // endregion
     
     // region ULong-Vector operations
-    override operator fun ULong.times(other: ParaboloidVector<Number, Vector>): ParaboloidVector<Number, Vector> =
+    override val uLongTimesNumber: Times<ULong, ParaboloidVector<Number, Vector>, ParaboloidVector<Number, Vector>> = Times { other ->
         ParaboloidVector(
-            vector = initialEuclideanSpaceOverRing { this * other.vector },
-            extraCoordinate = ring { this * other.extraCoordinate }
+            vector = initialEuclideanSpaceOverRing.uLongTimesNumber { this * other.vector },
+            extraCoordinate = ring.uLongTimesNumber { this * other.extraCoordinate }
         )
+    }
     // endregion
     
     // region Number-Vector operations
-    override fun Number.times(other: ParaboloidVector<Number, Vector>): ParaboloidVector<Number, Vector> =
+    override val numberTimesVector: Times<Number, ParaboloidVector<Number, Vector>, ParaboloidVector<Number, Vector>> = Times { other ->
         ParaboloidVector(
-            vector = initialEuclideanSpaceOverRing { this * other.vector },
-            extraCoordinate = ring { this * other.extraCoordinate }
+            vector = initialEuclideanSpaceOverRing.numberTimesVector { this * other.vector },
+            extraCoordinate = ring.numberTimesNumber { this * other.extraCoordinate }
         )
+    }
     // endregion
     
     // region Vector-Vector operations
-    override operator fun ParaboloidVector<Number, Vector>.unaryMinus(): ParaboloidVector<Number, Vector> =
+    override val numberUnaryMinus: UnaryMinus<ParaboloidVector<Number, Vector>, ParaboloidVector<Number, Vector>> = UnaryMinus {
         ParaboloidVector(
-            vector = initialEuclideanSpaceOverRing { -this.vector },
-            extraCoordinate = ring { -this.extraCoordinate }
+            vector = initialEuclideanSpaceOverRing.numberUnaryMinus { -this.vector },
+            extraCoordinate = ring.numberUnaryMinus { -this.extraCoordinate }
         )
-    override operator fun ParaboloidVector<Number, Vector>.plus(other: ParaboloidVector<Number, Vector>): ParaboloidVector<Number, Vector> =
+    }
+    override val numberPlusNumber: Plus<ParaboloidVector<Number, Vector>, ParaboloidVector<Number, Vector>, ParaboloidVector<Number, Vector>> = Plus { other ->
         ParaboloidVector(
-            vector = initialEuclideanSpaceOverRing { this.vector + other.vector },
-            extraCoordinate = ring { this.extraCoordinate + other.extraCoordinate }
+            vector = initialEuclideanSpaceOverRing.numberPlusNumber { this.vector + other.vector },
+            extraCoordinate = ring.numberPlusNumber { this.extraCoordinate + other.extraCoordinate }
         )
-    override operator fun ParaboloidVector<Number, Vector>.minus(other: ParaboloidVector<Number, Vector>): ParaboloidVector<Number, Vector> =
+    }
+    override val numberMinusNumber: Minus<ParaboloidVector<Number, Vector>, ParaboloidVector<Number, Vector>, ParaboloidVector<Number, Vector>> = Minus { other ->
         ParaboloidVector(
-            vector = initialEuclideanSpaceOverRing { this.vector - other.vector },
-            extraCoordinate = ring { this.extraCoordinate - other.extraCoordinate }
+            vector = initialEuclideanSpaceOverRing.numberMinusNumber { this.vector - other.vector },
+            extraCoordinate = ring.numberMinusNumber { this.extraCoordinate - other.extraCoordinate }
         )
+    }
     // endregion
     
-    override fun ParaboloidPoint<Number, Point>.plus(other: ParaboloidVector<Number, Vector>): ParaboloidPoint<Number, Point> =
+    override val pointPlusVector: Plus<ParaboloidPoint<Number, Point>, ParaboloidVector<Number, Vector>, ParaboloidPoint<Number, Point>> = Plus { other ->
         ParaboloidPoint(
-            point = initialEuclideanSpaceOverRing { this.point + other.vector },
-            extraCoordinate = ring { this.extraCoordinate + other.extraCoordinate }
+            point = initialEuclideanSpaceOverRing.pointPlusVector { this.point + other.vector },
+            extraCoordinate = ring.numberPlusNumber { this.extraCoordinate + other.extraCoordinate }
         )
-    
-    override fun ParaboloidVector<Number, Vector>.plus(other: ParaboloidPoint<Number, Point>): ParaboloidPoint<Number, Point> =
+    }
+    override val vectorPlusPoint: Plus<ParaboloidVector<Number, Vector>, ParaboloidPoint<Number, Point>, ParaboloidPoint<Number, Point>> = Plus { other ->
         ParaboloidPoint(
-            point = with(initialEuclideanSpaceOverRing) { this@plus.vector + other.point },
-            extraCoordinate = ring { this.extraCoordinate + other.extraCoordinate }
+            point = initialEuclideanSpaceOverRing.vectorPlusPoint { this.vector + other.point },
+            extraCoordinate = ring.numberPlusNumber { this.extraCoordinate + other.extraCoordinate }
         )
-    
-    override fun ParaboloidPoint<Number, Point>.minus(other: ParaboloidVector<Number, Vector>): ParaboloidPoint<Number, Point> =
+    }
+    override val pointMinusVector: Minus<ParaboloidPoint<Number, Point>, ParaboloidVector<Number, Vector>, ParaboloidPoint<Number, Point>> = Minus { other ->
         ParaboloidPoint(
-            point = with(initialEuclideanSpaceOverRing) { this@minus.point - other.vector },
-            extraCoordinate = ring { this.extraCoordinate - other.extraCoordinate }
+            point = initialEuclideanSpaceOverRing.pointMinusVector { this.point - other.vector },
+            extraCoordinate = ring.numberMinusNumber { this.extraCoordinate - other.extraCoordinate }
         )
+    }
     
-    override fun ParaboloidPoint<Number, Point>.minus(other: ParaboloidPoint<Number, Point>): ParaboloidVector<Number, Vector> =
+    override val pointMinusPoint: Minus<ParaboloidPoint<Number, Point>, ParaboloidPoint<Number, Point>, ParaboloidVector<Number, Vector>> = Minus { other ->
         ParaboloidVector(
-            vector = initialEuclideanSpaceOverRing { this.point - other.point },
-            extraCoordinate = ring { this.extraCoordinate - other.extraCoordinate }
+            vector = initialEuclideanSpaceOverRing.pointMinusPoint { this.point - other.point },
+            extraCoordinate = ring.numberMinusNumber { this.extraCoordinate - other.extraCoordinate }
         )
+    }
     
-    override fun ParaboloidVector<Number, Vector>.dot(other: ParaboloidVector<Number, Vector>): Number =
-        ring { initialEuclideanSpaceOverRing { this.vector dot other.vector } + this.extraCoordinate * other.extraCoordinate }
+    override val vectorDotVector: Dot<ParaboloidVector<Number, Vector>, ParaboloidVector<Number, Vector>, Number> = Dot { other ->
+        context(ring.numberPlusNumber, ring.numberTimesNumber) {
+            initialEuclideanSpaceOverRing.vectorDotVector { this.vector dot other.vector } + this.extraCoordinate * other.extraCoordinate
+        }
+    }
 }
 
 @Suppliable
@@ -212,14 +231,15 @@ private class DelaunayTriangulationOverRingComputerViaConvexHull<@Supply Number,
     
     override fun KoneIterable<Point>.delaunayTriangulation(
         basis: ModuleBasis.Finite<Number, Vector>
-    ): PolytopicConstruction = context(ring, order, euclideanSpace) {
+    ): PolytopicConstruction = context(ring, order, euclideanSpace, paraboloidEuclideanSpaceOverRing, paraboloidConvexHullOverRingComputer) {
         require(this.isNotEmpty()) { "Can't construct Delaunay triangulation of an empty vertices collection." }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring, euclideanSpace, paraboloidEuclideanSpaceOverRing)
         
         val verticesDimension: UInt = basis.size
         
-        val startPosition = this.first()
-        val convexHull: Polytope = context(paraboloidEuclideanSpaceOverRing, paraboloidConvexHullOverRingComputer) {
-            this.map { oldPosition ->
+        val startPosition = this@delaunayTriangulation.first()
+        val convexHull: Polytope =
+            this@delaunayTriangulation.map { oldPosition ->
                 ParaboloidPoint(oldPosition, (oldPosition - startPosition).lengthSquared())
             }.convexHull(
                 object : ModuleBasis.Finite<Number, ParaboloidVector<Number, Vector>> {
@@ -237,7 +257,6 @@ private class DelaunayTriangulationOverRingComputerViaConvexHull<@Supply Number,
                         }
                 }
             )
-        }
         
         val simplicesMapping = KoneMutableMap.of<Polytope, Polytope>(
             keyEquality = Equality.absoluteFor(),
@@ -279,20 +298,18 @@ private class DelaunayTriangulationOverRingComputerViaConvexHull<@Supply Number,
         else
             PolytopicConstruction.build {
                 val necessarySimplices = convexHull.faces[convexHull.dimension - 1u].filter { simplex ->
-                    paraboloidEuclideanSpaceOverRing {
-                        val flag = KoneSettableList.generate(simplex.dimension + 2u) { simplex }
-                        flag[simplex.dimension + 1u] = convexHull
-                        for (dim in simplex.dimension - 1u downTo 0u) {
-                            flag[dim] = flag[dim + 1u].faces[dim].first()
-                        }
-                        val startPoint = flag[0u].verticesOrSelf.single().properties[paraboloidPositionKey]
-                        val basis = KoneSettableList.generate(
-                            simplex.dimension + 1u,
-                        ) { dim -> flag[dim + 1u].verticesOrSelf.firstThat { it !in flag[dim].verticesOrSelf }.properties[paraboloidPositionKey] - startPoint }
-                        val ortogonalizedBasis = basis.gramSchmidtOrthogonalization()
-                        val lastBasisVector = ortogonalizedBasis.last()
-                        lastBasisVector.extraCoordinate.isPositive()
+                    val flag = KoneSettableList.generate(simplex.dimension + 2u) { simplex }
+                    flag[simplex.dimension + 1u] = convexHull
+                    for (dim in simplex.dimension - 1u downTo 0u) {
+                        flag[dim] = flag[dim + 1u].faces[dim].first()
                     }
+                    val startPoint = flag[0u].verticesOrSelf.single().properties[paraboloidPositionKey]
+                    val basis = KoneSettableList.generate(
+                        simplex.dimension + 1u,
+                    ) { dim -> flag[dim + 1u].verticesOrSelf.firstThat { it !in flag[dim].verticesOrSelf }.properties[paraboloidPositionKey] - startPoint }
+                    val ortogonalizedBasis = basis.gramSchmidtOrthogonalization()
+                    val lastBasisVector = ortogonalizedBasis.last()
+                    lastBasisVector.extraCoordinate.isPositive()
                 }
                 
                 for (simplex in necessarySimplices) {

@@ -5,8 +5,9 @@
 
 package dev.lounres.kone.computationalGeometry.curves
 
+import dev.lounres.kone.algebraic.minus
 import dev.lounres.kone.computationalGeometry.AffineSpaceOverRing
-import dev.lounres.kone.computationalGeometry.minus
+import dev.lounres.kone.contexts.invoke
 import kotlinx.serialization.Serializable
 
 
@@ -21,5 +22,6 @@ public /*value*/ data class Ray<out Vector, out Point>(
     public companion object
 }
 
-context(_: AffineSpaceOverRing<*, Vector, Point>)
-public fun <Vector, Point> Ray.Companion.byTwoPoints(start: Point, end: Point): Ray<Vector, Point> = Ray(start = start, direction = end - start)
+context(affineSpace: AffineSpaceOverRing<*, Vector, Point>)
+public fun <Vector, Point> Ray.Companion.byTwoPoints(start: Point, end: Point): Ray<Vector, Point> =
+    Ray(start = start, direction = affineSpace.pointMinusPoint { end - start })

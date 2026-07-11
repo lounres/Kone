@@ -7,6 +7,7 @@ package dev.lounres.kone.computationalGeometry
 
 import dev.lounres.kone.algebraic.Module
 import dev.lounres.kone.algebraic.VectorSpace
+import dev.lounres.kone.contexts.KoneContextHolderContext
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
@@ -15,7 +16,8 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 public interface EuclideanVectorSpaceOverRing<Number, Vector> : Module<Number, Vector> {
-    public infix fun Vector.dot(other: Vector): Number
+    @KoneContextHolderContext
+    public val vectorDotVector: Dot<Vector, Vector, Number>
     
     public companion object;
     
@@ -29,12 +31,6 @@ public interface EuclideanVectorSpaceOverRing<Number, Vector> : Module<Number, V
         override fun toString(): String = "dev.lounres.kone.computationalGeometry.EuclideanVectorSpaceOverRing.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}>"
     }
 }
-
-context(euclideanSpace: EuclideanVectorSpaceOverRing<Number, Vector>)
-public infix fun <Number, Vector> Vector.dot(other: Vector): Number = with(euclideanSpace) { this@dot dot other }
-
-context(euclideanSpace: EuclideanVectorSpaceOverRing<Number, Vector>)
-public fun <Number, Vector> Vector.lengthSquared(): Number = with(euclideanSpace) { this@lengthSquared dot this@lengthSquared }
 
 public interface EuclideanVectorSpaceOverField<Number, Vector> : VectorSpace<Number, Vector>, EuclideanVectorSpaceOverRing<Number, Vector> {
     public companion object;

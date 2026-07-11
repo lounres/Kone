@@ -123,8 +123,8 @@ public fun simplexOn(vertices: KoneList<Polytope>): Polytope {
                             elementHashing = Hashing.defaultFor(),
                         )
                     }.apply {
-                        for (subflags in cartesianProduct(flags.map { (0u .. it).toKoneList() })) if ((UInt.monoid()) { subflags.sum() } in 1u .. dim)
-                            this[(UInt.monoid()) { subflags.sum() } - 1u].add(faces[(UInt.monoid()) { subflags.sum() } - 1u][subflags])
+                        for (subflags in cartesianProduct(flags.map { (0u .. it).toKoneList() })) if (context(UInt.monoid()) { subflags.sum() } in 1u .. dim)
+                            this[context(UInt.monoid()) { subflags.sum() } - 1u].add(faces[context(UInt.monoid()) { subflags.sum() } - 1u][subflags])
                     }
                 )
         }

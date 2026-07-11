@@ -27,12 +27,13 @@ import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.computationalGeometry.EuclideanSpaceOverRing
 import dev.lounres.kone.computationalGeometry.algorithms.*
 import dev.lounres.kone.computationalGeometry.dot
-import dev.lounres.kone.computationalGeometry.minus
 import dev.lounres.kone.computationalGeometry.polytopes.Polytope
 import dev.lounres.kone.computationalGeometry.polytopes.Position
 import dev.lounres.kone.computationalGeometry.polytopes.verticesOrSelf
+import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
@@ -43,7 +44,7 @@ import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
 
 
-context(ring: Ring<Number>, _: Order<Number>, _: EuclideanSpaceOverRing<Number, Vector, Point>)
+context(ring: Ring<Number>, _: Order<Number>, euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>)
 private fun <
     Number,
     Vector,
@@ -55,6 +56,7 @@ private fun <
     tangentGiftWrappingVector: Vector,
     otherPoints: KoneIterable<Polytope>,
 ): KoneList<Polytope> {
+    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring, euclideanSpace)
     data class TangentFraction(val numerator: Number, val denominator: Number)
     return otherPoints.minListWithBy(
         { left, right -> (left.numerator * right.denominator) compareWith (right.numerator * left.denominator) }
@@ -70,7 +72,7 @@ private fun <
  *
  * Принимает размерность подпространства, фасету искомой выпуклой оболочки и другие точки в подпространстве, не лежащие в этой фасете.
  */
-context(_: Ring<Number>, _: Order<Number>, _: EuclideanSpaceOverRing<Number, Vector, Point>)
+context(ring: Ring<Number>, _: Order<Number>, euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>)
 private fun <
     Number,
     Vector,
@@ -82,6 +84,7 @@ private fun <
     otherPoints: KoneIterable<Polytope>,
     computedFacesRegistry: KoneMutableMap<KoneSet<Polytope>, Polytope>,
 ): Polytope {
+    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring, euclideanSpace)
     require(subspaceDimension >= 1u) { "Can't define gift wrapping increment for subspace of dimension 0" }
     val allVertices = otherPoints.toKoneMutableReifiedSet(
         elementReification = Reification.defaultFor(),
@@ -204,7 +207,7 @@ private data class WrappingResult<Number, Vector, Point>(
     val orthogonalizationState: GramSchmidtOrthogonalizationIntermediateState<Number, Vector>,
 )
 
-context(_: Ring<Number>, _: Order<Number>, _: EuclideanSpaceOverRing<Number, Vector, Point>)
+context(ring: Ring<Number>, _: Order<Number>, euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>)
 private fun <
     Number,
     Vector,
@@ -216,6 +219,8 @@ private fun <
     normalVector: Vector,
     otherPoints: KoneIterable<Polytope>,
 ) {
+    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring, euclideanSpace)
+    
     if (otherPoints.isEmpty()) return
     require(subspaceDimension >= 1u) { TODO("Error message is not specified") }
     
@@ -244,8 +249,8 @@ private fun <
         extendedOrthogonalizationState.gramSchmidtOrthogonalizationExtension(currentNormalVector)
         
         val tangentVector = otherPoints.firstOfThatOrNull({
-                                                              extendedOrthogonalizationState.gramSchmidtOrthogonalizationUsage(it.properties[positionKey] - wrappingResult.startPoint)
-                                                          }) { it.isNotZero() } ?: scope {
+            extendedOrthogonalizationState.gramSchmidtOrthogonalizationUsage(it.properties[positionKey] - wrappingResult.startPoint)
+        }) { it.isNotZero() } ?: scope {
             val resultingPolytope = giftWrappingIncrement(
                 positionKey = positionKey,
                 subspaceDimension = wrappingResult.orthogonalizationState.orthogonalizedBasis.size + 1u,
@@ -282,7 +287,7 @@ private fun <
     }
 }
 
-context(ring: Ring<Number>, _: Order<Number>, _: EuclideanSpaceOverRing<Number, Vector, Point>)
+context(ring: Ring<Number>, _: Order<Number>, euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>)
 private fun <
     Number,
     Vector,
@@ -293,6 +298,8 @@ private fun <
     subspaceDimension: UInt,
     points: KoneIterable<Polytope>,
 ): WrappingResult<Number, Vector, Point> {
+    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring, euclideanSpace)
+    
     require(points.isNotEmpty()) { TODO("Error message is not specified") }
     if (subspaceDimension == 0u) {
         val theOnlyVertex = points.single()

@@ -5,27 +5,30 @@
 
 package dev.lounres.kone.computationalGeometry
 
+import dev.lounres.kone.algebraic.Minus
 import dev.lounres.kone.algebraic.Module
+import dev.lounres.kone.algebraic.Plus
 import dev.lounres.kone.algebraic.VectorSpace
+import dev.lounres.kone.algebraic.minus
+import dev.lounres.kone.algebraic.plus
+import dev.lounres.kone.contexts.KoneContextHolderContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.registry.*
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
 import dev.lounres.kone.suppliedTypes.suppliedTypeOf
-import kotlin.jvm.JvmName
 
 
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface AffineSpaceOverRing<Number, Vector, Point> : Module<Number, Vector> {
-    @JvmName("plusPointVector")
-    public operator fun Point.plus(other: Vector): Point
-    @JvmName("minusPointVector")
-    public operator fun Point.minus(other: Vector): Point
-    @JvmName("plusVectorPoint")
-    public operator fun Vector.plus(other: Point): Point
-    @JvmName("minusPointPoint")
-    public operator fun Point.minus(other: Point): Vector
+    @KoneContextHolderContext
+    public val pointPlusVector: Plus<Point, Vector, Point>
+    @KoneContextHolderContext
+    public val pointMinusVector: Minus<Point, Vector, Point>
+    @KoneContextHolderContext
+    public val vectorPlusPoint: Plus<Vector, Point, Point>
+    @KoneContextHolderContext
+    public val pointMinusPoint: Minus<Point, Point, Vector>
     
     public companion object;
     
@@ -39,22 +42,6 @@ public interface AffineSpaceOverRing<Number, Vector, Point> : Module<Number, Vec
         override fun toString(): String = "dev.lounres.kone.computationalGeometry.AffineSpaceOverRing.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}, ${suppliedTypeOf<Point>()}>"
     }
 }
-
-@JvmName("pointPlusVector")
-context(affineSpace: AffineSpaceOverRing<*, Vector, Point>)
-public operator fun <Vector, Point> Point.plus(other: Vector): Point = with(affineSpace) { this@plus + other }
-
-@JvmName("pointMinusVector")
-context(affineSpace: AffineSpaceOverRing<*, Vector, Point>)
-public operator fun <Vector, Point> Point.minus(other: Vector): Point = with(affineSpace) { this@minus - other }
-
-@JvmName("vectorPlusPoint")
-context(affineSpace: AffineSpaceOverRing<*, Vector, Point>)
-public operator fun <Vector, Point> Vector.plus(other: Point): Point = with(affineSpace) { this@plus + other }
-
-@JvmName("vectorMinusPoint")
-context(affineSpace: AffineSpaceOverRing<*, Vector, Point>)
-public operator fun <Vector, Point> Point.minus(other: Point): Vector = with(affineSpace) { this@minus - other }
 
 public interface AffineSpaceOverField<Number, Vector, Point> : VectorSpace<Number, Vector>, AffineSpaceOverRing<Number, Vector, Point> {
     public companion object;
@@ -74,18 +61,18 @@ public interface AffineSpaceOverField<Number, Vector, Point> : VectorSpace<Numbe
 private class AffineSpaceOverFieldViaVectorSpace<Number, Vector>(
     private val vectorSpace: VectorSpace<Number, Vector>,
 ) : AffineSpaceOverField<Number, Vector, PointWrapper<Vector>>, VectorSpace<Number, Vector> by vectorSpace {
-    
-    override fun PointWrapper<Vector>.plus(other: Vector): PointWrapper<Vector> =
-        vectorSpace { PointWrapper(this.vector + other) }
-    
-    override fun PointWrapper<Vector>.minus(other: Vector): PointWrapper<Vector> =
-        vectorSpace { PointWrapper(this.vector - other) }
-    
-    override fun Vector.plus(other: PointWrapper<Vector>): PointWrapper<Vector> =
-        vectorSpace { PointWrapper(this + other.vector) }
-    
-    override fun PointWrapper<Vector>.minus(other: PointWrapper<Vector>): Vector =
-        vectorSpace { this.vector - other.vector }
+    override val pointPlusVector: Plus<PointWrapper<Vector>, Vector, PointWrapper<Vector>> = Plus { other ->
+        vectorSpace.numberPlusNumber { PointWrapper(this.vector + other) }
+    }
+    override val pointMinusVector: Minus<PointWrapper<Vector>, Vector, PointWrapper<Vector>> = Minus { other ->
+        vectorSpace.numberMinusNumber { PointWrapper(this.vector - other) }
+    }
+    override val vectorPlusPoint: Plus<Vector, PointWrapper<Vector>, PointWrapper<Vector>> = Plus { other ->
+        vectorSpace.numberPlusNumber { PointWrapper(this + other.vector) }
+    }
+    override val pointMinusPoint: Minus<PointWrapper<Vector>, PointWrapper<Vector>, Vector> = Minus { other ->
+        vectorSpace.numberMinusNumber { this.vector - other.vector }
+    }
 }
 
 public fun <Number, Vector> AffineSpaceOverField.Companion.viaVectorSpace(vectorSpace: VectorSpace<Number, Vector>): AffineSpaceOverField<Number, Vector, PointWrapper<Vector>> =

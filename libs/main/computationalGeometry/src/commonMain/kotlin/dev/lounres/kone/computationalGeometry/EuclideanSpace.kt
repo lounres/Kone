@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.computationalGeometry
 
-import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.algebraic.minus
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
@@ -29,9 +29,9 @@ public interface EuclideanSpaceOverRing<Number, Vector, Point> : AffineSpaceOver
     }
 }
 
-context(_: EuclideanSpaceOverRing<Number, Vector, Point>)
+context(euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>)
 public fun <Number, Vector, Point> distanceSquaredBetween(point1: Point, point2: Point): Number =
-    (point1 - point2).lengthSquared()
+    context(euclideanSpace.pointMinusPoint, euclideanSpace.vectorDotVector) { (point1 - point2).lengthSquared() }
 
 public interface EuclideanSpaceOverField<Number, Vector, Point> : EuclideanSpaceOverRing<Number, Vector, Point>, AffineSpaceOverField<Number, Vector, Point>, EuclideanVectorSpaceOverField<Number, Vector> {
     public companion object;
@@ -48,8 +48,3 @@ public interface EuclideanSpaceOverField<Number, Vector, Point> : EuclideanSpace
         override fun toString(): String = "dev.lounres.kone.computationalGeometry.EuclideanSpaceOverField.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}, ${suppliedTypeOf<Point>()}>"
     }
 }
-
-@Suppliable
-public fun <@Supply Number, @Supply Vector, @Supply Point, Result> KoneContextRegistry.inEuclideanSpaceOverFieldScopeFor(
-    block: context(EuclideanSpaceOverField<Number, Vector, Point>) () -> Result
-): Result = block(this[EuclideanSpaceOverField.Key<Number, Vector, Point>()])

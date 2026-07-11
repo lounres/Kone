@@ -73,7 +73,7 @@ private class HypergraphDirectedShortestPathWithFixedEndsComputerForDirectedAcyc
                 edges = KoneList.empty(),
             )
             
-            context(weightMonoid, weightsOrder) {
+            context(weightMonoid.numberPlusNumber, weightsOrder) {
                 for (vIndex in startIndex .. endIndex) {
                     val vPath = paths[vIndex - startIndex] ?: continue
                     if (paths.last().let { it != null && it.weight lt vPath.weight }) continue
@@ -177,7 +177,7 @@ private class HypergraphDirectedShortestPathWithFixedStartComputerForDirectedAcy
                 if (endIndex - startIndex <= firstNotVisitedVertexIndexInPaths) return paths[endIndex - startIndex]
                 
                 synchronized(this) {
-                    context(weightMonoid, weightsOrder) {
+                    context(weightMonoid.numberPlusNumber, weightsOrder) {
                         while (firstNotVisitedVertexIndexInPaths + startIndex < endIndex) {
                             val vIndex = firstNotVisitedVertexIndexInPaths + startIndex
                             val vPath = paths[vIndex - startIndex] ?: continue

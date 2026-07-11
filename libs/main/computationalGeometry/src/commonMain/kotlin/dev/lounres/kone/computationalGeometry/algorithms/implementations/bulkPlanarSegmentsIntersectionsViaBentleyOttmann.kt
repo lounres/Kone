@@ -26,9 +26,10 @@ import dev.lounres.kone.computationalGeometry.algorithms.SegmentBulkIntersection
 import dev.lounres.kone.computationalGeometry.algorithms.SegmentWithSegmentIntersectionOverField
 import dev.lounres.kone.computationalGeometry.curves.Segment
 import dev.lounres.kone.computationalGeometry.curves.end
-import dev.lounres.kone.computationalGeometry.minus
+import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
@@ -109,9 +110,11 @@ private class BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann<
     override fun KoneList<Segment<Vector, Point>>.intersections(
         basis: VectorSpaceBasis.Finite<Number, Vector>,
         intersectionComputer: SegmentBulkIntersectionOverFieldComputer<Number, Vector, Point>,
-    ): KoneSequence<BulkPlanarSegmentsIntersectionsOverFieldComputer.IntersectionResult<Number, Vector, Point>> = context(numberField, numberOrder, euclideanSpace, intersectionComputer) {
+    ): KoneSequence<BulkPlanarSegmentsIntersectionsOverFieldComputer.IntersectionResult<Number, Vector, Point>> = context(numberOrder, numberField, euclideanSpace, intersectionComputer) {
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField, euclideanSpace)
+        
         val pointOrder = Order<Point> { left, right ->
-            val differenceBasisDecomposition = basis.decompose(euclideanSpace { left - right })
+            val differenceBasisDecomposition = basis.decompose(left - right)
             numberOrder {
                 when (differenceBasisDecomposition[0u] compareWith numberField.zero) {
                     LeftIsGreaterThanRight -> LeftIsGreaterThanRight
@@ -122,7 +125,7 @@ private class BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann<
         }
         
         pointOrder {
-            val segments = this
+            val segments = this@intersections
             
             KoneSequence.build {
                 val eventsHeap: MinimumHeap<EventForBentleyOttmann<Number, Vector, Point>, Point> = KoneBinaryGCMinimumHeap(pointOrder)

@@ -13,7 +13,6 @@ import dev.lounres.kone.multidimensionalCollections.generate
 import dev.lounres.kone.multidimensionalCollections.utils.all
 import dev.lounres.kone.multidimensionalCollections.utils.map
 import dev.lounres.kone.registry.*
-import dev.lounres.kone.relations.eq
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
 
@@ -27,103 +26,96 @@ private class MDList1Module<Number>(
     // endregion
     
     // region Equality
-    override fun MDList1<Number>.equalsTo(other: MDList1<Number>): Boolean {
+    override val numberIsZero: IsZero<MDList1<Number>> = IsZero {
         require(this.contentSize == dimension) { TODO() }
-        require(other.contentSize == dimension) { TODO() }
-        return (0u ..< dimension).all { ring { this[it] eq other[it] } }
-    }
-    override fun MDList1<Number>.isZero(): Boolean {
-        require(this.contentSize == dimension) { TODO() }
-        return this.all { ring { it.isZero() } }
-    }
-    // FIXME: KT-5351
-    override fun MDList1<Number>.isNotZero(): Boolean = !isZero()
-    // endregion
-    
-    // region Vector-UInt operations
-    override operator fun MDList1<Number>.times(other: UInt): MDList1<Number> {
-        require(this.contentSize == dimension) { TODO() }
-        return this.map { ring { it * other } }
+        this.all { ring.numberIsZero { it.isZero() } }
     }
     // endregion
     
     // region Vector-Int operations
-    override operator fun MDList1<Number>.times(other: Int): MDList1<Number> {
+    override val numberTimesInt: Times<MDList1<Number>, Int, MDList1<Number>> = Times { other ->
         require(this.contentSize == dimension) { TODO() }
-        return this.map { ring { it * other } }
+        this.map { ring.numberTimesInt { it * other } }
+    }
+    // endregion
+    
+    // region Vector-UInt operations
+    override val numberTimesUInt: Times<MDList1<Number>, UInt, MDList1<Number>> = Times { other ->
+        require(this.contentSize == dimension) { TODO() }
+        this.map { ring.numberTimesUInt { it * other } }
     }
     // endregion
     
     // region Vector-Long operations
-    override operator fun MDList1<Number>.times(other: Long): MDList1<Number> {
+    override val numberTimesLong: Times<MDList1<Number>, Long, MDList1<Number>> = Times { other ->
         require(this.contentSize == dimension) { TODO() }
-        return this.map { ring { it * other } }
+        this.map { ring.numberTimesLong { it * other } }
     }
     // endregion
     
     // region Vector-ULong operations
-    override operator fun MDList1<Number>.times(other: ULong): MDList1<Number> {
+    override val numberTimesULong: Times<MDList1<Number>, ULong, MDList1<Number>> = Times { other ->
         require(this.contentSize == dimension) { TODO() }
-        return this.map { ring { it * other } }
+        this.map { ring.numberTimesULong { it * other } }
     }
     // endregion
     
     // region Vector-Number operations
-    override fun MDList1<Number>.times(other: Number): MDList1<Number> {
+    override val vectorTimesNumber: Times<MDList1<Number>, Number, MDList1<Number>> = Times { other ->
         require(this.contentSize == dimension) { TODO() }
-        return this.map { ring { it * other } }
+        this.map { ring.numberTimesNumber { it * other } }
     }
     // endregion
     
     // region Int-Vector operations
-    override operator fun Int.times(other: MDList1<Number>): MDList1<Number> {
+    override val intTimesNumber: Times<Int, MDList1<Number>, MDList1<Number>> = Times { other ->
         require(other.contentSize == dimension) { TODO() }
-        return other.map { ring { this * it } }
+        other.map { ring.intTimesNumber { this * it } }
     }
     // endregion
     
     // region UInt-Vector operations
-    override operator fun UInt.times(other: MDList1<Number>): MDList1<Number> {
+    override val uIntTimesNumber: Times<UInt, MDList1<Number>, MDList1<Number>> = Times { other ->
         require(other.contentSize == dimension) { TODO() }
-        return other.map { ring { this * it } }
+        other.map { ring.uIntTimesNumber { this * it } }
     }
     // endregion
     
     // region Long-Vector operations
-    override operator fun Long.times(other: MDList1<Number>): MDList1<Number> {
+    override val longTimesNumber: Times<Long, MDList1<Number>, MDList1<Number>> = Times { other ->
         require(other.contentSize == dimension) { TODO() }
-        return other.map { ring { this * it } }
+        other.map { ring.longTimesNumber { this * it } }
     }
     // endregion
     
     // region ULong-Vector operations
-    override operator fun ULong.times(other: MDList1<Number>): MDList1<Number> {
+    override val uLongTimesNumber: Times<ULong, MDList1<Number>, MDList1<Number>> = Times { other ->
         require(other.contentSize == dimension) { TODO() }
-        return other.map { ring { this * it } }
+        other.map { ring.uLongTimesNumber { this * it } }
     }
     // endregion
     
     // region Number-Vector operations
-    override fun Number.times(other: MDList1<Number>): MDList1<Number> {
+    override val numberTimesVector: Times<Number, MDList1<Number>, MDList1<Number>> = Times { other ->
         require(other.contentSize == dimension) { TODO() }
-        return other.map { ring { this * it } }
+        other.map { ring.numberTimesNumber { this * it } }
     }
     // endregion
     
     // region Vector-Vector operations
-    override operator fun MDList1<Number>.unaryMinus(): MDList1<Number> {
+    override val numberUnaryMinus: UnaryMinus<MDList1<Number>, MDList1<Number>> = UnaryMinus {
         require(this.contentSize == dimension) { TODO() }
-        return this.map { ring { -it } }
+        this.map { ring.numberUnaryMinus { -it } }
     }
-    override operator fun MDList1<Number>.plus(other: MDList1<Number>): MDList1<Number> {
+    override val numberPlusNumber: Plus<MDList1<Number>, MDList1<Number>, MDList1<Number>> = Plus { other ->
         require(this.contentSize == dimension) { TODO() }
         require(other.contentSize == dimension) { TODO() }
-        return MDList1.generate(dimension) { ring { this[it] + other[it] } }
+        MDList1.generate(dimension) { ring.numberPlusNumber { this[it] + other[it] } }
     }
-    override operator fun MDList1<Number>.minus(other: MDList1<Number>): MDList1<Number> {
+    override val numberMinusNumber: Minus<MDList1<Number>, MDList1<Number>, MDList1<Number>> = Minus { other ->
         require(this.contentSize == dimension) { TODO() }
         require(other.contentSize == dimension) { TODO() }
-        return MDList1.generate(dimension) { ring { this[it] + other[it] } }
+        MDList1.generate(dimension) { ring.numberMinusNumber { this[it] - other[it] } }
     }
     // endregion
 }
@@ -149,123 +141,116 @@ private class MDList1VectorSpace<Number>(
     // endregion
     
     // region Equality
-    override fun MDList1<Number>.equalsTo(other: MDList1<Number>): Boolean {
+    override val numberIsZero: IsZero<MDList1<Number>> = IsZero {
         require(this.contentSize == dimension) { TODO() }
-        require(other.contentSize == dimension) { TODO() }
-        return (0u ..< dimension).all { field { this[it] eq other[it] } }
-    }
-    override fun MDList1<Number>.isZero(): Boolean {
-        require(this.contentSize == dimension) { TODO() }
-        return this.all { field { it.isZero() } }
-    }
-    // FIXME: KT-5351
-    override fun MDList1<Number>.isNotZero(): Boolean = !isZero()
-    // endregion
-    
-    // region Vector-UInt operations
-    override operator fun MDList1<Number>.times(other: UInt): MDList1<Number> {
-        require(this.contentSize == dimension) { TODO() }
-        return this.map { field { it * other } }
-    }
-    override operator fun MDList1<Number>.div(other: UInt): MDList1<Number> {
-        require(this.contentSize == dimension) { TODO() }
-        return this.map { field { it / other } }
+        this.all { field.numberIsZero { it.isZero() } }
     }
     // endregion
     
     // region Vector-Int operations
-    override operator fun MDList1<Number>.times(other: Int): MDList1<Number> {
+    override val numberTimesInt: Times<MDList1<Number>, Int, MDList1<Number>> = Times { other ->
         require(this.contentSize == dimension) { TODO() }
-        return this.map { field { it * other } }
+        this.map { field.numberTimesInt { it * other } }
     }
-    override operator fun MDList1<Number>.div(other: Int): MDList1<Number> {
+    override val vectorDivideInt: Divide<MDList1<Number>, Int, MDList1<Number>> = Divide { other ->
         require(this.contentSize == dimension) { TODO() }
-        return this.map { field { it / other } }
+        this.map { field.numberDivideInt { it / other } }
+    }
+    // endregion
+    
+    // region Vector-UInt operations
+    override val numberTimesUInt: Times<MDList1<Number>, UInt, MDList1<Number>> = Times { other ->
+        require(this.contentSize == dimension) { TODO() }
+        this.map { field.numberTimesUInt { it * other } }
+    }
+    override val vectorDivideUInt: Divide<MDList1<Number>, UInt, MDList1<Number>> = Divide { other ->
+        require(this.contentSize == dimension) { TODO() }
+        this.map { field.numberDivideUInt { it / other } }
     }
     // endregion
     
     // region Vector-Long operations
-    override operator fun MDList1<Number>.times(other: Long): MDList1<Number> {
+    override val numberTimesLong: Times<MDList1<Number>, Long, MDList1<Number>> = Times { other ->
         require(this.contentSize == dimension) { TODO() }
-        return this.map { field { it * other } }
+        this.map { field.numberTimesLong { it * other } }
     }
-    override operator fun MDList1<Number>.div(other: Long): MDList1<Number> {
+    override val vectorDivideLong: Divide<MDList1<Number>, Long, MDList1<Number>> = Divide { other ->
         require(this.contentSize == dimension) { TODO() }
-        return this.map { field { it / other } }
+        this.map { field.numberDivideLong { it / other } }
     }
     // endregion
     
     // region Vector-ULong operations
-    override operator fun MDList1<Number>.times(other: ULong): MDList1<Number> {
+    override val numberTimesULong: Times<MDList1<Number>, ULong, MDList1<Number>> = Times { other ->
         require(this.contentSize == dimension) { TODO() }
-        return this.map { field { it * other } }
+        this.map { field.numberTimesULong { it * other } }
     }
-    override operator fun MDList1<Number>.div(other: ULong): MDList1<Number> {
+    override val vectorDivideULong: Divide<MDList1<Number>, ULong, MDList1<Number>> = Divide { other ->
         require(this.contentSize == dimension) { TODO() }
-        return this.map { field { it / other } }
+        this.map { field.numberDivideULong { it / other } }
     }
     // endregion
     
     // region Vector-Number operations
-    override fun MDList1<Number>.times(other: Number): MDList1<Number> {
+    override val vectorTimesNumber: Times<MDList1<Number>, Number, MDList1<Number>> = Times { other ->
         require(this.contentSize == dimension) { TODO() }
-        return this.map { field { it * other } }
+        this.map { field.numberTimesNumber { it * other } }
     }
-    override fun MDList1<Number>.div(other: Number): MDList1<Number> {
+    override val vectorDivideNumber: Divide<MDList1<Number>, Number, MDList1<Number>> = Divide { other ->
         require(this.contentSize == dimension) { TODO() }
-        return this.map { field { it / other } }
+        this.map { field.numberDivideNumber { it / other } }
     }
     // endregion
     
     // region Int-Vector operations
-    override operator fun Int.times(other: MDList1<Number>): MDList1<Number> {
+    override val intTimesNumber: Times<Int, MDList1<Number>, MDList1<Number>> = Times { other ->
         require(other.contentSize == dimension) { TODO() }
-        return other.map { field { this * it } }
+        other.map { field.intTimesNumber { this * it } }
     }
     // endregion
     
     // region UInt-Vector operations
-    override operator fun UInt.times(other: MDList1<Number>): MDList1<Number> {
+    override val uIntTimesNumber: Times<UInt, MDList1<Number>, MDList1<Number>> = Times { other ->
         require(other.contentSize == dimension) { TODO() }
-        return other.map { field { this * it } }
+        other.map { field.uIntTimesNumber { this * it } }
     }
     // endregion
     
     // region Long-Vector operations
-    override operator fun Long.times(other: MDList1<Number>): MDList1<Number> {
+    override val longTimesNumber: Times<Long, MDList1<Number>, MDList1<Number>> = Times { other ->
         require(other.contentSize == dimension) { TODO() }
-        return other.map { field { this * it } }
+        other.map { field.longTimesNumber { this * it } }
     }
     // endregion
     
     // region ULong-Vector operations
-    override operator fun ULong.times(other: MDList1<Number>): MDList1<Number> {
+    override val uLongTimesNumber: Times<ULong, MDList1<Number>, MDList1<Number>> = Times { other ->
         require(other.contentSize == dimension) { TODO() }
-        return other.map { field { this * it } }
+        other.map { field.uLongTimesNumber { this * it } }
     }
     // endregion
     
     // region Number-Vector operations
-    override fun Number.times(other: MDList1<Number>): MDList1<Number> {
+    override val numberTimesVector: Times<Number, MDList1<Number>, MDList1<Number>> = Times { other ->
         require(other.contentSize == dimension) { TODO() }
-        return other.map { field { this * it } }
+        other.map { field.numberTimesNumber { this * it } }
     }
     // endregion
     
     // region Vector-Vector operations
-    override operator fun MDList1<Number>.unaryMinus(): MDList1<Number> {
+    override val numberUnaryMinus: UnaryMinus<MDList1<Number>, MDList1<Number>> = UnaryMinus {
         require(this.contentSize == dimension) { TODO() }
-        return this.map { field { -it } }
+        this.map { field.numberUnaryMinus { -it } }
     }
-    override operator fun MDList1<Number>.plus(other: MDList1<Number>): MDList1<Number> {
+    override val numberPlusNumber: Plus<MDList1<Number>, MDList1<Number>, MDList1<Number>> = Plus { other ->
         require(this.contentSize == dimension) { TODO() }
         require(other.contentSize == dimension) { TODO() }
-        return MDList1.generate(dimension) { field { this[it] + other[it] } }
+        MDList1.generate(dimension) { field.numberPlusNumber { this[it] + other[it] } }
     }
-    override operator fun MDList1<Number>.minus(other: MDList1<Number>): MDList1<Number> {
+    override val numberMinusNumber: Minus<MDList1<Number>, MDList1<Number>, MDList1<Number>> = Minus { other ->
         require(this.contentSize == dimension) { TODO() }
         require(other.contentSize == dimension) { TODO() }
-        return MDList1.generate(dimension) { field { this[it] + other[it] } }
+        MDList1.generate(dimension) { field.numberMinusNumber { this[it] - other[it] } }
     }
     // endregion
 }

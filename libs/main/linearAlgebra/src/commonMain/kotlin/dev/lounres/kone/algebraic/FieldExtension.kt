@@ -5,6 +5,8 @@
 
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.contexts.KoneContextHolderContext
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
@@ -13,14 +15,14 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 import kotlin.jvm.JvmName
 
 
-@Suppress("INAPPLICABLE_JVM_NAME")
 public interface FieldExtension<Number, Vector> : CommutativeAlgebra<Number, Vector>, Field<Vector>, VectorSpace<Number, Vector> {
-    @JvmName("divNumberVector")
-    public operator fun Number.div(other: Vector): Vector = valueOf(this) / other
-    public override fun Vector.div(other: Int): Vector = this / valueOf(other)
-    override fun Vector.div(other: UInt): Vector = this / valueOf(other)
-    override fun Vector.div(other: Long): Vector = this / valueOf(other)
-    override fun Vector.div(other: ULong): Vector = this / valueOf(other)
+    @KoneContextHolderContext
+    public val numberDivideVector: Divide<Number, Vector, Vector> get() = Divide { other -> numberDivideNumber { valueOf(this) / other } }
+    
+    override val vectorDivideInt: Divide<Vector, Int, Vector> get() = numberDivideInt
+    override val vectorDivideUInt: Divide<Vector, UInt, Vector> get() = numberDivideUInt
+    override val vectorDivideLong: Divide<Vector, Long, Vector> get() = numberDivideLong
+    override val vectorDivideULong: Divide<Vector, ULong, Vector> get() = numberDivideULong
     
     public companion object;
     
@@ -36,7 +38,3 @@ public interface FieldExtension<Number, Vector> : CommutativeAlgebra<Number, Vec
         override fun toString(): String = "dev.lounres.kone.algebraic.FieldExtension.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}>"
     }
 }
-
-@JvmName("divNumberVector")
-context(fieldExtension: FieldExtension<Number, Vector>)
-public operator fun <Number, Vector> Number.div(other: Vector): Vector = with(fieldExtension) { this@div / other }

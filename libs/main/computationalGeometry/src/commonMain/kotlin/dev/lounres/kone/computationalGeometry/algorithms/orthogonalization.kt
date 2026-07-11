@@ -16,6 +16,10 @@ import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityL
 import dev.lounres.kone.collections.list.implementations.generate
 import dev.lounres.kone.computationalGeometry.EuclideanVectorSpaceOverRing
 import dev.lounres.kone.computationalGeometry.dot
+import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.contexts.KoneContextHolder
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.useLocallyAsExtensionReceivers
 import dev.lounres.kone.repeat
 
 
@@ -32,8 +36,9 @@ internal fun <Number, Vector> GramSchmidtOrthogonalizationIntermediateState<Numb
         exclusiveProducts = KoneArrayFixedCapacityList.generate(maximalSubspaceDimension, exclusiveProducts.size) { exclusiveProducts[it] }
     )
 
-context(_: Ring<Number>, _: EuclideanVectorSpaceOverRing<Number, Vector>)
+context(ring: Ring<Number>, euclideanSpace: EuclideanVectorSpaceOverRing<Number, Vector>)
 internal fun <Number, Vector> GramSchmidtOrthogonalizationIntermediateState<Number, Vector>.gramSchmidtOrthogonalizationUsage(newVector: Vector): Vector {
+    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring, euclideanSpace)
     // FIXME: KT-67840
 //    (0u..<orthogonalizedBasis.size).fold(newVector * product) { acc, index ->
 //        val previousOrthogonalizedVector = orthogonalizedBasis[index]
@@ -49,8 +54,9 @@ internal fun <Number, Vector> GramSchmidtOrthogonalizationIntermediateState<Numb
     return result
 }
 
-context(_: Ring<Number>, _: EuclideanVectorSpaceOverRing<Number, Vector>)
+context(ring: Ring<Number>, euclideanSpace: EuclideanVectorSpaceOverRing<Number, Vector>)
 internal fun <Number, Vector> GramSchmidtOrthogonalizationIntermediateState<Number, Vector>.gramSchmidtOrthogonalizationExtension(newOrthogonalizedVector: Vector) {
+    KoneContext.useLocallyAsExtensionReceivers(ring.numberTimesNumber, euclideanSpace.vectorDotVector)
     val newIndex = orthogonalizedBasis.size
     orthogonalizedBasis.add(newOrthogonalizedVector)
     val currentNorm = newOrthogonalizedVector dot newOrthogonalizedVector
@@ -59,8 +65,9 @@ internal fun <Number, Vector> GramSchmidtOrthogonalizationIntermediateState<Numb
     product *= currentNorm
 }
 
-context(_: Ring<Number>, _: EuclideanVectorSpaceOverRing<Number, Vector>)
+context(_: Ring<Number>, euclideanSpace: EuclideanVectorSpaceOverRing<Number, Vector>)
 internal fun <Number, Vector> GramSchmidtOrthogonalizationIntermediateState<Number, Vector>.gramSchmidtOrthogonalizationStep(newVector: Vector) {
+    KoneContext.useLocallyAsExtensionReceivers(euclideanSpace.numberIsZero)
     val orthogonalizedVector = gramSchmidtOrthogonalizationUsage(newVector)
     if (orthogonalizedVector.isNotZero()) gramSchmidtOrthogonalizationExtension(orthogonalizedVector)
 }
