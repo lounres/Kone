@@ -12,60 +12,61 @@ import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.iterables.KoneSequence
+import dev.lounres.kone.contexts.invoke
 
 
 context(monoid: Monoid<E>)
-public fun <E> KoneIterator<E>.sum(): E = fold(monoid.zero) { acc, e -> acc + e }
+public fun <E> KoneIterator<E>.sum(): E = fold(monoid.zero) { acc, e -> monoid.numberPlusNumber { acc + e } }
 
 context(monoid: Monoid<E>)
-public fun <E> KoneIterable<E>.sum(): E = fold(monoid.zero) { acc, e -> acc + e }
+public fun <E> KoneIterable<E>.sum(): E = fold(monoid.zero) { acc, e -> monoid.numberPlusNumber { acc + e } }
 
 context(monoid: Monoid<E>)
-public fun <E> KoneSequence<E>.sum(): E = fold(monoid.zero) { acc, e -> acc + e }
+public fun <E> KoneSequence<E>.sum(): E = fold(monoid.zero) { acc, e -> monoid.numberPlusNumber { acc + e } }
 
 context(monoid: Monoid<N>)
-public fun <E, N> KoneIterator<E>.sumOf(selector: (E) -> N): N = fold(monoid.zero) { acc, e -> acc + selector(e) }
+public fun <E, N> KoneIterator<E>.sumOf(selector: (E) -> N): N = fold(monoid.zero) { acc, e -> monoid.numberPlusNumber { acc + selector(e) } }
 
 context(monoid: Monoid<N>)
-public fun <E, N> KoneIterable<E>.sumOf(selector: (E) -> N): N = fold(monoid.zero) { acc, e -> acc + selector(e) }
+public fun <E, N> KoneIterable<E>.sumOf(selector: (E) -> N): N = fold(monoid.zero) { acc, e -> monoid.numberPlusNumber { acc + selector(e) } }
 
 context(monoid: Monoid<N>)
-public fun <E, N> KoneSequence<E>.sumOf(selector: (E) -> N): N = fold(monoid.zero) { acc, e -> acc + selector(e) }
+public fun <E, N> KoneSequence<E>.sumOf(selector: (E) -> N): N = fold(monoid.zero) { acc, e -> monoid.numberPlusNumber { acc + selector(e) } }
 
 context(monoid: Monoid<N>)
-public inline fun <E, N> KoneIterator<E>.sumOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(monoid.zero) { index, acc, e -> acc + selector(index, e) }
+public inline fun <E, N> KoneIterator<E>.sumOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(monoid.zero) { index, acc, e -> monoid.numberPlusNumber { acc + selector(index, e) } }
 
 context(monoid: Monoid<N>)
-public inline fun <E, N> KoneIterable<E>.sumOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(monoid.zero) { index, acc, e -> acc + selector(index, e) }
+public inline fun <E, N> KoneIterable<E>.sumOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(monoid.zero) { index, acc, e -> monoid.numberPlusNumber { acc + selector(index, e) } }
 
 context(monoid: Monoid<N>)
-public inline fun <E, N> KoneSequence<E>.sumOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(monoid.zero) { index, acc, e -> acc + selector(index, e) }
+public inline fun <E, N> KoneSequence<E>.sumOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(monoid.zero) { index, acc, e -> monoid.numberPlusNumber { acc + selector(index, e) } }
 
 context(ring: Semiring<E>)
-public fun <E> KoneIterator<E>.product(): E = fold(ring.one) { acc, e -> acc * e }
+public fun <E> KoneIterator<E>.product(): E = fold(ring.one) { acc, e -> ring.numberTimesNumber { acc * e } }
 
 context(ring: Semiring<E>)
-public fun <E> KoneIterable<E>.product(): E = fold(ring.one) { acc, e -> acc * e }
+public fun <E> KoneIterable<E>.product(): E = fold(ring.one) { acc, e -> ring.numberTimesNumber { acc * e } }
 
 context(ring: Semiring<E>)
-public fun <E> KoneSequence<E>.product(): E = fold(ring.one) { acc, e -> acc * e }
+public fun <E> KoneSequence<E>.product(): E = fold(ring.one) { acc, e -> ring.numberTimesNumber { acc * e } }
 
 context(ring: Semiring<N>)
-public fun <E, N> KoneIterator<E>.productOf(selector: (E) -> N): N = fold(ring.one) { acc, e -> acc * selector(e) }
+public fun <E, N> KoneIterator<E>.productOf(selector: (E) -> N): N = fold(ring.one) { acc, e -> ring.numberTimesNumber { acc * selector(e) } }
 
 context(ring: Semiring<N>)
-public fun <E, N> KoneIterable<E>.productOf(selector: (E) -> N): N = fold(ring.one) { acc, e -> acc * selector(e) }
+public fun <E, N> KoneIterable<E>.productOf(selector: (E) -> N): N = fold(ring.one) { acc, e -> ring.numberTimesNumber { acc * selector(e) } }
 
 context(ring: Semiring<N>)
-public fun <E, N> KoneSequence<E>.productOf(selector: (E) -> N): N = fold(ring.one) { acc, e -> acc * selector(e) }
+public fun <E, N> KoneSequence<E>.productOf(selector: (E) -> N): N = fold(ring.one) { acc, e -> ring.numberTimesNumber { acc * selector(e) } }
 
 context(ring: Semiring<N>)
-public inline fun <E, N> KoneIterator<E>.productOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(ring.one) { index, acc, e -> acc * selector(index, e) }
+public inline fun <E, N> KoneIterator<E>.productOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(ring.one) { index, acc, e -> ring.numberTimesNumber { acc * selector(index, e) } }
 
 context(ring: Semiring<N>)
-public inline fun <E, N> KoneIterable<E>.productOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(ring.one) { index, acc, e -> acc * selector(index, e) }
+public inline fun <E, N> KoneIterable<E>.productOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(ring.one) { index, acc, e -> ring.numberTimesNumber { acc * selector(index, e) } }
 
 context(ring: Semiring<N>)
-public inline fun <E, N> KoneSequence<E>.productOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(ring.one) { index, acc, e -> acc * selector(index, e) }
+public inline fun <E, N> KoneSequence<E>.productOfIndexed(selector: (index: UInt, E) -> N): N = foldIndexed(ring.one) { index, acc, e -> ring.numberTimesNumber { acc * selector(index, e) } }
 
 // TODO: Add summing and multiplying extensions for primitives. Maybe.

@@ -57,7 +57,7 @@ private class ClosedRangeArithmeticProgressionIterator<Number>(
         if (hasNext()) currentNumber else noNextElementInIteratorException()
     override fun moveNext() {
         if (!hasNext()) noNextElementInIteratorException()
-        monoid { currentNumber += step }
+        monoid.numberPlusNumber { currentNumber += step }
     }
 }
 
@@ -102,7 +102,7 @@ private class RightOpenRangeArithmeticProgressionIterator<Number>(
         if (hasNext()) currentNumber else noNextElementInIteratorException()
     override fun moveNext() {
         if (!hasNext()) noNextElementInIteratorException()
-        monoid { currentNumber += step }
+        monoid.numberPlusNumber { currentNumber += step }
     }
 }
 
