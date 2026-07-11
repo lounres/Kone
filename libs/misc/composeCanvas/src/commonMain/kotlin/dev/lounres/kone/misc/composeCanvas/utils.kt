@@ -15,9 +15,3 @@ import dev.lounres.kone.computationalGeometry.default2.Vector2
 
 @PublishedApi
 internal val koneCanvasEuclideanSpace: EuclideanSpace2OverField<Double> = EuclideanSpace2OverField(Double.field())
-
-public inline fun <Result> inKoneCanvasEuclideanSpace(block: context(Field<Double>, EuclideanSpaceOverField<Double, Vector2<Double>, Point2<Double>>) () -> Result): Result =
-    block(
-        Double.field(),
-        koneCanvasEuclideanSpace,
-    )

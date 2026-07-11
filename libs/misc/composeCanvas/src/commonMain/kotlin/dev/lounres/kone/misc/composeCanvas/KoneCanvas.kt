@@ -20,7 +20,6 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Density
 import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.algebraic.unaryMinus
 import dev.lounres.kone.collections.array.KoneDoubleArray
 import dev.lounres.kone.collections.array.of
 import dev.lounres.kone.collections.iterables.next
@@ -29,7 +28,8 @@ import dev.lounres.kone.computationalGeometry.angles.degrees
 import dev.lounres.kone.computationalGeometry.angles.plus
 import dev.lounres.kone.computationalGeometry.angles.sin
 import dev.lounres.kone.computationalGeometry.default2.Vector2
-import dev.lounres.kone.computationalGeometry.plus
+import dev.lounres.kone.contexts.KoneContextHolder
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.exp
 
@@ -185,95 +185,94 @@ public inline fun Modifier.defaultKoneCanvasPointerInput(
             true
         }
         .pointerInput(Unit) {
-            inKoneCanvasEuclideanSpace {
-                awaitPointerEventScope {
-                    var currentPressPosition: Offset? = null
-                    while (true) {
-                        val event = awaitPointerEvent()
-                        when (event.type) {
-                            PointerEventType.Press -> {
-                                currentPressPosition = event.changes.last().position
-                            }
+            awaitPointerEventScope {
+                KoneContextHolder.unwrapLocallyAsExtensionReceivers(koneCanvasEuclideanSpace)
+                var currentPressPosition: Offset? = null
+                while (true) {
+                    val event = awaitPointerEvent()
+                    when (event.type) {
+                        PointerEventType.Press -> {
+                            currentPressPosition = event.changes.last().position
+                        }
 
-                            PointerEventType.Release -> {
-                                currentPressPosition = null
-                            }
+                        PointerEventType.Release -> {
+                            currentPressPosition = null
+                        }
 
-                            PointerEventType.Move -> {
-                                if (currentPressPosition != null) {
-                                    (val oldOffset = offset, val oldZoom = zoom, val oldRotation = rotation) = getKoneCanvasState()
-                                    val lastPosition = event.changes.last().position
-                                    val offset = lastPosition - currentPressPosition
-                                    val cos = cos(oldRotation)
-                                    val sin = sin(oldRotation)
-                                    currentPressPosition = lastPosition
-                                    setKoneCanvasState(
-                                        KoneCanvasState(
-                                            offset = oldOffset +
-                                                -Vector2(
-                                                    offset.x.toDouble() * cos - offset.y.toDouble() * sin,
-                                                    -offset.y.toDouble() * cos - offset.x.toDouble() * sin,
-                                                ) * oldZoom,
-                                            zoom = oldZoom,
-                                            rotation = oldRotation,
-                                        )
-                                    )
-                                }
-                            }
-
-                            PointerEventType.Scroll -> {
-                                val lastChange = event.changes.last()
-                                
+                        PointerEventType.Move -> {
+                            if (currentPressPosition != null) {
                                 (val oldOffset = offset, val oldZoom = zoom, val oldRotation = rotation) = getKoneCanvasState()
-
-                                val pointerOffset =
-                                    lastChange.position.let {
-                                        Vector2(
-                                            (-size.width / 2 + it.x).toDouble(),
-                                            (size.height / 2 - it.y).toDouble()
-                                        )
-                                    }
-
-                                if (!isCtrlPressed) {
-                                    val zoomDelta = exp(lastChange.scrollDelta.y / 10)
-
-                                    val newZoom = oldZoom * zoomDelta
-                                    val cos = cos(oldRotation)
-                                    val sin = sin(oldRotation)
-
-                                    setKoneCanvasState(
-                                        KoneCanvasState(
-                                            offset = oldOffset + pointerOffset.let {
-                                                Vector2(
-                                                    it.x * cos + it.y * sin,
-                                                    -it.x * sin + it.y * cos
-                                                )
-                                            } * (oldZoom - newZoom),
-                                            zoom = newZoom,
-                                            rotation = oldRotation,
-                                        )
+                                val lastPosition = event.changes.last().position
+                                val offset = lastPosition - currentPressPosition
+                                val cos = cos(oldRotation)
+                                val sin = sin(oldRotation)
+                                currentPressPosition = lastPosition
+                                setKoneCanvasState(
+                                    KoneCanvasState(
+                                        offset = oldOffset -
+                                            Vector2(
+                                                offset.x.toDouble() * cos - offset.y.toDouble() * sin,
+                                                -offset.y.toDouble() * cos - offset.x.toDouble() * sin,
+                                            ) * oldZoom,
+                                        zoom = oldZoom,
+                                        rotation = oldRotation,
                                     )
-                                } else {
-                                    val angleDelta = lastChange.scrollDelta.y.toDouble().degrees
+                                )
+                            }
+                        }
 
-                                    setKoneCanvasState(
-                                        KoneCanvasState(
-                                            offset = oldOffset
-                                                    + pointerOffset.let {
-                                                        val cos = cos(oldRotation)
-                                                        val sin = sin(oldRotation)
-                                                        Vector2(it.x * cos + it.y * sin, it.x * -sin + it.y * cos) * oldZoom
-                                                    }
-                                                    + -pointerOffset.let {
-                                                        val cos = cos(oldRotation + angleDelta)
-                                                        val sin = sin(oldRotation + angleDelta)
-                                                        Vector2(it.x * cos + it.y * sin, it.x * -sin + it.y * cos) * oldZoom
-                                                    },
-                                            zoom = oldZoom,
-                                            rotation = oldRotation + angleDelta,
-                                        )
+                        PointerEventType.Scroll -> {
+                            val lastChange = event.changes.last()
+                            
+                            (val oldOffset = offset, val oldZoom = zoom, val oldRotation = rotation) = getKoneCanvasState()
+
+                            val pointerOffset =
+                                lastChange.position.let {
+                                    Vector2(
+                                        (-size.width / 2 + it.x).toDouble(),
+                                        (size.height / 2 - it.y).toDouble()
                                     )
                                 }
+
+                            if (!isCtrlPressed) {
+                                val zoomDelta = exp(lastChange.scrollDelta.y / 10)
+
+                                val newZoom = oldZoom * zoomDelta
+                                val cos = cos(oldRotation)
+                                val sin = sin(oldRotation)
+
+                                setKoneCanvasState(
+                                    KoneCanvasState(
+                                        offset = oldOffset + pointerOffset.let {
+                                            Vector2(
+                                                it.x * cos + it.y * sin,
+                                                -it.x * sin + it.y * cos
+                                            )
+                                        } * (oldZoom - newZoom),
+                                        zoom = newZoom,
+                                        rotation = oldRotation,
+                                    )
+                                )
+                            } else {
+                                val angleDelta = lastChange.scrollDelta.y.toDouble().degrees
+
+                                setKoneCanvasState(
+                                    KoneCanvasState(
+                                        offset = oldOffset
+                                                + pointerOffset.let {
+                                                    val cos = cos(oldRotation)
+                                                    val sin = sin(oldRotation)
+                                                    Vector2(it.x * cos + it.y * sin, it.x * -sin + it.y * cos) * oldZoom
+                                                }
+                                                - pointerOffset.let {
+                                                    val cos = cos(oldRotation + angleDelta)
+                                                    val sin = sin(oldRotation + angleDelta)
+                                                    Vector2(it.x * cos + it.y * sin, it.x * -sin + it.y * cos) * oldZoom
+                                                },
+                                        zoom = oldZoom,
+                                        rotation = oldRotation + angleDelta,
+                                    )
+                                )
                             }
                         }
                     }

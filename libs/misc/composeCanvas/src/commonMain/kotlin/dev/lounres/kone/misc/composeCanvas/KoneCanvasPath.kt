@@ -6,6 +6,7 @@
 package dev.lounres.kone.misc.composeCanvas
 
 import androidx.compose.ui.graphics.Path
+import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneMutableList
@@ -15,7 +16,7 @@ import dev.lounres.kone.collections.utils.last
 import dev.lounres.kone.collections.utils.map
 import dev.lounres.kone.computationalGeometry.default2.Point2
 import dev.lounres.kone.computationalGeometry.default2.Vector2
-import dev.lounres.kone.computationalGeometry.plus
+import dev.lounres.kone.contexts.invoke
 import kotlin.jvm.JvmInline
 
 
@@ -66,7 +67,7 @@ public value class KoneCanvasPath internal constructor(
         public fun relativeMoveTo(shift: Vector2<Double>) {
             paths.add(
                 Subpath.Builder(
-                    inKoneCanvasEuclideanSpace {
+                    koneCanvasEuclideanSpace.pointPlusVector {
                         paths.last().end + shift
                     }
                 )
@@ -80,7 +81,7 @@ public value class KoneCanvasPath internal constructor(
         public fun relativeLineTo(shift: Vector2<Double>) {
             paths.last().add(
                 Part.LineTo(
-                    inKoneCanvasEuclideanSpace {
+                    koneCanvasEuclideanSpace.pointPlusVector {
                         paths.last().end + shift
                     }
                 )

@@ -1,7 +1,13 @@
+import dev.lounres.kone.buildSrc.dsl.konePlugins
+
 plugins {
     alias(versions.plugins.kotlinx.serialization)
     alias(versions.plugins.kotlin.compose)
     alias(versions.plugins.compose.multiplatform)
+}
+
+konePlugins {
+    +"contexts"
 }
 
 kotlin {

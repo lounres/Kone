@@ -27,8 +27,8 @@ import dev.lounres.kone.computationalGeometry.angles.sin
 import dev.lounres.kone.computationalGeometry.default2.Point2
 import dev.lounres.kone.computationalGeometry.default2.Vector2
 import dev.lounres.kone.computationalGeometry.lengthSquared
-import dev.lounres.kone.computationalGeometry.minus
-import dev.lounres.kone.computationalGeometry.plus
+import dev.lounres.kone.contexts.KoneContextHolder
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
 import kotlin.math.sqrt
 
 
@@ -344,40 +344,39 @@ public fun KoneCanvasScope.drawLine(
     colorFilter: ColorFilter? = null,
     blendMode: BlendMode = DefaultBlendMode
 ) {
-    inKoneCanvasEuclideanSpace {
-        val directionVector = end - start
-        val strokeVector = directionVector.let { Vector2(-it.y, it.x) } * (strokeWidth / 2 / sqrt(directionVector.lengthSquared()))
-        drawPath(
-            path = when (cap) {
-                StrokeCap.Butt -> KoneCanvasPath {
-                    moveTo(start + strokeVector)
-                    lineTo(end + strokeVector)
-                    lineTo(end + -strokeVector)
-                    lineTo(start + -strokeVector)
-                    lineTo(start + strokeVector)
-                }
-                StrokeCap.Round -> KoneCanvasPath {
-                    error("Unsupported type of cap for now")
-                }
-                StrokeCap.Square -> KoneCanvasPath {
-                    val directionPadVector = strokeVector.let { Vector2(it.y, -it.x) }
-                    val start = start + -directionPadVector
-                    val end = end + directionPadVector
-                    moveTo(start + strokeVector)
-                    lineTo(end + strokeVector)
-                    lineTo(end + -strokeVector)
-                    lineTo(start + -strokeVector)
-                    lineTo(start + strokeVector)
-                }
-                else -> error("Unknown kind of cap")
-            },
-            brush = brush,
-            alpha = alpha,
-            style = Fill,
-            colorFilter = colorFilter,
-            blendMode = blendMode,
-        )
-    }
+    KoneContextHolder.unwrapLocallyAsExtensionReceivers(koneCanvasEuclideanSpace)
+    val directionVector = end - start
+    val strokeVector = directionVector.let { Vector2(-it.y, it.x) } * (strokeWidth / 2 / sqrt(directionVector.lengthSquared()))
+    drawPath(
+        path = when (cap) {
+            StrokeCap.Butt -> KoneCanvasPath {
+                moveTo(start + strokeVector)
+                lineTo(end + strokeVector)
+                lineTo(end + -strokeVector)
+                lineTo(start + -strokeVector)
+                lineTo(start + strokeVector)
+            }
+            StrokeCap.Round -> KoneCanvasPath {
+                error("Unsupported type of cap for now")
+            }
+            StrokeCap.Square -> KoneCanvasPath {
+                val directionPadVector = strokeVector.let { Vector2(it.y, -it.x) }
+                val start = start + -directionPadVector
+                val end = end + directionPadVector
+                moveTo(start + strokeVector)
+                lineTo(end + strokeVector)
+                lineTo(end + -strokeVector)
+                lineTo(start + -strokeVector)
+                lineTo(start + strokeVector)
+            }
+            else -> error("Unknown kind of cap")
+        },
+        brush = brush,
+        alpha = alpha,
+        style = Fill,
+        colorFilter = colorFilter,
+        blendMode = blendMode,
+    )
 }
 
 public fun KoneCanvasScope.drawLine(
@@ -391,40 +390,39 @@ public fun KoneCanvasScope.drawLine(
     colorFilter: ColorFilter? = null,
     blendMode: BlendMode = DefaultBlendMode
 ) {
-    inKoneCanvasEuclideanSpace {
-        val directionVector = end - start
-        val strokeVector = directionVector.let { Vector2(-it.y, it.x) } * (strokeWidth / 2 / sqrt(directionVector.lengthSquared()))
-        drawPath(
-            path = when (cap) {
-                StrokeCap.Butt -> KoneCanvasPath {
-                    moveTo(start + strokeVector)
-                    lineTo(end + strokeVector)
-                    lineTo(end + -strokeVector)
-                    lineTo(start + -strokeVector)
-                    lineTo(start + strokeVector)
-                }
-                StrokeCap.Round -> KoneCanvasPath {
-                    error("Unsupported type of cap for now")
-                }
-                StrokeCap.Square -> KoneCanvasPath {
-                    val directionPadVector = strokeVector.let { Vector2(it.y, -it.x) }
-                    val start = start + -directionPadVector
-                    val end = end + directionPadVector
-                    moveTo(start + strokeVector)
-                    lineTo(end + strokeVector)
-                    lineTo(end + -strokeVector)
-                    lineTo(start + -strokeVector)
-                    lineTo(start + strokeVector)
-                }
-                else -> error("Unknown kind of cap")
-            },
-            color = color,
-            alpha = alpha,
-            style = Fill,
-            colorFilter = colorFilter,
-            blendMode = blendMode,
-        )
-    }
+    KoneContextHolder.unwrapLocallyAsExtensionReceivers(koneCanvasEuclideanSpace)
+    val directionVector = end - start
+    val strokeVector = directionVector.let { Vector2(-it.y, it.x) } * (strokeWidth / 2 / sqrt(directionVector.lengthSquared()))
+    drawPath(
+        path = when (cap) {
+            StrokeCap.Butt -> KoneCanvasPath {
+                moveTo(start + strokeVector)
+                lineTo(end + strokeVector)
+                lineTo(end + -strokeVector)
+                lineTo(start + -strokeVector)
+                lineTo(start + strokeVector)
+            }
+            StrokeCap.Round -> KoneCanvasPath {
+                error("Unsupported type of cap for now")
+            }
+            StrokeCap.Square -> KoneCanvasPath {
+                val directionPadVector = strokeVector.let { Vector2(it.y, -it.x) }
+                val start = start + -directionPadVector
+                val end = end + directionPadVector
+                moveTo(start + strokeVector)
+                lineTo(end + strokeVector)
+                lineTo(end + -strokeVector)
+                lineTo(start + -strokeVector)
+                lineTo(start + strokeVector)
+            }
+            else -> error("Unknown kind of cap")
+        },
+        color = color,
+        alpha = alpha,
+        style = Fill,
+        colorFilter = colorFilter,
+        blendMode = blendMode,
+    )
 }
 
 public fun KoneCanvasScope.drawRectangle(
@@ -437,24 +435,23 @@ public fun KoneCanvasScope.drawRectangle(
     colorFilter: ColorFilter? = null,
     blendMode: BlendMode = DefaultBlendMode
 ) {
-    inKoneCanvasEuclideanSpace {
-        val widthVector = Vector2(cos(direction), sin(direction)) * size.width
-        val heightVector = Vector2(-sin(direction), cos(direction)) * size.height
-        drawPath(
-            brush = brush,
-            path = KoneCanvasPath {
-                moveTo(center + widthVector + heightVector)
-                lineTo(center + -widthVector + heightVector)
-                lineTo(center + -widthVector + -heightVector)
-                lineTo(center + widthVector + -heightVector)
-                lineTo(center + widthVector + heightVector)
-            },
-            alpha = alpha,
-            style = style,
-            colorFilter = colorFilter,
-            blendMode = blendMode,
-        )
-    }
+    KoneContextHolder.unwrapLocallyAsExtensionReceivers(koneCanvasEuclideanSpace)
+    val widthVector = Vector2(cos(direction), sin(direction)) * size.width
+    val heightVector = Vector2(-sin(direction), cos(direction)) * size.height
+    drawPath(
+        brush = brush,
+        path = KoneCanvasPath {
+            moveTo(center + widthVector + heightVector)
+            lineTo(center + -widthVector + heightVector)
+            lineTo(center + -widthVector + -heightVector)
+            lineTo(center + widthVector + -heightVector)
+            lineTo(center + widthVector + heightVector)
+        },
+        alpha = alpha,
+        style = style,
+        colorFilter = colorFilter,
+        blendMode = blendMode,
+    )
 }
 
 public fun KoneCanvasScope.drawRectangle(
@@ -467,24 +464,23 @@ public fun KoneCanvasScope.drawRectangle(
     colorFilter: ColorFilter? = null,
     blendMode: BlendMode = DefaultBlendMode
 ) {
-    inKoneCanvasEuclideanSpace {
-        val widthVector = Vector2(cos(direction), sin(direction)) * (size.width / 2)
-        val heightVector = Vector2(-sin(direction), cos(direction)) * (size.height / 2)
-        drawPath(
-            color = color,
-            path = KoneCanvasPath {
-                moveTo(center + widthVector + heightVector)
-                lineTo(center + -widthVector + heightVector)
-                lineTo(center + -widthVector + -heightVector)
-                lineTo(center + widthVector + -heightVector)
-                lineTo(center + widthVector + heightVector)
-            },
-            alpha = alpha,
-            style = style,
-            colorFilter = colorFilter,
-            blendMode = blendMode,
-        )
-    }
+    KoneContextHolder.unwrapLocallyAsExtensionReceivers(koneCanvasEuclideanSpace)
+    val widthVector = Vector2(cos(direction), sin(direction)) * (size.width / 2)
+    val heightVector = Vector2(-sin(direction), cos(direction)) * (size.height / 2)
+    drawPath(
+        color = color,
+        path = KoneCanvasPath {
+            moveTo(center + widthVector + heightVector)
+            lineTo(center + -widthVector + heightVector)
+            lineTo(center + -widthVector + -heightVector)
+            lineTo(center + widthVector + -heightVector)
+            lineTo(center + widthVector + heightVector)
+        },
+        alpha = alpha,
+        style = style,
+        colorFilter = colorFilter,
+        blendMode = blendMode,
+    )
 }
 
 public fun KoneCanvasScope.drawCircle(
@@ -549,27 +545,26 @@ public fun KoneCanvasScope.drawEllipse(
     colorFilter: ColorFilter? = null,
     blendMode: BlendMode = DefaultBlendMode
 ) {
-    inKoneCanvasEuclideanSpace {
-        val cos = cos(direction)
-        val sin = sin(direction)
-        val width = size.width / 2
-        val height = size.height / 2
-        drawEllipse(
-            brush = brush,
-            ellipse = KoneCanvasEllipse(
-                transformationMatrix = KoneCanvasTransformationMatrix(
-                    KoneDoubleArray.of(
-                        cos * width, -sin * width, center.x,
-                        sin * height, cos * height, center.y,
-                    )
+    KoneContextHolder.unwrapLocallyAsExtensionReceivers(koneCanvasEuclideanSpace)
+    val cos = cos(direction)
+    val sin = sin(direction)
+    val width = size.width / 2
+    val height = size.height / 2
+    drawEllipse(
+        brush = brush,
+        ellipse = KoneCanvasEllipse(
+            transformationMatrix = KoneCanvasTransformationMatrix(
+                KoneDoubleArray.of(
+                    cos * width, -sin * width, center.x,
+                    sin * height, cos * height, center.y,
                 )
-            ),
-            alpha = alpha,
-            style = style,
-            colorFilter = colorFilter,
-            blendMode = blendMode,
-        )
-    }
+            )
+        ),
+        alpha = alpha,
+        style = style,
+        colorFilter = colorFilter,
+        blendMode = blendMode,
+    )
 }
 
 public fun KoneCanvasScope.drawEllipse(
@@ -582,27 +577,26 @@ public fun KoneCanvasScope.drawEllipse(
     colorFilter: ColorFilter? = null,
     blendMode: BlendMode = DefaultBlendMode
 ) {
-    inKoneCanvasEuclideanSpace {
-        val cos = cos(direction)
-        val sin = sin(direction)
-        val width = size.width / 2
-        val height = size.height / 2
-        drawEllipse(
-            color = color,
-            ellipse = KoneCanvasEllipse(
-                transformationMatrix = KoneCanvasTransformationMatrix(
-                    KoneDoubleArray.of(
-                        cos * width, -sin * width, center.x,
-                        sin * height, cos * height, center.y,
-                    )
+    KoneContextHolder.unwrapLocallyAsExtensionReceivers(koneCanvasEuclideanSpace)
+    val cos = cos(direction)
+    val sin = sin(direction)
+    val width = size.width / 2
+    val height = size.height / 2
+    drawEllipse(
+        color = color,
+        ellipse = KoneCanvasEllipse(
+            transformationMatrix = KoneCanvasTransformationMatrix(
+                KoneDoubleArray.of(
+                    cos * width, -sin * width, center.x,
+                    sin * height, cos * height, center.y,
                 )
-            ),
-            alpha = alpha,
-            style = style,
-            colorFilter = colorFilter,
-            blendMode = blendMode,
-        )
-    }
+            )
+        ),
+        alpha = alpha,
+        style = style,
+        colorFilter = colorFilter,
+        blendMode = blendMode,
+    )
 }
 
 //public fun KoneCanvasScope.drawArc(
@@ -646,23 +640,22 @@ public fun KoneCanvasScope.drawImage(
     colorFilter: ColorFilter? = null,
     blendMode: BlendMode = DefaultBlendMode
 ) {
-    inKoneCanvasEuclideanSpace {
-        val cos = cos(direction)
-        val sin = sin(direction)
-        drawImage(
-            image = KoneCanvasImage(
-                image = image,
-                transformationMatrix = KoneCanvasTransformationMatrix(
-                    KoneDoubleArray.of(
-                        cos, -sin, center.x,
-                        sin, cos, center.y,
-                    )
+    KoneContextHolder.unwrapLocallyAsExtensionReceivers(koneCanvasEuclideanSpace)
+    val cos = cos(direction)
+    val sin = sin(direction)
+    drawImage(
+        image = KoneCanvasImage(
+            image = image,
+            transformationMatrix = KoneCanvasTransformationMatrix(
+                KoneDoubleArray.of(
+                    cos, -sin, center.x,
+                    sin, cos, center.y,
                 )
-            ),
-            alpha = alpha,
-            style = style,
-            colorFilter = colorFilter,
-            blendMode = blendMode,
-        )
-    }
+            )
+        ),
+        alpha = alpha,
+        style = style,
+        colorFilter = colorFilter,
+        blendMode = blendMode,
+    )
 }
