@@ -6,6 +6,7 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.algebraic.util.doublingTimes
+import dev.lounres.kone.contexts.KoneContextHolderContext
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
@@ -15,24 +16,30 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 public interface Group<Number> : Monoid<Number> {
     // region Number-Int operations
-    public operator fun Number.times(other: Int): Number = this doublingTimes other
+    @KoneContextHolderContext
+    public val numberTimesInt: Times<Number, Int, Number> get() = Times { other -> this doublingTimes other }
     // endregion
     
     // region Number-Long operations
-    public operator fun Number.times(other: Long): Number = this doublingTimes other
+    @KoneContextHolderContext
+    public val numberTimesLong: Times<Number, Long, Number> get() = Times { other -> this doublingTimes other }
     // endregion
     
     // region Int-Number operations
-    public operator fun Int.times(other: Number): Number = this doublingTimes other
+    @KoneContextHolderContext
+    public val intTimesNumber: Times<Int, Number, Number> get() = Times { other -> this doublingTimes other }
     // endregion
     
     // region Long-Number operations
-    public operator fun Long.times(other: Number): Number = this doublingTimes other
+    @KoneContextHolderContext
+    public val longTimesNumber: Times<Long, Number, Number> get() = Times { other -> this doublingTimes other }
     // endregion
     
     // region Number-Number operations
-    public operator fun Number.unaryMinus(): Number
-    public operator fun Number.minus(other: Number): Number
+    @KoneContextHolderContext
+    public val numberUnaryMinus: UnaryMinus<Number, Number>
+    @KoneContextHolderContext
+    public val numberMinusNumber: Minus<Number, Number, Number>
     // endregion
     
     public companion object;
@@ -41,71 +48,18 @@ public interface Group<Number> : Monoid<Number> {
     public class Key<@Supply Number> : SuppliedTypeRegistryKey<Group<Number>>() {
         override val impliedKeys: ImpliedKeysRegistry<Group<Number>> by lazy {
             ImpliedKeysRegistry {
+                UnaryMinus.Key<Number, Number>() implies { it.numberUnaryMinus }
+                Minus.Key<Number, Number, Number>() implies { it.numberMinusNumber }
+                Times.Key<Number, Int, Number>() implies { it.numberTimesInt }
+                Times.Key<Number, Long, Number>() implies { it.numberTimesLong }
+                Times.Key<Int, Number, Number>() implies { it.intTimesNumber }
+                Times.Key<Long, Number, Number>() implies { it.longTimesNumber }
                 Monoid.Key<Number>().impliesSame()
             }
         }
         override fun toString(): String = "dev.lounres.kone.algebraic.Group.Key<${suppliedTypeOf<Number>()}>"
     }
 }
-
-
-// region Number-Int operations
-/**
- * Multiplies [this] number and the [other] integer as elements of the [Group].
- *
- * A bridge contextual function for [Group.times].
- */
-context(group: Group<Number>)
-public operator fun <Number> Number.times(other: Int): Number = with(group) { this@times * other }
-// endregion
-
-// region Number-Long operations
-/**
- * Multiplies [this] number and the [other] integer as elements of the [Group].
- *
- * A bridge contextual function for [Group.times].
- */
-context(group: Group<Number>)
-public operator fun <Number> Number.times(other: Long): Number = with(group) { this@times * other }
-// endregion
-
-// region Int-Number operations
-/**
- * Sums [this] integer and the [other] number as elements of the [Group].
- *
- * A bridge contextual function for [Group.times].
- */
-context(group: Group<Number>)
-public operator fun <Number> Int.times(other: Number): Number = with(group) { this@times * other }
-// endregion
-
-// region Long-Number operations
-/**
- * Sums [this] integer and the [other] number as elements of the [Group].
- *
- * A bridge contextual function for [Group.times].
- */
-context(group: Group<Number>)
-public operator fun <Number> Long.times(other: Number): Number = with(group) { this@times * other }
-// endregion
-
-// region Number-Number operations
-/**
- * Inverses [this] value in terms of the [Group].
- *
- * A bridge contextual function for [Group.unaryMinus].
- */
-context(group: Group<Number>)
-public operator fun <Number> Number.unaryMinus(): Number = with(group) { -this@unaryMinus }
-/**
- * Subtracts [this] and the [other] numbers in terms of the [Group].
- *
- * A bridge contextual function for [Group.minus].
- */
-context(group: Group<Number>)
-public operator fun <Number> Number.minus(other: Number): Number = with(group) { this@minus - other }
-// endregion
-
 
 public interface CommutativeGroup<Number> : Group<Number>, CommutativeMonoid<Number> {
     public companion object;

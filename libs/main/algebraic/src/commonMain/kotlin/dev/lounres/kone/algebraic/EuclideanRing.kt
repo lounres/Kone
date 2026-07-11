@@ -5,7 +5,9 @@
 
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.contexts.KoneContextHolderContext
 import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
@@ -40,18 +42,12 @@ public /*value*/ data class EuclideanDivisionResult<Number>(public val quotient:
  * but no actual programming representation of the norm is not provided.
  */
 public interface EuclideanSemiring<Number> : CommutativeSemiring<Number> {
-    /**
-     * Returns result of Euclidean division (a.k.a. a division with remainder), both quotient and remainder.
-     */
-    public infix fun Number.divrem(other: Number): EuclideanDivisionResult<Number>
-    /**
-     * Returns quotient of Euclidean division (a.k.a. a division with remainder).
-     */
-    public operator fun Number.div(other: Number): Number = (this divrem other).quotient
-    /**
-     * Returns remainder of Euclidean division (a.k.a. a division with remainder).
-     */
-    public operator fun Number.rem(other: Number): Number = (this divrem other).remainder
+    @KoneContextHolderContext
+    public val numberDivideRemainderNumber: DivideRemainder<Number, Number, EuclideanDivisionResult<Number>>
+    @KoneContextHolderContext
+    public val numberDivideNumber: Divide<Number, Number, Number> get() = Divide { other -> numberDivideRemainderNumber { this divrem other }.quotient }
+    @KoneContextHolderContext
+    public val numberRemainderNumber: Remainder<Number, Number, Number> get() = Remainder { other -> numberDivideRemainderNumber { this divrem other }.remainder }
     
     public companion object;
     
@@ -68,28 +64,6 @@ public interface EuclideanSemiring<Number> : CommutativeSemiring<Number> {
         override fun toString(): String = "dev.lounres.kone.algebraic.EuclideanSemiring.Key<${suppliedTypeOf<Number>()}>"
     }
 }
-
-/**
- * Returns result of Euclidean division (a.k.a. a division with remainder), both quotient and remainder.
- *
- * A bridge contextual function for [EuclideanSemiring.divrem].
- */
-context(ring: EuclideanSemiring<Number>)
-public infix fun <Number> Number.divrem(other: Number): EuclideanDivisionResult<Number> = with(ring) { this@divrem divrem other }
-/**
- * Returns quotient of Euclidean division (a.k.a. a division with remainder).
- *
- * A bridge contextual function for [EuclideanSemiring.div].
- */
-context(ring: EuclideanSemiring<Number>)
-public operator fun <Number> Number.div(other: Number): Number = with(ring) { this@div / other }
-/**
- * Returns remainder of Euclidean division (a.k.a. a division with remainder).
- *
- * A bridge contextual function for [EuclideanSemiring.rem].
- */
-context(ring: EuclideanSemiring<Number>)
-public operator fun <Number> Number.rem(other: Number): Number = with(ring) { this@rem % other }
 
 /**
  * Describes a context that represents [Euclidean ring (a.k.a. Euclidean domain)](https://en.wikipedia.org/wiki/Euclidean_domain).

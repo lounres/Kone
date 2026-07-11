@@ -105,6 +105,6 @@ class TestExtensionRegistrarConfigurator(testServices: TestServices) : Environme
         val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
         
         FirExtensionRegistrarAdapter.registerExtension(FirContextsExtensionRegistrar())
-        IrGenerationExtension.registerExtension(TestIrGenerationExtension())
+        IrGenerationExtension.registerExtension(ContextsIrGenerationExtension(messageCollector))
     }
 }

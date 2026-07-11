@@ -6,7 +6,9 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.algebraic.util.doublingTimes
+import dev.lounres.kone.contexts.KoneContextHolderContext
 import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.relations.Equality
@@ -45,134 +47,82 @@ public interface Ring<Number> : Semiring<Number>, CommutativeGroup<Number> {
     // endregion
 
     // region Number-Int operations
-    /**
-     * Sums [this] number and the [other] integer as elements of the [Ring].
-     *
-     * The result is equal to `this + valueOf(other)`.
-     */
-    public operator fun Number.plus(other: Int): Number = this + valueOf(other)
-    /**
-     * Subtracts [this] number and the [other] integer as elements of the [Ring].
-     *
-     * The result is equal to `this - valueOf(other)`.
-     */
-    public operator fun Number.minus(other: Int): Number = this - valueOf(other)
-    /**
-     * Multiplies [this] number and the [other] integer as elements of the [Ring].
-     *
-     * The result is equal to `this * valueOf(other)`
-     */
-    public override operator fun Number.times(other: Int): Number = this * valueOf(other)
+    @KoneContextHolderContext
+    public val numberPlusInt: Plus<Number, Int, Number> get() = Plus { other -> numberPlusNumber { this + valueOf(other) } }
+    @KoneContextHolderContext
+    public val numberMinusInt: Minus<Number, Int, Number> get() = Minus { other -> numberMinusNumber { this - valueOf(other) } }
+    @KoneContextHolderContext
+    public override val numberTimesInt: Times<Number, Int, Number> get() = Times { other -> numberTimesNumber { this * valueOf(other) } }
     // endregion
 
     // region Number-UInt operations
-    /**
-     * Subtracts [this] number and the [other] integer as elements of the [Ring].
-     *
-     * The result is equal to `this - valueOf(other)`.
-     */
-    public operator fun Number.minus(other: UInt): Number = this - valueOf(other)
+    @KoneContextHolderContext
+    public override val numberPlusUInt: Plus<Number, UInt, Number> get() = Plus { other -> numberPlusNumber { this + valueOf(other) } }
+    @KoneContextHolderContext
+    public val numberMinusUInt: Minus<Number, UInt, Number> get() = Minus { other -> numberMinusNumber { this - valueOf(other) } }
+    @KoneContextHolderContext
+    public override val numberTimesUInt: Times<Number, UInt, Number> get() = Times { other -> numberTimesNumber { this * valueOf(other) } }
     // endregion
 
     // region Number-Long operations
-    /**
-     * Sums [this] number and the [other] integer as elements of the [Ring].
-     *
-     * The result is equal to `this + valueOf(other)`.
-     */
-    public operator fun Number.plus(other: Long): Number = this + valueOf(other)
-    /**
-     * Subtracts [this] number and the [other] integer as elements of the [Ring].
-     *
-     * The result is equal to `this - valueOf(other)`.
-     */
-    public operator fun Number.minus(other: Long): Number = this - valueOf(other)
-    /**
-     * Multiplies [this] number and the [other] integer as elements of the [Ring].
-     *
-     * The result is equal to `this * valueOf(other)`.
-     */
-    public override operator fun Number.times(other: Long): Number = this * valueOf(other)
+    @KoneContextHolderContext
+    public val numberPlusLong: Plus<Number, Long, Number> get() = Plus { other -> numberPlusNumber { this + valueOf(other) } }
+    @KoneContextHolderContext
+    public val numberMinusLong: Minus<Number, Long, Number> get() = Minus { other -> numberMinusNumber { this - valueOf(other) } }
+    @KoneContextHolderContext
+    public override val numberTimesLong: Times<Number, Long, Number> get() = Times { other -> numberTimesNumber { this * valueOf(other) } }
     // endregion
 
     // region Number-ULong operations
-    /**
-     * Subtracts [this] number and the [other] integer as elements of the [Ring].
-     *
-     * The result is equal to `this - valueOf(other)`.
-     */
-    public operator fun Number.minus(other: ULong): Number = this - valueOf(other)
+    @KoneContextHolderContext
+    public override val numberPlusULong: Plus<Number, ULong, Number> get() = Plus { other -> numberPlusNumber { this + valueOf(other) } }
+    @KoneContextHolderContext
+    public val numberMinusULong: Minus<Number, ULong, Number> get() = Minus { other -> numberMinusNumber { this - valueOf(other) } }
+    @KoneContextHolderContext
+    public override val numberTimesULong: Times<Number, ULong, Number> get() = Times { other -> numberTimesNumber { this * valueOf(other) } }
     // endregion
 
     // region Int-Number operations
-    /**
-     * Sums [this] integer and the [other] number as elements of the [Ring].
-     *
-     * The result is equal to `valueOf(this) + other`.
-     */
-    public operator fun Int.plus(other: Number): Number = valueOf(this) + other
-    /**
-     * Sums [this] integer and the [other] number as elements of the [Ring].
-     *
-     * The result is equal to `valueOf(this) - other`.
-     */
-    public operator fun Int.minus(other: Number): Number = valueOf(this) - other
-    /**
-     * Sums [this] integer and the [other] number as elements of the [Ring].
-     *
-     * The result is equal to `valueOf(this) * other`.
-     */
-    public override operator fun Int.times(other: Number): Number = valueOf(this) * other
+    @KoneContextHolderContext
+    public val intPlusNumber: Plus<Int, Number, Number> get() = Plus { other -> numberPlusNumber { valueOf(this) + other } }
+    @KoneContextHolderContext
+    public val intMinusNumber: Minus<Int, Number, Number> get() = Minus { other -> numberMinusNumber { valueOf(this) - other } }
+    @KoneContextHolderContext
+    public override val intTimesNumber: Times<Int, Number, Number> get() = Times { other -> numberTimesNumber { valueOf(this) * other } }
     // endregion
 
     // region UInt-Number operations
-    /**
-     * Sums [this] integer and the [other] number as elements of the [Ring].
-     *
-     * The result is equal to `valueOf(this) - other`.
-     */
-    public operator fun UInt.minus(other: Number): Number = valueOf(this) - other
+    @KoneContextHolderContext
+    public override val uIntPlusNumber: Plus<UInt, Number, Number> get() = Plus { other -> numberPlusNumber { valueOf(this) + other } }
+    @KoneContextHolderContext
+    public val uIntMinusNumber: Minus<UInt, Number, Number> get() = Minus { other -> numberMinusNumber { valueOf(this) - other } }
+    @KoneContextHolderContext
+    public override val uIntTimesNumber: Times<UInt, Number, Number> get() = Times { other -> numberTimesNumber { valueOf(this) * other } }
     // endregion
 
     // region Long-Number operations
-    /**
-     * Sums [this] integer and the [other] number as elements of the [Ring].
-     *
-     * The result is equal to `valueOf(this) + other`.
-     */
-    public operator fun Long.plus(other: Number): Number = valueOf(this) + other
-    /**
-     * Sums [this] integer and the [other] number as elements of the [Ring].
-     *
-     * The result is equal to `valueOf(this) - other`.
-     */
-    public operator fun Long.minus(other: Number): Number = valueOf(this) - other
-    /**
-     * Sums [this] integer and the [other] number as elements of the [Ring].
-     *
-     * The result is equal to `valueOf(this) * other`.
-     */
-    public override operator fun Long.times(other: Number): Number = valueOf(this) * other
+    @KoneContextHolderContext
+    public val longPlusNumber: Plus<Long, Number, Number> get() = Plus { other -> numberPlusNumber { valueOf(this) + other } }
+    @KoneContextHolderContext
+    public val longMinusNumber: Minus<Long, Number, Number> get() = Minus { other -> numberMinusNumber { valueOf(this) - other } }
+    @KoneContextHolderContext
+    public override val longTimesNumber: Times<Long, Number, Number> get() = Times { other -> numberTimesNumber { valueOf(this) * other } }
     // endregion
 
     // region ULong-Number operations
-    /**
-     * Sums [this] integer and the [other] number as elements of the [Ring].
-     *
-     * The result is equal to `valueOf(this) - other`.
-     */
-    public operator fun ULong.minus(other: Number): Number = valueOf(this) - other
+    @KoneContextHolderContext
+    public override val uLongPlusNumber: Plus<ULong, Number, Number> get() = Plus { other -> numberPlusNumber { valueOf(this) + other } }
+    @KoneContextHolderContext
+    public val uLongMinusNumber: Minus<ULong, Number, Number> get() = Minus { other -> numberMinusNumber { valueOf(this) - other } }
+    @KoneContextHolderContext
+    public override val uLongTimesNumber: Times<ULong, Number, Number> get() = Times { other -> numberTimesNumber { valueOf(this) * other } }
     // endregion
 
     // region Number-Number operations
-    /**
-     * Inverses [this] value in terms of the [Ring].
-     */
-    public override operator fun Number.unaryMinus(): Number
-    /**
-     * Subtracts [this] and the [other] numbers in terms of the [Ring].
-     */
-    public override operator fun Number.minus(other: Number): Number
+    @KoneContextHolderContext
+    public override val numberUnaryMinus: UnaryMinus<Number, Number>
+    @KoneContextHolderContext
+    public override val numberMinusNumber: Minus<Number, Number, Number>
     // endregion
     
     public companion object;
@@ -191,161 +141,6 @@ public interface Ring<Number> : Semiring<Number>, CommutativeGroup<Number> {
         override fun toString(): String = "dev.lounres.kone.algebraic.Ring.Key<${suppliedTypeOf<Number>()}>"
     }
 }
-
-
-// region Integers conversion
-/**
- * Converts instance of [Int] to an element of the [Ring] it is equal to.
- *
- * The result is equal to a sum of [arg] number of units.
- *
- * A bridge contextual function for [Ring.valueOf].
- */
-context(ring: Ring<Number>)
-public fun <Number> valueOf(arg: Int): Number = ring.valueOf(arg)
-/**
- * Converts instance of [Long] to an element of the [Ring] it is equal to.
- *
- * The result is equal to a sum of [arg] number of units.
- *
- * A bridge contextual function for [Ring.valueOf].
- */
-context(ring: Ring<Number>)
-public fun <Number> valueOf(arg: Long): Number = ring.valueOf(arg)
-// endregion
-
-// region Number-Int operations
-/**
- * Sums [this] number and the [other] integer as elements of the [Ring].
- *
- * The result is equal to `this + valueOf(other)`.
- *
- * A bridge contextual function for [Ring.plus].
- */
-context(ring: Ring<Number>)
-public operator fun <Number> Number.plus(other: Int): Number = with(ring) { this@plus + other }
-/**
- * Subtracts [this] number and the [other] integer as elements of the [Ring].
- *
- * The result is equal to `this - valueOf(other)`.
- *
- * A bridge contextual function for [Ring.minus].
- */
-context(ring: Ring<Number>)
-public operator fun <Number> Number.minus(other: Int): Number = with(ring) { this@minus - other }
-// endregion
-
-// region Number-UInt operations
-/**
- * Subtracts [this] number and the [other] integer as elements of the [Ring].
- *
- * The result is equal to `this - valueOf(other)`.
- *
- * A bridge contextual function for [Ring.minus].
- */
-context(ring: Ring<Number>)
-public operator fun <Number> Number.minus(other: UInt): Number = with(ring) { this@minus - other }
-// endregion
-
-// region Number-Long operations
-/**
- * Sums [this] number and the [other] integer as elements of the [Ring].
- *
- * The result is equal to `this + valueOf(other)`.
- *
- * A bridge contextual function for [Ring.plus].
- */
-context(ring: Ring<Number>)
-public operator fun <Number> Number.plus(other: Long): Number = with(ring) { this@plus + other }
-/**
- * Subtracts [this] number and the [other] integer as elements of the [Ring].
- *
- * The result is equal to `this - valueOf(other)`.
- *
- * A bridge contextual function for [Ring.minus].
- */
-context(ring: Ring<Number>)
-public operator fun <Number> Number.minus(other: Long): Number = with(ring) { this@minus - other }
-// endregion
-
-// region Number-ULong operations
-/**
- * Subtracts [this] number and the [other] integer as elements of the [Ring].
- *
- * The result is equal to `this - valueOf(other)`.
- *
- * A bridge contextual function for [Ring.minus].
- */
-context(ring: Ring<Number>)
-public operator fun <Number> Number.minus(other: ULong): Number = with(ring) { this@minus - other }
-// endregion
-
-// region Int-Number operations
-/**
- * Sums [this] integer and the [other] number as elements of the [Ring].
- *
- * The result is equal to `valueOf(this) + other`.
- *
- * A bridge contextual function for [Ring.plus].
- */
-context(ring: Ring<Number>)
-public operator fun <Number> Int.plus(other: Number): Number = with(ring) { this@plus + other }
-/**
- * Sums [this] integer and the [other] number as elements of the [Ring].
- *
- * The result is equal to `valueOf(this) - other`.
- *
- * A bridge contextual function for [Ring.minus].
- */
-context(ring: Ring<Number>)
-public operator fun <Number> Int.minus(other: Number): Number = with(ring) { this@minus - other }
-// endregion
-
-// region UInt-Number operations
-/**
- * Sums [this] integer and the [other] number as elements of the [Ring].
- *
- * The result is equal to `valueOf(this) - other`.
- *
- * A bridge contextual function for [Ring.minus].
- */
-context(ring: Ring<Number>)
-public operator fun <Number> UInt.minus(other: Number): Number = with(ring) { this@minus - other }
-// endregion
-
-// region Long-Number operations
-/**
- * Sums [this] integer and the [other] number as elements of the [Ring].
- *
- * The result is equal to `valueOf(this) + other`.
- *
- * A bridge contextual function for [Ring.plus].
- */
-context(ring: Ring<Number>)
-public operator fun <Number> Long.plus(other: Number): Number = with(ring) { this@plus + other }
-/**
- * Sums [this] integer and the [other] number as elements of the [Ring].
- *
- * The result is equal to `valueOf(this) - other`.
- *
- * A bridge contextual function for [Ring.minus].
- */
-context(ring: Ring<Number>)
-public operator fun <Number> Long.minus(other: Number): Number = with(ring) { this@minus - other }
-// endregion
-
-// region ULong-Number operations
-/**
- * Sums [this] integer and the [other] number as elements of the [Ring].
- *
- * The result is equal to `valueOf(this) - other`.
- *
- * A bridge contextual function for [Ring.minus].
- */
-context(ring: Ring<Number>)
-public operator fun <Number> ULong.minus(other: Number): Number = with(ring) { this@minus - other }
-// endregion
-
 
 public interface CommutativeRing<Number> : Ring<Number>, CommutativeSemiring<Number> {
     public companion object;

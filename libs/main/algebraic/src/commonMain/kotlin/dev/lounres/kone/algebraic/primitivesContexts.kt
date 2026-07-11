@@ -23,13 +23,17 @@ import dev.lounres.kone.registry.withImpliedUsingFirst
 import kotlin.math.pow as kpow
 
 
-@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-private data object ByteContext: Reification<Byte>, EuclideanRing<Byte>, Order<Byte>, Hashing<Byte> {
+private data object ByteContext: Reification<Byte>, Equality<Byte>, Order<Byte>, Hashing<Byte>, EuclideanRing<Byte> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is Byte
     override fun reifyMaybe(element: Any?): Maybe<Byte> = if (element is Byte) Some(element) else None
     override fun reifyOrNull(element: Any?): Byte? = element as? Byte
     override fun reify(element: Any?): Byte = element as? Byte ?: reificationException()
+    // endregion
+    
+    // region Equality
+    override val numberIsZero: IsZero<Byte> = IsZero { this == zero }
+    override val numberIsOne: IsOne<Byte> = IsOne { this == one }
     // endregion
     
     // region Order
@@ -47,69 +51,72 @@ private data object ByteContext: Reification<Byte>, EuclideanRing<Byte>, Order<B
     override fun valueOf(arg: Long): Byte = arg.toByte()
     override fun valueOf(arg: ULong): Byte = arg.toByte()
     // endregion
-
+    
     // region Byte-Int operations
-    override fun Byte.plus(other: Int): Byte = (this + other).toByte()
-    override fun Byte.minus(other: Int): Byte = (this - other).toByte()
-    override fun Byte.times(other: Int): Byte = (this * other).toByte()
+    override val numberPlusInt: Plus<Byte, Int, Byte> = Plus { other -> (this + other).toByte() }
+    override val numberMinusInt: Minus<Byte, Int, Byte> = Minus { other -> (this - other).toByte() }
+    override val numberTimesInt: Times<Byte, Int, Byte> = Times { other -> (this * other).toByte() }
     // endregion
     
     // region Byte-UInt operations
-    override fun Byte.plus(other: UInt): Byte = (this + other.toByte()).toByte()
-    override fun Byte.minus(other: UInt): Byte = (this - other.toByte()).toByte()
-    override fun Byte.times(other: UInt): Byte = (this * other.toByte()).toByte()
+    override val numberPlusUInt: Plus<Byte, UInt, Byte> = Plus { other -> (this + other.toByte()).toByte() }
+    override val numberMinusUInt: Minus<Byte, UInt, Byte> = Minus { other -> (this - other.toByte()).toByte() }
+    override val numberTimesUInt: Times<Byte, UInt, Byte> = Times { other -> (this * other.toByte()).toByte() }
     // endregion
 
     // region Byte-Long operations
-    override fun Byte.plus(other: Long): Byte = (this + other).toByte()
-    override fun Byte.minus(other: Long): Byte = (this - other).toByte()
-    override fun Byte.times(other: Long): Byte = (this * other).toByte()
+    override val numberPlusLong: Plus<Byte, Long, Byte> = Plus { other -> (this + other).toByte() }
+    override val numberMinusLong: Minus<Byte, Long, Byte> = Minus { other -> (this - other).toByte() }
+    override val numberTimesLong: Times<Byte, Long, Byte> = Times { other -> (this * other).toByte() }
     // endregion
     
     // region Byte-ULong operations
-    override fun Byte.plus(other: ULong): Byte = (this + other.toByte()).toByte()
-    override fun Byte.minus(other: ULong): Byte = (this - other.toByte()).toByte()
-    override fun Byte.times(other: ULong): Byte = (this * other.toByte()).toByte()
+    override val numberPlusULong: Plus<Byte, ULong, Byte> = Plus { other -> (this + other.toByte()).toByte() }
+    override val numberMinusULong: Minus<Byte, ULong, Byte> = Minus { other -> (this - other.toByte()).toByte() }
+    override val numberTimesULong: Times<Byte, ULong, Byte> = Times { other -> (this * other.toByte()).toByte() }
     // endregion
-
+    
     // region Int-Byte operations
-    override fun Int.plus(other: Byte): Byte = (this + other).toByte()
-    override fun Int.minus(other: Byte): Byte = (this - other).toByte()
-    override fun Int.times(other: Byte): Byte = (this * other).toByte()
+    override val intPlusNumber: Plus<Int, Byte, Byte> = Plus { other -> (this + other).toByte() }
+    override val intMinusNumber: Minus<Int, Byte, Byte> = Minus { other -> (this - other).toByte() }
+    override val intTimesNumber: Times<Int, Byte, Byte> = Times { other -> (this * other).toByte() }
     // endregion
     
     // region UInt-Byte operations
-    override fun UInt.plus(other: Byte): Byte = (this.toByte() + other).toByte()
-    override fun UInt.minus(other: Byte): Byte = (this.toByte() - other).toByte()
-    override fun UInt.times(other: Byte): Byte = (this.toByte() * other).toByte()
+    override val uIntPlusNumber: Plus<UInt, Byte, Byte> = Plus { other -> (this.toByte() + other).toByte() }
+    override val uIntMinusNumber: Minus<UInt, Byte, Byte> = Minus { other -> (this.toByte() - other).toByte() }
+    override val uIntTimesNumber: Times<UInt, Byte, Byte> = Times { other -> (this.toByte() * other).toByte() }
     // endregion
 
     // region Long-Byte operations
-    override fun Long.plus(other: Byte): Byte = (this + other).toByte()
-    override fun Long.minus(other: Byte): Byte = (this - other).toByte()
-    override fun Long.times(other: Byte): Byte = (this * other).toByte()
+    override val longPlusNumber: Plus<Long, Byte, Byte> = Plus { other -> (this + other).toByte() }
+    override val longMinusNumber: Minus<Long, Byte, Byte> = Minus { other -> (this - other).toByte() }
+    override val longTimesNumber: Times<Long, Byte, Byte> = Times { other -> (this * other).toByte() }
     // endregion
     
     // region ULong-Byte operations
-    override fun ULong.plus(other: Byte): Byte = (this.toByte() + other).toByte()
-    override fun ULong.minus(other: Byte): Byte = (this.toByte() - other).toByte()
-    override fun ULong.times(other: Byte): Byte = (this.toByte() * other).toByte()
+    override val uLongPlusNumber: Plus<ULong, Byte, Byte> = Plus { other -> (this.toByte() + other).toByte() }
+    override val uLongMinusNumber: Minus<ULong, Byte, Byte> = Minus { other -> (this.toByte() - other).toByte() }
+    override val uLongTimesNumber: Times<ULong, Byte, Byte> = Times { other -> (this.toByte() * other).toByte() }
     // endregion
-
+    
     // region Byte-Byte operations
-    override fun Byte.unaryMinus(): Byte = (-this).toByte()
-    override fun Byte.plus(other: Byte): Byte = (this + other).toByte()
-    override fun Byte.minus(other: Byte): Byte = (this - other).toByte()
-    override fun Byte.times(other: Byte): Byte = (this * other).toByte()
-    override fun Byte.divrem(other: Byte): EuclideanDivisionResult<Byte> =
-        if (other == 0.toByte()) divisionByZero()
-        else EuclideanDivisionResult(quotient = (this / other).toByte(), remainder = (this % other).toByte())
-    override fun Byte.div(other: Byte): Byte = if (other == 0.toByte()) divisionByZero() else (this / other).toByte()
-    override fun Byte.rem(other: Byte): Byte = if (other == 0.toByte()) divisionByZero() else (this % other).toByte()
+    override val numberUnaryMinus: UnaryMinus<Byte, Byte> = UnaryMinus { (-this).toByte() }
+    override val numberPlusNumber: Plus<Byte, Byte, Byte> = Plus { other -> (this + other).toByte() }
+    override val numberMinusNumber: Minus<Byte, Byte, Byte> = Minus { other -> (this - other).toByte() }
+    override val numberTimesNumber: Times<Byte, Byte, Byte> = Times { other -> (this * other).toByte() }
+    override val numberDivideRemainderNumber: DivideRemainder<Byte, Byte, EuclideanDivisionResult<Byte>> =
+        DivideRemainder { other ->
+            if (other == 0.toByte()) divisionByZero()
+            else EuclideanDivisionResult(quotient = (this / other).toByte(), remainder = (this % other).toByte())
+        }
+    override val numberDivideNumber: Divide<Byte, Byte, Byte> = Divide { other -> if (other == 0.toByte()) divisionByZero() else (this / other).toByte() }
+    override val numberRemainderNumber: Remainder<Byte, Byte, Byte> = Remainder { other -> if (other == 0.toByte()) divisionByZero() else (this % other).toByte() }
     // endregion
 }
 
 public fun Byte.Companion.reification(): Reification<Byte> = ByteContext
+public fun Byte.Companion.equality(): Equality<Byte> = ByteContext
 public fun Byte.Companion.order(): Order<Byte> = ByteContext
 public fun Byte.Companion.hashing(): Hashing<Byte> = ByteContext
 public fun Byte.Companion.euclideanRing(): EuclideanRing<Byte> = ByteContext
@@ -124,11 +131,14 @@ public fun Byte.Companion.commutativeMonoid(): CommutativeMonoid<Byte> = ByteCon
 public fun Byte.Companion.monoid(): Monoid<Byte> = ByteContext
 public fun Byte.Companion.commutativeSemigroup(): CommutativeSemigroup<Byte> = ByteContext
 public fun Byte.Companion.semigroup(): Semigroup<Byte> = ByteContext
-public fun Byte.Companion.equality(): Equality<Byte> = ByteContext
 
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Byte.Companion.setReification() {
     Reification.Key<Byte>().withImpliedUsingFirst correspondsTo ByteContext
+}
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+public fun Byte.Companion.setEquality() {
+    Equality.Key<Byte>().withImpliedUsingFirst correspondsTo ByteContext
 }
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Byte.Companion.setOrder() {
@@ -186,13 +196,8 @@ context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Byte.Companion.setSemigroup() {
     Semigroup.Key<Byte>().withImpliedUsingFirst correspondsTo ByteContext
 }
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun Byte.Companion.setEquality() {
-    Equality.Key<Byte>().withImpliedUsingFirst correspondsTo ByteContext
-}
 
-@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-private data object ShortContext: Reification<Short>, EuclideanRing<Short>, Order<Short>, Hashing<Short> {
+private data object ShortContext: Reification<Short>, Equality<Short>, Order<Short>, Hashing<Short>, EuclideanRing<Short> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is Short
     override fun reifyMaybe(element: Any?): Maybe<Short> = if (element is Short) Some(element) else None
@@ -200,84 +205,92 @@ private data object ShortContext: Reification<Short>, EuclideanRing<Short>, Orde
     override fun reify(element: Any?): Short = element as? Short ?: reificationException()
     // endregion
     
+    // region Equality
+    override val numberIsZero: IsZero<Short> = IsZero { this == zero }
+    override val numberIsOne: IsOne<Short> = IsOne { this == one }
+    // endregion
+    
     // region Order
     override fun Short.compareWith(other: Short): ComparisonResult = this.compareTo(other).asComparisonResult()
     // endregion
-
+    
     // region Constants
     override val zero: Short get() = 0
     override val one: Short get() = 1
     // endregion
-
+    
     // region Conversion
     override fun valueOf(arg: Int): Short = arg.toShort()
     override fun valueOf(arg: UInt): Short = arg.toShort()
     override fun valueOf(arg: Long): Short = arg.toShort()
     override fun valueOf(arg: ULong): Short = arg.toShort()
     // endregion
-
+    
     // region Short-Int operations
-    override fun Short.plus(other: Int): Short = (this + other).toShort()
-    override fun Short.minus(other: Int): Short = (this - other).toShort()
-    override fun Short.times(other: Int): Short = (this * other).toShort()
+    override val numberPlusInt: Plus<Short, Int, Short> = Plus { other -> (this + other).toShort() }
+    override val numberMinusInt: Minus<Short, Int, Short> = Minus { other -> (this - other).toShort() }
+    override val numberTimesInt: Times<Short, Int, Short> = Times { other -> (this * other).toShort() }
     // endregion
     
     // region Short-UInt operations
-    override fun Short.plus(other: UInt): Short = (this + other.toShort()).toShort()
-    override fun Short.minus(other: UInt): Short = (this - other.toShort()).toShort()
-    override fun Short.times(other: UInt): Short = (this * other.toShort()).toShort()
+    override val numberPlusUInt: Plus<Short, UInt, Short> = Plus { other -> (this + other.toShort()).toShort() }
+    override val numberMinusUInt: Minus<Short, UInt, Short> = Minus { other -> (this - other.toShort()).toShort() }
+    override val numberTimesUInt: Times<Short, UInt, Short> = Times { other -> (this * other.toShort()).toShort() }
     // endregion
-
+    
     // region Short-Long operations
-    override fun Short.plus(other: Long): Short = (this + other).toShort()
-    override fun Short.minus(other: Long): Short = (this - other).toShort()
-    override fun Short.times(other: Long): Short = (this * other).toShort()
+    override val numberPlusLong: Plus<Short, Long, Short> = Plus { other -> (this + other).toShort() }
+    override val numberMinusLong: Minus<Short, Long, Short> = Minus { other -> (this - other).toShort() }
+    override val numberTimesLong: Times<Short, Long, Short> = Times { other -> (this * other).toShort() }
     // endregion
     
     // region Short-ULong operations
-    override fun Short.plus(other: ULong): Short = (this + other.toShort()).toShort()
-    override fun Short.minus(other: ULong): Short = (this - other.toShort()).toShort()
-    override fun Short.times(other: ULong): Short = (this * other.toShort()).toShort()
-    // endregion
-
-    // region Int-Short operations
-    override fun Int.plus(other: Short): Short = (this + other).toShort()
-    override fun Int.minus(other: Short): Short = (this - other).toShort()
-    override fun Int.times(other: Short): Short = (this * other).toShort()
+    override val numberPlusULong: Plus<Short, ULong, Short> = Plus { other -> (this + other.toShort()).toShort() }
+    override val numberMinusULong: Minus<Short, ULong, Short> = Minus { other -> (this - other.toShort()).toShort() }
+    override val numberTimesULong: Times<Short, ULong, Short> = Times { other -> (this * other.toShort()).toShort() }
     // endregion
     
     // region Int-Short operations
-    override fun UInt.plus(other: Short): Short = (this.toShort() + other).toShort()
-    override fun UInt.minus(other: Short): Short = (this.toShort() - other).toShort()
-    override fun UInt.times(other: Short): Short = (this.toShort() * other).toShort()
+    override val intPlusNumber: Plus<Int, Short, Short> = Plus { other -> (this + other).toShort() }
+    override val intMinusNumber: Minus<Int, Short, Short> = Minus { other -> (this - other).toShort() }
+    override val intTimesNumber: Times<Int, Short, Short> = Times { other -> (this * other).toShort() }
     // endregion
-
-    // region Long-Short operations
-    override fun Long.plus(other: Short): Short = (this + other).toShort()
-    override fun Long.minus(other: Short): Short = (this - other).toShort()
-    override fun Long.times(other: Short): Short = (this * other).toShort()
+    
+    // region UInt-Short operations
+    override val uIntPlusNumber: Plus<UInt, Short, Short> = Plus { other -> (this.toShort() + other).toShort() }
+    override val uIntMinusNumber: Minus<UInt, Short, Short> = Minus { other -> (this.toShort() - other).toShort() }
+    override val uIntTimesNumber: Times<UInt, Short, Short> = Times { other -> (this.toShort() * other).toShort() }
     // endregion
     
     // region Long-Short operations
-    override fun ULong.plus(other: Short): Short = (this.toShort() + other).toShort()
-    override fun ULong.minus(other: Short): Short = (this.toShort() - other).toShort()
-    override fun ULong.times(other: Short): Short = (this.toShort() * other).toShort()
+    override val longPlusNumber: Plus<Long, Short, Short> = Plus { other -> (this + other).toShort() }
+    override val longMinusNumber: Minus<Long, Short, Short> = Minus { other -> (this - other).toShort() }
+    override val longTimesNumber: Times<Long, Short, Short> = Times { other -> (this * other).toShort() }
     // endregion
-
+    
+    // region ULong-Short operations
+    override val uLongPlusNumber: Plus<ULong, Short, Short> = Plus { other -> (this.toShort() + other).toShort() }
+    override val uLongMinusNumber: Minus<ULong, Short, Short> = Minus { other -> (this.toShort() - other).toShort() }
+    override val uLongTimesNumber: Times<ULong, Short, Short> = Times { other -> (this.toShort() * other).toShort() }
+    // endregion
+    
     // region Short-Short operations
-    override fun Short.unaryMinus(): Short = (-this).toShort()
-    override fun Short.plus(other: Short): Short = (this + other).toShort()
-    override fun Short.minus(other: Short): Short = (this - other).toShort()
-    override fun Short.times(other: Short): Short = (this * other).toShort()
-    override fun Short.divrem(other: Short): EuclideanDivisionResult<Short> =
-        if (other == 0.toShort()) divisionByZero()
-        else EuclideanDivisionResult(quotient = (this / other).toShort(), remainder = (this % other).toShort())
-    override fun Short.div(other: Short): Short = if (other == 0.toShort()) divisionByZero() else (this / other).toShort()
-    override fun Short.rem(other: Short): Short = if (other == 0.toShort()) divisionByZero() else (this % other).toShort()
+    override val numberUnaryMinus: UnaryMinus<Short, Short> = UnaryMinus { (-this).toShort() }
+    override val numberPlusNumber: Plus<Short, Short, Short> = Plus { other -> (this + other).toShort() }
+    override val numberMinusNumber: Minus<Short, Short, Short> = Minus { other -> (this - other).toShort() }
+    override val numberTimesNumber: Times<Short, Short, Short> = Times { other -> (this * other).toShort() }
+    override val numberDivideRemainderNumber: DivideRemainder<Short, Short, EuclideanDivisionResult<Short>> =
+        DivideRemainder { other ->
+            if (other == 0.toShort()) divisionByZero()
+            else EuclideanDivisionResult(quotient = (this / other).toShort(), remainder = (this % other).toShort())
+        }
+    override val numberDivideNumber: Divide<Short, Short, Short> = Divide { other -> if (other == 0.toShort()) divisionByZero() else (this / other).toShort() }
+    override val numberRemainderNumber: Remainder<Short, Short, Short> = Remainder { other -> if (other == 0.toShort()) divisionByZero() else (this % other).toShort() }
     // endregion
 }
 
 public fun Short.Companion.reification(): Reification<Short> = ShortContext
+public fun Short.Companion.equality(): Equality<Short> = ShortContext
 public fun Short.Companion.order(): Order<Short> = ShortContext
 public fun Short.Companion.hashing(): Hashing<Short> = ShortContext
 public fun Short.Companion.euclideanRing(): EuclideanRing<Short> = ShortContext
@@ -292,11 +305,14 @@ public fun Short.Companion.commutativeMonoid(): CommutativeMonoid<Short> = Short
 public fun Short.Companion.monoid(): Monoid<Short> = ShortContext
 public fun Short.Companion.commutativeSemigroup(): CommutativeSemigroup<Short> = ShortContext
 public fun Short.Companion.semigroup(): Semigroup<Short> = ShortContext
-public fun Short.Companion.equality(): Equality<Short> = ShortContext
 
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Short.Companion.setReification() {
     Reification.Key<Short>().withImpliedUsingFirst correspondsTo ShortContext
+}
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+public fun Short.Companion.setEquality() {
+    Equality.Key<Short>().withImpliedUsingFirst correspondsTo ShortContext
 }
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Short.Companion.setOrder() {
@@ -354,13 +370,8 @@ context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Short.Companion.setSemigroup() {
     Semigroup.Key<Short>().withImpliedUsingFirst correspondsTo ShortContext
 }
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun Short.Companion.setEquality() {
-    Equality.Key<Short>().withImpliedUsingFirst correspondsTo ShortContext
-}
 
-@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-private data object IntContext: Reification<Int>, EuclideanRing<Int>, Order<Int>, Hashing<Int> {
+private data object IntContext: Reification<Int>, Equality<Int>, Order<Int>, Hashing<Int>, EuclideanRing<Int> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is Int
     override fun reifyMaybe(element: Any?): Maybe<Int> = if (element is Int) Some(element) else None
@@ -368,72 +379,92 @@ private data object IntContext: Reification<Int>, EuclideanRing<Int>, Order<Int>
     override fun reify(element: Any?): Int = element as? Int ?: reificationException()
     // endregion
     
+    // region Equality
+    override val numberIsZero: IsZero<Int> = IsZero { this == zero }
+    override val numberIsOne: IsOne<Int> = IsOne { this == one }
+    // endregion
+    
     // region Order
     override fun Int.compareWith(other: Int): ComparisonResult = this.compareTo(other).asComparisonResult()
     // endregion
-
+    
     // region Constants
     override val zero: Int get() = 0
     override val one: Int get() = 1
     // endregion
-
+    
     // region Conversion
     override fun valueOf(arg: Int): Int = arg
     override fun valueOf(arg: UInt): Int = arg.toInt()
     override fun valueOf(arg: Long): Int = arg.toInt()
     override fun valueOf(arg: ULong): Int = arg.toInt()
     // endregion
-
+    
     // region Int-Int operations
-    override fun Int.unaryMinus(): Int = -this
-    override fun Int.plus(other: Int): Int = this + other
-    override fun Int.minus(other: Int): Int = this - other
-    override fun Int.times(other: Int): Int = this * other
-    override fun Int.divrem(other: Int): EuclideanDivisionResult<Int> =
-        if (other == 0) divisionByZero()
-        else EuclideanDivisionResult(quotient = this / other, remainder = this % other)
-    override fun Int.div(other: Int): Int = if (other == 0) divisionByZero() else this / other
-    override fun Int.rem(other: Int): Int = if (other == 0) divisionByZero() else this % other
+    override val numberPlusInt: Plus<Int, Int, Int> = Plus { other -> (this + other) }
+    override val numberMinusInt: Minus<Int, Int, Int> = Minus { other -> (this - other) }
+    override val numberTimesInt: Times<Int, Int, Int> = Times { other -> (this * other) }
     // endregion
     
     // region Int-UInt operations
-    override fun Int.plus(other: UInt): Int = this + other.toInt()
-    override fun Int.minus(other: UInt): Int = this - other.toInt()
-    override fun Int.times(other: UInt): Int = this * other.toInt()
+    override val numberPlusUInt: Plus<Int, UInt, Int> = Plus { other -> (this + other.toInt()) }
+    override val numberMinusUInt: Minus<Int, UInt, Int> = Minus { other -> (this - other.toInt()) }
+    override val numberTimesUInt: Times<Int, UInt, Int> = Times { other -> (this * other.toInt()) }
     // endregion
-
+    
     // region Int-Long operations
-    override fun Int.plus(other: Long): Int = this + other.toInt()
-    override fun Int.minus(other: Long): Int = this - other.toInt()
-    override fun Int.times(other: Long): Int = this * other.toInt()
+    override val numberPlusLong: Plus<Int, Long, Int> = Plus { other -> (this + other).toInt() }
+    override val numberMinusLong: Minus<Int, Long, Int> = Minus { other -> (this - other).toInt() }
+    override val numberTimesLong: Times<Int, Long, Int> = Times { other -> (this * other).toInt() }
     // endregion
     
     // region Int-ULong operations
-    override fun Int.plus(other: ULong): Int = this + other.toInt()
-    override fun Int.minus(other: ULong): Int = this - other.toInt()
-    override fun Int.times(other: ULong): Int = this * other.toInt()
+    override val numberPlusULong: Plus<Int, ULong, Int> = Plus { other -> (this + other.toInt()) }
+    override val numberMinusULong: Minus<Int, ULong, Int> = Minus { other -> (this - other.toInt()) }
+    override val numberTimesULong: Times<Int, ULong, Int> = Times { other -> (this * other.toInt()) }
+    // endregion
+    
+    // region Int-Int operations
+    override val intPlusNumber: Plus<Int, Int, Int> = Plus { other -> (this + other) }
+    override val intMinusNumber: Minus<Int, Int, Int> = Minus { other -> (this - other) }
+    override val intTimesNumber: Times<Int, Int, Int> = Times { other -> (this * other) }
     // endregion
     
     // region UInt-Int operations
-    override fun UInt.plus(other: Int): Int = this.toInt() + other
-    override fun UInt.minus(other: Int): Int = this.toInt() - other
-    override fun UInt.times(other: Int): Int = this.toInt() * other
+    override val uIntPlusNumber: Plus<UInt, Int, Int> = Plus { other -> (this.toInt() + other) }
+    override val uIntMinusNumber: Minus<UInt, Int, Int> = Minus { other -> (this.toInt() - other) }
+    override val uIntTimesNumber: Times<UInt, Int, Int> = Times { other -> (this.toInt() * other) }
     // endregion
     
     // region Long-Int operations
-    override fun Long.plus(other: Int): Int = this.toInt() + other
-    override fun Long.minus(other: Int): Int = this.toInt() - other
-    override fun Long.times(other: Int): Int = this.toInt() * other
+    override val longPlusNumber: Plus<Long, Int, Int> = Plus { other -> (this + other).toInt() }
+    override val longMinusNumber: Minus<Long, Int, Int> = Minus { other -> (this - other).toInt() }
+    override val longTimesNumber: Times<Long, Int, Int> = Times { other -> (this * other).toInt() }
     // endregion
-
+    
     // region ULong-Int operations
-    override fun ULong.plus(other: Int): Int = this.toInt() + other
-    override fun ULong.minus(other: Int): Int = this.toInt() - other
-    override fun ULong.times(other: Int): Int = this.toInt() * other
+    override val uLongPlusNumber: Plus<ULong, Int, Int> = Plus { other -> (this.toInt() + other) }
+    override val uLongMinusNumber: Minus<ULong, Int, Int> = Minus { other -> (this.toInt() - other) }
+    override val uLongTimesNumber: Times<ULong, Int, Int> = Times { other -> (this.toInt() * other) }
+    // endregion
+    
+    // region Int-Int operations
+    override val numberUnaryMinus: UnaryMinus<Int, Int> = UnaryMinus { (-this) }
+    override val numberPlusNumber: Plus<Int, Int, Int> = Plus { other -> (this + other) }
+    override val numberMinusNumber: Minus<Int, Int, Int> = Minus { other -> (this - other) }
+    override val numberTimesNumber: Times<Int, Int, Int> = Times { other -> (this * other) }
+    override val numberDivideRemainderNumber: DivideRemainder<Int, Int, EuclideanDivisionResult<Int>> =
+        DivideRemainder { other ->
+            if (other == 0.toInt()) divisionByZero()
+            else EuclideanDivisionResult(quotient = (this / other), remainder = (this % other))
+        }
+    override val numberDivideNumber: Divide<Int, Int, Int> = Divide { other -> if (other == 0.toInt()) divisionByZero() else (this / other) }
+    override val numberRemainderNumber: Remainder<Int, Int, Int> = Remainder { other -> if (other == 0.toInt()) divisionByZero() else (this % other) }
     // endregion
 }
 
 public fun Int.Companion.reification(): Reification<Int> = IntContext
+public fun Int.Companion.equality(): Equality<Int> = IntContext
 public fun Int.Companion.order(): Order<Int> = IntContext
 public fun Int.Companion.hashing(): Hashing<Int> = IntContext
 public fun Int.Companion.euclideanRing(): EuclideanRing<Int> = IntContext
@@ -448,11 +479,14 @@ public fun Int.Companion.commutativeMonoid(): CommutativeMonoid<Int> = IntContex
 public fun Int.Companion.monoid(): Monoid<Int> = IntContext
 public fun Int.Companion.commutativeSemigroup(): CommutativeSemigroup<Int> = IntContext
 public fun Int.Companion.semigroup(): Semigroup<Int> = IntContext
-public fun Int.Companion.equality(): Equality<Int> = IntContext
 
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Int.Companion.setReification() {
     Reification.Key<Int>().withImpliedUsingFirst correspondsTo IntContext
+}
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+public fun Int.Companion.setEquality() {
+    Equality.Key<Int>().withImpliedUsingFirst correspondsTo IntContext
 }
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Int.Companion.setOrder() {
@@ -510,13 +544,8 @@ context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Int.Companion.setSemigroup() {
     Semigroup.Key<Int>().withImpliedUsingFirst correspondsTo IntContext
 }
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun Int.Companion.setEquality() {
-    Equality.Key<Int>().withImpliedUsingFirst correspondsTo IntContext
-}
 
-@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-private data object LongContext: Reification<Long>, EuclideanRing<Long>, Order<Long>, Hashing<Long> {
+private data object LongContext: Reification<Long>, Equality<Long>, Order<Long>, Hashing<Long>, EuclideanRing<Long> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is Long
     override fun reifyMaybe(element: Any?): Maybe<Long> = if (element is Long) Some(element) else None
@@ -524,72 +553,92 @@ private data object LongContext: Reification<Long>, EuclideanRing<Long>, Order<L
     override fun reify(element: Any?): Long = element as? Long ?: reificationException()
     // endregion
     
+    // region Equality
+    override val numberIsZero: IsZero<Long> = IsZero { this == zero }
+    override val numberIsOne: IsOne<Long> = IsOne { this == one }
+    // endregion
+    
     // region Order
     override fun Long.compareWith(other: Long): ComparisonResult = this.compareTo(other).asComparisonResult()
     // endregion
-
+    
     // region Constants
-    override val zero: Long get() = 0L
-    override val one: Long get() = 1L
+    override val zero: Long get() = 0
+    override val one: Long get() = 1
     // endregion
-
+    
     // region Conversion
     override fun valueOf(arg: Int): Long = arg.toLong()
     override fun valueOf(arg: UInt): Long = arg.toLong()
     override fun valueOf(arg: Long): Long = arg
     override fun valueOf(arg: ULong): Long = arg.toLong()
     // endregion
-
-    // region Long-Long operations
-    override fun Long.unaryMinus(): Long = -this
-    override fun Long.plus(other: Long): Long = this + other
-    override fun Long.minus(other: Long): Long = this - other
-    override fun Long.times(other: Long): Long = this * other
-    override fun Long.divrem(other: Long): EuclideanDivisionResult<Long> =
-        if (other == 0L) divisionByZero()
-        else EuclideanDivisionResult(quotient = this / other, remainder = this % other)
-    override fun Long.div(other: Long): Long = if (other == 0L) divisionByZero() else this / other
-    override fun Long.rem(other: Long): Long = if (other == 0L) divisionByZero() else this % other
-    // endregion
     
     // region Long-Int operations
-    override fun Long.plus(other: Int): Long = this + other
-    override fun Long.minus(other: Int): Long = this - other
-    override fun Long.times(other: Int): Long = this * other
+    override val numberPlusInt: Plus<Long, Int, Long> = Plus { other -> (this + other) }
+    override val numberMinusInt: Minus<Long, Int, Long> = Minus { other -> (this - other) }
+    override val numberTimesInt: Times<Long, Int, Long> = Times { other -> (this * other) }
     // endregion
     
     // region Long-UInt operations
-    override fun Long.plus(other: UInt): Long = this + other.toLong()
-    override fun Long.minus(other: UInt): Long = this - other.toLong()
-    override fun Long.times(other: UInt): Long = this * other.toLong()
+    override val numberPlusUInt: Plus<Long, UInt, Long> = Plus { other -> (this + other.toLong()) }
+    override val numberMinusUInt: Minus<Long, UInt, Long> = Minus { other -> (this - other.toLong()) }
+    override val numberTimesUInt: Times<Long, UInt, Long> = Times { other -> (this * other.toLong()) }
     // endregion
-
+    
+    // region Long-Long operations
+    override val numberPlusLong: Plus<Long, Long, Long> = Plus { other -> (this + other) }
+    override val numberMinusLong: Minus<Long, Long, Long> = Minus { other -> (this - other) }
+    override val numberTimesLong: Times<Long, Long, Long> = Times { other -> (this * other) }
+    // endregion
+    
     // region Long-ULong operations
-    override fun Long.plus(other: ULong): Long = this + other.toLong()
-    override fun Long.minus(other: ULong): Long = this - other.toLong()
-    override fun Long.times(other: ULong): Long = this * other.toLong()
+    override val numberPlusULong: Plus<Long, ULong, Long> = Plus { other -> (this + other.toLong()) }
+    override val numberMinusULong: Minus<Long, ULong, Long> = Minus { other -> (this - other.toLong()) }
+    override val numberTimesULong: Times<Long, ULong, Long> = Times { other -> (this * other.toLong()) }
     // endregion
     
     // region Int-Long operations
-    override fun Int.plus(other: Long): Long = this + other
-    override fun Int.minus(other: Long): Long = this - other
-    override fun Int.times(other: Long): Long = this * other
+    override val intPlusNumber: Plus<Int, Long, Long> = Plus { other -> (this + other) }
+    override val intMinusNumber: Minus<Int, Long, Long> = Minus { other -> (this - other) }
+    override val intTimesNumber: Times<Int, Long, Long> = Times { other -> (this * other) }
     // endregion
-
+    
     // region UInt-Long operations
-    override fun UInt.plus(other: Long): Long = this.toLong() + other
-    override fun UInt.minus(other: Long): Long = this.toLong() - other
-    override fun UInt.times(other: Long): Long = this.toLong() * other
+    override val uIntPlusNumber: Plus<UInt, Long, Long> = Plus { other -> (this.toLong() + other) }
+    override val uIntMinusNumber: Minus<UInt, Long, Long> = Minus { other -> (this.toLong() - other) }
+    override val uIntTimesNumber: Times<UInt, Long, Long> = Times { other -> (this.toLong() * other) }
+    // endregion
+    
+    // region Long-Long operations
+    override val longPlusNumber: Plus<Long, Long, Long> = Plus { other -> (this + other) }
+    override val longMinusNumber: Minus<Long, Long, Long> = Minus { other -> (this - other) }
+    override val longTimesNumber: Times<Long, Long, Long> = Times { other -> (this * other) }
     // endregion
     
     // region ULong-Long operations
-    override fun ULong.plus(other: Long): Long = this.toLong() + other
-    override fun ULong.minus(other: Long): Long = this.toLong() - other
-    override fun ULong.times(other: Long): Long = this.toLong() * other
+    override val uLongPlusNumber: Plus<ULong, Long, Long> = Plus { other -> (this.toLong() + other) }
+    override val uLongMinusNumber: Minus<ULong, Long, Long> = Minus { other -> (this.toLong() - other) }
+    override val uLongTimesNumber: Times<ULong, Long, Long> = Times { other -> (this.toLong() * other) }
+    // endregion
+    
+    // region Long-Long operations
+    override val numberUnaryMinus: UnaryMinus<Long, Long> = UnaryMinus { (-this) }
+    override val numberPlusNumber: Plus<Long, Long, Long> = Plus { other -> (this + other) }
+    override val numberMinusNumber: Minus<Long, Long, Long> = Minus { other -> (this - other) }
+    override val numberTimesNumber: Times<Long, Long, Long> = Times { other -> (this * other) }
+    override val numberDivideRemainderNumber: DivideRemainder<Long, Long, EuclideanDivisionResult<Long>> =
+        DivideRemainder { other ->
+            if (other == 0.toLong()) divisionByZero()
+            else EuclideanDivisionResult(quotient = (this / other), remainder = (this % other))
+        }
+    override val numberDivideNumber: Divide<Long, Long, Long> = Divide { other -> if (other == 0.toLong()) divisionByZero() else (this / other) }
+    override val numberRemainderNumber: Remainder<Long, Long, Long> = Remainder { other -> if (other == 0.toLong()) divisionByZero() else (this % other) }
     // endregion
 }
 
 public fun Long.Companion.reification(): Reification<Long> = LongContext
+public fun Long.Companion.equality(): Equality<Long> = LongContext
 public fun Long.Companion.order(): Order<Long> = LongContext
 public fun Long.Companion.hashing(): Hashing<Long> = LongContext
 public fun Long.Companion.euclideanRing(): EuclideanRing<Long> = LongContext
@@ -604,11 +653,14 @@ public fun Long.Companion.commutativeMonoid(): CommutativeMonoid<Long> = LongCon
 public fun Long.Companion.monoid(): Monoid<Long> = LongContext
 public fun Long.Companion.commutativeSemigroup(): CommutativeSemigroup<Long> = LongContext
 public fun Long.Companion.semigroup(): Semigroup<Long> = LongContext
-public fun Long.Companion.equality(): Equality<Long> = LongContext
 
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setReification() {
     Reification.Key<Long>().withImpliedUsingFirst correspondsTo LongContext
+}
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+public fun Long.Companion.setEquality() {
+    Equality.Key<Long>().withImpliedUsingFirst correspondsTo LongContext
 }
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setOrder() {
@@ -666,18 +718,18 @@ context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSemigroup() {
     Semigroup.Key<Long>().withImpliedUsingFirst correspondsTo LongContext
 }
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun Long.Companion.setEquality() {
-    Equality.Key<Long>().withImpliedUsingFirst correspondsTo LongContext
-}
 
-@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-private data object UByteContext: Reification<UByte>, EuclideanSemiring<UByte>, ExtendedSemiring<UByte>, Order<UByte>, Hashing<UByte> {
+private data object UByteContext: Reification<UByte>, Equality<UByte>, Order<UByte>, Hashing<UByte>, EuclideanSemiring<UByte>, ExtendedSemiring<UByte> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is UByte
     override fun reifyMaybe(element: Any?): Maybe<UByte> = if (element is UByte) Some(element) else None
     override fun reifyOrNull(element: Any?): UByte? = element as? UByte
     override fun reify(element: Any?): UByte = element as? UByte ?: reificationException()
+    // endregion
+    
+    // region Equality
+    override val numberIsZero: IsZero<UByte> = IsZero { this == zero }
+    override val numberIsOne: IsOne<UByte> = IsOne { this == one }
     // endregion
     
     // region Order
@@ -695,45 +747,49 @@ private data object UByteContext: Reification<UByte>, EuclideanSemiring<UByte>, 
     // endregion
     
     // region UByte-UInt operations
-    override fun UByte.plus(other: UInt): UByte = (this + other).toUByte()
-    override fun UByte.times(other: UInt): UByte = (this * other).toUByte()
+    override val numberPlusUInt: Plus<UByte, UInt, UByte> = Plus { other -> (this + other).toUByte() }
+    override val numberMinusUInt: Minus<UByte, UInt, UByte> = Minus { other -> (this - other).toUByte() }
+    override val numberTimesUInt: Times<UByte, UInt, UByte> = Times { other -> (this * other).toUByte() }
     // endregion
     
     // region UByte-ULong operations
-    override fun UByte.plus(other: ULong): UByte = (this + other).toUByte()
-    override fun UByte.times(other: ULong): UByte = (this * other).toUByte()
+    override val numberPlusULong: Plus<UByte, ULong, UByte> = Plus { other -> (this + other).toUByte() }
+    override val numberMinusULong: Minus<UByte, ULong, UByte> = Minus { other -> (this - other).toUByte() }
+    override val numberTimesULong: Times<UByte, ULong, UByte> = Times { other -> (this * other).toUByte() }
     // endregion
     
     // region UInt-UByte operations
-    override fun UInt.plus(other: UByte): UByte = (this + other).toUByte()
-    override fun UInt.times(other: UByte): UByte = (this * other).toUByte()
+    override val uIntPlusNumber: Plus<UInt, UByte, UByte> = Plus { other -> (this + other).toUByte() }
+    override val uIntMinusNumber: Minus<UInt, UByte, UByte> = Minus { other -> (this - other).toUByte() }
+    override val uIntTimesNumber: Times<UInt, UByte, UByte> = Times { other -> (this * other).toUByte() }
     // endregion
     
     // region ULong-UByte operations
-    override fun ULong.plus(other: UByte): UByte = (this + other).toUByte()
-    override fun ULong.times(other: UByte): UByte = (this * other).toUByte()
+    override val uLongPlusNumber: Plus<ULong, UByte, UByte> = Plus { other -> (this + other).toUByte() }
+    override val uLongMinusNumber: Minus<ULong, UByte, UByte> = Minus { other -> (this - other).toUByte() }
+    override val uLongTimesNumber: Times<ULong, UByte, UByte> = Times { other -> (this * other).toUByte() }
     // endregion
     
     // region UByte-UByte operations
-    override fun UByte.plus(other: UByte): UByte = (this + other).toUByte()
-    override fun UByte.minus(other: UByte): UByte = (this - other).toUByte()
-    override fun UByte.times(other: UByte): UByte = (this * other).toUByte()
-    override fun UByte.divrem(other: UByte): EuclideanDivisionResult<UByte> =
+    override val numberPlusNumber: Plus<UByte, UByte, UByte> = Plus { other -> (this + other).toUByte() }
+    override val numberMinusNumber: Minus<UByte, UByte, UByte> = Minus { other -> (this - other).toUByte() }
+    override val numberTimesNumber: Times<UByte, UByte, UByte> = Times { other -> (this * other).toUByte() }
+    override val numberDivideRemainderNumber: DivideRemainder<UByte, UByte, EuclideanDivisionResult<UByte>> = DivideRemainder { other ->
         if (other == 0.toUByte()) divisionByZero()
         else EuclideanDivisionResult(
             quotient = (this / other).toUByte(),
             remainder = (this % other).toUByte(),
         )
-    override fun UByte.div(other: UByte): UByte = if (other == 0.toUByte()) divisionByZero() else (this / other).toUByte()
-    override fun UByte.rem(other: UByte): UByte = if (other == 0.toUByte()) divisionByZero() else (this % other).toUByte()
-    override fun power(base: UByte, exponent: UInt): UByte = base squaringPower exponent
-    override fun power(base: UByte, exponent: ULong): UByte = base squaringPower exponent
-    override infix fun UByte.pow(exponent: UInt): UByte = power(this, exponent)
-    override infix fun UByte.pow(exponent: ULong): UByte = power(this, exponent)
+    }
+    override val numberDivideNumber: Divide<UByte, UByte, UByte> = Divide { other -> if (other == 0.toUByte()) divisionByZero() else (this / other).toUByte() }
+    override val numberRemainderNumber: Remainder<UByte, UByte, UByte> = Remainder { other -> if (other == 0.toUByte()) divisionByZero() else (this % other).toUByte() }
+    override val powerNumberUInt: Power<UByte, UInt, UByte> = Power { base, exponent -> base squaringPower exponent }
+    override val powerNumberULong: Power<UByte, ULong, UByte> = Power { base, exponent -> base squaringPower exponent }
     // endregion
 }
 
 public fun UByte.Companion.reification(): Reification<UByte> = UByteContext
+public fun UByte.Companion.equality(): Equality<UByte> = UByteContext
 public fun UByte.Companion.order(): Order<UByte> = UByteContext
 public fun UByte.Companion.hashing(): Hashing<UByte> = UByteContext
 public fun UByte.Companion.euclideanSemiring(): EuclideanSemiring<UByte> = UByteContext
@@ -743,11 +799,14 @@ public fun UByte.Companion.commutativeMonoid(): CommutativeMonoid<UByte> = UByte
 public fun UByte.Companion.monoid(): Monoid<UByte> = UByteContext
 public fun UByte.Companion.commutativeSemigroup(): CommutativeSemigroup<UByte> = UByteContext
 public fun UByte.Companion.semigroup(): Semigroup<UByte> = UByteContext
-public fun UByte.Companion.equality(): Equality<UByte> = UByteContext
 
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UByte.Companion.setReification() {
     Reification.Key<UByte>().withImpliedUsingFirst correspondsTo UByteContext
+}
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+public fun UByte.Companion.setEquality() {
+    Equality.Key<UByte>().withImpliedUsingFirst correspondsTo UByteContext
 }
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UByte.Companion.setOrder() {
@@ -785,18 +844,18 @@ context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UByte.Companion.setSemigroup() {
     Semigroup.Key<UByte>().withImpliedUsingFirst correspondsTo UByteContext
 }
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun UByte.Companion.setEquality() {
-    Equality.Key<UByte>().withImpliedUsingFirst correspondsTo UByteContext
-}
 
-@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-private data object UShortContext: Reification<UShort>, EuclideanSemiring<UShort>, ExtendedSemiring<UShort>, Order<UShort>, Hashing<UShort> {
+private data object UShortContext: Reification<UShort>, Equality<UShort>, Order<UShort>, Hashing<UShort>, EuclideanSemiring<UShort>, ExtendedSemiring<UShort> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is UShort
     override fun reifyMaybe(element: Any?): Maybe<UShort> = if (element is UShort) Some(element) else None
     override fun reifyOrNull(element: Any?): UShort? = element as? UShort
     override fun reify(element: Any?): UShort = element as? UShort ?: reificationException()
+    // endregion
+    
+    // region Equality
+    override val numberIsZero: IsZero<UShort> = IsZero { this == zero }
+    override val numberIsOne: IsOne<UShort> = IsOne { this == one }
     // endregion
     
     // region Order
@@ -814,45 +873,49 @@ private data object UShortContext: Reification<UShort>, EuclideanSemiring<UShort
     // endregion
     
     // region UShort-UInt operations
-    override fun UShort.plus(other: UInt): UShort = (this + other).toUShort()
-    override fun UShort.times(other: UInt): UShort = (this * other).toUShort()
+    override val numberPlusUInt: Plus<UShort, UInt, UShort> = Plus { other -> (this + other).toUShort() }
+    override val numberMinusUInt: Minus<UShort, UInt, UShort> = Minus { other -> (this - other).toUShort() }
+    override val numberTimesUInt: Times<UShort, UInt, UShort> = Times { other -> (this * other).toUShort() }
     // endregion
     
     // region UShort-ULong operations
-    override fun UShort.plus(other: ULong): UShort = (this + other).toUShort()
-    override fun UShort.times(other: ULong): UShort = (this * other).toUShort()
+    override val numberPlusULong: Plus<UShort, ULong, UShort> = Plus { other -> (this + other).toUShort() }
+    override val numberMinusULong: Minus<UShort, ULong, UShort> = Minus { other -> (this - other).toUShort() }
+    override val numberTimesULong: Times<UShort, ULong, UShort> = Times { other -> (this * other).toUShort() }
     // endregion
     
     // region UInt-UShort operations
-    override fun UInt.plus(other: UShort): UShort = (this + other).toUShort()
-    override fun UInt.times(other: UShort): UShort = (this * other).toUShort()
+    override val uIntPlusNumber: Plus<UInt, UShort, UShort> = Plus { other -> (this + other).toUShort() }
+    override val uIntMinusNumber: Minus<UInt, UShort, UShort> = Minus { other -> (this - other).toUShort() }
+    override val uIntTimesNumber: Times<UInt, UShort, UShort> = Times { other -> (this * other).toUShort() }
     // endregion
     
     // region ULong-UShort operations
-    override fun ULong.plus(other: UShort): UShort = (this + other).toUShort()
-    override fun ULong.times(other: UShort): UShort = (this * other).toUShort()
+    override val uLongPlusNumber: Plus<ULong, UShort, UShort> = Plus { other -> (this + other).toUShort() }
+    override val uLongMinusNumber: Minus<ULong, UShort, UShort> = Minus { other -> (this - other).toUShort() }
+    override val uLongTimesNumber: Times<ULong, UShort, UShort> = Times { other -> (this * other).toUShort() }
     // endregion
     
     // region UShort-UShort operations
-    override fun UShort.plus(other: UShort): UShort = (this + other).toUShort()
-    override fun UShort.minus(other: UShort): UShort = (this - other).toUShort()
-    override fun UShort.times(other: UShort): UShort = (this * other).toUShort()
-    override fun UShort.divrem(other: UShort): EuclideanDivisionResult<UShort> =
+    override val numberPlusNumber: Plus<UShort, UShort, UShort> = Plus { other -> (this + other).toUShort() }
+    override val numberMinusNumber: Minus<UShort, UShort, UShort> = Minus { other -> (this - other).toUShort() }
+    override val numberTimesNumber: Times<UShort, UShort, UShort> = Times { other -> (this * other).toUShort() }
+    override val numberDivideRemainderNumber: DivideRemainder<UShort, UShort, EuclideanDivisionResult<UShort>> = DivideRemainder { other ->
         if (other == 0.toUShort()) divisionByZero()
         else EuclideanDivisionResult(
             quotient = (this / other).toUShort(),
             remainder = (this % other).toUShort(),
         )
-    override fun UShort.div(other: UShort): UShort = if (other == 0.toUShort()) divisionByZero() else (this / other).toUShort()
-    override fun UShort.rem(other: UShort): UShort = if (other == 0.toUShort()) divisionByZero() else (this % other).toUShort()
-    override fun power(base: UShort, exponent: UInt): UShort = base squaringPower exponent
-    override fun power(base: UShort, exponent: ULong): UShort = base squaringPower exponent
-    override infix fun UShort.pow(exponent: UInt): UShort = power(this, exponent)
-    override infix fun UShort.pow(exponent: ULong): UShort = power(this, exponent)
+    }
+    override val numberDivideNumber: Divide<UShort, UShort, UShort> = Divide { other -> if (other == 0.toUShort()) divisionByZero() else (this / other).toUShort() }
+    override val numberRemainderNumber: Remainder<UShort, UShort, UShort> = Remainder { other -> if (other == 0.toUShort()) divisionByZero() else (this % other).toUShort() }
+    override val powerNumberUInt: Power<UShort, UInt, UShort> = Power { base, exponent -> base squaringPower exponent }
+    override val powerNumberULong: Power<UShort, ULong, UShort> = Power { base, exponent -> base squaringPower exponent }
     // endregion
 }
 
 public fun UShort.Companion.reification(): Reification<UShort> = UShortContext
+public fun UShort.Companion.equality(): Equality<UShort> = UShortContext
 public fun UShort.Companion.order(): Order<UShort> = UShortContext
 public fun UShort.Companion.hashing(): Hashing<UShort> = UShortContext
 public fun UShort.Companion.euclideanSemiring(): EuclideanSemiring<UShort> = UShortContext
@@ -862,11 +925,14 @@ public fun UShort.Companion.commutativeMonoid(): CommutativeMonoid<UShort> = USh
 public fun UShort.Companion.monoid(): Monoid<UShort> = UShortContext
 public fun UShort.Companion.commutativeSemigroup(): CommutativeSemigroup<UShort> = UShortContext
 public fun UShort.Companion.semigroup(): Semigroup<UShort> = UShortContext
-public fun UShort.Companion.equality(): Equality<UShort> = UShortContext
 
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UShort.Companion.setReification() {
     Reification.Key<UShort>().withImpliedUsingFirst correspondsTo UShortContext
+}
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+public fun UShort.Companion.setEquality() {
+    Equality.Key<UShort>().withImpliedUsingFirst correspondsTo UShortContext
 }
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UShort.Companion.setOrder() {
@@ -904,13 +970,8 @@ context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UShort.Companion.setSemigroup() {
     Semigroup.Key<UShort>().withImpliedUsingFirst correspondsTo UShortContext
 }
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun UShort.Companion.setEquality() {
-    Equality.Key<UShort>().withImpliedUsingFirst correspondsTo UShortContext
-}
 
-@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-private data object UIntContext: Reification<UInt>, EuclideanSemiring<UInt>, ExtendedSemiring<UInt>, Order<UInt>, Hashing<UInt> {
+private data object UIntContext: Reification<UInt>, Equality<UInt>, Order<UInt>, Hashing<UInt>, EuclideanSemiring<UInt>, ExtendedSemiring<UInt> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is UInt
     override fun reifyMaybe(element: Any?): Maybe<UInt> = if (element is UInt) Some(element) else None
@@ -918,13 +979,18 @@ private data object UIntContext: Reification<UInt>, EuclideanSemiring<UInt>, Ext
     override fun reify(element: Any?): UInt = element as? UInt ?: reificationException()
     // endregion
     
+    // region Equality
+    override val numberIsZero: IsZero<UInt> = IsZero { this == zero }
+    override val numberIsOne: IsOne<UInt> = IsOne { this == one }
+    // endregion
+    
     // region Order
     override fun UInt.compareWith(other: UInt): ComparisonResult = this.compareTo(other).asComparisonResult()
     // endregion
     
     // region Constants
-    override val zero: UInt get() = 0u
-    override val one: UInt get() = 1u
+    override val zero: UInt get() = 0.toUInt()
+    override val one: UInt get() = 1.toUInt()
     // endregion
     
     // region Integers conversion
@@ -932,36 +998,50 @@ private data object UIntContext: Reification<UInt>, EuclideanSemiring<UInt>, Ext
     override fun valueOf(arg: ULong): UInt = arg.toUInt()
     // endregion
     
-    // region UInt-ULong operations
-    override fun UInt.plus(other: ULong): UInt = (this + other).toUInt()
-    override fun UInt.times(other: ULong): UInt = (this * other).toUInt()
+    // region UInt-UInt operations
+    override val numberPlusUInt: Plus<UInt, UInt, UInt> = Plus { other -> (this + other) }
+    override val numberMinusUInt: Minus<UInt, UInt, UInt> = Minus { other -> (this - other) }
+    override val numberTimesUInt: Times<UInt, UInt, UInt> = Times { other -> (this * other) }
     // endregion
     
-    // region ULong-UInt operations
-    override fun ULong.plus(other: UInt): UInt = (this + other).toUInt()
-    override fun ULong.times(other: UInt): UInt = (this * other).toUInt()
+    // region UInt-ULong operations
+    override val numberPlusULong: Plus<UInt, ULong, UInt> = Plus { other -> (this + other).toUInt() }
+    override val numberMinusULong: Minus<UInt, ULong, UInt> = Minus { other -> (this - other).toUInt() }
+    override val numberTimesULong: Times<UInt, ULong, UInt> = Times { other -> (this * other).toUInt() }
     // endregion
     
     // region UInt-UInt operations
-    override fun UInt.plus(other: UInt): UInt = this + other
-    override fun UInt.minus(other: UInt): UInt = this - other
-    override fun UInt.times(other: UInt): UInt = this * other
-    override fun UInt.divrem(other: UInt): EuclideanDivisionResult<UInt> =
-        if (other == 0u) divisionByZero()
+    override val uIntPlusNumber: Plus<UInt, UInt, UInt> = Plus { other -> (this + other) }
+    override val uIntMinusNumber: Minus<UInt, UInt, UInt> = Minus { other -> (this - other) }
+    override val uIntTimesNumber: Times<UInt, UInt, UInt> = Times { other -> (this * other) }
+    // endregion
+    
+    // region ULong-UInt operations
+    override val uLongPlusNumber: Plus<ULong, UInt, UInt> = Plus { other -> (this + other).toUInt() }
+    override val uLongMinusNumber: Minus<ULong, UInt, UInt> = Minus { other -> (this - other).toUInt() }
+    override val uLongTimesNumber: Times<ULong, UInt, UInt> = Times { other -> (this * other).toUInt() }
+    // endregion
+    
+    // region UInt-UInt operations
+    override val numberPlusNumber: Plus<UInt, UInt, UInt> = Plus { other -> (this + other) }
+    override val numberMinusNumber: Minus<UInt, UInt, UInt> = Minus { other -> (this - other) }
+    override val numberTimesNumber: Times<UInt, UInt, UInt> = Times { other -> (this * other) }
+    override val numberDivideRemainderNumber: DivideRemainder<UInt, UInt, EuclideanDivisionResult<UInt>> = DivideRemainder { other ->
+        if (other == 0.toUInt()) divisionByZero()
         else EuclideanDivisionResult(
-            quotient = this / other,
-            remainder = this % other,
+            quotient = (this / other),
+            remainder = (this % other),
         )
-    override fun UInt.div(other: UInt): UInt = if (other == 0u) divisionByZero() else this / other
-    override fun UInt.rem(other: UInt): UInt = if (other == 0u) divisionByZero() else this % other
-    override fun power(base: UInt, exponent: UInt): UInt = base squaringPower exponent
-    override fun power(base: UInt, exponent: ULong): UInt = base squaringPower exponent
-    override infix fun UInt.pow(exponent: UInt): UInt = power(this, exponent)
-    override infix fun UInt.pow(exponent: ULong): UInt = power(this, exponent)
+    }
+    override val numberDivideNumber: Divide<UInt, UInt, UInt> = Divide { other -> if (other == 0.toUInt()) divisionByZero() else (this / other) }
+    override val numberRemainderNumber: Remainder<UInt, UInt, UInt> = Remainder { other -> if (other == 0.toUInt()) divisionByZero() else (this % other) }
+    override val powerNumberUInt: Power<UInt, UInt, UInt> = Power { base, exponent -> base squaringPower exponent }
+    override val powerNumberULong: Power<UInt, ULong, UInt> = Power { base, exponent -> base squaringPower exponent }
     // endregion
 }
 
 public fun UInt.Companion.reification(): Reification<UInt> = UIntContext
+public fun UInt.Companion.equality(): Equality<UInt> = UIntContext
 public fun UInt.Companion.order(): Order<UInt> = UIntContext
 public fun UInt.Companion.hashing(): Hashing<UInt> = UIntContext
 public fun UInt.Companion.euclideanSemiring(): EuclideanSemiring<UInt> = UIntContext
@@ -971,11 +1051,14 @@ public fun UInt.Companion.commutativeMonoid(): CommutativeMonoid<UInt> = UIntCon
 public fun UInt.Companion.monoid(): Monoid<UInt> = UIntContext
 public fun UInt.Companion.commutativeSemigroup(): CommutativeSemigroup<UInt> = UIntContext
 public fun UInt.Companion.semigroup(): Semigroup<UInt> = UIntContext
-public fun UInt.Companion.equality(): Equality<UInt> = UIntContext
 
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UInt.Companion.setReification() {
     Reification.Key<UInt>().withImpliedUsingFirst correspondsTo UIntContext
+}
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+public fun UInt.Companion.setEquality() {
+    Equality.Key<UInt>().withImpliedUsingFirst correspondsTo UIntContext
 }
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UInt.Companion.setOrder() {
@@ -1013,13 +1096,8 @@ context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UInt.Companion.setSemigroup() {
     Semigroup.Key<UInt>().withImpliedUsingFirst correspondsTo UIntContext
 }
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun UInt.Companion.setEquality() {
-    Equality.Key<UInt>().withImpliedUsingFirst correspondsTo UIntContext
-}
 
-@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-private data object ULongContext: Reification<ULong>, EuclideanSemiring<ULong>, ExtendedSemiring<ULong>, Order<ULong>, Hashing<ULong> {
+private data object ULongContext: Reification<ULong>, Equality<ULong>, Order<ULong>, Hashing<ULong>, EuclideanSemiring<ULong>, ExtendedSemiring<ULong> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is ULong
     override fun reifyMaybe(element: Any?): Maybe<ULong> = if (element is ULong) Some(element) else None
@@ -1027,13 +1105,18 @@ private data object ULongContext: Reification<ULong>, EuclideanSemiring<ULong>, 
     override fun reify(element: Any?): ULong = element as? ULong ?: reificationException()
     // endregion
     
+    // region Equality
+    override val numberIsZero: IsZero<ULong> = IsZero { this == zero }
+    override val numberIsOne: IsOne<ULong> = IsOne { this == one }
+    // endregion
+    
     // region Order
     override fun ULong.compareWith(other: ULong): ComparisonResult = this.compareTo(other).asComparisonResult()
     // endregion
     
     // region Constants
-    override val zero: ULong get() = 0uL
-    override val one: ULong get() = 1uL
+    override val zero: ULong get() = 0.toULong()
+    override val one: ULong get() = 1.toULong()
     // endregion
     
     // region Integers conversion
@@ -1042,35 +1125,49 @@ private data object ULongContext: Reification<ULong>, EuclideanSemiring<ULong>, 
     // endregion
     
     // region ULong-UInt operations
-    override fun ULong.plus(other: UInt): ULong = this + other
-    override fun ULong.times(other: UInt): ULong = this * other
-    // endregion
-    
-    // region UInt-ULong operations
-    override fun UInt.plus(other: ULong): ULong = this + other
-    override fun UInt.times(other: ULong): ULong = this * other
+    override val numberPlusUInt: Plus<ULong, UInt, ULong> = Plus { other -> (this + other) }
+    override val numberMinusUInt: Minus<ULong, UInt, ULong> = Minus { other -> (this - other) }
+    override val numberTimesUInt: Times<ULong, UInt, ULong> = Times { other -> (this * other) }
     // endregion
     
     // region ULong-ULong operations
-    override fun ULong.plus(other: ULong): ULong = this + other
-    override fun ULong.minus(other: ULong): ULong = this - other
-    override fun ULong.times(other: ULong): ULong = this * other
-    override fun ULong.divrem(other: ULong): EuclideanDivisionResult<ULong> =
-        if (other == 0uL) divisionByZero()
+    override val numberPlusULong: Plus<ULong, ULong, ULong> = Plus { other -> (this + other) }
+    override val numberMinusULong: Minus<ULong, ULong, ULong> = Minus { other -> (this - other) }
+    override val numberTimesULong: Times<ULong, ULong, ULong> = Times { other -> (this * other) }
+    // endregion
+    
+    // region UInt-ULong operations
+    override val uIntPlusNumber: Plus<UInt, ULong, ULong> = Plus { other -> (this + other) }
+    override val uIntMinusNumber: Minus<UInt, ULong, ULong> = Minus { other -> (this - other) }
+    override val uIntTimesNumber: Times<UInt, ULong, ULong> = Times { other -> (this * other) }
+    // endregion
+    
+    // region ULong-ULong operations
+    override val uLongPlusNumber: Plus<ULong, ULong, ULong> = Plus { other -> (this + other) }
+    override val uLongMinusNumber: Minus<ULong, ULong, ULong> = Minus { other -> (this - other) }
+    override val uLongTimesNumber: Times<ULong, ULong, ULong> = Times { other -> (this * other) }
+    // endregion
+    
+    // region ULong-ULong operations
+    override val numberPlusNumber: Plus<ULong, ULong, ULong> = Plus { other -> (this + other) }
+    override val numberMinusNumber: Minus<ULong, ULong, ULong> = Minus { other -> (this - other) }
+    override val numberTimesNumber: Times<ULong, ULong, ULong> = Times { other -> (this * other) }
+    override val numberDivideRemainderNumber: DivideRemainder<ULong, ULong, EuclideanDivisionResult<ULong>> = DivideRemainder { other ->
+        if (other == 0.toULong()) divisionByZero()
         else EuclideanDivisionResult(
-            quotient = this / other,
-            remainder = this % other,
+            quotient = (this / other),
+            remainder = (this % other),
         )
-    override fun ULong.div(other: ULong): ULong = if (other == 0uL) divisionByZero() else this / other
-    override fun ULong.rem(other: ULong): ULong = if (other == 0uL) divisionByZero() else this % other
-    override fun power(base: ULong, exponent: UInt): ULong = base squaringPower exponent
-    override fun power(base: ULong, exponent: ULong): ULong = base squaringPower exponent
-    override infix fun ULong.pow(exponent: UInt): ULong = power(this, exponent)
-    override infix fun ULong.pow(exponent: ULong): ULong = power(this, exponent)
+    }
+    override val numberDivideNumber: Divide<ULong, ULong, ULong> = Divide { other -> if (other == 0.toULong()) divisionByZero() else (this / other) }
+    override val numberRemainderNumber: Remainder<ULong, ULong, ULong> = Remainder { other -> if (other == 0.toULong()) divisionByZero() else (this % other) }
+    override val powerNumberUInt: Power<ULong, UInt, ULong> = Power { base, exponent -> base squaringPower exponent }
+    override val powerNumberULong: Power<ULong, ULong, ULong> = Power { base, exponent -> base squaringPower exponent }
     // endregion
 }
 
 public fun ULong.Companion.reification(): Reification<ULong> = ULongContext
+public fun ULong.Companion.equality(): Equality<ULong> = ULongContext
 public fun ULong.Companion.order(): Order<ULong> = ULongContext
 public fun ULong.Companion.hashing(): Hashing<ULong> = ULongContext
 public fun ULong.Companion.euclideanSemiring(): EuclideanSemiring<ULong> = ULongContext
@@ -1080,11 +1177,14 @@ public fun ULong.Companion.commutativeMonoid(): CommutativeMonoid<ULong> = ULong
 public fun ULong.Companion.monoid(): Monoid<ULong> = ULongContext
 public fun ULong.Companion.commutativeSemigroup(): CommutativeSemigroup<ULong> = ULongContext
 public fun ULong.Companion.semigroup(): Semigroup<ULong> = ULongContext
-public fun ULong.Companion.equality(): Equality<ULong> = ULongContext
 
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun ULong.Companion.setReification() {
     Reification.Key<ULong>().withImpliedUsingFirst correspondsTo ULongContext
+}
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+public fun ULong.Companion.setEquality() {
+    Equality.Key<ULong>().withImpliedUsingFirst correspondsTo ULongContext
 }
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun ULong.Companion.setOrder() {
@@ -1122,13 +1222,8 @@ context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun ULong.Companion.setSemigroup() {
     Semigroup.Key<ULong>().withImpliedUsingFirst correspondsTo ULongContext
 }
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun ULong.Companion.setEquality() {
-    Equality.Key<ULong>().withImpliedUsingFirst correspondsTo ULongContext
-}
 
-@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-private data object DoubleContext: Reification<Double>, Field<Double>, Order<Double>, Hashing<Double> {
+private data object DoubleContext: Reification<Double>, Equality<Double>, Order<Double>, Hashing<Double>, Field<Double> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is Double
     override fun reifyMaybe(element: Any?): Maybe<Double> = if (element is Double) Some(element) else None
@@ -1147,6 +1242,8 @@ private data object DoubleContext: Reification<Double>, Field<Double>, Order<Dou
     
     // region Equality
     override fun Double.equalsTo(other: Double): Boolean = this == other
+    override val numberIsZero: IsZero<Double> = IsZero { this == 0.0 }
+    override val numberIsOne: IsOne<Double> = IsOne { this == 1.0 }
     // endregion
 
     // region Conversion
@@ -1155,77 +1252,70 @@ private data object DoubleContext: Reification<Double>, Field<Double>, Order<Dou
     override fun valueOf(arg: Long): Double = arg.toDouble()
     override fun valueOf(arg: ULong): Double = arg.toDouble()
     // endregion
-
+    
     // region Double-Int operations
-    override fun Double.plus(other: Int): Double = this + other
-    override fun Double.minus(other: Int): Double = this - other
-    override fun Double.times(other: Int): Double = this * other
-    override fun Double.div(other: Int): Double = this / other
+    override val numberPlusInt: Plus<Double, Int, Double> = Plus { other -> (this + other) }
+    override val numberMinusInt: Minus<Double, Int, Double> = Minus { other -> (this - other) }
+    override val numberTimesInt: Times<Double, Int, Double> = Times { other -> (this * other) }
     // endregion
     
     // region Double-UInt operations
-    override fun Double.plus(other: UInt): Double = this + other.toDouble()
-    override fun Double.minus(other: UInt): Double = this - other.toDouble()
-    override fun Double.times(other: UInt): Double = this * other.toDouble()
-    override fun Double.div(other: UInt): Double = this / other.toDouble()
+    override val numberPlusUInt: Plus<Double, UInt, Double> = Plus { other -> (this + other.toDouble()) }
+    override val numberMinusUInt: Minus<Double, UInt, Double> = Minus { other -> (this - other.toDouble()) }
+    override val numberTimesUInt: Times<Double, UInt, Double> = Times { other -> (this * other.toDouble()) }
     // endregion
-
+    
     // region Double-Long operations
-    override fun Double.plus(other: Long): Double = this + other
-    override fun Double.minus(other: Long): Double = this - other
-    override fun Double.times(other: Long): Double = this * other
-    override fun Double.div(other: Long): Double = this / other
+    override val numberPlusLong: Plus<Double, Long, Double> = Plus { other -> (this + other) }
+    override val numberMinusLong: Minus<Double, Long, Double> = Minus { other -> (this - other) }
+    override val numberTimesLong: Times<Double, Long, Double> = Times { other -> (this * other) }
     // endregion
     
     // region Double-ULong operations
-    override fun Double.plus(other: ULong): Double = this + other.toDouble()
-    override fun Double.minus(other: ULong): Double = this - other.toDouble()
-    override fun Double.times(other: ULong): Double = this * other.toDouble()
-    override fun Double.div(other: ULong): Double = this / other.toDouble()
+    override val numberPlusULong: Plus<Double, ULong, Double> = Plus { other -> (this + other.toDouble()) }
+    override val numberMinusULong: Minus<Double, ULong, Double> = Minus { other -> (this - other.toDouble()) }
+    override val numberTimesULong: Times<Double, ULong, Double> = Times { other -> (this * other.toDouble()) }
     // endregion
-
+    
     // region Int-Double operations
-    override fun Int.plus(other: Double): Double = this + other
-    override fun Int.minus(other: Double): Double = this - other
-    override fun Int.times(other: Double): Double = this * other
-    override fun Int.div(other: Double): Double = this / other
+    override val intPlusNumber: Plus<Int, Double, Double> = Plus { other -> (this + other) }
+    override val intMinusNumber: Minus<Int, Double, Double> = Minus { other -> (this - other) }
+    override val intTimesNumber: Times<Int, Double, Double> = Times { other -> (this * other) }
     // endregion
     
     // region UInt-Double operations
-    override fun UInt.plus(other: Double): Double = this.toDouble() + other
-    override fun UInt.minus(other: Double): Double = this.toDouble() - other
-    override fun UInt.times(other: Double): Double = this.toDouble() * other
-    override fun UInt.div(other: Double): Double = this.toDouble() / other
+    override val uIntPlusNumber: Plus<UInt, Double, Double> = Plus { other -> (this.toDouble() + other) }
+    override val uIntMinusNumber: Minus<UInt, Double, Double> = Minus { other -> (this.toDouble() - other) }
+    override val uIntTimesNumber: Times<UInt, Double, Double> = Times { other -> (this.toDouble() * other) }
     // endregion
-
+    
     // region Long-Double operations
-    override fun Long.plus(other: Double): Double = this + other
-    override fun Long.minus(other: Double): Double = this - other
-    override fun Long.times(other: Double): Double = this * other
-    override fun Long.div(other: Double): Double = this / other
+    override val longPlusNumber: Plus<Long, Double, Double> = Plus { other -> (this + other) }
+    override val longMinusNumber: Minus<Long, Double, Double> = Minus { other -> (this - other) }
+    override val longTimesNumber: Times<Long, Double, Double> = Times { other -> (this * other) }
     // endregion
     
     // region ULong-Double operations
-    override fun ULong.plus(other: Double): Double = this.toDouble() + other
-    override fun ULong.minus(other: Double): Double = this.toDouble() - other
-    override fun ULong.times(other: Double): Double = this.toDouble() * other
-    override fun ULong.div(other: Double): Double = this.toDouble() / other
+    override val uLongPlusNumber: Plus<ULong, Double, Double> = Plus { other -> (this.toDouble() + other) }
+    override val uLongMinusNumber: Minus<ULong, Double, Double> = Minus { other -> (this.toDouble() - other) }
+    override val uLongTimesNumber: Times<ULong, Double, Double> = Times { other -> (this.toDouble() * other) }
     // endregion
-
+    
     // region Double-Double operations
-    override fun Double.unaryMinus(): Double = -this
-    override fun Double.plus(other: Double): Double = this + other
-    override fun Double.minus(other: Double): Double = this - other
-    override fun Double.times(other: Double): Double = this * other
-    override fun Double.div(other: Double): Double = this / other
-    override fun power(base: Double, exponent: UInt): Double = base.kpow(exponent.toDouble())
-    override fun power(base: Double, exponent: ULong): Double = base.kpow(exponent.toDouble())
-    override fun power(base: Double, exponent: Int): Double = base.kpow(exponent)
-    override fun power(base: Double, exponent: Long): Double = base.kpow(exponent.toDouble())
+    override val numberUnaryMinus: UnaryMinus<Double, Double> = UnaryMinus { -this }
+    override val numberPlusNumber: Plus<Double, Double, Double> = Plus { other -> this + other }
+    override val numberMinusNumber: Minus<Double, Double, Double> = Minus { other -> this - other }
+    override val numberTimesNumber: Times<Double, Double, Double> = Times { other -> this * other }
+    override val numberDivideNumber: Divide<Double, Double, Double> = Divide { other -> this / other }
+    override val powerNumberUInt: Power<Double, UInt, Double> = Power { base, exponent -> base.kpow(exponent.toDouble()) }
+    override val powerNumberULong: Power<Double, ULong, Double> = Power { base, exponent -> base.kpow(exponent.toDouble()) }
+    override val powerNumberInt: Power<Double, Int, Double> = Power { base, exponent -> base.kpow(exponent) }
+    override val powerNumberLong: Power<Double, Long, Double> = Power { base, exponent -> base.kpow(exponent.toDouble()) }
     // endregion
 }
 
 public fun Double.Companion.reification(): Reification<Double> = DoubleContext
+public fun Double.Companion.equality(): Equality<Double> = DoubleContext
 public fun Double.Companion.order(): Order<Double> = DoubleContext
 public fun Double.Companion.hashing(): Hashing<Double> = DoubleContext
 public fun Double.Companion.field(): Field<Double> = DoubleContext
@@ -1243,6 +1333,10 @@ public fun Double.Companion.semigroup(): Semigroup<Double> = DoubleContext
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setReification() {
     Reification.Key<Double>().withImpliedUsingFirst correspondsTo DoubleContext
+}
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+public fun Double.Companion.setEquality() {
+    Equality.Key<Double>().withImpliedUsingFirst correspondsTo DoubleContext
 }
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setOrder() {
@@ -1297,8 +1391,7 @@ public fun Double.Companion.setSemigroup() {
     Semigroup.Key<Double>().withImpliedUsingFirst correspondsTo DoubleContext
 }
 
-@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-private data object FloatContext: Reification<Float>, Field<Float>, Order<Float>, Hashing<Float> {
+private data object FloatContext: Reification<Float>, Equality<Float>, Order<Float>, Hashing<Float>, Field<Float> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is Float
     override fun reifyMaybe(element: Any?): Maybe<Float> = if (element is Float) Some(element) else None
@@ -1309,7 +1402,7 @@ private data object FloatContext: Reification<Float>, Field<Float>, Order<Float>
     // region Order
     override fun Float.compareWith(other: Float): ComparisonResult = this.compareTo(other).asComparisonResult()
     // endregion
-
+    
     // region Constants
     override val zero: Float get() = 0f
     override val one: Float get() = 1f
@@ -1317,85 +1410,80 @@ private data object FloatContext: Reification<Float>, Field<Float>, Order<Float>
     
     // region Equality
     override fun Float.equalsTo(other: Float): Boolean = this == other
+    override val numberIsZero: IsZero<Float> = IsZero { this == 0f }
+    override val numberIsOne: IsOne<Float> = IsOne { this == 1f }
     // endregion
-
+    
     // region Conversion
     override fun valueOf(arg: Int): Float = arg.toFloat()
     override fun valueOf(arg: UInt): Float = arg.toFloat()
     override fun valueOf(arg: Long): Float = arg.toFloat()
     override fun valueOf(arg: ULong): Float = arg.toFloat()
     // endregion
-
+    
     // region Float-Int operations
-    override fun Float.plus(other: Int): Float = this + other
-    override fun Float.minus(other: Int): Float = this - other
-    override fun Float.times(other: Int): Float = this * other
-    override fun Float.div(other: Int): Float = this / other
+    override val numberPlusInt: Plus<Float, Int, Float> = Plus { other -> (this + other) }
+    override val numberMinusInt: Minus<Float, Int, Float> = Minus { other -> (this - other) }
+    override val numberTimesInt: Times<Float, Int, Float> = Times { other -> (this * other) }
     // endregion
     
     // region Float-UInt operations
-    override fun Float.plus(other: UInt): Float = this + other.toFloat()
-    override fun Float.minus(other: UInt): Float = this - other.toFloat()
-    override fun Float.times(other: UInt): Float = this * other.toFloat()
-    override fun Float.div(other: UInt): Float = this / other.toFloat()
+    override val numberPlusUInt: Plus<Float, UInt, Float> = Plus { other -> (this + other.toFloat()) }
+    override val numberMinusUInt: Minus<Float, UInt, Float> = Minus { other -> (this - other.toFloat()) }
+    override val numberTimesUInt: Times<Float, UInt, Float> = Times { other -> (this * other.toFloat()) }
     // endregion
-
+    
     // region Float-Long operations
-    override fun Float.plus(other: Long): Float = this + other
-    override fun Float.minus(other: Long): Float = this - other
-    override fun Float.times(other: Long): Float = this * other
-    override fun Float.div(other: Long): Float = this / other
+    override val numberPlusLong: Plus<Float, Long, Float> = Plus { other -> (this + other) }
+    override val numberMinusLong: Minus<Float, Long, Float> = Minus { other -> (this - other) }
+    override val numberTimesLong: Times<Float, Long, Float> = Times { other -> (this * other) }
     // endregion
     
     // region Float-ULong operations
-    override fun Float.plus(other: ULong): Float = this + other.toFloat()
-    override fun Float.minus(other: ULong): Float = this - other.toFloat()
-    override fun Float.times(other: ULong): Float = this * other.toFloat()
-    override fun Float.div(other: ULong): Float = this / other.toFloat()
+    override val numberPlusULong: Plus<Float, ULong, Float> = Plus { other -> (this + other.toFloat()) }
+    override val numberMinusULong: Minus<Float, ULong, Float> = Minus { other -> (this - other.toFloat()) }
+    override val numberTimesULong: Times<Float, ULong, Float> = Times { other -> (this * other.toFloat()) }
     // endregion
-
+    
     // region Int-Float operations
-    override fun Int.plus(other: Float): Float = this + other
-    override fun Int.minus(other: Float): Float = this - other
-    override fun Int.times(other: Float): Float = this * other
-    override fun Int.div(other: Float): Float = this / other
+    override val intPlusNumber: Plus<Int, Float, Float> = Plus { other -> (this + other) }
+    override val intMinusNumber: Minus<Int, Float, Float> = Minus { other -> (this - other) }
+    override val intTimesNumber: Times<Int, Float, Float> = Times { other -> (this * other) }
     // endregion
     
     // region UInt-Float operations
-    override fun UInt.plus(other: Float): Float = this.toFloat() + other
-    override fun UInt.minus(other: Float): Float = this.toFloat() - other
-    override fun UInt.times(other: Float): Float = this.toFloat() * other
-    override fun UInt.div(other: Float): Float = this.toFloat() / other
+    override val uIntPlusNumber: Plus<UInt, Float, Float> = Plus { other -> (this.toFloat() + other) }
+    override val uIntMinusNumber: Minus<UInt, Float, Float> = Minus { other -> (this.toFloat() - other) }
+    override val uIntTimesNumber: Times<UInt, Float, Float> = Times { other -> (this.toFloat() * other) }
     // endregion
-
+    
     // region Long-Float operations
-    override fun Long.plus(other: Float): Float = this + other
-    override fun Long.minus(other: Float): Float = this - other
-    override fun Long.times(other: Float): Float = this * other
-    override fun Long.div(other: Float): Float = this / other
+    override val longPlusNumber: Plus<Long, Float, Float> = Plus { other -> (this + other) }
+    override val longMinusNumber: Minus<Long, Float, Float> = Minus { other -> (this - other) }
+    override val longTimesNumber: Times<Long, Float, Float> = Times { other -> (this * other) }
     // endregion
     
     // region ULong-Float operations
-    override fun ULong.plus(other: Float): Float = this.toFloat() + other
-    override fun ULong.minus(other: Float): Float = this.toFloat() - other
-    override fun ULong.times(other: Float): Float = this.toFloat() * other
-    override fun ULong.div(other: Float): Float = this.toFloat() / other
+    override val uLongPlusNumber: Plus<ULong, Float, Float> = Plus { other -> (this.toFloat() + other) }
+    override val uLongMinusNumber: Minus<ULong, Float, Float> = Minus { other -> (this.toFloat() - other) }
+    override val uLongTimesNumber: Times<ULong, Float, Float> = Times { other -> (this.toFloat() * other) }
     // endregion
-
+    
     // region Float-Float operations
-    override fun Float.unaryMinus(): Float = -this
-    override fun Float.plus(other: Float): Float = this + other
-    override fun Float.minus(other: Float): Float = this - other
-    override fun Float.times(other: Float): Float = this * other
-    override fun Float.div(other: Float): Float = this / other
-    override fun power(base: Float, exponent: UInt): Float = base.kpow(exponent.toFloat())
-    override fun power(base: Float, exponent: ULong): Float = base.kpow(exponent.toFloat())
-    override fun power(base: Float, exponent: Int): Float = base.kpow(exponent)
-    override fun power(base: Float, exponent: Long): Float = base.kpow(exponent.toFloat())
+    override val numberUnaryMinus: UnaryMinus<Float, Float> = UnaryMinus { -this }
+    override val numberPlusNumber: Plus<Float, Float, Float> = Plus { other -> this + other }
+    override val numberMinusNumber: Minus<Float, Float, Float> = Minus { other -> this - other }
+    override val numberTimesNumber: Times<Float, Float, Float> = Times { other -> this * other }
+    override val numberDivideNumber: Divide<Float, Float, Float> = Divide { other -> this / other }
+    override val powerNumberUInt: Power<Float, UInt, Float> = Power { base, exponent -> base.kpow(exponent.toFloat()) }
+    override val powerNumberULong: Power<Float, ULong, Float> = Power { base, exponent -> base.kpow(exponent.toFloat()) }
+    override val powerNumberInt: Power<Float, Int, Float> = Power { base, exponent -> base.kpow(exponent) }
+    override val powerNumberLong: Power<Float, Long, Float> = Power { base, exponent -> base.kpow(exponent.toFloat()) }
     // endregion
 }
 
 public fun Float.Companion.reification(): Reification<Float> = FloatContext
+public fun Float.Companion.equality(): Equality<Float> = FloatContext
 public fun Float.Companion.order(): Order<Float> = FloatContext
 public fun Float.Companion.hashing(): Hashing<Float> = FloatContext
 public fun Float.Companion.field(): Field<Float> = FloatContext
@@ -1413,6 +1501,10 @@ public fun Float.Companion.semigroup(): Semigroup<Float> = FloatContext
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Float.Companion.setReification() {
     Reification.Key<Float>().withImpliedUsingFirst correspondsTo FloatContext
+}
+context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+public fun Float.Companion.setEquality() {
+    Equality.Key<Float>().withImpliedUsingFirst correspondsTo FloatContext
 }
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Float.Companion.setOrder() {

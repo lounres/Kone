@@ -5,41 +5,31 @@
 
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.contexts.KoneContextHolder
+import dev.lounres.kone.contexts.KoneContextHolderContext
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
-import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
 import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
-public interface Semigroup<Number> : Equality<Number> {
+public interface Semigroup<Number> : KoneContextHolder {
     // region Number-Number operations
-    public operator fun Number.plus(other: Number): Number
+    @KoneContextHolderContext
+    public val numberPlusNumber: Plus<Number, Number, Number>
     // endregion
     
     public companion object;
     
     @Suppliable
     public class Key<@Supply Number> : SuppliedTypeRegistryKey<Semigroup<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<Semigroup<Number>> by lazy {
-            ImpliedKeysRegistry {
-                Equality.Key<Number>().impliesSame()
-            }
+        override val impliedKeys: ImpliedKeysRegistry<Semigroup<Number>> = ImpliedKeysRegistry {
+            Plus.Key<Number, Number, Number>() implies { it.numberPlusNumber }
         }
         override fun toString(): String = "dev.lounres.kone.algebraic.Semigroup.Key<${suppliedTypeOf<Number>()}>"
     }
 }
-
-// region Number-Number operations
-/**
- * Sums [this] and the [other] numbers in terms of the [Semigroup].
- *
- * A bridge contextual function for [Semigroup.plus].
- */
-context(semigroup: Semigroup<Number>)
-public operator fun <Number> Number.plus(other: Number): Number = with(semigroup) { this@plus + other }
-// endregion
 
 public interface CommutativeSemigroup<Number> : Semigroup<Number> {
     public companion object;

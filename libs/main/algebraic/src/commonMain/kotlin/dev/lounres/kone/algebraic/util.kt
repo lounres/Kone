@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.algebraic
 
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.ComparisonResult
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.asKotlinComparisonResult
@@ -83,5 +84,5 @@ public fun <Number> Number.signInt(): Int = this.compareWith(ring.zero).asKotlin
  * Returns absolute value of [this number][this].
  * I.e. if [this number][this] is non-negative it is returned, otherwise its negation is returned.
  */
-context(_: Group<Number>, _: Order<Number>)
-public fun <Number> Number.absoluteValue(): Number = if (this.isNonNegative()) this else -this
+context(group: Group<Number>, _: Order<Number>)
+public fun <Number> Number.absoluteValue(): Number = group.numberUnaryMinus { if (this.isNonNegative()) this else -this }

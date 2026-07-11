@@ -7,6 +7,8 @@ package dev.lounres.kone.algebraic.basis
 
 import dev.lounres.kone.algebraic.Field
 import dev.lounres.kone.algebraic.div
+import dev.lounres.kone.contexts.KoneContextHolder
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
 
 
 public fun interface ModuleBasisDecomposition<out Number, in Vector, in Index> {
@@ -22,17 +24,18 @@ public fun interface ModuleBasisDecomposition<out Number, in Vector, in Index> {
     }
 }
 
-context(_: Field<Number>)
+context(field: Field<Number>)
 public fun <Number, Vector, Index> ModuleBasisDecomposition<Number, Vector, Index>.toVectorSpaceBasisDecomposition(): VectorSpaceBasisDecomposition<Number, Vector, Index> =
     VectorSpaceBasisDecomposition { vector ->
         val decomposition = this@toVectorSpaceBasisDecomposition.decompose(vector)
         
         VectorSpaceBasisDecomposition.Result { index ->
+            KoneContextHolder.unwrapLocallyAsExtensionReceivers(field)
             decomposition[index] / decomposition.scalar
         }
     }
 
-context(_: Field<Number>)
+context(field: Field<Number>)
 public fun <Number, Vector> ModuleBasisDecomposition.Finite<Number, Vector>.toVectorSpaceBasisDecomposition(): VectorSpaceBasisDecomposition.Finite<Number, Vector> =
     object : VectorSpaceBasisDecomposition.Finite<Number, Vector> {
         override val size: UInt get() = this@toVectorSpaceBasisDecomposition.size
@@ -41,6 +44,7 @@ public fun <Number, Vector> ModuleBasisDecomposition.Finite<Number, Vector>.toVe
             val decomposition = this@toVectorSpaceBasisDecomposition.decompose(vector)
             
             return VectorSpaceBasisDecomposition.Result { index ->
+                KoneContextHolder.unwrapLocallyAsExtensionReceivers(field)
                 decomposition[index] / decomposition.scalar
             }
         }
@@ -52,7 +56,7 @@ public interface ModuleBasis<out Number, Vector, in Index> : ModuleBasisDecompos
     public interface Finite<out Number, Vector> : ModuleBasis<Number, Vector, UInt>, ModuleBasisDecomposition.Finite<Number, Vector>
 }
 
-context(_: Field<Number>)
+context(field: Field<Number>)
 public fun <Number, Vector, Index> ModuleBasis<Number, Vector, Index>.toVectorSpaceBasisDecomposition(): VectorSpaceBasis<Number, Vector, Index> =
     object : VectorSpaceBasis<Number, Vector, Index> {
         override fun get(index: Index): Vector = this@toVectorSpaceBasisDecomposition[index]
@@ -61,12 +65,13 @@ public fun <Number, Vector, Index> ModuleBasis<Number, Vector, Index>.toVectorSp
             val decomposition = this@toVectorSpaceBasisDecomposition.decompose(vector)
             
             return VectorSpaceBasisDecomposition.Result { index ->
+                KoneContextHolder.unwrapLocallyAsExtensionReceivers(field)
                 decomposition[index] / decomposition.scalar
             }
         }
     }
 
-context(_: Field<Number>)
+context(field: Field<Number>)
 public fun <Number, Vector> ModuleBasis.Finite<Number, Vector>.toVectorSpaceBasisDecomposition(): VectorSpaceBasis.Finite<Number, Vector> =
     object : VectorSpaceBasis.Finite<Number, Vector> {
         override val size: UInt get() = this@toVectorSpaceBasisDecomposition.size
@@ -77,6 +82,7 @@ public fun <Number, Vector> ModuleBasis.Finite<Number, Vector>.toVectorSpaceBasi
             val decomposition = this@toVectorSpaceBasisDecomposition.decompose(vector)
             
             return VectorSpaceBasisDecomposition.Result { index ->
+                KoneContextHolder.unwrapLocallyAsExtensionReceivers(field)
                 decomposition[index] / decomposition.scalar
             }
         }
