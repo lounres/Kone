@@ -9,7 +9,9 @@ package dev.lounres.kone.contexts
 
 
 @Target(AnnotationTarget.PROPERTY)
-public annotation class KoneContextHolderContext
+public annotation class KoneContextHolderInclude
+@Target(AnnotationTarget.PROPERTY)
+public annotation class KoneContextHolderExclude
 
 //public inline fun <Result> KoneContext.Companion.useInBlockAsExtensionReceivers(vararg koneContext: KoneContext, block: () -> Result): Result {
 //    contract {

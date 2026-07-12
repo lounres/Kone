@@ -1,0 +1,49 @@
+FILE: simpleKoneContextHolderUnwrapLocallyAsExtensionReceiversUsage8.kt
+    package foo.bar
+
+    public final class Work : R|kotlin/Any| {
+        public constructor(n: R|kotlin/Int|): R|foo/bar/Work| {
+            super<R|kotlin/Any|>()
+        }
+
+        private final val n: R|kotlin/Int| = R|<local>/n|
+            private get(): R|kotlin/Int|
+
+        public final fun work(): R|kotlin/Int| {
+            ^work this@R|foo/bar/Work|.R|foo/bar/Work.n|
+        }
+
+    }
+    public abstract interface Bar : R|dev/lounres/kone/contexts/KoneContextHolder| {
+        @R|dev/lounres/kone/contexts/KoneContextHolderInclude|() public open val baz: R|foo/bar/Work|
+            public get(): R|foo/bar/Work| {
+                ^ R|foo/bar/Work.Work|(Int(179))
+            }
+
+    }
+    public final class Baz : R|foo/bar/Bar| {
+        public constructor(): R|foo/bar/Baz| {
+            super<R|kotlin/Any|>()
+        }
+
+        @R|dev/lounres/kone/contexts/KoneContextHolderInclude|() public final val bar: R|foo/bar/Work| = R|foo/bar/Work.Work|(Int(57))
+            public get(): R|foo/bar/Work|
+
+        @R|dev/lounres/kone/contexts/KoneContextHolderExclude|() public open override val baz: R|foo/bar/Work|
+            public get(): R|foo/bar/Work| {
+                ^ this@R|foo/bar/Baz|.super<R|foo/bar/Bar|>.R|foo/bar/Bar.baz|
+            }
+
+    }
+    public final fun box(): R|kotlin/String| {
+        Q|dev/lounres/kone/contexts/KoneContextHolder|.R|dev/lounres/kone/contexts/unwrapLocallyAsExtensionReceivers|(vararg(R|foo/bar/Baz.Baz|()))
+        ^box when () {
+            ==(this@R|<local>/<Kone contexts unwrapLocallyAsExtensionReceivers receiver holder>|.R|foo/bar/Work.work|(), Int(57)) ->  {
+                String(OK)
+            }
+            else ->  {
+                String(INCORRECT)
+            }
+        }
+
+    }

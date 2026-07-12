@@ -6,7 +6,7 @@ FILE: simpleKoneContextHolderUnwrapLocallyAsExtensionReceiversUsage1.kt
             super<R|kotlin/Any|>()
         }
 
-        @R|dev/lounres/kone/contexts/KoneContextHolderContext|() public final val bar: R|kotlin/collections/List<X>|
+        @R|dev/lounres/kone/contexts/KoneContextHolderInclude|() public final val bar: R|kotlin/collections/List<X>|
             public get(): R|kotlin/collections/List<X>| {
                 ^ R|kotlin/collections/emptyList|<R|X|>()
             }

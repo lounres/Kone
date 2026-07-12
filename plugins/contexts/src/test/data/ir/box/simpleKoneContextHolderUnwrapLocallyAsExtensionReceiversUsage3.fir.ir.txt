@@ -31,7 +31,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextHolderUnwrapLocallyAsExtensionRec
         public open fun toString (): kotlin.String declared in foo.bar.Bar
     PROPERTY FAKE_OVERRIDE name:bar visibility:public modality:OPEN [fake_override,val]
       annotations:
-        KoneContextHolderContext
+        KoneContextHolderInclude
       overridden:
         public open bar: kotlin.Int declared in foo.bar.Bar
       FUN FAKE_OVERRIDE name:<get-bar> visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
@@ -56,7 +56,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextHolderUnwrapLocallyAsExtensionRec
         public open fun toString (): kotlin.String declared in dev.lounres.kone.contexts.KoneContextHolder
     PROPERTY name:bar visibility:public modality:OPEN [val]
       annotations:
-        KoneContextHolderContext
+        KoneContextHolderInclude
       FUN name:<get-bar> visibility:public modality:OPEN returnType:kotlin.Int
         VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Bar
         correspondingProperty: PROPERTY name:bar visibility:public modality:OPEN [val]

@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.contexts.KoneContextHolderContext
+import dev.lounres.kone.contexts.KoneContextHolderInclude
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
@@ -14,7 +14,7 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 public interface LeftModule<Number, Vector> : CommutativeGroup<Vector> {
-    @KoneContextHolderContext
+    @KoneContextHolderInclude
     public val numberTimesVector: Times<Number, Vector, Vector>
     
     public companion object;
@@ -31,7 +31,7 @@ public interface LeftModule<Number, Vector> : CommutativeGroup<Vector> {
 }
 
 public interface RightModule<Number, Vector> : CommutativeGroup<Vector> {
-    @KoneContextHolderContext
+    @KoneContextHolderInclude
     public val vectorTimesNumber: Times<Vector, Number, Vector>
     
     public companion object;

@@ -16,7 +16,8 @@ const val koneContextsPackageFQNameString = "dev.lounres.kone.contexts"
 const val koneContextClassShortNameString = "KoneContext"
 const val koneContextHolderClassShortNameString = "KoneContextHolder"
 // Public runtime
-const val koneContextHolderContextAnnotationShortNameString = "KoneContextHolderContext"
+const val koneContextHolderIncludeAnnotationShortNameString = "KoneContextHolderInclude"
+const val koneContextHolderExcludeAnnotationShortNameString = "KoneContextHolderExclude"
 const val useLocallyAsExtensionReceiversFunctionShortNameString = "useLocallyAsExtensionReceivers"
 const val unwrapLocallyAsExtensionReceiversFunctionShortNameString = "unwrapLocallyAsExtensionReceivers"
 // Private runtime
@@ -26,7 +27,8 @@ val koneContextsPackageFQName = FqName(koneContextsPackageFQNameString)
 val koneContextClassShortName = FqName(koneContextClassShortNameString)
 val koneContextHolderClassShortName = FqName(koneContextHolderClassShortNameString)
 // Public runtime
-val koneContextHolderContextAnnotationShortName = FqName(koneContextHolderContextAnnotationShortNameString)
+val koneContextHolderIncludeAnnotationShortName = FqName(koneContextHolderIncludeAnnotationShortNameString)
+val koneContextHolderExcludeAnnotationShortName = FqName(koneContextHolderExcludeAnnotationShortNameString)
 val useLocallyAsExtensionReceiversFunctionShortName = Name.identifier(useLocallyAsExtensionReceiversFunctionShortNameString)
 val unwrapLocallyAsExtensionReceiversFunctionShortName = Name.identifier(unwrapLocallyAsExtensionReceiversFunctionShortNameString)
 // Private runtime
@@ -43,9 +45,14 @@ val koneContextHolderClassId = ClassId(
     isLocal = false
 )
 // Public runtime
-val koneContextHolderContextAnnotationClassId = ClassId(
+val koneContextHolderIncludeAnnotationClassId = ClassId(
     packageFqName = koneContextsPackageFQName,
-    relativeClassName = koneContextHolderContextAnnotationShortName,
+    relativeClassName = koneContextHolderIncludeAnnotationShortName,
+    isLocal = false,
+)
+val koneContextHolderExcludeAnnotationClassId = ClassId(
+    packageFqName = koneContextsPackageFQName,
+    relativeClassName = koneContextHolderExcludeAnnotationShortName,
     isLocal = false,
 )
 val useLocallyAsExtensionReceiversFunctionCallableId = CallableId(

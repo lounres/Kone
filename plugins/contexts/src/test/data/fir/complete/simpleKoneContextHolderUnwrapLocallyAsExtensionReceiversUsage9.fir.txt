@@ -1,0 +1,45 @@
+FILE: simpleKoneContextHolderUnwrapLocallyAsExtensionReceiversUsage9.kt
+    package foo.bar
+
+    public abstract fun interface Plus<in Left, in Right, out Result> : R|dev/lounres/kone/contexts/KoneContext| {
+        public abstract operator fun R|Left|.plus(other: R|Right|): R|Result|
+
+    }
+    public abstract fun interface Minus<in Left, in Right, out Result> : R|dev/lounres/kone/contexts/KoneContext| {
+        public abstract operator fun R|Left|.minus(other: R|Right|): R|Result|
+
+    }
+    public abstract interface Semigroup<Number> : R|dev/lounres/kone/contexts/KoneContextHolder| {
+        @R|dev/lounres/kone/contexts/KoneContextHolderInclude|() public abstract val numberPlusNumber: R|foo/bar/Plus<Number, Number, Number>|
+            public get(): R|foo/bar/Plus<Number, Number, Number>|
+
+    }
+    public abstract interface Group<Number> : R|foo/bar/Semigroup<Number>| {
+        @R|dev/lounres/kone/contexts/KoneContextHolderInclude|() public abstract val numberMinusNumber: R|foo/bar/Minus<Number, Number, Number>|
+            public get(): R|foo/bar/Minus<Number, Number, Number>|
+
+    }
+    public abstract interface Semiring<Number> : R|foo/bar/Semigroup<Number>| {
+        public abstract val one: R|Number|
+            public get(): R|Number|
+
+    }
+    public abstract interface Ring<Number> : R|foo/bar/Semiring<Number>|, R|foo/bar/Group<Number>| {
+        @R|dev/lounres/kone/contexts/KoneContextHolderInclude|() public abstract val numberPlusLong: R|foo/bar/Plus<Number, kotlin/Long, Number>|
+            public get(): R|foo/bar/Plus<Number, kotlin/Long, Number>|
+
+    }
+    public final inline fun <Number> rightAddMultipliedByDoubling(base: R|Number|, arg: R|Number|, multiplier: R|kotlin/Int|, additionOp: R|(Number, Number) -> Number|, rightSubtractionOp: R|(Number, Number) -> Number|): R|Number| {
+        ^rightAddMultipliedByDoubling R|kotlin/TODO|()
+    }
+    context(ring: R|foo/bar/Ring<Number>|)
+    public final infix fun <Number> R|Number|.doublingPlus(other: R|kotlin/Int|): R|Number| {
+        Q|dev/lounres/kone/contexts/KoneContextHolder|.R|dev/lounres/kone/contexts/unwrapLocallyAsExtensionReceivers|(vararg(R|<local>/ring|))
+        ^doublingPlus R|foo/bar/rightAddMultipliedByDoubling|<R|Number|>(this@R|foo/bar/doublingPlus|, R|<local>/ring|.R|SubstitutionOverride<foo/bar/Ring.one: R|Number|>|, R|<local>/other|, rightAddMultipliedByDoubling@fun <anonymous>(left: R|Number|, right: R|Number|): R|Number| <inline=Inline, kind=UNKNOWN>  {
+            ^ (this@R|<local>/<Kone contexts unwrapLocallyAsExtensionReceivers receiver holder>|, R|<local>/left|).R|SubstitutionOverride<foo/bar/Plus.plus: R|Number|>|(R|<local>/right|)
+        }
+        , rightAddMultipliedByDoubling@fun <anonymous>(left: R|Number|, right: R|Number|): R|Number| <inline=Inline, kind=UNKNOWN>  {
+            ^ (this@R|<local>/<Kone contexts unwrapLocallyAsExtensionReceivers receiver holder>|, R|<local>/left|).R|SubstitutionOverride<foo/bar/Minus.minus: R|Number|>|(R|<local>/right|)
+        }
+        )
+    }

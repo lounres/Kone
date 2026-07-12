@@ -6,7 +6,7 @@ import dev.lounres.kone.contexts.*
 
 
 class Foo<X> : KoneContextHolder {
-    @KoneContextHolderContext
+    @KoneContextHolderInclude
     val bar: List<X> get() = emptyList()
     val baz: Set<X> get() = emptySet()
 }

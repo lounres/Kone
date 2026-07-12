@@ -14,12 +14,12 @@ fun interface Minus<in Left, in Right, out Result> : KoneContext {
 }
 
 interface Semigroup<Number> : KoneContextHolder {
-    @KoneContextHolderContext
+    @KoneContextHolderInclude
     val numberPlusNumber: Plus<Number, Number, Number>
 }
 
 interface Group<Number> : Semigroup<Number> {
-    @KoneContextHolderContext
+    @KoneContextHolderInclude
     val numberMinusNumber: Minus<Number, Number, Number>
 }
 
@@ -28,7 +28,7 @@ interface Semiring<Number> : Semigroup<Number> {
 }
 
 interface Ring<Number> : Semiring<Number>, Group<Number> {
-    @KoneContextHolderContext
+    @KoneContextHolderInclude
     public val numberPlusLong: Plus<Number, Long, Number>
 }
 

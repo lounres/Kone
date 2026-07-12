@@ -10,7 +10,7 @@ FILE: simpleKoneContextHolderUnwrapLocallyAsExtensionReceiversUsage2.kt
             super<R|kotlin/Any|>()
         }
 
-        @R|dev/lounres/kone/contexts/KoneContextHolderContext|() public final val bar: R|foo/bar/CoolContext<kotlin/Int>| = R|foo/bar/CoolContext|<R|kotlin/Int|>(<L> = CoolContext@fun <anonymous>(): R|kotlin/Int| <inline=NoInline>  {
+        @R|dev/lounres/kone/contexts/KoneContextHolderInclude|() public final val bar: R|foo/bar/CoolContext<kotlin/Int>| = R|foo/bar/CoolContext|<R|kotlin/Int|>(<L> = CoolContext@fun <anonymous>(): R|kotlin/Int| <inline=NoInline>  {
             ^ Int(57)
         }
         )

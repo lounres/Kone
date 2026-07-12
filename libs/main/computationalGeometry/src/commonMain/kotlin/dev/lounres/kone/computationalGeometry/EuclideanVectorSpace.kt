@@ -7,7 +7,7 @@ package dev.lounres.kone.computationalGeometry
 
 import dev.lounres.kone.algebraic.Module
 import dev.lounres.kone.algebraic.VectorSpace
-import dev.lounres.kone.contexts.KoneContextHolderContext
+import dev.lounres.kone.contexts.KoneContextHolderInclude
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
@@ -16,7 +16,7 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 public interface EuclideanVectorSpaceOverRing<Number, Vector> : Module<Number, Vector> {
-    @KoneContextHolderContext
+    @KoneContextHolderInclude
     public val vectorDotVector: Dot<Vector, Vector, Number>
     
     public companion object;

@@ -10,7 +10,7 @@ fun interface CoolContext<X> {
 }
 
 object Foo : KoneContextHolder {
-    @KoneContextHolderContext
+    @KoneContextHolderInclude
     val bar = CoolContext { 57 }
     val baz = CoolContext { 179 }
 }

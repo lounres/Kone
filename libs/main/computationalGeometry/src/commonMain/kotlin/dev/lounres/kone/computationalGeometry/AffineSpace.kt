@@ -11,7 +11,7 @@ import dev.lounres.kone.algebraic.Plus
 import dev.lounres.kone.algebraic.VectorSpace
 import dev.lounres.kone.algebraic.minus
 import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.contexts.KoneContextHolderContext
+import dev.lounres.kone.contexts.KoneContextHolderInclude
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.registry.*
@@ -21,13 +21,13 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 public interface AffineSpaceOverRing<Number, Vector, Point> : Module<Number, Vector> {
-    @KoneContextHolderContext
+    @KoneContextHolderInclude
     public val pointPlusVector: Plus<Point, Vector, Point>
-    @KoneContextHolderContext
+    @KoneContextHolderInclude
     public val pointMinusVector: Minus<Point, Vector, Point>
-    @KoneContextHolderContext
+    @KoneContextHolderInclude
     public val vectorPlusPoint: Plus<Vector, Point, Point>
-    @KoneContextHolderContext
+    @KoneContextHolderInclude
     public val pointMinusPoint: Minus<Point, Point, Vector>
     
     public companion object;

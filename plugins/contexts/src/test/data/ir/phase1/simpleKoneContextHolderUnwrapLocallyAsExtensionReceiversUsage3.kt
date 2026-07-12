@@ -6,7 +6,7 @@ import dev.lounres.kone.contexts.*
 
 
 interface Bar : KoneContextHolder {
-    @KoneContextHolderContext
+    @KoneContextHolderInclude
     val bar: Int get() = 57
 }
 

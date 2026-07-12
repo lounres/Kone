@@ -5,18 +5,17 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.contexts.KoneContextHolderContext
+import dev.lounres.kone.contexts.KoneContextHolderInclude
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
 import dev.lounres.kone.suppliedTypes.suppliedTypeOf
-import kotlin.jvm.JvmName
 
 
 public interface FieldExtension<Number, Vector> : CommutativeAlgebra<Number, Vector>, Field<Vector>, VectorSpace<Number, Vector> {
-    @KoneContextHolderContext
+    @KoneContextHolderInclude
     public val numberDivideVector: Divide<Number, Vector, Vector> get() = Divide { other -> numberDivideNumber { valueOf(this) / other } }
     
     override val vectorDivideInt: Divide<Vector, Int, Vector> get() = numberDivideInt

@@ -15,6 +15,7 @@ import org.jetbrains.kotlin.ir.symbols.IrPropertySymbol
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.util.classIdOrFail
 import org.jetbrains.kotlin.ir.util.constructors
+import org.jetbrains.kotlin.ir.util.hasAnnotation
 import org.jetbrains.kotlin.ir.util.isVararg
 import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.name.ClassId
@@ -47,9 +48,12 @@ inline fun IrClassSymbol.referencePropertyThatOrFail(name: Name, predicate: (IrP
 inline fun IrClassSymbol.referencePropertyThatOrFail(name: String, predicate: (IrPropertySymbol) -> Boolean = { true }): IrPropertySymbol =
     referencePropertyThatOrFail(Name.identifier(name), predicate)
 
-val fakeValueParametersErrorCallsDescriptions = fakeValueParametersNameStrings.map {
-    "Unresolved reference: this@R|<local>/$it|"
-}
+val fakeValueParametersErrorCallsDescriptions = fakeValueParametersNameStrings.map { "Unresolved reference: this@R|<local>/$it|" }
+
+fun IrProperty.isInclude() = hasAnnotation(koneContextHolderIncludeAnnotationClassId)
+fun IrProperty.isExclude() = hasAnnotation(koneContextHolderExcludeAnnotationClassId)
+fun IrPropertySymbol.isInclude() = owner.isInclude()
+fun IrPropertySymbol.isExclude() = owner.isExclude()
 
 class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
     private val finder = pluginContext.finderForBuiltins()
@@ -84,7 +88,8 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
     val koneContextHolderIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(koneContextHolderClassId)
     
     // Public runtime
-    val koneContextHolderContextAnnotationIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(koneContextHolderContextAnnotationClassId)
+    val koneContextHolderIncludeAnnotationIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(koneContextHolderIncludeAnnotationClassId)
+    val koneContextHolderExcludeAnnotationIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(koneContextHolderExcludeAnnotationClassId)
     val useLocallyAsExtensionReceiversIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(useLocallyAsExtensionReceiversFunctionCallableId)
     val unwrapLocallyAsExtensionReceiversIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(unwrapLocallyAsExtensionReceiversFunctionCallableId)
     

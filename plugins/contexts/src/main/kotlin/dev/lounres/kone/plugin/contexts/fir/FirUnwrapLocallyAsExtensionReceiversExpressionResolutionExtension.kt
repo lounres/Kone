@@ -5,7 +5,8 @@
 
 package dev.lounres.kone.plugin.contexts.fir
 
-import dev.lounres.kone.plugin.contexts.koneContextHolderContextAnnotationClassId
+import dev.lounres.kone.plugin.contexts.koneContextHolderExcludeAnnotationClassId
+import dev.lounres.kone.plugin.contexts.koneContextHolderIncludeAnnotationClassId
 import dev.lounres.kone.plugin.contexts.koneContextsPackageFQName
 import dev.lounres.kone.plugin.contexts.unwrapLocallyAsExtensionReceiversFakeValueParameterName
 import dev.lounres.kone.plugin.contexts.unwrapLocallyAsExtensionReceiversFunctionShortName
@@ -32,6 +33,7 @@ import org.jetbrains.kotlin.fir.symbols.FirBasedSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.*
 import org.jetbrains.kotlin.fir.types.*
 import org.jetbrains.kotlin.fir.types.builder.buildResolvedTypeRef
+import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstance
 
 
@@ -71,6 +73,7 @@ class FirUnwrapLocallyAsExtensionReceiversExpressionResolutionExtension(session:
                         is ConeClassLikeType -> {
                             val classId = unwrappedType.lookupTag.classId
                             val classSymbol = session.symbolProvider.getClassLikeSymbolByClassId(classId) ?: continue
+                            if (classSymbol in this) continue
                             val substitutor = substitutorByMap(
                                 substitution = classSymbol.typeParameterSymbols.zip(unwrappedType.typeArguments.map { it.type!! }).toMap(),
                                 useSiteSession = session,
@@ -98,6 +101,57 @@ class FirUnwrapLocallyAsExtensionReceiversExpressionResolutionExtension(session:
                 type = it.value.type,
             )
         }
+        private data class PropertyOverriddenClassSuperClassesAndType(
+            val propertySymbol: FirPropertySymbol,
+            val overridden: Set<FirPropertySymbol>,
+            val classSuperClassesAndTypeRealisation: ClassSuperClassesAndTypeRealisation
+        )
+        context(session: FirSession)
+        private fun ConeKotlinType.allProperties(): Map<FirClassSymbol<*>, Map<Name, PropertyOverriddenClassSuperClassesAndType>> {
+            val classes = superClassTypes()
+            
+            data class PropertyMutableOverriddenClassSuperClassesAndType(
+                val propertySymbol: FirPropertySymbol,
+                val overridden: MutableSet<FirPropertySymbol>,
+                val classSuperClassesAndTypeRealisation: ClassSuperClassesAndTypeRealisation
+            )
+            
+            val classesProperties = classes.mapValues { (classSuperClassesAndTypeRealisation = value) ->
+                classSuperClassesAndTypeRealisation.classSymbol
+                    .declaredProperties(session)
+                    .filter { it.receiverParameterSymbol == null && it.contextParameterSymbols.isEmpty() }
+                    .associate {
+                        it.name to PropertyMutableOverriddenClassSuperClassesAndType(
+                            propertySymbol = it,
+                            overridden = mutableSetOf(),
+                            classSuperClassesAndTypeRealisation = classSuperClassesAndTypeRealisation,
+                        )
+                    }
+            }
+            for ([classSymbol, classSuperClassesAndTypeRealisation] in classes) {
+                val classPropertyOverriddenClassSuperClassesAndType = classesProperties[classSymbol]!!
+                for (superClassSymbol in classSuperClassesAndTypeRealisation.superClassSymbols) {
+                    for ([superClassPropertyName, superClassPropertyOverriddenClassSuperClassesAndType] in classesProperties[superClassSymbol]!!) {
+                        classPropertyOverriddenClassSuperClassesAndType[superClassPropertyName]?.overridden?.add(
+                            superClassPropertyOverriddenClassSuperClassesAndType.propertySymbol,
+                        )
+                    }
+                }
+            }
+            return classesProperties.mapValues {
+                it.value.mapValues { (combination = value) ->
+                    PropertyOverriddenClassSuperClassesAndType(
+                        propertySymbol = combination.propertySymbol,
+                        overridden = combination.overridden,
+                        classSuperClassesAndTypeRealisation = combination.classSuperClassesAndTypeRealisation,
+                    )
+                }
+            }
+        }
+        context(session: FirSession)
+        private fun FirPropertySymbol.isInclude() = hasAnnotation(koneContextHolderIncludeAnnotationClassId, session)
+        context(session: FirSession)
+        private fun FirPropertySymbol.isExclude() = hasAnnotation(koneContextHolderExcludeAnnotationClassId, session)
     }
     
     private val unwrapLocallyAsExtensionReceiversFirFunctionSymbol by lazy {
@@ -123,62 +177,29 @@ class FirUnwrapLocallyAsExtensionReceiversExpressionResolutionExtension(session:
             name = unwrapLocallyAsExtensionReceiversFakeValueParameterName
         }
         holdersToUnwrap.flatMap { holder ->
-            data class PropertyOverriddenClassSuperClassesAndType(
-                val propertySymbol: FirPropertySymbol,
-                val overridden: MutableSet<FirPropertySymbol>,
-                val classSuperClassesAndTypeRealisation: ClassSuperClassesAndTypeRealisation
-            )
-            val classes = holder.superClassTypes()
-            val classesProperties = classes.mapValues { (classSuperClassesAndTypeRealisation = value) ->
-                classSuperClassesAndTypeRealisation.classSymbol
-                    .declaredProperties(session)
-                    .filter { it.receiverParameterSymbol == null && it.contextParameterSymbols.isEmpty() }
-                    .associate {
-                        it.name to PropertyOverriddenClassSuperClassesAndType(
-                            propertySymbol = it,
-                            overridden = mutableSetOf(),
-                            classSuperClassesAndTypeRealisation = classSuperClassesAndTypeRealisation,
-                        )
-                    }
-            }
-            for ([classSymbol, classSuperClassesAndTypeRealisation] in classes) {
-                val classPropertyOverriddenClassSuperClassesAndType = classesProperties[classSymbol]!!
-                for (superClassSymbol in classSuperClassesAndTypeRealisation.superClassSymbols) {
-                    for ([superClassPropertyName, superClassPropertyOverriddenClassSuperClassesAndType] in classesProperties[superClassSymbol]!!) {
-                        classPropertyOverriddenClassSuperClassesAndType[superClassPropertyName]?.overridden?.add(
-                            superClassPropertyOverriddenClassSuperClassesAndType.propertySymbol,
-                        )
-                    }
-                }
-            }
+            val classesProperties = holder.allProperties()
             val possiblePropertiesToUnwrap = classesProperties.values.flatMap { it.values }
+            val decidingProperties = buildSet<FirPropertySymbol> {
+                val markedProperties = possiblePropertiesToUnwrap.filter { it.propertySymbol.isInclude() || it.propertySymbol.isExclude() }
+                markedProperties.forEach { add(it.propertySymbol) }
+                markedProperties.forEach { it.overridden.forEach { override -> remove(override) } }
+            }
             val topPossiblePropertiesToUnwrap = buildMap<FirPropertySymbol, PropertyOverriddenClassSuperClassesAndType> {
-                possiblePropertiesToUnwrap.forEach {
-                    put(it.propertySymbol, it)
-                }
-                possiblePropertiesToUnwrap.forEach {
-                    it.overridden.forEach { override ->
-                        remove(override)
-                    }
-                }
+                possiblePropertiesToUnwrap.forEach { put(it.propertySymbol, it) }
+                possiblePropertiesToUnwrap.forEach { it.overridden.forEach { override -> remove(override) } }
             }
             val propertiesToUnwrap = topPossiblePropertiesToUnwrap.values
                 .groupBy { it.propertySymbol.name }
                 .filter { it.value.size == 1 }
                 .values
                 .map { it.single() }
-                .filter {
-                    it.propertySymbol.hasAnnotation(koneContextHolderContextAnnotationClassId, session)
-                            || it.overridden.any { override -> override.hasAnnotation(koneContextHolderContextAnnotationClassId, session) }
-                }
+                .filter { (it.overridden + it.propertySymbol).any { it in decidingProperties && it.isInclude() } }
             val typesToUnwrap = propertiesToUnwrap.map { (propertySymbol, classSuperClassesAndTypeRealisation) ->
                 val (classSymbol, type) = classSuperClassesAndTypeRealisation
-                val substitutor by lazy(LazyThreadSafetyMode.NONE) {
-                    substitutorByMap(
-                        substitution = classSymbol.typeParameterSymbols.zip(type.typeArguments.map { it.type!! }).toMap(),
-                        useSiteSession = session,
-                    )
-                }
+                val substitutor = substitutorByMap(
+                    substitution = classSymbol.typeParameterSymbols.zip(type.typeArguments.map { it.type!! }).toMap(),
+                    useSiteSession = session,
+                )
                 substitutor.substituteOrSelf(propertySymbol.resolvedReturnType)
             }
             typesToUnwrap.map {

@@ -2,7 +2,7 @@ FILE: simpleKoneContextHolderUnwrapLocallyAsExtensionReceiversUsage3.kt
     package foo.bar
 
     public abstract interface Bar : R|dev/lounres/kone/contexts/KoneContextHolder| {
-        @R|dev/lounres/kone/contexts/KoneContextHolderContext|() public open val bar: R|kotlin/Int|
+        @R|dev/lounres/kone/contexts/KoneContextHolderInclude|() public open val bar: R|kotlin/Int|
             public get(): R|kotlin/Int| {
                 ^ Int(57)
             }

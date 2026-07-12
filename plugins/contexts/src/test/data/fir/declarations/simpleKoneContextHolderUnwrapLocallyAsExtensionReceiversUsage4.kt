@@ -6,12 +6,12 @@ import dev.lounres.kone.contexts.*
 
 
 interface Bar : KoneContextHolder {
-    @KoneContextHolderContext
+    @KoneContextHolderInclude
     val bar: Int get() = 57
 }
 
 class Baz : Bar {
-    @KoneContextHolderContext
+    @KoneContextHolderInclude
     override val bar: Int get() = super.bar
     val baz = 179
 }
