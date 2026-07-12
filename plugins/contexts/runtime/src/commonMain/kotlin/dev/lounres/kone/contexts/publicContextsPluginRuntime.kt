@@ -18,38 +18,38 @@ public annotation class KoneContextHolderExclude
 //        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
 //        returnsResultOf(block)
 //    }
-//    TODO()
+//    contextsPluginExceptionForRuntimeDeclarations()
 //}
 //public inline fun <Result> KoneContext.Companion.useInBlockAsContexts(vararg koneContext: KoneContext, block: () -> Result): Result {
 //    contract {
 //        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
 //        returnsResultOf(block)
 //    }
-//    TODO()
+//    contextsPluginExceptionForRuntimeDeclarations()
 //}
 public fun KoneContext.Companion.useLocallyAsExtensionReceivers(vararg koneContext: KoneContext) {
-    TODO()
+    contextsPluginExceptionForRuntimeDeclarations()
 }
 //public fun KoneContext.Companion.useLocallyAsContexts(vararg koneContext: KoneContext) {
-//    TODO()
+//    contextsPluginExceptionForRuntimeDeclarations()
 //}
 //public inline fun <Result> KoneContextHolder.Companion.unwrapInBlockAsExtensionReceivers(vararg koneContextHolder: KoneContextHolder, block: () -> Result): Result {
 //    contract {
 //        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
 //        returnsResultOf(block)
 //    }
-//    TODO()
+//    contextsPluginExceptionForRuntimeDeclarations()
 //}
 //public inline fun <Result> KoneContextHolder.Companion.unwrapInBlockAsContexts(vararg koneContextHolder: KoneContextHolder, block: () -> Result): Result {
 //    contract {
 //        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
 //        returnsResultOf(block)
 //    }
-//    TODO()
+//    contextsPluginExceptionForRuntimeDeclarations()
 //}
 public fun KoneContextHolder.Companion.unwrapLocallyAsExtensionReceivers(vararg koneContextHolder: KoneContextHolder) {
-    TODO()
+    contextsPluginExceptionForRuntimeDeclarations()
 }
 //public fun KoneContextHolder.Companion.unwrapLocallyAsContexts(vararg koneContextHolder: KoneContextHolder) {
-//    TODO()
+//    contextsPluginExceptionForRuntimeDeclarations()
 //}

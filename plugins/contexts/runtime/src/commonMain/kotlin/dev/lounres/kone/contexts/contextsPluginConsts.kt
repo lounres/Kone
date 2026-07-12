@@ -5,3 +5,5 @@
 
 package dev.lounres.kone.contexts
 
+
+internal const val contextsPluginExceptionForRuntimeDeclarationsMessage = "Intrinsic function call was not substituted. Ensure you have applied contexts compiler plugin."
