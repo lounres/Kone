@@ -103,7 +103,6 @@ class ContextsFakeValueParametersReplacementTransformer(
                         is IrScriptSymbol -> {}
                         is IrTypeParameterSymbol -> classSymbol.owner.superTypes.mapTo(toCheck) { TypeToCheck(it, subClassSymbols) }
                         is IrClassSymbol -> {
-                            if (classSymbol in this) continue
                             put(classSymbol, ClassMutableSuperClassesAndTypeRealisation(classSymbol, mutableSetOf(), type))
                             subClassSymbols.forEach { get(it)!!.superClassSymbols.add(classSymbol) }
                             val subClassSymbols = subClassSymbols + classSymbol

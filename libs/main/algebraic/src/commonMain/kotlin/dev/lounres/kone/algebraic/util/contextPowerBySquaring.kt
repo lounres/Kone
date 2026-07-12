@@ -5,20 +5,9 @@
 
 package dev.lounres.kone.algebraic.util
 
-import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.Group
-import dev.lounres.kone.algebraic.Monoid
-import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.algebraic.Semiring
-import dev.lounres.kone.algebraic.minus
-import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.algebraic.reciprocal
-import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.algebraic.unaryMinus
-import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
-import dev.lounres.kone.contexts.useLocallyAsExtensionReceivers
 
 
 // region Number-Int additive operations

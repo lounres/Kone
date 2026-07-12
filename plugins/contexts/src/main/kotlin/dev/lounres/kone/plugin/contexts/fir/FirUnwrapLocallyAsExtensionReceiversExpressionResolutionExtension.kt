@@ -73,7 +73,6 @@ class FirUnwrapLocallyAsExtensionReceiversExpressionResolutionExtension(session:
                         is ConeClassLikeType -> {
                             val classId = unwrappedType.lookupTag.classId
                             val classSymbol = session.symbolProvider.getClassLikeSymbolByClassId(classId) ?: continue
-                            if (classSymbol in this) continue
                             val substitutor = substitutorByMap(
                                 substitution = classSymbol.typeParameterSymbols.zip(unwrappedType.typeArguments.map { it.type!! }).toMap(),
                                 useSiteSession = session,
