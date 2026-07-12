@@ -29,7 +29,7 @@ private class ExponentComputerViaDefaultForComplexNumbers<Number>(
         val absoluteValue = numberExponentComputer { realPart.exponent() }
         val cos = numberCosineComputer { imaginaryPart.cos() }
         val sin = numberSineComputer { imaginaryPart.sin() }
-        return numberRing { ComplexNumber(cos * absoluteValue, sin * absoluteValue) }
+        return numberRing.numberTimesNumber { ComplexNumber(cos * absoluteValue, sin * absoluteValue) }
     }
 }
 

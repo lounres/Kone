@@ -13,6 +13,9 @@ import dev.lounres.kone.collections.array.*
 import dev.lounres.kone.collections.iterables.contains
 import dev.lounres.kone.collections.list.lastIndex
 import dev.lounres.kone.collections.utils.slice
+import dev.lounres.kone.contexts.KoneContextHolder
+import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
@@ -59,8 +62,7 @@ internal val ULONG_BIT_SIZE = ULong.SIZE_BITS.toUInt()
 public fun UBigLong.Companion.from(array: KoneULongArray): UBigLong = UBigLong(array.removeLeadingZeros())
 public fun UBigLong.Companion.from(vararg array: ULong): UBigLong = UBigLong(KoneMutableULongArray(array).removeLeadingZeros())
 
-public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong>, ExtendedSemiring<UBigLong>,
-    Order<UBigLong>, Hashing<UBigLong> {
+public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<UBigLong>, Hashing<UBigLong>, EuclideanSemiring<UBigLong>, ExtendedSemiring<UBigLong> {
     // region Reification
     override fun contains(element: Any?): Boolean = element is UBigLong
     override fun reifyMaybe(element: Any?): Maybe<UBigLong> = if (element is UBigLong) Some(element) else None
@@ -95,8 +97,8 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
     
     // region Equality
     override fun UBigLong.equalsTo(other: UBigLong): Boolean = this.magnitude contentEquals other.magnitude
-    override fun UBigLong.isZero(): Boolean = this.magnitude.isEmpty()
-    override fun UBigLong.isOne(): Boolean = this.magnitude.let { it.size == 1u && it[0u] == 1uL }
+    override val numberIsZero: IsZero<UBigLong> = IsZero { this.magnitude.isEmpty() }
+    override val numberIsOne: IsOne<UBigLong> = IsOne { this.magnitude.let { it.size == 1u && it[0u] == 1uL } }
     // endregion
     
     // region Conversion
@@ -119,9 +121,9 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
     // region ULong-UBigLong operations
     public operator fun ULong.div(other: UBigLong): UBigLong = valueOf(this) / other
     // endregion
-
+    
     // region UBigLong-UBigLong operations
-    override operator fun UBigLong.plus(other: UBigLong): UBigLong {
+    override val numberPlusNumber: Plus<UBigLong, UBigLong, UBigLong> = Plus { other ->
         val maxSize = maxOf(this.magnitude.size, other.magnitude.size)
         val result = KoneMutableULongArray.fill(maxSize + 1u)
         var carry = 0uL
@@ -135,11 +137,11 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
             carry = additionResult.second
         }
         result[maxSize] = carry
-        return UBigLong(result.removeLeadingZeros())
+        UBigLong(result.removeLeadingZeros())
     }
-    override operator fun UBigLong.minus(other: UBigLong): UBigLong {
+    override val numberMinusNumber: Minus<UBigLong, UBigLong, UBigLong> = Minus { other ->
         if (this lt other) negativeSubtractionResultInExtendedSemiring()
-
+        
         val result = KoneMutableULongArray.generate(this.magnitude.size) { this.magnitude[it] }
         var anticarry = 0uL
         
@@ -153,17 +155,19 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
             anticarry = nextAnticarry
         }
         
-        return UBigLong(result.removeLeadingZeros())
+        UBigLong(result.removeLeadingZeros())
     }
     // TODO: Experiment with Karatsuba algorithm, Toom–Cook algorithm and FFT-based algorithms
-    override operator fun UBigLong.times(other: UBigLong): UBigLong {
-        if (this.isZero() || other.isZero()) return zero
-        if (this.isOne()) return other
-        if (other.isOne()) return this
+    override val numberTimesNumber: Times<UBigLong, UBigLong, UBigLong> = Times { other ->
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(this@UBigLongContext)
         
-        val result = KoneMutableULongArray.fill(this.magnitude.size + other.magnitude.size)
-        for (thisIndex in 0u ..< this.magnitude.size) for (otherIndex in 0u ..< other.magnitude.size) {
-            val productResult = multiply(this.magnitude[thisIndex], other.magnitude[otherIndex])
+        if (this@Times.isZero() || other.isZero()) return@Times zero
+        if (this@Times.isOne()) return@Times other
+        if (other.isOne()) return@Times this@Times
+        
+        val result = KoneMutableULongArray.fill(this@Times.magnitude.size + other.magnitude.size)
+        for (thisIndex in 0u ..< this@Times.magnitude.size) for (otherIndex in 0u ..< other.magnitude.size) {
+            val productResult = multiply(this@Times.magnitude[thisIndex], other.magnitude[otherIndex])
             var carry = productResult.second
             val additionResult = add(result[thisIndex + otherIndex], productResult.first)
             result[thisIndex + otherIndex] = additionResult.first
@@ -176,20 +180,22 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
             }
             check(carry == 0uL) { "For some reason there is carry at the top" }
         }
-    
-        return UBigLong(result.removeLeadingZeros())
+        
+        UBigLong(result.removeLeadingZeros())
     }
     // TODO: Experiment with https://en.wikipedia.org/wiki/Division_algorithm#Integer_division_(unsigned)_with_remainder
-    override infix fun UBigLong.divrem(other: UBigLong): EuclideanDivisionResult<UBigLong> {
+    override val numberDivideRemainderNumber: DivideRemainder<UBigLong, UBigLong, EuclideanDivisionResult<UBigLong>> = DivideRemainder { other ->
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(this@UBigLongContext)
+        
         if (other.magnitude.isEmpty()) divisionByZero()
-        if (this.magnitude.isEmpty()) return EuclideanDivisionResult(zero, zero)
-        if (other.magnitude.size > this.magnitude.size) return EuclideanDivisionResult(
+        if (this@DivideRemainder.magnitude.isEmpty()) return@DivideRemainder EuclideanDivisionResult(zero, zero)
+        if (other.magnitude.size > this@DivideRemainder.magnitude.size) return@DivideRemainder EuclideanDivisionResult(
             quotient = zero,
-            remainder = this,
+            remainder = this@DivideRemainder,
         )
-
+        
         val dividend = KoneMutableULongArray.fill(other.magnitude.size + 1u)
-        val quotient = KoneMutableULongArray.fill(this.magnitude.size - other.magnitude.size + 1u)
+        val quotient = KoneMutableULongArray.fill(this@DivideRemainder.magnitude.size - other.magnitude.size + 1u)
         fun shiftLeftDividendByOneBit() {
             for (index in dividend.lastIndex downTo 1u) {
                 dividend[index] = (dividend[index] shl 1) or (dividend[index - 1u] shr 63)
@@ -246,8 +252,8 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
             }
         }
         
-        for (index in this.magnitude.lastIndex downTo 0u) for (bitIndex in 63 downTo 0) {
-            val bit = (this.magnitude[index] shr bitIndex) and 1u
+        for (index in this@DivideRemainder.magnitude.lastIndex downTo 0u) for (bitIndex in 63 downTo 0) {
+            val bit = (this@DivideRemainder.magnitude[index] shr bitIndex) and 1u
             
             shiftLeftDividendByOneBit()
             shiftLeftQuotientByOneBit()
@@ -258,18 +264,20 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
             }
         }
         
-        return EuclideanDivisionResult(
+        EuclideanDivisionResult(
             quotient = UBigLong(quotient.removeLeadingZeros()),
             remainder = UBigLong(dividend.removeLeadingZeros()),
         )
     }
-    override operator fun UBigLong.div(other: UBigLong): UBigLong {
+    override val numberDivideNumber: Divide<UBigLong, UBigLong, UBigLong> = Divide { other ->
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(this@UBigLongContext)
+        
         if (other.magnitude.isEmpty()) divisionByZero()
-        if (this.magnitude.isEmpty()) return zero
-        if (other.magnitude.size > this.magnitude.size) return zero
+        if (this@Divide.magnitude.isEmpty()) return@Divide zero
+        if (other.magnitude.size > this@Divide.magnitude.size) return@Divide zero
         
         val dividend = KoneMutableULongArray.fill(other.magnitude.size + 1u)
-        val quotient = KoneMutableULongArray.fill(this.magnitude.size - other.magnitude.size + 1u)
+        val quotient = KoneMutableULongArray.fill(this@Divide.magnitude.size - other.magnitude.size + 1u)
         fun shiftLeftDividendByOneBit() {
             for (index in dividend.lastIndex downTo 1u) {
                 dividend[index] = (dividend[index] shl 1) or (dividend[index - 1u] shr 63)
@@ -326,8 +334,8 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
             }
         }
         
-        for (index in this.magnitude.lastIndex downTo 0u) for (bitIndex in 63 downTo 0) {
-            val bit = (this.magnitude[index] shr bitIndex) and 1u
+        for (index in this@Divide.magnitude.lastIndex downTo 0u) for (bitIndex in 63 downTo 0) {
+            val bit = (this@Divide.magnitude[index] shr bitIndex) and 1u
             
             shiftLeftDividendByOneBit()
             shiftLeftQuotientByOneBit()
@@ -338,12 +346,14 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
             }
         }
         
-        return UBigLong(quotient.removeLeadingZeros())
+        UBigLong(quotient.removeLeadingZeros())
     }
-    override operator fun UBigLong.rem(other: UBigLong): UBigLong {
+    override val numberRemainderNumber: Remainder<UBigLong, UBigLong, UBigLong> = Remainder { other ->
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(this@UBigLongContext)
+        
         if (other.magnitude.isEmpty()) divisionByZero()
-        if (this.magnitude.isEmpty()) return zero
-        if (other.magnitude.size > this.magnitude.size) return this
+        if (this@Remainder.magnitude.isEmpty()) return@Remainder zero
+        if (other.magnitude.size > this@Remainder.magnitude.size) return@Remainder this@Remainder
         
         val dividend = KoneMutableULongArray.fill(other.magnitude.size + 1u)
         fun shiftLeftDividendByOneBit() {
@@ -385,8 +395,8 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
             }
         }
         
-        for (index in this.magnitude.lastIndex downTo 0u) for (bitIndex in 63 downTo 0) {
-            val bit = (this.magnitude[index] shr bitIndex) and 1u
+        for (index in this@Remainder.magnitude.lastIndex downTo 0u) for (bitIndex in 63 downTo 0) {
+            val bit = (this@Remainder.magnitude[index] shr bitIndex) and 1u
             
             shiftLeftDividendByOneBit()
             if (bit == 1uL) addOneToDividend()
@@ -395,16 +405,16 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
             }
         }
         
-        return UBigLong(dividend.removeLeadingZeros())
+        UBigLong(dividend.removeLeadingZeros())
     }
     // TODO: Experiment with FFT-based exponentiation
-//    override fun power(base: UBigLong, exponent: UInt): UBigLong = base squaringPower exponent
-//    override fun power(base: UBigLong, exponent: ULong): UBigLong = base squaringPower exponent
+//    override val powerNumberUInt: Power<UBigLong, UInt, UBigLong>
+//    override val powerNumberULong: Power<UBigLong, ULong, UBigLong>
     // endregion
     
     // region Bitwise operations
     public infix fun UBigLong.shr(bitCount: UInt): UBigLong {
-        if (this.isZero()) return zero
+        if (numberIsZero { this.isZero() }) return zero
         if (bitCount == 0u) return this
 
         val fullShifts = bitCount / ULONG_BIT_SIZE
@@ -432,7 +442,7 @@ public object UBigLongContext: Reification<UBigLong>, EuclideanSemiring<UBigLong
         }
     }
     public infix fun UBigLong.shl(bitCount: UInt): UBigLong {
-        if (this.isZero()) return zero
+        if (numberIsZero { this.isZero() }) return zero
         if (bitCount == 0u) return this
         
         val fullShifts = bitCount / ULONG_BIT_SIZE
@@ -526,8 +536,8 @@ public infix fun UBigLong.xor(other: UBigLong): UBigLong = with(context) { this@
 public fun UBigLong.toULong(): ULong = this.magnitude.let { if (it.isEmpty()) 0uL else it[0u] }
 public fun UBigLong.toUInt(): UInt = this.toULong().toUInt()
 
-public fun ULong.toUBigLong(): UBigLong = context(UBigLong.context) { valueOf(this) }
-public fun UInt.toUBigLong(): UBigLong = context(UBigLong.context) { valueOf(this) }
+public fun ULong.toUBigLong(): UBigLong = UBigLong.context.valueOf(this)
+public fun UInt.toUBigLong(): UBigLong = UBigLong.context.valueOf(this)
 
 public fun String.toUBigLong(radix: UInt = 10u): UBigLong {
     require(radix in 2u .. 36u) { "radix $radix was not in valid range 2..36" }
@@ -537,26 +547,25 @@ public fun String.toUBigLong(radix: UInt = 10u): UBigLong {
     if (context(Equality.defaultFor<Char>()) { this.any { it !in possibleDigits.slice(0u, radix) } }) numberFormatException(this, radix)
     
     var result = UBigLong.context.zero
-    for (char in this) result = context(UBigLong.context) { result * radix + char.asDigit() }
+    for (char in this) result = context(UBigLong.context.numberTimesUInt, UBigLong.context.numberPlusUInt) { result * radix + char.asDigit() }
     
     return result
 }
 
 public fun UBigLong.toString(radix: UInt): String {
     require(radix in 2u .. 36u) { "radix $radix was not in valid range 2..36" }
+    KoneContextHolder.unwrapLocallyAsExtensionReceivers(UBigLong.context)
     
-    context(UBigLong.context) {
-        if (this.isZero()) return "0"
+    if (this@toString.isZero()) return "0"
+    
+    return buildString {
+        val radix = UBigLong.context.valueOf(radix)
         
-        return buildString {
-            val radix = valueOf(radix)
-            
-            var result = this@toString
-            while (result.isNotZero()) {
-                (val newResult = quotient, val digit = remainder) = result divrem radix
-                append(possibleDigits[digit.toUInt()])
-                result = newResult
-            }
-        }.reversed()
-    }
+        var result = this@toString
+        while (result.isNotZero()) {
+            (val newResult = quotient, val digit = remainder) = result divrem radix
+            append(possibleDigits[digit.toUInt()])
+            result = newResult
+        }
+    }.reversed()
 }

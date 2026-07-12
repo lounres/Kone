@@ -19,430 +19,430 @@ import dev.lounres.kone.relations.*
 import kotlinx.serialization.Serializable
 
 
-@Serializable
-//@JvmInline
-public /*value*/ data class BigLongRational internal constructor(
-    public val numerator: BigLong,
-    public val denominator: UBigLong,
-) {
-    override fun toString(): String =
-        if ((UBigLong.context) { denominator.isOne() }) "$numerator"
-        else "$numerator/$denominator"
-    
-    public companion object {
-        public val context: BigLongRationalContext get() = BigLongRationalContext
-    }
-}
-
-public fun BigLongRational.Companion.from(numerator: BigLong, denominator: UBigLong = UBigLong.context.one): BigLongRational {
-    if (context(UBigLong.context) { denominator.isZero() }) divisionByZero()
-    
-    val greatestCommonDivisor = context(BigLong.context) { gcd(numerator, valueOf(denominator)).absoluteValue }
-    
-    return BigLongRational(
-        numerator = context(BigLong.context) { numerator / greatestCommonDivisor },
-        denominator = context(UBigLong.context) { denominator / greatestCommonDivisor },
-    )
-}
-
-//@JvmInline
-internal /*value*/ data class BigLongBigLongQuotientsByGCD(val first: BigLong, val second: BigLong)
-
-internal fun divideByGCD(first: BigLong, second: BigLong): BigLongBigLongQuotientsByGCD = context(BigLong.context) {
-    val gcd = gcd(first, second).absoluteValue
-    
-    if (context(UBigLong.context) { gcd.isZero() }) BigLongBigLongQuotientsByGCD(BigLong.context.zero, BigLong.context.zero)
-    else BigLongBigLongQuotientsByGCD(
-        first = first / gcd,
-        second = second / gcd,
-    )
-}
-
-//@JvmInline
-internal /*value*/ data class UBigLongBigLongQuotientsByGCD(val first: UBigLong, val second: BigLong)
-
-internal fun divideByGCD(first: UBigLong, second: BigLong): UBigLongBigLongQuotientsByGCD = context(UBigLong.context, BigLong.context) {
-    val gcd = gcd(first, second.absoluteValue)
-    
-    if (gcd.isZero()) UBigLongBigLongQuotientsByGCD(UBigLong.context.zero, BigLong.context.zero)
-    else UBigLongBigLongQuotientsByGCD(
-        first = first / gcd,
-        second = second / gcd,
-    )
-}
-
-//@JvmInline
-internal /*value*/ data class BigLongUBigLongQuotientsByGCD(val first: BigLong, val second: UBigLong)
-
-internal fun divideByGCD(first: BigLong, second: UBigLong): BigLongUBigLongQuotientsByGCD = context(UBigLong.context, BigLong.context) {
-    val gcd = gcd(first.absoluteValue, second)
-    
-    if (gcd.isZero()) BigLongUBigLongQuotientsByGCD(BigLong.context.zero, UBigLong.context.zero)
-    else BigLongUBigLongQuotientsByGCD(
-        first = first / gcd,
-        second = second / gcd,
-    )
-}
-
-//@JvmInline
-internal /*value*/ data class UBigLongUBigLongQuotientsByGCD(val first: UBigLong, val second: UBigLong)
-
-internal fun divideByGCD(first: UBigLong, second: UBigLong): UBigLongUBigLongQuotientsByGCD = context(UBigLong.context) {
-    val gcd = gcd(first, second)
-    
-    if (context(UBigLong.context) { gcd.isZero() }) UBigLongUBigLongQuotientsByGCD(UBigLong.context.zero, UBigLong.context.zero)
-    else UBigLongUBigLongQuotientsByGCD(
-        first = first / gcd,
-        second = second / gcd,
-    )
-}
-
-// TODO: Check if GCDs really speed up the computations
-public data object BigLongRationalContext : Reification<BigLongRational>, Field<BigLongRational>, Order<BigLongRational>, Hashing<BigLongRational> {
-    // region Reification
-    override fun contains(element: Any?): Boolean = element is BigLongRational
-    override fun reifyMaybe(element: Any?): Maybe<BigLongRational> = if (element is BigLongRational) Some(element) else None
-    override fun reifyOrNull(element: Any?): BigLongRational? = element as? BigLongRational
-    override fun reify(element: Any?): BigLongRational = element as? BigLongRational ?: reificationException()
-    // endregion
-    
-    // region Constants
-    public override val zero: BigLongRational = BigLongRational(BigLong.context.zero, UBigLong.context.one)
-    public override val one: BigLongRational = BigLongRational(BigLong.context.one, UBigLong.context.one)
-    // endregion
-    
-    // region Hashing
-    override fun BigLongRational.hash(): Int = context(UBigLong.context) { numerator.absoluteValue.hash() * 31 + denominator.hash() }
-    // endregion
-    
-    // region Order
-    override fun BigLongRational.compareWith(other: BigLongRational): ComparisonResult = context(BigLong.context) {
-        (val thisReducedNumerator = first, val otherReducedNumerator = second) = divideByGCD(numerator, other.numerator)
-        (val thisReducedDenominator = first, val otherReducedDenominator = second) = divideByGCD(denominator, other.denominator)
-        
-        (thisReducedNumerator * otherReducedDenominator) compareWith (otherReducedNumerator * thisReducedDenominator)
-    }
-    // endregion
-    
-    // region Equality
-    override fun BigLongRational.equalsTo(other: BigLongRational): Boolean =
-        context(BigLong.context) { this.numerator equalsTo other.numerator } &&
-                context(UBigLong.context) { this.denominator equalsTo other.denominator }
-    override fun BigLongRational.isZero(): Boolean = context(BigLong.context) { this.numerator.isZero() }
-    override fun BigLongRational.isOne(): Boolean =
-        this.numerator.sign.isPositive() && context(UBigLong.context) { this.numerator.absoluteValue equalsTo this.denominator }
-    // endregion
-    
-    // region Integers conversion
-    public override fun valueOf(arg: Int): BigLongRational = BigLongRational(BigLong.context.valueOf(arg), UBigLong.context.one)
-    public override fun valueOf(arg: UInt): BigLongRational = BigLongRational(BigLong.context.valueOf(arg), UBigLong.context.one)
-    public override fun valueOf(arg: Long): BigLongRational = BigLongRational(BigLong.context.valueOf(arg), UBigLong.context.one)
-    public override fun valueOf(arg: ULong): BigLongRational = BigLongRational(BigLong.context.valueOf(arg), UBigLong.context.one)
-    // endregion
-    
-    // region BigLongRational-Int operations
-    override fun BigLongRational.plus(other: Int): BigLongRational = context(BigLong.context) {
-        BigLongRational(
-            numerator = numerator + valueOf(denominator) * other,
-            denominator = denominator,
-        )
-    }
-    override fun BigLongRational.minus(other: Int): BigLongRational = context(BigLong.context) {
-        BigLongRational(
-            numerator = numerator - valueOf(denominator) * other,
-            denominator = denominator,
-        )
-    }
-    override fun BigLongRational.times(other: Int): BigLongRational = context(BigLong.context) {
-        (val reducedDenominator = first, val reducedOther = second) = divideByGCD(denominator, BigLong.context.valueOf(other))
-        return BigLongRational(
-            numerator = numerator * reducedOther,
-            denominator = reducedDenominator,
-        )
-    }
-    override fun BigLongRational.div(other: Int): BigLongRational = context(Int.group(), Int.order(), UBigLong.context) {
-        if (other == 0) divisionByZero()
-        val sign = this.numerator.sign * other.sign()
-        (val reducedNumerator = first, val reducedOther = second) = divideByGCD(numerator.absoluteValue, UBigLong.context.valueOf(other.absoluteValue().toUInt()))
-        return BigLongRational(
-            BigLong(sign, reducedNumerator),
-            denominator * reducedOther,
-        )
-    }
-    // endregion
-    
-    // region BigLongRational-UInt operations
-    override fun BigLongRational.plus(other: UInt): BigLongRational = context(BigLong.context) {
-        BigLongRational(
-            numerator = numerator + valueOf(denominator) * other,
-            denominator = denominator,
-        )
-    }
-    override fun BigLongRational.minus(other: UInt): BigLongRational = context(BigLong.context) {
-        BigLongRational(
-            numerator = numerator - valueOf(denominator) * other,
-            denominator = denominator,
-        )
-    }
-    override fun BigLongRational.times(other: UInt): BigLongRational = context(BigLong.context) {
-        (val reducedDenominator = first, val reducedOther = second) = divideByGCD(denominator, UBigLong.context.valueOf(other))
-        return BigLongRational(
-            numerator = numerator * reducedOther,
-            denominator = reducedDenominator,
-        )
-    }
-    override fun BigLongRational.div(other: UInt): BigLongRational = context(UBigLong.context) {
-        if (other == 0u) divisionByZero()
-        (val reducedNumerator = first, val reducedOther = second) = divideByGCD(numerator, UBigLong.context.valueOf(other))
-        return BigLongRational(
-            reducedNumerator,
-            denominator * reducedOther,
-        )
-    }
-    // endregion
-    
-    // region BigLongRational-Long operations
-    override fun BigLongRational.plus(other: Long): BigLongRational = context(BigLong.context) {
-        BigLongRational(
-            numerator = numerator + valueOf(denominator) * other,
-            denominator = denominator,
-        )
-    }
-    override fun BigLongRational.minus(other: Long): BigLongRational = context(BigLong.context) {
-        BigLongRational(
-            numerator = numerator - valueOf(denominator) * other,
-            denominator = denominator,
-        )
-    }
-    override fun BigLongRational.times(other: Long): BigLongRational = context(BigLong.context) {
-        (val reducedDenominator = first, val reducedOther = second) = divideByGCD(denominator, BigLong.context.valueOf(other))
-        return BigLongRational(
-            numerator = numerator * reducedOther,
-            denominator = reducedDenominator,
-        )
-    }
-    override fun BigLongRational.div(other: Long): BigLongRational = context(Long.group(), Long.order(), UBigLong.context) {
-        if (other == 0L) divisionByZero()
-        val sign = this.numerator.sign * other.sign()
-        (val reducedNumerator = first, val reducedOther = second) = divideByGCD(numerator.absoluteValue, UBigLong.context.valueOf(other.absoluteValue().toULong()))
-        return BigLongRational(
-            BigLong(sign, reducedNumerator),
-            denominator * reducedOther,
-        )
-    }
-    // endregion
-    
-    // region BigLongRational-ULong operations
-    override fun BigLongRational.plus(other: ULong): BigLongRational = context(BigLong.context) {
-        BigLongRational(
-            numerator = numerator + valueOf(denominator) * other,
-            denominator = denominator,
-        )
-    }
-    override fun BigLongRational.minus(other: ULong): BigLongRational = context(BigLong.context) {
-        BigLongRational(
-            numerator = numerator - valueOf(denominator) * other,
-            denominator = denominator,
-        )
-    }
-    override fun BigLongRational.times(other: ULong): BigLongRational = context(BigLong.context) {
-        (val reducedDenominator = first, val reducedOther = second) = divideByGCD(denominator, UBigLong.context.valueOf(other))
-        return BigLongRational(
-            numerator = numerator * reducedOther,
-            denominator = reducedDenominator,
-        )
-    }
-    override fun BigLongRational.div(other: ULong): BigLongRational = context(UBigLong.context) {
-        if (other == 0uL) divisionByZero()
-        (val reducedNumerator = first, val reducedOther = second) = divideByGCD(numerator, UBigLong.context.valueOf(other))
-        return BigLongRational(
-            reducedNumerator,
-            denominator * reducedOther,
-        )
-    }
-    // endregion
-    
-    // region Int-BigLongRational operations
-    override fun Int.plus(other: BigLongRational): BigLongRational = context(BigLong.context) {
-        BigLongRational(
-            numerator = this * valueOf(other.denominator) + other.numerator,
-            denominator = other.denominator,
-        )
-    }
-    override fun Int.minus(other: BigLongRational): BigLongRational = context(BigLong.context) {
-        BigLongRational(
-            numerator = this * valueOf(other.denominator) - other.numerator,
-            denominator = other.denominator,
-        )
-    }
-    override fun Int.times(other: BigLongRational): BigLongRational = context(BigLong.context) {
-        (val reducedThis = first, val reducedDenominator = second) = divideByGCD(BigLong.context.valueOf(this), other.denominator)
-        return BigLongRational(
-            numerator = reducedThis * other.numerator,
-            denominator = reducedDenominator,
-        )
-    }
-    override fun Int.div(other: BigLongRational): BigLongRational = context(Int.group(), Int.order(), UBigLong.context) {
-        if (other.isZero()) divisionByZero()
-        val sign = this.sign() * other.numerator.sign
-        (val reducedThis = first, val reducedNumerator = second) = divideByGCD(UBigLong.context.valueOf(this.absoluteValue().toUInt()), other.numerator.absoluteValue)
-        return BigLongRational(
-            BigLong(sign, reducedNumerator),
-            other.denominator * reducedThis,
-        )
-    }
-    // endregion
-    
-    // region UInt-BigLongRational operations
-    override fun UInt.plus(other: BigLongRational): BigLongRational = context(BigLong.context) {
-        BigLongRational(
-            numerator = this * valueOf(other.denominator) + other.numerator,
-            denominator = other.denominator,
-        )
-    }
-    override fun UInt.minus(other: BigLongRational): BigLongRational = context(BigLong.context) {
-        BigLongRational(
-            numerator = this * valueOf(other.denominator) - other.numerator,
-            denominator = other.denominator,
-        )
-    }
-    override fun UInt.times(other: BigLongRational): BigLongRational = context(BigLong.context) {
-        (val reducedThis = first, val reducedDenominator = second) = divideByGCD(UBigLong.context.valueOf(this), other.denominator)
-        return BigLongRational(
-            numerator = reducedThis * other.numerator,
-            denominator = reducedDenominator,
-        )
-    }
-    override fun UInt.div(other: BigLongRational): BigLongRational = context(UBigLong.context) {
-        if (other.isZero()) divisionByZero()
-        val sign = other.numerator.sign
-        (val reducedThis = first, val reducedNumerator = second) = divideByGCD(UBigLong.context.valueOf(this), other.numerator.absoluteValue)
-        return BigLongRational(
-            BigLong(sign, reducedNumerator),
-            other.denominator * reducedThis,
-        )
-    }
-    // endregion
-    
-    // region Long-BigLongRational operations
-    override fun Long.plus(other: BigLongRational): BigLongRational = context(BigLong.context) {
-        BigLongRational(
-            numerator = this * valueOf(other.denominator) + other.numerator,
-            denominator = other.denominator,
-        )
-    }
-    override fun Long.minus(other: BigLongRational): BigLongRational = context(BigLong.context) {
-        BigLongRational(
-            numerator = this * valueOf(other.denominator) - other.numerator,
-            denominator = other.denominator,
-        )
-    }
-    override fun Long.times(other: BigLongRational): BigLongRational = context(BigLong.context) {
-        (val reducedThis = first, val reducedDenominator = second) = divideByGCD(BigLong.context.valueOf(this), other.denominator)
-        return BigLongRational(
-            numerator = reducedThis * other.numerator,
-            denominator = reducedDenominator,
-        )
-    }
-    override fun Long.div(other: BigLongRational): BigLongRational = context(Long.group(), Long.order(), UBigLong.context) {
-        if (other.isZero()) divisionByZero()
-        val sign = this.sign() * other.numerator.sign
-        (val reducedThis = first, val reducedNumerator = second) = divideByGCD(UBigLong.context.valueOf(this.absoluteValue().toULong()), other.numerator.absoluteValue)
-        return BigLongRational(
-            BigLong(sign, reducedNumerator),
-            other.denominator * reducedThis,
-        )
-    }
-    // endregion
-    
-    // region ULong-BigLongRational operations
-    override fun ULong.plus(other: BigLongRational): BigLongRational = context(BigLong.context) {
-        BigLongRational(
-            numerator = this * valueOf(other.denominator) + other.numerator,
-            denominator = other.denominator,
-        )
-    }
-    override fun ULong.minus(other: BigLongRational): BigLongRational = context(BigLong.context) {
-        BigLongRational(
-            numerator = this * valueOf(other.denominator) - other.numerator,
-            denominator = other.denominator,
-        )
-    }
-    override fun ULong.times(other: BigLongRational): BigLongRational = context(BigLong.context) {
-        (val reducedThis = first, val reducedDenominator = second) = divideByGCD(UBigLong.context.valueOf(this), other.denominator)
-        return BigLongRational(
-            numerator = reducedThis * other.numerator,
-            denominator = reducedDenominator,
-        )
-    }
-    override fun ULong.div(other: BigLongRational): BigLongRational = context(UBigLong.context) {
-        if (other.isZero()) divisionByZero()
-        val sign = other.numerator.sign
-        (val reducedThis = first, val reducedNumerator = second) = divideByGCD(UBigLong.context.valueOf(this), other.numerator.absoluteValue)
-        return BigLongRational(
-            BigLong(sign, reducedNumerator),
-            other.denominator * reducedThis,
-        )
-    }
-    // endregion
-    
-    // region BigLongRational-BigLongRational operations
-    override fun BigLongRational.unaryMinus(): BigLongRational =
-        BigLongRational(
-            numerator = context(BigLong.context) { -numerator },
-            denominator = denominator,
-        )
-    override fun BigLongRational.plus(other: BigLongRational): BigLongRational = context(UBigLong.context, BigLong.context) {
-        val denominatorsGcd = gcd(denominator, other.denominator)
-        val reducedThisDenominator = denominator / denominatorsGcd
-        val reducedOtherDenominator = other.denominator / denominatorsGcd
-        val numeratorCandidate = numerator * reducedOtherDenominator + reducedThisDenominator * other.numerator
-        (val reducedNumeratorCandidate = first, val reducedDenominatorGcd = second) = divideByGCD(numeratorCandidate, denominatorsGcd)
-        return BigLongRational(
-            numerator = reducedNumeratorCandidate,
-            denominator = reducedThisDenominator * reducedOtherDenominator * reducedDenominatorGcd,
-        )
-    }
-    override fun BigLongRational.minus(other: BigLongRational): BigLongRational = context(UBigLong.context, BigLong.context) {
-        val denominatorsGcd = gcd(denominator, other.denominator)
-        val reducedThisDenominator = denominator / denominatorsGcd
-        val reducedOtherDenominator = other.denominator / denominatorsGcd
-        val numeratorCandidate = numerator * reducedOtherDenominator - reducedThisDenominator * other.numerator
-        (val reducedNumeratorCandidate = first, val reducedDenominatorGcd = second) = divideByGCD(numeratorCandidate, denominatorsGcd)
-        return BigLongRational(
-            numerator = reducedNumeratorCandidate,
-            denominator = reducedThisDenominator * reducedOtherDenominator * reducedDenominatorGcd,
-        )
-    }
-    override fun BigLongRational.times(other: BigLongRational): BigLongRational = context(UBigLong.context, BigLong.context) {
-        (val reducedThisDenominator = first, val reducedOtherNumeratorGcd = second) = divideByGCD(denominator, other.numerator)
-        (val reducedOtherDenominator = first, val reducedThisNumeratorGcd = second) = divideByGCD(other.denominator, numerator)
-        return BigLongRational(
-            numerator = reducedThisNumeratorGcd * reducedOtherNumeratorGcd,
-            denominator = reducedThisDenominator * reducedOtherDenominator,
-        )
-    }
-    override fun BigLongRational.div(other: BigLongRational): BigLongRational = context(BigLong.context, UBigLong.context) {
-        if (other.numerator.isZero()) divisionByZero()
-        val sign = this.numerator.sign * other.numerator.sign
-        (val reducedThisNumerator = first, val reducedOtherNumerator = second) = divideByGCD(this.numerator.absoluteValue, other.numerator.absoluteValue)
-        (val reducedThisDenominator = first, val reducedOtherDenominator = second) = divideByGCD(this.denominator, other.denominator)
-        return BigLongRational(
-            BigLong(sign, reducedThisNumerator * reducedOtherDenominator),
-            reducedThisDenominator * reducedOtherNumerator,
-        )
-    }
-    // endregion
-}
-
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun BigLongRationalContext.set() {
-    listOf<RegistryKey<in BigLongRationalContext>>(
-        Reification.Key(),
-        Field.Key(),
-        Order.Key(),
-        Hashing.Key(),
-    ).forEach {
-        it.withImpliedUsingFirst correspondsTo BigLongRationalContext
-    }
-}
+//@Serializable
+////@JvmInline
+//public /*value*/ data class BigLongRational internal constructor(
+//    public val numerator: BigLong,
+//    public val denominator: UBigLong,
+//) {
+//    override fun toString(): String =
+//        if ((UBigLong.context) { denominator.isOne() }) "$numerator"
+//        else "$numerator/$denominator"
+//
+//    public companion object {
+//        public val context: BigLongRationalContext get() = BigLongRationalContext
+//    }
+//}
+//
+//public fun BigLongRational.Companion.from(numerator: BigLong, denominator: UBigLong = UBigLong.context.one): BigLongRational {
+//    if (context(UBigLong.context) { denominator.isZero() }) divisionByZero()
+//
+//    val greatestCommonDivisor = context(BigLong.context) { gcd(numerator, valueOf(denominator)).absoluteValue }
+//
+//    return BigLongRational(
+//        numerator = context(BigLong.context) { numerator / greatestCommonDivisor },
+//        denominator = context(UBigLong.context) { denominator / greatestCommonDivisor },
+//    )
+//}
+//
+////@JvmInline
+//internal /*value*/ data class BigLongBigLongQuotientsByGCD(val first: BigLong, val second: BigLong)
+//
+//internal fun divideByGCD(first: BigLong, second: BigLong): BigLongBigLongQuotientsByGCD = context(BigLong.context) {
+//    val gcd = gcd(first, second).absoluteValue
+//
+//    if (context(UBigLong.context) { gcd.isZero() }) BigLongBigLongQuotientsByGCD(BigLong.context.zero, BigLong.context.zero)
+//    else BigLongBigLongQuotientsByGCD(
+//        first = first / gcd,
+//        second = second / gcd,
+//    )
+//}
+//
+////@JvmInline
+//internal /*value*/ data class UBigLongBigLongQuotientsByGCD(val first: UBigLong, val second: BigLong)
+//
+//internal fun divideByGCD(first: UBigLong, second: BigLong): UBigLongBigLongQuotientsByGCD = context(UBigLong.context, BigLong.context) {
+//    val gcd = gcd(first, second.absoluteValue)
+//
+//    if (gcd.isZero()) UBigLongBigLongQuotientsByGCD(UBigLong.context.zero, BigLong.context.zero)
+//    else UBigLongBigLongQuotientsByGCD(
+//        first = first / gcd,
+//        second = second / gcd,
+//    )
+//}
+//
+////@JvmInline
+//internal /*value*/ data class BigLongUBigLongQuotientsByGCD(val first: BigLong, val second: UBigLong)
+//
+//internal fun divideByGCD(first: BigLong, second: UBigLong): BigLongUBigLongQuotientsByGCD = context(UBigLong.context, BigLong.context) {
+//    val gcd = gcd(first.absoluteValue, second)
+//
+//    if (gcd.isZero()) BigLongUBigLongQuotientsByGCD(BigLong.context.zero, UBigLong.context.zero)
+//    else BigLongUBigLongQuotientsByGCD(
+//        first = first / gcd,
+//        second = second / gcd,
+//    )
+//}
+//
+////@JvmInline
+//internal /*value*/ data class UBigLongUBigLongQuotientsByGCD(val first: UBigLong, val second: UBigLong)
+//
+//internal fun divideByGCD(first: UBigLong, second: UBigLong): UBigLongUBigLongQuotientsByGCD = context(UBigLong.context) {
+//    val gcd = gcd(first, second)
+//
+//    if (context(UBigLong.context) { gcd.isZero() }) UBigLongUBigLongQuotientsByGCD(UBigLong.context.zero, UBigLong.context.zero)
+//    else UBigLongUBigLongQuotientsByGCD(
+//        first = first / gcd,
+//        second = second / gcd,
+//    )
+//}
+//
+//// TODO: Check if GCDs really speed up the computations
+//public data object BigLongRationalContext : Reification<BigLongRational>, Field<BigLongRational>, Order<BigLongRational>, Hashing<BigLongRational> {
+//    // region Reification
+//    override fun contains(element: Any?): Boolean = element is BigLongRational
+//    override fun reifyMaybe(element: Any?): Maybe<BigLongRational> = if (element is BigLongRational) Some(element) else None
+//    override fun reifyOrNull(element: Any?): BigLongRational? = element as? BigLongRational
+//    override fun reify(element: Any?): BigLongRational = element as? BigLongRational ?: reificationException()
+//    // endregion
+//
+//    // region Constants
+//    public override val zero: BigLongRational = BigLongRational(BigLong.context.zero, UBigLong.context.one)
+//    public override val one: BigLongRational = BigLongRational(BigLong.context.one, UBigLong.context.one)
+//    // endregion
+//
+//    // region Hashing
+//    override fun BigLongRational.hash(): Int = context(UBigLong.context) { numerator.absoluteValue.hash() * 31 + denominator.hash() }
+//    // endregion
+//
+//    // region Order
+//    override fun BigLongRational.compareWith(other: BigLongRational): ComparisonResult = context(BigLong.context) {
+//        (val thisReducedNumerator = first, val otherReducedNumerator = second) = divideByGCD(numerator, other.numerator)
+//        (val thisReducedDenominator = first, val otherReducedDenominator = second) = divideByGCD(denominator, other.denominator)
+//
+//        (thisReducedNumerator * otherReducedDenominator) compareWith (otherReducedNumerator * thisReducedDenominator)
+//    }
+//    // endregion
+//
+//    // region Equality
+//    override fun BigLongRational.equalsTo(other: BigLongRational): Boolean =
+//        context(BigLong.context) { this.numerator equalsTo other.numerator } &&
+//                context(UBigLong.context) { this.denominator equalsTo other.denominator }
+//    override fun BigLongRational.isZero(): Boolean = context(BigLong.context) { this.numerator.isZero() }
+//    override fun BigLongRational.isOne(): Boolean =
+//        this.numerator.sign.isPositive() && context(UBigLong.context) { this.numerator.absoluteValue equalsTo this.denominator }
+//    // endregion
+//
+//    // region Integers conversion
+//    public override fun valueOf(arg: Int): BigLongRational = BigLongRational(BigLong.context.valueOf(arg), UBigLong.context.one)
+//    public override fun valueOf(arg: UInt): BigLongRational = BigLongRational(BigLong.context.valueOf(arg), UBigLong.context.one)
+//    public override fun valueOf(arg: Long): BigLongRational = BigLongRational(BigLong.context.valueOf(arg), UBigLong.context.one)
+//    public override fun valueOf(arg: ULong): BigLongRational = BigLongRational(BigLong.context.valueOf(arg), UBigLong.context.one)
+//    // endregion
+//
+//    // region BigLongRational-Int operations
+//    override fun BigLongRational.plus(other: Int): BigLongRational = context(BigLong.context) {
+//        BigLongRational(
+//            numerator = numerator + valueOf(denominator) * other,
+//            denominator = denominator,
+//        )
+//    }
+//    override fun BigLongRational.minus(other: Int): BigLongRational = context(BigLong.context) {
+//        BigLongRational(
+//            numerator = numerator - valueOf(denominator) * other,
+//            denominator = denominator,
+//        )
+//    }
+//    override fun BigLongRational.times(other: Int): BigLongRational = context(BigLong.context) {
+//        (val reducedDenominator = first, val reducedOther = second) = divideByGCD(denominator, BigLong.context.valueOf(other))
+//        return BigLongRational(
+//            numerator = numerator * reducedOther,
+//            denominator = reducedDenominator,
+//        )
+//    }
+//    override fun BigLongRational.div(other: Int): BigLongRational = context(Int.group(), Int.order(), UBigLong.context) {
+//        if (other == 0) divisionByZero()
+//        val sign = this.numerator.sign * other.sign()
+//        (val reducedNumerator = first, val reducedOther = second) = divideByGCD(numerator.absoluteValue, UBigLong.context.valueOf(other.absoluteValue().toUInt()))
+//        return BigLongRational(
+//            BigLong(sign, reducedNumerator),
+//            denominator * reducedOther,
+//        )
+//    }
+//    // endregion
+//
+//    // region BigLongRational-UInt operations
+//    override fun BigLongRational.plus(other: UInt): BigLongRational = context(BigLong.context) {
+//        BigLongRational(
+//            numerator = numerator + valueOf(denominator) * other,
+//            denominator = denominator,
+//        )
+//    }
+//    override fun BigLongRational.minus(other: UInt): BigLongRational = context(BigLong.context) {
+//        BigLongRational(
+//            numerator = numerator - valueOf(denominator) * other,
+//            denominator = denominator,
+//        )
+//    }
+//    override fun BigLongRational.times(other: UInt): BigLongRational = context(BigLong.context) {
+//        (val reducedDenominator = first, val reducedOther = second) = divideByGCD(denominator, UBigLong.context.valueOf(other))
+//        return BigLongRational(
+//            numerator = numerator * reducedOther,
+//            denominator = reducedDenominator,
+//        )
+//    }
+//    override fun BigLongRational.div(other: UInt): BigLongRational = context(UBigLong.context) {
+//        if (other == 0u) divisionByZero()
+//        (val reducedNumerator = first, val reducedOther = second) = divideByGCD(numerator, UBigLong.context.valueOf(other))
+//        return BigLongRational(
+//            reducedNumerator,
+//            denominator * reducedOther,
+//        )
+//    }
+//    // endregion
+//
+//    // region BigLongRational-Long operations
+//    override fun BigLongRational.plus(other: Long): BigLongRational = context(BigLong.context) {
+//        BigLongRational(
+//            numerator = numerator + valueOf(denominator) * other,
+//            denominator = denominator,
+//        )
+//    }
+//    override fun BigLongRational.minus(other: Long): BigLongRational = context(BigLong.context) {
+//        BigLongRational(
+//            numerator = numerator - valueOf(denominator) * other,
+//            denominator = denominator,
+//        )
+//    }
+//    override fun BigLongRational.times(other: Long): BigLongRational = context(BigLong.context) {
+//        (val reducedDenominator = first, val reducedOther = second) = divideByGCD(denominator, BigLong.context.valueOf(other))
+//        return BigLongRational(
+//            numerator = numerator * reducedOther,
+//            denominator = reducedDenominator,
+//        )
+//    }
+//    override fun BigLongRational.div(other: Long): BigLongRational = context(Long.group(), Long.order(), UBigLong.context) {
+//        if (other == 0L) divisionByZero()
+//        val sign = this.numerator.sign * other.sign()
+//        (val reducedNumerator = first, val reducedOther = second) = divideByGCD(numerator.absoluteValue, UBigLong.context.valueOf(other.absoluteValue().toULong()))
+//        return BigLongRational(
+//            BigLong(sign, reducedNumerator),
+//            denominator * reducedOther,
+//        )
+//    }
+//    // endregion
+//
+//    // region BigLongRational-ULong operations
+//    override fun BigLongRational.plus(other: ULong): BigLongRational = context(BigLong.context) {
+//        BigLongRational(
+//            numerator = numerator + valueOf(denominator) * other,
+//            denominator = denominator,
+//        )
+//    }
+//    override fun BigLongRational.minus(other: ULong): BigLongRational = context(BigLong.context) {
+//        BigLongRational(
+//            numerator = numerator - valueOf(denominator) * other,
+//            denominator = denominator,
+//        )
+//    }
+//    override fun BigLongRational.times(other: ULong): BigLongRational = context(BigLong.context) {
+//        (val reducedDenominator = first, val reducedOther = second) = divideByGCD(denominator, UBigLong.context.valueOf(other))
+//        return BigLongRational(
+//            numerator = numerator * reducedOther,
+//            denominator = reducedDenominator,
+//        )
+//    }
+//    override fun BigLongRational.div(other: ULong): BigLongRational = context(UBigLong.context) {
+//        if (other == 0uL) divisionByZero()
+//        (val reducedNumerator = first, val reducedOther = second) = divideByGCD(numerator, UBigLong.context.valueOf(other))
+//        return BigLongRational(
+//            reducedNumerator,
+//            denominator * reducedOther,
+//        )
+//    }
+//    // endregion
+//
+//    // region Int-BigLongRational operations
+//    override fun Int.plus(other: BigLongRational): BigLongRational = context(BigLong.context) {
+//        BigLongRational(
+//            numerator = this * valueOf(other.denominator) + other.numerator,
+//            denominator = other.denominator,
+//        )
+//    }
+//    override fun Int.minus(other: BigLongRational): BigLongRational = context(BigLong.context) {
+//        BigLongRational(
+//            numerator = this * valueOf(other.denominator) - other.numerator,
+//            denominator = other.denominator,
+//        )
+//    }
+//    override fun Int.times(other: BigLongRational): BigLongRational = context(BigLong.context) {
+//        (val reducedThis = first, val reducedDenominator = second) = divideByGCD(BigLong.context.valueOf(this), other.denominator)
+//        return BigLongRational(
+//            numerator = reducedThis * other.numerator,
+//            denominator = reducedDenominator,
+//        )
+//    }
+//    override fun Int.div(other: BigLongRational): BigLongRational = context(Int.group(), Int.order(), UBigLong.context) {
+//        if (other.isZero()) divisionByZero()
+//        val sign = this.sign() * other.numerator.sign
+//        (val reducedThis = first, val reducedNumerator = second) = divideByGCD(UBigLong.context.valueOf(this.absoluteValue().toUInt()), other.numerator.absoluteValue)
+//        return BigLongRational(
+//            BigLong(sign, reducedNumerator),
+//            other.denominator * reducedThis,
+//        )
+//    }
+//    // endregion
+//
+//    // region UInt-BigLongRational operations
+//    override fun UInt.plus(other: BigLongRational): BigLongRational = context(BigLong.context) {
+//        BigLongRational(
+//            numerator = this * valueOf(other.denominator) + other.numerator,
+//            denominator = other.denominator,
+//        )
+//    }
+//    override fun UInt.minus(other: BigLongRational): BigLongRational = context(BigLong.context) {
+//        BigLongRational(
+//            numerator = this * valueOf(other.denominator) - other.numerator,
+//            denominator = other.denominator,
+//        )
+//    }
+//    override fun UInt.times(other: BigLongRational): BigLongRational = context(BigLong.context) {
+//        (val reducedThis = first, val reducedDenominator = second) = divideByGCD(UBigLong.context.valueOf(this), other.denominator)
+//        return BigLongRational(
+//            numerator = reducedThis * other.numerator,
+//            denominator = reducedDenominator,
+//        )
+//    }
+//    override fun UInt.div(other: BigLongRational): BigLongRational = context(UBigLong.context) {
+//        if (other.isZero()) divisionByZero()
+//        val sign = other.numerator.sign
+//        (val reducedThis = first, val reducedNumerator = second) = divideByGCD(UBigLong.context.valueOf(this), other.numerator.absoluteValue)
+//        return BigLongRational(
+//            BigLong(sign, reducedNumerator),
+//            other.denominator * reducedThis,
+//        )
+//    }
+//    // endregion
+//
+//    // region Long-BigLongRational operations
+//    override fun Long.plus(other: BigLongRational): BigLongRational = context(BigLong.context) {
+//        BigLongRational(
+//            numerator = this * valueOf(other.denominator) + other.numerator,
+//            denominator = other.denominator,
+//        )
+//    }
+//    override fun Long.minus(other: BigLongRational): BigLongRational = context(BigLong.context) {
+//        BigLongRational(
+//            numerator = this * valueOf(other.denominator) - other.numerator,
+//            denominator = other.denominator,
+//        )
+//    }
+//    override fun Long.times(other: BigLongRational): BigLongRational = context(BigLong.context) {
+//        (val reducedThis = first, val reducedDenominator = second) = divideByGCD(BigLong.context.valueOf(this), other.denominator)
+//        return BigLongRational(
+//            numerator = reducedThis * other.numerator,
+//            denominator = reducedDenominator,
+//        )
+//    }
+//    override fun Long.div(other: BigLongRational): BigLongRational = context(Long.group(), Long.order(), UBigLong.context) {
+//        if (other.isZero()) divisionByZero()
+//        val sign = this.sign() * other.numerator.sign
+//        (val reducedThis = first, val reducedNumerator = second) = divideByGCD(UBigLong.context.valueOf(this.absoluteValue().toULong()), other.numerator.absoluteValue)
+//        return BigLongRational(
+//            BigLong(sign, reducedNumerator),
+//            other.denominator * reducedThis,
+//        )
+//    }
+//    // endregion
+//
+//    // region ULong-BigLongRational operations
+//    override fun ULong.plus(other: BigLongRational): BigLongRational = context(BigLong.context) {
+//        BigLongRational(
+//            numerator = this * valueOf(other.denominator) + other.numerator,
+//            denominator = other.denominator,
+//        )
+//    }
+//    override fun ULong.minus(other: BigLongRational): BigLongRational = context(BigLong.context) {
+//        BigLongRational(
+//            numerator = this * valueOf(other.denominator) - other.numerator,
+//            denominator = other.denominator,
+//        )
+//    }
+//    override fun ULong.times(other: BigLongRational): BigLongRational = context(BigLong.context) {
+//        (val reducedThis = first, val reducedDenominator = second) = divideByGCD(UBigLong.context.valueOf(this), other.denominator)
+//        return BigLongRational(
+//            numerator = reducedThis * other.numerator,
+//            denominator = reducedDenominator,
+//        )
+//    }
+//    override fun ULong.div(other: BigLongRational): BigLongRational = context(UBigLong.context) {
+//        if (other.isZero()) divisionByZero()
+//        val sign = other.numerator.sign
+//        (val reducedThis = first, val reducedNumerator = second) = divideByGCD(UBigLong.context.valueOf(this), other.numerator.absoluteValue)
+//        return BigLongRational(
+//            BigLong(sign, reducedNumerator),
+//            other.denominator * reducedThis,
+//        )
+//    }
+//    // endregion
+//
+//    // region BigLongRational-BigLongRational operations
+//    override fun BigLongRational.unaryMinus(): BigLongRational =
+//        BigLongRational(
+//            numerator = context(BigLong.context) { -numerator },
+//            denominator = denominator,
+//        )
+//    override fun BigLongRational.plus(other: BigLongRational): BigLongRational = context(UBigLong.context, BigLong.context) {
+//        val denominatorsGcd = gcd(denominator, other.denominator)
+//        val reducedThisDenominator = denominator / denominatorsGcd
+//        val reducedOtherDenominator = other.denominator / denominatorsGcd
+//        val numeratorCandidate = numerator * reducedOtherDenominator + reducedThisDenominator * other.numerator
+//        (val reducedNumeratorCandidate = first, val reducedDenominatorGcd = second) = divideByGCD(numeratorCandidate, denominatorsGcd)
+//        return BigLongRational(
+//            numerator = reducedNumeratorCandidate,
+//            denominator = reducedThisDenominator * reducedOtherDenominator * reducedDenominatorGcd,
+//        )
+//    }
+//    override fun BigLongRational.minus(other: BigLongRational): BigLongRational = context(UBigLong.context, BigLong.context) {
+//        val denominatorsGcd = gcd(denominator, other.denominator)
+//        val reducedThisDenominator = denominator / denominatorsGcd
+//        val reducedOtherDenominator = other.denominator / denominatorsGcd
+//        val numeratorCandidate = numerator * reducedOtherDenominator - reducedThisDenominator * other.numerator
+//        (val reducedNumeratorCandidate = first, val reducedDenominatorGcd = second) = divideByGCD(numeratorCandidate, denominatorsGcd)
+//        return BigLongRational(
+//            numerator = reducedNumeratorCandidate,
+//            denominator = reducedThisDenominator * reducedOtherDenominator * reducedDenominatorGcd,
+//        )
+//    }
+//    override fun BigLongRational.times(other: BigLongRational): BigLongRational = context(UBigLong.context, BigLong.context) {
+//        (val reducedThisDenominator = first, val reducedOtherNumeratorGcd = second) = divideByGCD(denominator, other.numerator)
+//        (val reducedOtherDenominator = first, val reducedThisNumeratorGcd = second) = divideByGCD(other.denominator, numerator)
+//        return BigLongRational(
+//            numerator = reducedThisNumeratorGcd * reducedOtherNumeratorGcd,
+//            denominator = reducedThisDenominator * reducedOtherDenominator,
+//        )
+//    }
+//    override fun BigLongRational.div(other: BigLongRational): BigLongRational = context(BigLong.context, UBigLong.context) {
+//        if (other.numerator.isZero()) divisionByZero()
+//        val sign = this.numerator.sign * other.numerator.sign
+//        (val reducedThisNumerator = first, val reducedOtherNumerator = second) = divideByGCD(this.numerator.absoluteValue, other.numerator.absoluteValue)
+//        (val reducedThisDenominator = first, val reducedOtherDenominator = second) = divideByGCD(this.denominator, other.denominator)
+//        return BigLongRational(
+//            BigLong(sign, reducedThisNumerator * reducedOtherDenominator),
+//            reducedThisDenominator * reducedOtherNumerator,
+//        )
+//    }
+//    // endregion
+//}
+//
+//context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+//public fun BigLongRationalContext.set() {
+//    listOf<RegistryKey<in BigLongRationalContext>>(
+//        Reification.Key(),
+//        Field.Key(),
+//        Order.Key(),
+//        Hashing.Key(),
+//    ).forEach {
+//        it.withImpliedUsingFirst correspondsTo BigLongRationalContext
+//    }
+//}

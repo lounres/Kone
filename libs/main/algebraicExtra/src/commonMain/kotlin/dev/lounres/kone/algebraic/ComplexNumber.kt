@@ -9,8 +9,10 @@ import dev.lounres.kone.algebraic.algorithms.PlanarVectorArgumentComputer
 import dev.lounres.kone.algebraic.algorithms.PositiveSquareRootComputer
 import dev.lounres.kone.algebraic.algorithms.planarVectorArgument
 import dev.lounres.kone.algebraic.algorithms.positiveSquareRoot
+import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
@@ -78,8 +80,12 @@ private class ComplexNumberFieldExtension<Number>(
     // endregion
     
     // region Equality
-    override fun ComplexNumber<Number>.isZero(): Boolean = numberField { this.realPart.isZero() && this.imaginaryPart.isZero() }
-    override fun ComplexNumber<Number>.isOne(): Boolean = numberField { this.realPart.isOne() && this.imaginaryPart.isZero() }
+    override val numberIsZero: IsZero<ComplexNumber<Number>> = IsZero {
+        context(numberField.numberIsZero) { this.realPart.isZero() && this.imaginaryPart.isZero() }
+    }
+    override val numberIsOne: IsOne<ComplexNumber<Number>> = IsOne {
+        context(numberField.numberIsOne, numberField.numberIsZero) { this.realPart.isOne() && this.imaginaryPart.isZero() }
+    }
     // endregion
     
     // region Integers conversion
@@ -93,139 +99,185 @@ private class ComplexNumberFieldExtension<Number>(
     override fun valueOf(arg: Number): ComplexNumber<Number> = ComplexNumber(arg, numberField.zero)
     // endregion
     
-    // region ComplexNumber-UInt operations
-    override fun ComplexNumber<Number>.plus(other: UInt): ComplexNumber<Number> =
-        ComplexNumber(
-            realPart = numberField { realPart + other },
-            imaginaryPart = imaginaryPart
-        )
-    override fun ComplexNumber<Number>.minus(other: UInt): ComplexNumber<Number> =
-        ComplexNumber(
-            realPart = numberField { realPart - other },
-            imaginaryPart = imaginaryPart
-        )
-    override fun ComplexNumber<Number>.times(other: UInt): ComplexNumber<Number> =
-        ComplexNumber(
-            realPart = numberField { realPart * other },
-            imaginaryPart = numberField { imaginaryPart * other }
-        )
-    override fun ComplexNumber<Number>.div(other: UInt): ComplexNumber<Number> =
-        ComplexNumber(
-            realPart = numberField { realPart / other },
-            imaginaryPart = numberField { imaginaryPart / other }
-        )
-    // endregion
-    
     // region ComplexNumber-Int operations
-    override fun ComplexNumber<Number>.plus(other: Int): ComplexNumber<Number> =
+    override val numberPlusInt: Plus<ComplexNumber<Number>, Int, ComplexNumber<Number>> = Plus { other ->
         ComplexNumber(
-            realPart = numberField { realPart + other },
+            realPart = numberField.numberPlusInt { realPart + other },
             imaginaryPart = imaginaryPart
         )
-    override fun ComplexNumber<Number>.minus(other: Int): ComplexNumber<Number> =
+    }
+    override val numberMinusInt: Minus<ComplexNumber<Number>, Int, ComplexNumber<Number>> = Minus { other ->
         ComplexNumber(
-            realPart = numberField { realPart - other },
+            realPart = numberField.numberMinusInt { realPart - other },
             imaginaryPart = imaginaryPart
         )
-    override fun ComplexNumber<Number>.times(other: Int): ComplexNumber<Number> =
-        ComplexNumber(
-            realPart = numberField { realPart * other },
-            imaginaryPart = numberField { imaginaryPart * other }
-        )
-    override fun ComplexNumber<Number>.div(other: Int): ComplexNumber<Number> =
-        ComplexNumber(
-            realPart = numberField { realPart / other },
-            imaginaryPart = numberField { imaginaryPart / other }
-        )
+    }
+    override val numberTimesInt: Times<ComplexNumber<Number>, Int, ComplexNumber<Number>> = Times { other ->
+        numberField.numberTimesInt {
+            ComplexNumber(
+                realPart = realPart * other,
+                imaginaryPart = imaginaryPart * other
+            )
+        }
+    }
+    override val numberDivideInt: Divide<ComplexNumber<Number>, Int, ComplexNumber<Number>> = Divide { other ->
+        numberField.numberDivideInt {
+            ComplexNumber(
+                realPart = realPart / other,
+                imaginaryPart = imaginaryPart / other
+            )
+        }
+    }
     // endregion
     
-    // region ComplexNumber-ULong operations
-    override fun ComplexNumber<Number>.plus(other: ULong): ComplexNumber<Number> =
+    // region ComplexNumber-UInt operations
+    override val numberPlusUInt: Plus<ComplexNumber<Number>, UInt, ComplexNumber<Number>> = Plus { other ->
         ComplexNumber(
-            realPart = numberField { realPart + other },
+            realPart = numberField.numberPlusUInt { realPart + other },
             imaginaryPart = imaginaryPart
         )
-    override fun ComplexNumber<Number>.minus(other: ULong): ComplexNumber<Number> =
+    }
+    override val numberMinusUInt: Minus<ComplexNumber<Number>, UInt, ComplexNumber<Number>> = Minus { other ->
         ComplexNumber(
-            realPart = numberField { realPart - other },
+            realPart = numberField.numberMinusUInt { realPart - other },
             imaginaryPart = imaginaryPart
         )
-    override fun ComplexNumber<Number>.times(other: ULong): ComplexNumber<Number> =
-        ComplexNumber(
-            realPart = numberField { realPart * other },
-            imaginaryPart = numberField { imaginaryPart * other }
-        )
-    override fun ComplexNumber<Number>.div(other: ULong): ComplexNumber<Number> =
-        ComplexNumber(
-            realPart = numberField { realPart / other },
-            imaginaryPart = numberField { imaginaryPart / other }
-        )
+    }
+    override val numberTimesUInt: Times<ComplexNumber<Number>, UInt, ComplexNumber<Number>> = Times { other ->
+        numberField.numberTimesUInt {
+            ComplexNumber(
+                realPart = realPart * other,
+                imaginaryPart = imaginaryPart * other
+            )
+        }
+    }
+    override val numberDivideUInt: Divide<ComplexNumber<Number>, UInt, ComplexNumber<Number>> = Divide { other ->
+        numberField.numberDivideUInt {
+            ComplexNumber(
+                realPart = realPart / other,
+                imaginaryPart = imaginaryPart / other
+            )
+        }
+    }
     // endregion
     
     // region ComplexNumber-Long operations
-    override fun ComplexNumber<Number>.plus(other: Long): ComplexNumber<Number> =
+    override val numberPlusLong: Plus<ComplexNumber<Number>, Long, ComplexNumber<Number>> = Plus { other ->
         ComplexNumber(
-            realPart = numberField { realPart + other },
+            realPart = numberField.numberPlusLong { realPart + other },
             imaginaryPart = imaginaryPart
         )
-    override fun ComplexNumber<Number>.minus(other: Long): ComplexNumber<Number> =
+    }
+    override val numberMinusLong: Minus<ComplexNumber<Number>, Long, ComplexNumber<Number>> = Minus { other ->
         ComplexNumber(
-            realPart = numberField { realPart - other },
+            realPart = numberField.numberMinusLong { realPart - other },
             imaginaryPart = imaginaryPart
         )
-    override fun ComplexNumber<Number>.times(other: Long): ComplexNumber<Number> =
+    }
+    override val numberTimesLong: Times<ComplexNumber<Number>, Long, ComplexNumber<Number>> = Times { other ->
+        numberField.numberTimesLong {
+            ComplexNumber(
+                realPart = realPart * other,
+                imaginaryPart = imaginaryPart * other
+            )
+        }
+    }
+    override val numberDivideLong: Divide<ComplexNumber<Number>, Long, ComplexNumber<Number>> = Divide { other ->
+        numberField.numberDivideLong {
+            ComplexNumber(
+                realPart = realPart / other,
+                imaginaryPart = imaginaryPart / other
+            )
+        }
+    }
+    // endregion
+    
+    // region ComplexNumber-ULong operations
+    override val numberPlusULong: Plus<ComplexNumber<Number>, ULong, ComplexNumber<Number>> = Plus { other ->
         ComplexNumber(
-            realPart = numberField { realPart * other },
-            imaginaryPart = numberField { imaginaryPart * other }
+            realPart = numberField.numberPlusULong { realPart + other },
+            imaginaryPart = imaginaryPart
         )
-    override fun ComplexNumber<Number>.div(other: Long): ComplexNumber<Number> =
+    }
+    override val numberMinusULong: Minus<ComplexNumber<Number>, ULong, ComplexNumber<Number>> = Minus { other ->
         ComplexNumber(
-            realPart = numberField { realPart / other },
-            imaginaryPart = numberField { imaginaryPart / other }
+            realPart = numberField.numberMinusULong { realPart - other },
+            imaginaryPart = imaginaryPart
         )
+    }
+    override val numberTimesULong: Times<ComplexNumber<Number>, ULong, ComplexNumber<Number>> = Times { other ->
+        numberField.numberTimesULong {
+            ComplexNumber(
+                realPart = realPart * other,
+                imaginaryPart = imaginaryPart * other
+            )
+        }
+    }
+    override val numberDivideULong: Divide<ComplexNumber<Number>, ULong, ComplexNumber<Number>> = Divide { other ->
+        numberField.numberDivideULong {
+            ComplexNumber(
+                realPart = realPart / other,
+                imaginaryPart = imaginaryPart / other
+            )
+        }
+    }
     // endregion
     
     // region ComplexNumber-Number operations
-    override fun ComplexNumber<Number>.plus(other: Number): ComplexNumber<Number> =
+    override val vectorPlusNumber: Plus<ComplexNumber<Number>, Number, ComplexNumber<Number>> = Plus { other ->
         ComplexNumber(
-            realPart = numberField { realPart + other },
+            realPart = numberField.numberPlusNumber { realPart + other },
             imaginaryPart = imaginaryPart
         )
-    override fun ComplexNumber<Number>.minus(other: Number): ComplexNumber<Number> =
+    }
+    override val vectorMinusNumber: Minus<ComplexNumber<Number>, Number, ComplexNumber<Number>> = Minus { other ->
         ComplexNumber(
-            realPart = numberField { realPart - other },
+            realPart = numberField.numberMinusNumber { realPart - other },
             imaginaryPart = imaginaryPart
         )
-    override fun ComplexNumber<Number>.times(other: Number): ComplexNumber<Number> =
-        ComplexNumber(
-            realPart = numberField { realPart * other },
-            imaginaryPart = numberField { imaginaryPart * other }
-        )
-    override fun ComplexNumber<Number>.div(other: Number): ComplexNumber<Number> =
-        ComplexNumber(
-            realPart = numberField { realPart / other },
-            imaginaryPart = numberField { imaginaryPart / other }
-        )
+    }
+    override val vectorTimesNumber: Times<ComplexNumber<Number>, Number, ComplexNumber<Number>> = Times { other ->
+        numberField.numberTimesNumber {
+            ComplexNumber(
+                realPart = realPart * other,
+                imaginaryPart = imaginaryPart * other
+            )
+        }
+    }
+    override val vectorDivideNumber: Divide<ComplexNumber<Number>, Number, ComplexNumber<Number>> = Divide { other ->
+        numberField.numberDivideNumber {
+            ComplexNumber(
+                realPart = realPart / other,
+                imaginaryPart = imaginaryPart / other
+            )
+        }
+    }
     // endregion
     
-    // region UInt-ComplexNumber operations
-    override fun UInt.plus(other: ComplexNumber<Number>): ComplexNumber<Number> =
+    // region Int-ComplexNumber operations
+    override val intPlusNumber: Plus<Int, ComplexNumber<Number>, ComplexNumber<Number>> = Plus { other ->
         ComplexNumber(
-            realPart = numberField { this + other.realPart },
-            imaginaryPart = other.imaginaryPart
+            realPart = numberField.intPlusNumber { this + other.realPart },
+            imaginaryPart = other.imaginaryPart,
         )
-    override fun UInt.minus(other: ComplexNumber<Number>): ComplexNumber<Number> =
+    }
+    override val intMinusNumber: Minus<Int, ComplexNumber<Number>, ComplexNumber<Number>> = Minus { other ->
         ComplexNumber(
-            realPart = numberField { this - other.realPart },
-            imaginaryPart = other.imaginaryPart
+            realPart = numberField.intMinusNumber { this - other.realPart },
+            imaginaryPart = other.imaginaryPart,
         )
-    override fun UInt.times(other: ComplexNumber<Number>): ComplexNumber<Number> =
-        ComplexNumber(
-            realPart = numberField { this * other.realPart },
-            imaginaryPart = numberField { this * other.imaginaryPart }
-        )
-    override fun UInt.div(other: ComplexNumber<Number>): ComplexNumber<Number> = numberField {
-        val commonMultiplier = this / (other.realPart.let { it * it } + other.imaginaryPart.let { it * it })
+    }
+    override val intTimesNumber: Times<Int, ComplexNumber<Number>, ComplexNumber<Number>> = Times { other ->
+        numberField.intTimesNumber {
+            ComplexNumber(
+                realPart = this * other.realPart,
+                imaginaryPart = this * other.imaginaryPart,
+            )
+        }
+    }
+    override val intDivideNumber: Divide<Int, ComplexNumber<Number>, ComplexNumber<Number>> = Divide { other ->
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField)
+        val commonMultiplier = this@Divide / (other.realPart.let { it * it } + other.imaginaryPart.let { it * it })
         ComplexNumber(
             realPart = other.realPart * commonMultiplier,
             imaginaryPart = -other.imaginaryPart * commonMultiplier
@@ -233,24 +285,61 @@ private class ComplexNumberFieldExtension<Number>(
     }
     // endregion
     
-    // region Int-ComplexNumber operations
-    override fun Int.plus(other: ComplexNumber<Number>): ComplexNumber<Number> =
+    // region UInt-ComplexNumber operations
+    override val uIntPlusNumber: Plus<UInt, ComplexNumber<Number>, ComplexNumber<Number>> = Plus { other ->
         ComplexNumber(
-            realPart = numberField { this + other.realPart },
-            imaginaryPart = other.imaginaryPart
+            realPart = numberField.uIntPlusNumber { this + other.realPart },
+            imaginaryPart = other.imaginaryPart,
         )
-    override fun Int.minus(other: ComplexNumber<Number>): ComplexNumber<Number> =
+    }
+    override val uIntMinusNumber: Minus<UInt, ComplexNumber<Number>, ComplexNumber<Number>> = Minus { other ->
         ComplexNumber(
-            realPart = numberField { this - other.realPart },
-            imaginaryPart = other.imaginaryPart
+            realPart = numberField.uIntMinusNumber { this - other.realPart },
+            imaginaryPart = other.imaginaryPart,
         )
-    override fun Int.times(other: ComplexNumber<Number>): ComplexNumber<Number> =
+    }
+    override val uIntTimesNumber: Times<UInt, ComplexNumber<Number>, ComplexNumber<Number>> = Times { other ->
+        numberField.uIntTimesNumber {
+            ComplexNumber(
+                realPart = this * other.realPart,
+                imaginaryPart = this * other.imaginaryPart,
+            )
+        }
+    }
+    override val uIntDivideNumber: Divide<UInt, ComplexNumber<Number>, ComplexNumber<Number>> = Divide { other ->
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField)
+        val commonMultiplier = this@Divide / (other.realPart.let { it * it } + other.imaginaryPart.let { it * it })
         ComplexNumber(
-            realPart = numberField { this * other.realPart },
-            imaginaryPart = numberField { this * other.imaginaryPart }
+            realPart = other.realPart * commonMultiplier,
+            imaginaryPart = -other.imaginaryPart * commonMultiplier
         )
-    override fun Int.div(other: ComplexNumber<Number>): ComplexNumber<Number> = numberField {
-        val commonMultiplier = this / (other.realPart.let { it * it } + other.imaginaryPart.let { it * it })
+    }
+    // endregion
+    
+    // region Long-ComplexNumber operations
+    override val longPlusNumber: Plus<Long, ComplexNumber<Number>, ComplexNumber<Number>> = Plus { other ->
+        ComplexNumber(
+            realPart = numberField.longPlusNumber { this + other.realPart },
+            imaginaryPart = other.imaginaryPart,
+        )
+    }
+    override val longMinusNumber: Minus<Long, ComplexNumber<Number>, ComplexNumber<Number>> = Minus { other ->
+        ComplexNumber(
+            realPart = numberField.longMinusNumber { this - other.realPart },
+            imaginaryPart = other.imaginaryPart,
+        )
+    }
+    override val longTimesNumber: Times<Long, ComplexNumber<Number>, ComplexNumber<Number>> = Times { other ->
+        numberField.longTimesNumber {
+            ComplexNumber(
+                realPart = this * other.realPart,
+                imaginaryPart = this * other.imaginaryPart,
+            )
+        }
+    }
+    override val longDivideNumber: Divide<Long, ComplexNumber<Number>, ComplexNumber<Number>> = Divide { other ->
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField)
+        val commonMultiplier = this@Divide / (other.realPart.let { it * it } + other.imaginaryPart.let { it * it })
         ComplexNumber(
             realPart = other.realPart * commonMultiplier,
             imaginaryPart = -other.imaginaryPart * commonMultiplier
@@ -259,23 +348,29 @@ private class ComplexNumberFieldExtension<Number>(
     // endregion
     
     // region ULong-ComplexNumber operations
-    override fun ULong.plus(other: ComplexNumber<Number>): ComplexNumber<Number> =
+    override val uLongPlusNumber: Plus<ULong, ComplexNumber<Number>, ComplexNumber<Number>> = Plus { other ->
         ComplexNumber(
-            realPart = numberField { this + other.realPart },
-            imaginaryPart = other.imaginaryPart
+            realPart = numberField.uLongPlusNumber { this + other.realPart },
+            imaginaryPart = other.imaginaryPart,
         )
-    override fun ULong.minus(other: ComplexNumber<Number>): ComplexNumber<Number> =
+    }
+    override val uLongMinusNumber: Minus<ULong, ComplexNumber<Number>, ComplexNumber<Number>> = Minus { other ->
         ComplexNumber(
-            realPart = numberField { this - other.realPart },
-            imaginaryPart = other.imaginaryPart
+            realPart = numberField.uLongMinusNumber { this - other.realPart },
+            imaginaryPart = other.imaginaryPart,
         )
-    override fun ULong.times(other: ComplexNumber<Number>): ComplexNumber<Number> =
-        ComplexNumber(
-            realPart = numberField { this * other.realPart },
-            imaginaryPart = numberField { this * other.imaginaryPart }
-        )
-    override fun ULong.div(other: ComplexNumber<Number>): ComplexNumber<Number> = numberField {
-        val commonMultiplier = this / (other.realPart.let { it * it } + other.imaginaryPart.let { it * it })
+    }
+    override val uLongTimesNumber: Times<ULong, ComplexNumber<Number>, ComplexNumber<Number>> = Times { other ->
+        numberField.uLongTimesNumber {
+            ComplexNumber(
+                realPart = this * other.realPart,
+                imaginaryPart = this * other.imaginaryPart,
+            )
+        }
+    }
+    override val uLongDivideNumber: Divide<ULong, ComplexNumber<Number>, ComplexNumber<Number>> = Divide { other ->
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField)
+        val commonMultiplier = this@Divide / (other.realPart.let { it * it } + other.imaginaryPart.let { it * it })
         ComplexNumber(
             realPart = other.realPart * commonMultiplier,
             imaginaryPart = -other.imaginaryPart * commonMultiplier
@@ -283,49 +378,30 @@ private class ComplexNumberFieldExtension<Number>(
     }
     // endregion
     
-    // region Long-ComplexNumber operations
-    override fun Long.plus(other: ComplexNumber<Number>): ComplexNumber<Number> =
+    // region Number-ComplexNumber operations
+    override val numberPlusVector: Plus<Number, ComplexNumber<Number>, ComplexNumber<Number>> = Plus { other ->
         ComplexNumber(
-            realPart = numberField { this + other.realPart },
-            imaginaryPart = other.imaginaryPart
-        )
-    override fun Long.minus(other: ComplexNumber<Number>): ComplexNumber<Number> =
-        ComplexNumber(
-            realPart = numberField { this - other.realPart },
-            imaginaryPart = other.imaginaryPart
-        )
-    override fun Long.times(other: ComplexNumber<Number>): ComplexNumber<Number> =
-        ComplexNumber(
-            realPart = numberField { this * other.realPart },
-            imaginaryPart = numberField { this * other.imaginaryPart }
-        )
-    override fun Long.div(other: ComplexNumber<Number>): ComplexNumber<Number> = numberField {
-        val commonMultiplier = this / (other.realPart.let { it * it } + other.imaginaryPart.let { it * it })
-        ComplexNumber(
-            realPart = other.realPart * commonMultiplier,
-            imaginaryPart = -other.imaginaryPart * commonMultiplier
+            realPart = numberField.numberPlusNumber { this + other.realPart },
+            imaginaryPart = other.imaginaryPart,
         )
     }
-    // endregion
-    
-    // region Long-ComplexNumber operations
-    override fun Number.plus(other: ComplexNumber<Number>): ComplexNumber<Number> =
+    override val numberMinusVector: Minus<Number, ComplexNumber<Number>, ComplexNumber<Number>> = Minus { other ->
         ComplexNumber(
-            realPart = numberField { this + other.realPart },
-            imaginaryPart = other.imaginaryPart
+            realPart = numberField.numberMinusNumber { this - other.realPart },
+            imaginaryPart = other.imaginaryPart,
         )
-    override fun Number.minus(other: ComplexNumber<Number>): ComplexNumber<Number> =
-        ComplexNumber(
-            realPart = numberField { this - other.realPart },
-            imaginaryPart = other.imaginaryPart
-        )
-    override fun Number.times(other: ComplexNumber<Number>): ComplexNumber<Number> =
-        ComplexNumber(
-            realPart = numberField { this * other.realPart },
-            imaginaryPart = numberField { this * other.imaginaryPart }
-        )
-    override fun Number.div(other: ComplexNumber<Number>): ComplexNumber<Number> = numberField {
-        val commonMultiplier = this / (other.realPart.let { it * it } + other.imaginaryPart.let { it * it })
+    }
+    override val numberTimesVector: Times<Number, ComplexNumber<Number>, ComplexNumber<Number>> = Times { other ->
+        numberField.numberTimesNumber {
+            ComplexNumber(
+                realPart = this * other.realPart,
+                imaginaryPart = this * other.imaginaryPart,
+            )
+        }
+    }
+    override val numberDivideVector: Divide<Number, ComplexNumber<Number>, ComplexNumber<Number>> = Divide { other ->
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField)
+        val commonMultiplier = this@Divide / (other.realPart.let { it * it } + other.imaginaryPart.let { it * it })
         ComplexNumber(
             realPart = other.realPart * commonMultiplier,
             imaginaryPart = -other.imaginaryPart * commonMultiplier
@@ -334,34 +410,47 @@ private class ComplexNumberFieldExtension<Number>(
     // endregion
     
     // region ComplexNumber-ComplexNumber operations
-    override fun ComplexNumber<Number>.unaryMinus(): ComplexNumber<Number> =
+    override val numberUnaryMinus: UnaryMinus<ComplexNumber<Number>, ComplexNumber<Number>> = UnaryMinus {
+        numberField.numberUnaryMinus {
+            ComplexNumber(
+                realPart = -realPart,
+                imaginaryPart = -imaginaryPart,
+            )
+        }
+    }
+    override val numberPlusNumber: Plus<ComplexNumber<Number>, ComplexNumber<Number>, ComplexNumber<Number>> = Plus { other ->
+        numberField.numberPlusNumber {
+            ComplexNumber(
+                realPart = realPart + other.realPart,
+                imaginaryPart = imaginaryPart + other.imaginaryPart,
+            )
+        }
+    }
+    override val numberMinusNumber: Minus<ComplexNumber<Number>, ComplexNumber<Number>, ComplexNumber<Number>> = Minus { other ->
+        numberField.numberMinusNumber {
+            ComplexNumber(
+                realPart = realPart - other.realPart,
+                imaginaryPart = imaginaryPart - other.imaginaryPart,
+            )
+        }
+    }
+    override val numberTimesNumber: Times<ComplexNumber<Number>, ComplexNumber<Number>, ComplexNumber<Number>> = Times { other ->
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField)
         ComplexNumber(
-            realPart = numberField { -realPart },
-            imaginaryPart = numberField { -imaginaryPart },
-        )
-    override fun ComplexNumber<Number>.plus(other: ComplexNumber<Number>): ComplexNumber<Number> =
-        ComplexNumber(
-            realPart = numberField { realPart + other.realPart },
-            imaginaryPart = numberField { imaginaryPart + other.imaginaryPart },
-        )
-    override fun ComplexNumber<Number>.minus(other: ComplexNumber<Number>): ComplexNumber<Number> =
-        ComplexNumber(
-            realPart = numberField { realPart - other.realPart },
-            imaginaryPart = numberField { imaginaryPart - other.imaginaryPart },
-        )
-    override fun ComplexNumber<Number>.times(other: ComplexNumber<Number>): ComplexNumber<Number> =
-        ComplexNumber(
-            realPart = numberField { realPart * other.realPart - imaginaryPart * other.imaginaryPart },
-            imaginaryPart = numberField { realPart * other.imaginaryPart + imaginaryPart * other.realPart },
-        )
-    override fun ComplexNumber<Number>.reciprocal(): ComplexNumber<Number> = numberField {
-        val norm = (realPart.let { it * it } + imaginaryPart.let { it * it })
-        ComplexNumber(
-            realPart = realPart / norm,
-            imaginaryPart = imaginaryPart / norm,
+            realPart = realPart * other.realPart - imaginaryPart * other.imaginaryPart,
+            imaginaryPart = realPart * other.imaginaryPart + imaginaryPart * other.realPart,
         )
     }
-    override fun ComplexNumber<Number>.div(other: ComplexNumber<Number>): ComplexNumber<Number> = numberField {
+    override val numberReciprocal: Reciprocal<ComplexNumber<Number>, ComplexNumber<Number>> = Reciprocal {
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField)
+        val norm = realPart.let { it * it } + imaginaryPart.let { it * it }
+        ComplexNumber(
+            realPart = realPart / norm,
+            imaginaryPart = -imaginaryPart / norm,
+        )
+    }
+    override val numberDivideNumber: Divide<ComplexNumber<Number>, ComplexNumber<Number>, ComplexNumber<Number>> = Divide { other ->
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField)
         val norm = (other.realPart.let { it * it } + other.imaginaryPart.let { it * it })
         ComplexNumber(
             realPart = (realPart * other.realPart + imaginaryPart * other.imaginaryPart) / norm,
@@ -391,14 +480,15 @@ public fun <@Supply Number> ComplexNumber.Companion.setFieldExtensionOver() {
     }
 }
 
-context(_: CommutativeRing<Number>)
+context(ring: CommutativeRing<Number>)
 public fun <Number> ComplexNumber<Number>.conjugate(): ComplexNumber<Number> =
     ComplexNumber(
         realPart = realPart,
-        imaginaryPart = -imaginaryPart,
+        imaginaryPart = ring.numberUnaryMinus { -imaginaryPart },
     )
-context(_: CommutativeRing<Number>)
-public fun <Number> ComplexNumber<Number>.norm(): Number = realPart * realPart + imaginaryPart * imaginaryPart
+context(ring: CommutativeRing<Number>)
+public fun <Number> ComplexNumber<Number>.norm(): Number =
+    context(ring.numberTimesNumber, ring.numberPlusNumber) { realPart * realPart + imaginaryPart * imaginaryPart }
 context(_: CommutativeRing<Number>, _: PositiveSquareRootComputer<Number>)
 public fun <Number> ComplexNumber<Number>.absoluteValue(): Number = norm().positiveSquareRoot()
 context(_: PlanarVectorArgumentComputer<Number>)

@@ -6,6 +6,7 @@ plugins {
 
 konePlugins {
     +"suppliedTypes"
+    +"contexts"
 }
 
 kotlin {
