@@ -11,8 +11,10 @@ import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.build
 import dev.lounres.kone.context
+import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
 import dev.lounres.kone.multidimensionalCollections.MDIndex
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
@@ -72,10 +74,12 @@ private class ExponentMatrixComputerViaSchurParlettUsingScalingAndSquaring<Matri
                         matrixProductComputer,
                         inverseMatrixComputer,
                     ) {
-                        val size = this.rowNumber
+                        KoneContextHolder.unwrapLocallyAsExtensionReceivers(field, complexNumberField, matrixCategoryOverField)
+                        
+                        val size = this@atomicBlockImage.rowNumber
                         when (size) {
                             0u -> error(TODO())
-                            1u -> matrixFactory.generateMatrix(1u, 1u) { _, _ -> this[0u, 0u].exponent() }
+                            1u -> matrixFactory.generateMatrix(1u, 1u) { _, _ -> this@atomicBlockImage[0u, 0u].exponent() }
                             2u -> matrixFactory.mapMatrix(
                                 rowNumber = 2u,
                                 columnNumber = 2u,
@@ -93,44 +97,44 @@ private class ExponentMatrixComputerViaSchurParlettUsingScalingAndSquaring<Matri
                             )
                             else -> {
                                 val unitMatrix = matrixFactory.generateMatrix(size, size) { row, column -> if (row == column) complexNumberField.one else complexNumberField.zero }
-                                val thisOneNorm = this.sumOf<_, Double> { it.absoluteValue() }
+                                val thisOneNorm = this@atomicBlockImage.sumOf<_, Double> { it.absoluteValue() }
                                 // Attempt m = 3
                                 if (thisOneNorm leq 1.5E-2) {
-                                    val this2 = this * this
-                                    val u = this * (this2 + unitMatrix * 60)
+                                    val this2 = this@atomicBlockImage * this@atomicBlockImage
+                                    val u = this@atomicBlockImage * (this2 + unitMatrix * 60)
                                     val v = this2 * 12 + unitMatrix * 120
                                     return (-u + v).invert()!! * (u + v)
                                 }
                                 // Attempt m = 5
                                 if (thisOneNorm leq 2.5E-1) {
-                                    val this2 = this * this
+                                    val this2 = this@atomicBlockImage * this@atomicBlockImage
                                     val this4 = this2 * this2
-                                    val u = this * (this4 + this2 * 420 + unitMatrix * 15120)
+                                    val u = this@atomicBlockImage * (this4 + this2 * 420 + unitMatrix * 15120)
                                     val v = this4 * 30 + this2 * 3360 + unitMatrix * 30240
                                     return (-u + v).invert()!! * (u + v)
                                 }
                                 // Attempt m = 7
                                 if (thisOneNorm leq 9.5E-1) {
-                                    val this2 = this * this
+                                    val this2 = this@atomicBlockImage * this@atomicBlockImage
                                     val this4 = this2 * this2
                                     val this6 = this4 * this2
-                                    val u = this * (this6 + this4 * 1512 + this2 * 277200 + unitMatrix * 8648640)
+                                    val u = this@atomicBlockImage * (this6 + this4 * 1512 + this2 * 277200 + unitMatrix * 8648640)
                                     val v = this6 * 56 + this4 * 25200 + this2 * 1995840 + unitMatrix * 17297280
                                     return (-u + v).invert()!! * (u + v)
                                 }
                                 // Attempt m = 9
                                 if (thisOneNorm leq 2.1E0) {
-                                    val this2 = this * this
+                                    val this2 = this@atomicBlockImage * this@atomicBlockImage
                                     val this4 = this2 * this2
                                     val this6 = this4 * this2
                                     val this8 = this4 * this4
-                                    val u = this * (this8 + this6 * 3960 + this4 * 2162160 + this2 * 302702400 + unitMatrix * 8821612800)
+                                    val u = this@atomicBlockImage * (this8 + this6 * 3960 + this4 * 2162160 + this2 * 302702400 + unitMatrix * 8821612800)
                                     val v = this8 * 90 + this6 * 110880 + this4 * 30270240 + this2 * 2075673600 + unitMatrix * 17643225600
                                     return (-u + v).invert()!! * (u + v)
                                 }
                                 // m = 13 with scaling and squaring
                                 val s = ceil(log2(thisOneNorm / 5.4E0)).toUInt()
-                                val a = this / ComplexNumber(2.0.pow(s), 0.0)
+                                val a = this@atomicBlockImage / ComplexNumber(2.0.pow(s), 0.0)
                                 val a2 = a * a
                                 val a4 = a2 * a2
                                 val a6 = a2 *  a4

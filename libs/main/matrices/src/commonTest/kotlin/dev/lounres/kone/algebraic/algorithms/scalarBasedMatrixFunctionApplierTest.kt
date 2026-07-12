@@ -18,10 +18,12 @@ import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.utils.maxOf
 import dev.lounres.kone.collections.utils.withIndex
+import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.buildWithProvider
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.contexts.koneContext
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
 import dev.lounres.kone.registry.RegisteredValueProvider
@@ -648,7 +650,7 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
                             order = koneContextRegistry.requestFor(Order.Key<Number>()) {
                                 "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}, ${suppliedTypeOf<ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>>()}>"
                             },
-                            complexNumberFieldExtension = koneContextRegistry.requestFor(FieldExtension.Key<Number, ComplexNumber<Number>>()) {
+                            complexNumberField = koneContextRegistry.requestFor(Field.Key<ComplexNumber<Number>>()) {
                                 "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}, ${suppliedTypeOf<ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>>()}>"
                             },
                             matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>()) {
@@ -713,14 +715,14 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
             private val numberField = Double.safeField()
             private val complexNumberFieldExtension = ComplexNumber.fieldExtensionOver(numberField)
             private val positiveSquareRootComputer = PositiveSquareRootComputer.viaDefaultForDouble()
-            override fun evaluate(derivativeOrder: UInt, value: ComplexNumber<Number>): ComplexNumber<Number> =
-                complexNumberFieldExtension {
-                    when (derivativeOrder) {
-                        0u -> value * value
-                        1u -> 2 * value
-                        else -> complexNumberFieldExtension.zero
-                    }
+            override fun evaluate(derivativeOrder: UInt, value: ComplexNumber<Number>): ComplexNumber<Number> {
+                KoneContextHolder.unwrapLocallyAsExtensionReceivers(complexNumberFieldExtension)
+                return when (derivativeOrder) {
+                    0u -> value * value
+                    1u -> 2 * value
+                    else -> complexNumberFieldExtension.zero
                 }
+            }
             override fun bound(derivativeOrder: UInt, convexHullVertices: KoneIterable<ComplexNumber<Number>>): Number =
                 context(numberField, positiveSquareRootComputer) {
                     when (derivativeOrder) {

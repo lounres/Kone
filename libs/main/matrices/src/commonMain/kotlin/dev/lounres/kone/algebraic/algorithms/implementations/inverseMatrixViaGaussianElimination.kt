@@ -10,8 +10,10 @@ import dev.lounres.kone.algebraic.algorithms.InverseMatrixComputer
 import dev.lounres.kone.algebraic.algorithms.InverseMatrixKey
 import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.algebraic.algorithms.invert
+import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.SettableMDList2
 import dev.lounres.kone.multidimensionalCollections.generate
@@ -27,10 +29,12 @@ private class InverseMatrixComputerViaGaussianElimination<Number, Matrix : MDLis
     private val field: Field<Number>,
 ) : InverseMatrixComputer<Number, Matrix> {
     override fun Matrix.invert(): Matrix? {
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(field)
+        
         if (rowNumber != columnNumber) return null
         
         val n = rowNumber
-        val source = SettableMDList2.generate(rowNumber = n, columnNumber = n) { row, column -> this[row, column] }
+        val source = SettableMDList2.generate(rowNumber = n, columnNumber = n) { row, column -> this@invert[row, column] }
         val result = SettableMDList2.generate(rowNumber = n, columnNumber = n) { row, column ->
             if (row == column) field.one else field.zero
         }
@@ -40,7 +44,7 @@ private class InverseMatrixComputerViaGaussianElimination<Number, Matrix : MDLis
                 var nonZeroRow = currentRow
                 
                 while (nonZeroRow < n) {
-                    if (field { source[currentRow, nonZeroRow].isNotZero() }) break
+                    if (source[currentRow, nonZeroRow].isNotZero()) break
                     nonZeroRow++
                 }
                 
@@ -54,14 +58,14 @@ private class InverseMatrixComputerViaGaussianElimination<Number, Matrix : MDLis
             }
             
             val nonZeroCoef = source[currentRow, currentRow]
-            for (column in 0u ..< n) field {
+            for (column in 0u ..< n) {
                 source[currentRow, column] /= nonZeroCoef
                 result[currentRow, column] /= nonZeroCoef
             }
             
             for (row in currentRow + 1u ..< n) {
                 val rowCoef = source[row, currentRow]
-                for (column in 0u ..< n) field {
+                for (column in 0u ..< n) {
                     source[row, column] -= source[currentRow, column] * rowCoef
                     result[row, column] -= result[currentRow, column] * rowCoef
                 }
@@ -71,7 +75,7 @@ private class InverseMatrixComputerViaGaussianElimination<Number, Matrix : MDLis
         for (currentRow in 1u ..< n) {
             for (row in 0u ..< currentRow) {
                 val rowCoef = source[row, currentRow]
-                for (column in 0u ..< n) field {
+                for (column in 0u ..< n) {
                     source[row, column] -= source[currentRow, column] * rowCoef
                     result[row, column] -= result[currentRow, column] * rowCoef
                 }

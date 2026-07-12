@@ -16,8 +16,10 @@ import dev.lounres.kone.collections.map.build
 import dev.lounres.kone.collections.utils.maxIndex
 import dev.lounres.kone.collections.utils.sum
 import dev.lounres.kone.collections.utils.sumOf
+import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
 import dev.lounres.kone.multidimensionalCollections.MDIndex
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
@@ -67,6 +69,8 @@ private class QRDecompositionComputerViaHouseholder<Number, Matrix : MDList2<Num
             matrixProductComputer,
             transposeMatrixComputer,
         ) {
+            KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField, matrixCategoryOverField)
+            
             val xElementNormsSquared = KoneList.generate(k ..< n) { index -> r[index, k].let { it * it } }
             val xNorm = xElementNormsSquared.sum().positiveSquareRoot()
             val maxXElementIndex = xElementNormsSquared.maxIndex().also { if (xElementNormsSquared[it].isZero()) continue } + k

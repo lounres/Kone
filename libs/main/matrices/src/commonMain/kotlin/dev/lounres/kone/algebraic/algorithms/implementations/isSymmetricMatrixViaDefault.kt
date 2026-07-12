@@ -5,19 +5,21 @@
 
 package dev.lounres.kone.algebraic.algorithms.implementations
 
-import dev.lounres.kone.algebraic.CommutativeRing
 import dev.lounres.kone.algebraic.MatrixWithProperties
 import dev.lounres.kone.algebraic.algorithms.IsSymmetricMatrixChecker
 import dev.lounres.kone.algebraic.algorithms.IsSymmetricMatrixKey
 import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.algebraic.algorithms.isSymmetric
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.useLocallyAsExtensionReceivers
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.neq
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
@@ -25,21 +27,22 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 private class IsSymmetricMatrixCheckerViaDefault<Number, Matrix : MDList2<Number>>(
-    private val numberRing: CommutativeRing<Number>,
+    private val numberEquality: Equality<Number>,
 ) : IsSymmetricMatrixChecker<Number, Matrix> {
     override fun Matrix.isSymmetric(): Boolean {
+        KoneContext.useLocallyAsExtensionReceivers(numberEquality)
         if (rowNumber != columnNumber) return false
         for (row in 1u ..< rowNumber) for (column in 0u ..< row) {
-            if (numberRing { this[row, column] neq this[column, row] }) return false
+            if (this@isSymmetric[row, column] neq this@isSymmetric[column, row]) return false
         }
         return true
     }
 }
 
 public fun <Number, Matrix : MDList2<Number>> IsSymmetricMatrixChecker.Companion.viaDefault(
-    numberRing: CommutativeRing<Number>,
+    numberEquality: Equality<Number>,
 ): IsSymmetricMatrixChecker<Number, Matrix> = IsSymmetricMatrixCheckerViaDefault(
-    numberRing = numberRing,
+    numberEquality = numberEquality,
 )
 
 @Suppliable
@@ -47,7 +50,7 @@ context(koneContextRegistry: KoneContextRegistry.Provider)
 public fun <@Supply Number, Matrix : MDList2<Number>> IsSymmetricMatrixChecker.Companion.viaDefault(): IsSymmetricMatrixChecker<Number, Matrix> {
     val koneContextRegistry = koneContextRegistry.get()
     return viaDefault<Number, Matrix>(
-        numberRing = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) {
+        numberEquality = koneContextRegistry.requestFor(Equality.Key<Number>()) {
             "IsSymmetricMatrixChecker.viaDefault<${suppliedTypeOf<Number>()}, ?>"
         },
     )
@@ -56,11 +59,11 @@ public fun <@Supply Number, Matrix : MDList2<Number>> IsSymmetricMatrixChecker.C
 @Suppliable
 context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsSymmetricMatrixChecker.Companion.setViaDefault(
-    numberRing: CommutativeRing<Number>,
+    numberEquality: Equality<Number>,
 ) {
     IsSymmetricMatrixChecker.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
         viaDefault<Number, Matrix>(
-            numberRing = numberRing,
+            numberEquality = numberEquality,
         )
     }
 }
@@ -75,11 +78,11 @@ public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsSymmetricMatrixC
 
 context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
 public fun <Number, Matrix : MDList2<Number>> IsSymmetricMatrixChecker.Companion.useViaDefault(
-    numberRing: CommutativeRing<Number>,
+    numberEquality: Equality<Number>,
 ) {
     IsSymmetricMatrixKey correspondsTo RegisteredValueProvider.cached {
         val isSymmetricMatrixChecker = viaDefault<Number, MatrixWithProperties<Number, Matrix>>(
-            numberRing = numberRing,
+            numberEquality = numberEquality,
         )
         isSymmetricMatrixChecker { matrix.get().isSymmetric() }
     }

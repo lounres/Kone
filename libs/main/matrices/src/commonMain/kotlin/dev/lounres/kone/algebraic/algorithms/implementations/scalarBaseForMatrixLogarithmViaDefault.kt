@@ -17,8 +17,12 @@ import dev.lounres.kone.algebraic.pow
 import dev.lounres.kone.algebraic.reciprocal
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.utils.maxOf
+import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.useLocallyAsExtensionReceivers
 import dev.lounres.kone.registry.*
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.suppliedTypes.Suppliable
@@ -32,7 +36,7 @@ private class ScalarBaseForMatrixLogarithmViaDefault<Number>(
 ) : ScalarBaseForMatrixFunction<Number> {
     override fun evaluate(derivativeOrder: UInt, value: Number): Number =
         if (derivativeOrder == 0u) logarithmComputer { value.logarithm() }
-        else numberField { value.reciprocal().pow(derivativeOrder) }
+        else context(numberField.numberReciprocal, numberField.powerNumberUInt) { value.reciprocal().pow(derivativeOrder) }
 }
 
 public fun <Number> ScalarBaseForMatrixFunction.Companion.logarithmViaDefault(
@@ -90,15 +94,15 @@ private class ScalarBaseForMatrixLogarithmWithComplexNumberConvexHullBoundViaDef
 ) : ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number> {
     override fun evaluate(derivativeOrder: UInt, value: ComplexNumber<Number>): ComplexNumber<Number> =
         if (derivativeOrder == 0u) complexNumberLogarithmComputer { value.logarithm() }
-        else complexNumberFieldExtension { value.reciprocal().pow(derivativeOrder) }
+        else context(complexNumberFieldExtension.numberReciprocal, complexNumberFieldExtension.powerNumberUInt) { value.reciprocal().pow(derivativeOrder) }
     
-    override fun bound(derivativeOrder: UInt, convexHullVertices: KoneIterable<ComplexNumber<Number>>): Number =
-        if (derivativeOrder == 0u)
-            context(order, numberField, positiveSquareRootComputer, logarithmComputer, planarVectorArgumentComputer) {
-                convexHullVertices.maxOf<_, Number> { ComplexNumber(it.absoluteValue().logarithm(), it.argument()).norm() }.positiveSquareRoot()
-            }
-        else
-            context(order, numberField, positiveSquareRootComputer) { convexHullVertices.maxOf<_, Number> { it.norm() }.positiveSquareRoot().reciprocal().pow(derivativeOrder) }
+    override fun bound(derivativeOrder: UInt, convexHullVertices: KoneIterable<ComplexNumber<Number>>): Number {
+        KoneContext.useLocallyAsExtensionReceivers(order, numberField, positiveSquareRootComputer, logarithmComputer, planarVectorArgumentComputer)
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField)
+        
+        return if (derivativeOrder == 0u) convexHullVertices.maxOf<_, Number> { ComplexNumber(it.absoluteValue().logarithm(), it.argument()).norm() }.positiveSquareRoot()
+        else convexHullVertices.maxOf<_, Number> { it.norm() }.positiveSquareRoot().reciprocal().pow(derivativeOrder)
+    }
 }
 
 public fun <Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.Companion.logarithmViaDefault(

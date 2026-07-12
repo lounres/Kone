@@ -12,8 +12,12 @@ import dev.lounres.kone.collections.interop.asKoneSequence
 import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.build
 import dev.lounres.kone.collections.utils.sumOf
+import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.useLocallyAsExtensionReceivers
 import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.relations.equality
 import dev.lounres.kone.multidimensionalCollections.relations.hashing
@@ -54,14 +58,17 @@ private class SchurDecompositionComputerViaGolubVanLoan<Number, Matrix : MDList2
         val q = SettableMDList2.generate(n, n) { row, column -> q0[row, column] }
         val h = SettableMDList2.generate(n, n) { row, column -> h0[row, column] }
         
-        context(
-            numberField,
-            numberOrder,
-            positiveSquareRootComputer,
-            matrixCategoryOverField,
-            matrixProductComputer,
-            transposeMatrixComputer,
-        ) {
+        scope {
+            KoneContext.useLocallyAsExtensionReceivers(
+                numberField,
+                numberOrder,
+                positiveSquareRootComputer,
+                matrixCategoryOverField,
+                matrixProductComputer,
+                transposeMatrixComputer,
+            )
+            KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField, matrixCategoryOverField)
+            
             var k = 0u
             
             while (true) {

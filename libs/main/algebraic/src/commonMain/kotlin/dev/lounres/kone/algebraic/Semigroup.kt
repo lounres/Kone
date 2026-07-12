@@ -24,8 +24,10 @@ public interface Semigroup<Number> : KoneContextHolder {
     
     @Suppliable
     public class Key<@Supply Number> : SuppliedTypeRegistryKey<Semigroup<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<Semigroup<Number>> = ImpliedKeysRegistry {
-            Plus.Key<Number, Number, Number>() implies { it.numberPlusNumber }
+        override val impliedKeys: ImpliedKeysRegistry<Semigroup<Number>> by lazy {
+            ImpliedKeysRegistry {
+                Plus.Key<Number, Number, Number>() implies { it.numberPlusNumber }
+            }
         }
         override fun toString(): String = "dev.lounres.kone.algebraic.Semigroup.Key<${suppliedTypeOf<Number>()}>"
     }

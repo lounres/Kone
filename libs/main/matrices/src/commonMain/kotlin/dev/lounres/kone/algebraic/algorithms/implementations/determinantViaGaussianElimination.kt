@@ -15,8 +15,10 @@ import dev.lounres.kone.algebraic.div
 import dev.lounres.kone.algebraic.isNotZero
 import dev.lounres.kone.algebraic.minus
 import dev.lounres.kone.algebraic.times
+import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.SettableMDList2
 import dev.lounres.kone.multidimensionalCollections.generate
@@ -36,8 +38,10 @@ private class DeterminantComputerViaGaussianElimination<Number, Matrix : MDList2
     override fun Matrix.determinant(): Number {
         require(rowNumber == columnNumber) { "Cannot compute determinant of matrix with non-equal numbers of rows and columns." }
         
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(field)
+        
         val n = rowNumber
-        val source = SettableMDList2.generate(rowNumber = n, columnNumber = n) { row, column -> this[row, column] }
+        val source = SettableMDList2.generate(rowNumber = n, columnNumber = n) { row, column -> this@determinant[row, column] }
         var result = field.one
         
         for (currentRow in 0u ..< n) {
@@ -45,7 +49,7 @@ private class DeterminantComputerViaGaussianElimination<Number, Matrix : MDList2
                 var nonZeroRow = currentRow
                 
                 while (nonZeroRow < n) {
-                    if (field { source[currentRow, nonZeroRow].isNotZero() }) break
+                    if (source[currentRow, nonZeroRow].isNotZero()) break
                     nonZeroRow++
                 }
                 
@@ -57,14 +61,14 @@ private class DeterminantComputerViaGaussianElimination<Number, Matrix : MDList2
                 source[nonZeroRow, column] = source[currentRow, column].also { source[currentRow, column] = source[nonZeroRow, column] }
             
             val nonZeroCoef = source[currentRow, currentRow]
-            for (column in 0u ..< n) field {
+            for (column in 0u ..< n) {
                 source[currentRow, column] /= nonZeroCoef
             }
-            field { result *= nonZeroCoef }
+            result *= nonZeroCoef
             
             for (row in currentRow + 1u ..< n) {
                 val rowCoef = source[row, currentRow]
-                for (column in 0u ..< n) field {
+                for (column in 0u ..< n) {
                     source[row, column] -= source[currentRow, column] * rowCoef
                 }
             }

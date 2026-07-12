@@ -17,8 +17,10 @@ import dev.lounres.kone.collections.utils.maxIndex
 import dev.lounres.kone.collections.utils.sum
 import dev.lounres.kone.collections.utils.sumOf
 import dev.lounres.kone.context
+import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
 import dev.lounres.kone.multidimensionalCollections.MDIndex
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
@@ -70,6 +72,8 @@ private class QRDecompositionComputerViaHouseholderForComplexNumbers<Number, Mat
             matrixProductComputer,
             conjugateTransposeMatrixComputer,
         ) {
+            KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField, complexNumberFieldExtension, matrixCategoryOverField)
+            
             val xElementNormsSquared = KoneList.generate(k ..< n) { index -> r[index, k].norm() }
             val xNorm = xElementNormsSquared.sum().positiveSquareRoot()
             val maxXElementIndex = xElementNormsSquared.maxIndex().also { if (xElementNormsSquared[it].isZero()) continue } + k
@@ -97,7 +101,7 @@ private class QRDecompositionComputerViaHouseholderForComplexNumbers<Number, Mat
                     else -> r[row, k]
                 }
             }
-            val v = u / complexNumberFieldExtension.valueOf((k ..< n).asKoneSequence().let { numberField { it.sumOf { index -> u[index, 0u].norm() } } }.positiveSquareRoot())
+            val v = u / complexNumberFieldExtension.valueOf((k ..< n).asKoneSequence().let { it.sumOf<_, Number> { index -> u[index, 0u].norm() } }.positiveSquareRoot())
             val qk = matrixFactory.mapMatrix(
                 rowNumber = n,
                 columnNumber = n,

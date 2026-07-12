@@ -6,7 +6,6 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.collections.map.KoneMap
-import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.multidimensionalCollections.MDIndex
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
@@ -15,7 +14,7 @@ import dev.lounres.kone.suppliedTypes.Supply
 import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
-public interface MatrixFactory<Number, Matrix: MDList2<Number>> : KoneContext {
+public interface MatrixFactory<Number, Matrix: MDList2<Number>> {
     // TODO: Think about adding:
 //    public fun convertMatrix(matrix: MDList2<Number>): Matrix
     public fun generateMatrix(rowNumber: UInt, columnNumber: UInt, generator: (row: UInt, column: UInt) -> Number): Matrix

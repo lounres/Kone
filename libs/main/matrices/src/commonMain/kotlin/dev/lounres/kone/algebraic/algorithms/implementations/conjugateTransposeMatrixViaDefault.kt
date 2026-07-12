@@ -28,7 +28,7 @@ private class ConjugateTransposeMatrixComputerViaDefault<Number, Matrix : MDList
 ) : ConjugateTransposeMatrixComputer<Number, Matrix> {
     override fun Matrix.conjugateTranspose(): Matrix =
         matrixFactory.generateMatrix(rowNumber = columnNumber, columnNumber = rowNumber) { row, column ->
-            numberCommutativeRing {
+            numberCommutativeRing.numberUnaryMinus {
                 this[column, row].let { ComplexNumber(realPart = it.realPart, imaginaryPart = -it.imaginaryPart) }
             }
         }

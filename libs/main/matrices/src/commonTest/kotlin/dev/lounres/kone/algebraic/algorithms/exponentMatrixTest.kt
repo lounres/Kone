@@ -586,7 +586,7 @@ val ExponentMatrixTests by testSuite {
                             order = koneContextRegistry.requestFor(Order.Key<Double>()) {
                                 "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}>"
                             },
-                            complexNumberFieldExtension = koneContextRegistry.requestFor(FieldExtension.Key<Double, ComplexNumber<Double>>()) {
+                            complexNumberField = koneContextRegistry.requestFor(Field.Key<ComplexNumber<Double>>()) {
                                 "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}>"
                             },
                             positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Double>()) {

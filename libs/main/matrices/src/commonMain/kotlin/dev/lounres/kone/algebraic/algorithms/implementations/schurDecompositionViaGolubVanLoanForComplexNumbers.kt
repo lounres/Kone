@@ -14,8 +14,12 @@ import dev.lounres.kone.collections.map.build
 import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.collections.utils.sumOf
 import dev.lounres.kone.context
+import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.useLocallyAsExtensionReceivers
 import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.relations.equality
 import dev.lounres.kone.multidimensionalCollections.relations.hashing
@@ -58,16 +62,23 @@ private class SchurDecompositionComputerViaGolubVanLoanForComplexNumbers<Number,
         val q = SettableMDList2.generate(n, n) { row, column -> q0[row, column] }
         val h = SettableMDList2.generate(n, n) { row, column -> h0[row, column] }
         
-        context(
-            numberField,
-            complexNumberFieldExtension as Field<ComplexNumber<Number>>,
-            numberOrder,
-            positiveSquareRootComputer,
-            complexNumberSquareRootComputer,
-            matrixCategoryOverField,
-            matrixProductComputer,
-            conjugateTransposeMatrixComputer,
-        ) {
+        scope {
+            KoneContext.useLocallyAsExtensionReceivers(
+                numberField,
+                complexNumberFieldExtension,
+                numberOrder,
+                positiveSquareRootComputer,
+                complexNumberSquareRootComputer,
+                matrixCategoryOverField,
+                matrixProductComputer,
+                conjugateTransposeMatrixComputer,
+            )
+            KoneContextHolder.unwrapLocallyAsExtensionReceivers(
+                numberField,
+                complexNumberFieldExtension,
+                matrixCategoryOverField,
+            )
+            
             var k = 0u
             
             while (true) {

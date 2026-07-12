@@ -8,8 +8,10 @@ package dev.lounres.kone.algebraic.algorithms.implementations
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.algorithms.*
 import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
+import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.SettableMDList2
 import dev.lounres.kone.multidimensionalCollections.generate
@@ -35,6 +37,8 @@ private class QRDecompositionComputerViaGramSchmidtForComplexNumbers<Number, Mat
         val qBuilder = SettableMDList2.generate(rowNumber = n, columnNumber = n) { row, column -> this[row, column] }
         
         context(numberField, complexNumberFieldExtension) {
+            KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField, complexNumberFieldExtension)
+            
             for (i in 0u ..< n) {
                 for (j in 0u ..< i) {
                     var scalarProduct = complexNumberFieldExtension.zero
@@ -54,7 +58,7 @@ private class QRDecompositionComputerViaGramSchmidtForComplexNumbers<Number, Mat
             val r = matrixFactory.generateMatrix(rowNumber = n, columnNumber = n) { row, column ->
                 if (row > column) return@generateMatrix complexNumberFieldExtension.zero
                 var scalarProduct = complexNumberFieldExtension.zero
-                for (t in 0u ..< n) scalarProduct += qBuilder[t, row].conjugate() * this[t, column]
+                for (t in 0u ..< n) scalarProduct += qBuilder[t, row].conjugate() * this@qrDecomposition[t, column]
                 scalarProduct
             }
             

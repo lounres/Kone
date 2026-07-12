@@ -28,7 +28,7 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 private class IsZeroMatrixCheckerViaDefault<out Number, in Matrix : MDList2<Number>>(
     private val numberRing: CommutativeRing<Number>,
 ) : IsZeroMatrixChecker<Number, Matrix> {
-    override fun Matrix.isZero(): Boolean = this.all { numberRing { it.isZero() } }
+    override fun Matrix.isZero(): Boolean = this.all { numberRing.numberIsZero { it.isZero() } }
 }
 
 public fun <Number, Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.viaDefault(

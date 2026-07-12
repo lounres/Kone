@@ -9,10 +9,6 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 
-public interface KoneContextHolder {
-    public companion object;
-}
-
 /**
  * Marker interface for Kone's contexts.
  */
@@ -28,4 +24,8 @@ public inline operator fun <KoneContextType: KoneContext, Result> KoneContextTyp
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
     return block(this)
+}
+
+public interface KoneContextHolder : KoneContext {
+    public companion object;
 }

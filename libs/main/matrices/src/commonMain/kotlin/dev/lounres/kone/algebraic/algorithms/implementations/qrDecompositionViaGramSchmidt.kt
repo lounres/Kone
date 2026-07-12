@@ -8,8 +8,10 @@ package dev.lounres.kone.algebraic.algorithms.implementations
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.algorithms.*
 import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
+import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.SettableMDList2
 import dev.lounres.kone.multidimensionalCollections.generate
@@ -31,9 +33,11 @@ private class QRDecompositionComputerViaGramSchmidt<Number, Matrix : MDList2<Num
         require(rowNumber == columnNumber) { "Cannot compute QR decomposition for non-square matrix." }
         val n = this.rowNumber
         
-        val qBuilder = SettableMDList2.generate(rowNumber = n, columnNumber = n) { row, column -> this[row, column] }
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(field)
         
-        for (i in 0u ..< n) field {
+        val qBuilder = SettableMDList2.generate(rowNumber = n, columnNumber = n) { row, column -> this@qrDecomposition[row, column] }
+        
+        for (i in 0u ..< n) {
             for (j in 0u ..< i) {
                 var scalarProduct = field.zero
                 for (t in 0u ..< n) scalarProduct += qBuilder[t, i] * qBuilder[t, j]
@@ -50,8 +54,8 @@ private class QRDecompositionComputerViaGramSchmidt<Number, Matrix : MDList2<Num
         val r = matrixFactory.generateMatrix(rowNumber = n, columnNumber = n) { row, column ->
             if (row > column) return@generateMatrix field.zero
             var scalarProduct = field.zero
-            for (t in 0u ..< n) field {
-                scalarProduct += qBuilder[t, row] * this[t, column]
+            for (t in 0u ..< n) {
+                scalarProduct += qBuilder[t, row] * this@qrDecomposition[t, column]
             }
             scalarProduct
         }
