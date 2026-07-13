@@ -9,12 +9,17 @@ import org.jetbrains.kotlin.name.Name
 
 
 const val useLocallyAsExtensionReceiversFakeValueParameterNameString = "<Kone contexts useLocallyAsExtensionReceivers receiver holder>"
+const val useLocallyAsContextsFakeValueParameterNameString = "<Kone contexts useLocallyAsContexts receiver holder>"
+const val useLocallyAsContextsActualValueParameterNameString = "<Kone contexts useLocallyAsContexts receiver itself>"
 const val unwrapLocallyAsExtensionReceiversFakeValueParameterNameString = "<Kone contexts unwrapLocallyAsExtensionReceivers receiver holder>"
 
 val useLocallyAsExtensionReceiversFakeValueParameterName = Name.special(useLocallyAsExtensionReceiversFakeValueParameterNameString)
+val useLocallyAsContextsFakeValueParameterName = Name.special(useLocallyAsContextsFakeValueParameterNameString)
+val useLocallyAsContextsActualValueParameterName = Name.special(useLocallyAsContextsActualValueParameterNameString)
 val unwrapLocallyAsExtensionReceiversFakeValueParameterName = Name.special(unwrapLocallyAsExtensionReceiversFakeValueParameterNameString)
 
 val fakeValueParametersNameStrings = setOf<String>(
     useLocallyAsExtensionReceiversFakeValueParameterNameString,
+    useLocallyAsContextsFakeValueParameterNameString,
     unwrapLocallyAsExtensionReceiversFakeValueParameterNameString
 )

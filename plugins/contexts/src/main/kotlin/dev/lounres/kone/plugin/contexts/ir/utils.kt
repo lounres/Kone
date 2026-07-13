@@ -91,6 +91,7 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
     val koneContextHolderIncludeAnnotationIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(koneContextHolderIncludeAnnotationClassId)
     val koneContextHolderExcludeAnnotationIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(koneContextHolderExcludeAnnotationClassId)
     val useLocallyAsExtensionReceiversIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(useLocallyAsExtensionReceiversFunctionCallableId)
+    val useLocallyAsContextsIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(useLocallyAsContextsFunctionCallableId)
     val unwrapLocallyAsExtensionReceiversIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(unwrapLocallyAsExtensionReceiversFunctionCallableId)
     
     // Private runtime

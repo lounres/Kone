@@ -1,0 +1,29 @@
+FILE: simpleKoneContextInUseLocallyAsContextsUsage1.kt
+    package foo.bar
+
+    public final class Foo : R|dev/lounres/kone/contexts/KoneContext| {
+        public constructor(): R|foo/bar/Foo| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final val bar: R|kotlin/Int| = Int(57)
+            public get(): R|kotlin/Int|
+
+    }
+    context(foo: R|foo/bar/Foo|)
+    public final val baz: R|kotlin/Int|
+        public get(): R|kotlin/Int| {
+            ^ R|<local>/foo|.R|foo/bar/Foo.bar|
+        }
+    public final fun box(): R|kotlin/String| {
+        Q|dev/lounres/kone/contexts/KoneContext|.R|dev/lounres/kone/contexts/useLocallyAsContexts|(vararg(R|foo/bar/Foo.Foo|()))
+        ^box when () {
+            ==(context(R|<local>/<Kone contexts useLocallyAsContexts receiver itself>|) R|foo/bar/baz|, Int(57)) ->  {
+                String(OK)
+            }
+            else ->  {
+                String(INCORRECT)
+            }
+        }
+
+    }

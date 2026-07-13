@@ -5,11 +5,7 @@
 
 package dev.lounres.kone.plugin.contexts.fir
 
-import dev.lounres.kone.plugin.contexts.koneContextHolderExcludeAnnotationClassId
-import dev.lounres.kone.plugin.contexts.koneContextHolderIncludeAnnotationClassId
-import dev.lounres.kone.plugin.contexts.koneContextsPackageFQName
-import dev.lounres.kone.plugin.contexts.unwrapLocallyAsExtensionReceiversFakeValueParameterName
-import dev.lounres.kone.plugin.contexts.unwrapLocallyAsExtensionReceiversFunctionShortName
+import dev.lounres.kone.plugin.contexts.*
 import org.jetbrains.kotlin.GeneratedDeclarationKey
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.SessionAndScopeSessionHolder
@@ -23,7 +19,6 @@ import org.jetbrains.kotlin.fir.expressions.FirFunctionCall
 import org.jetbrains.kotlin.fir.expressions.FirVarargArgumentsExpression
 import org.jetbrains.kotlin.fir.expressions.arguments
 import org.jetbrains.kotlin.fir.extensions.FirExpressionResolutionExtension
-import org.jetbrains.kotlin.fir.extensions.captureValueInAnalyze
 import org.jetbrains.kotlin.fir.moduleData
 import org.jetbrains.kotlin.fir.references.resolved
 import org.jetbrains.kotlin.fir.resolve.calls.ImplicitExtensionReceiverValue
@@ -207,12 +202,11 @@ class FirUnwrapLocallyAsExtensionReceiversExpressionResolutionExtension(session:
                     moduleData = session.moduleData
                     origin = GeneratedReceiverFromUnwrapLocallyAsExtensionReceiversFunctionKey.origin
                     symbol = FirReceiverParameterSymbol()
-                    containingDeclarationSymbol = fakeValueParameter.symbol
                     typeRef = buildResolvedTypeRef {
                         coneType = it
                     }
+                    containingDeclarationSymbol = fakeValueParameter.symbol
                 }
-                receiverParameter.captureValueInAnalyze = true
                 ImplicitExtensionReceiverValue(
                     boundSymbol = receiverParameter.symbol,
                     type = it,

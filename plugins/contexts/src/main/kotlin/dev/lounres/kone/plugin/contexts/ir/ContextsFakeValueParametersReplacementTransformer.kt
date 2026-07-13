@@ -189,6 +189,21 @@ class ContextsFakeValueParametersReplacementTransformer(
                         )
                     }
                 }
+                irRuntimeReferences.useLocallyAsContextsIrSimpleFunctionSymbol -> {
+                    iterator.remove()
+                    check(newStatement.arguments.size == 2)
+                    val vararg = newStatement.arguments.last() as IrVararg
+                    for (context in vararg.elements) {
+                        if (context !is IrExpression) continue
+                        val contextVariable = Scope(declarationSymbolsStack.last()).createTemporaryVariable(context)
+                        iterator.add(contextVariable)
+                        expressions.add(
+                            UsedOrUnwrappedExpression(contextVariable.type) {
+                                IrGetValueImpl(UNDEFINED_OFFSET, UNDEFINED_OFFSET, contextVariable.symbol)
+                            }
+                        )
+                    }
+                }
                 irRuntimeReferences.unwrapLocallyAsExtensionReceiversIrSimpleFunctionSymbol -> {
                     iterator.remove()
                     check(newStatement.arguments.size == 2)
