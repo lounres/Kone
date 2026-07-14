@@ -6,8 +6,6 @@
 package dev.lounres.kone.plugin.contexts.ir
 
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
-import org.jetbrains.kotlin.backend.common.pop
-import org.jetbrains.kotlin.backend.common.push
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
 import org.jetbrains.kotlin.ir.builders.Scope
@@ -36,9 +34,9 @@ class ContextsFakeValueParametersReplacementTransformer(
     private val usedAndUnwrappedExpressionsStack = mutableListOf<MutableList<UsedOrUnwrappedExpression>>()
     
     private inline fun <T> withinScope(declaration: IrSymbolOwner, block: () -> T): T {
-        declarationSymbolsStack.push(declaration.symbol)
+        declarationSymbolsStack.add(declaration.symbol)
         val result = block()
-        declarationSymbolsStack.pop()
+        declarationSymbolsStack.removeLast()
         return result
     }
     
@@ -68,9 +66,9 @@ class ContextsFakeValueParametersReplacementTransformer(
     
     private inline fun <T> withinBlock(block: (MutableList<UsedOrUnwrappedExpression>) -> T): T {
         val expressions = mutableListOf<UsedOrUnwrappedExpression>()
-        usedAndUnwrappedExpressionsStack.push(expressions)
+        usedAndUnwrappedExpressionsStack.add(expressions)
         val result = block(expressions)
-        usedAndUnwrappedExpressionsStack.pop()
+        usedAndUnwrappedExpressionsStack.removeLast()
         return result
     }
     
