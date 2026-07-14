@@ -56,43 +56,49 @@ fun IrPropertySymbol.isInclude() = owner.isInclude()
 fun IrPropertySymbol.isExclude() = owner.isExclude()
 
 class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
-    private val finder = pluginContext.finderForBuiltins()
+    private val finder by lazy { pluginContext.finderForBuiltins() }
     
     // Kotlin
 //    val errorIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(CallableId(packageName = FqName("kotlin"), callableName = Name.identifier("error"))) {
 //        it.owner.parameters[0].type == pluginContext.irBuiltIns.anyType
 //    }
-    val runIrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(CallableId(packageName = FqName("kotlin"), callableName = Name.identifier("run"))) {
-        it.owner.parameters.size == 1
+    val runIrSimpleFunctionSymbol by lazy {
+        finder.referenceFunctionThatOrFail(CallableId(packageName = FqName("kotlin"), callableName = Name.identifier("run"))) {
+            it.owner.parameters.size == 1
+        }
     }
-    val readWritePropertyIrClassSymbol = finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin.properties"), topLevelName = Name.identifier("ReadWriteProperty")))
-    val readWritePropertyGetValueIrSimpleFunctionSymbol = readWritePropertyIrClassSymbol.referenceFunctionThatOrFail("getValue")
-    val readWritePropertySetValueIrSimpleFunctionSymbol = readWritePropertyIrClassSymbol.referenceFunctionThatOrFail("setValue")
-    val listIrClassSymbol = finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin.collections"), topLevelName = Name.identifier("List")))
-    val listGetIrSimpleFunctionSymbol = listIrClassSymbol.referenceFunctionThatOrFail("get")
-    val listOfIrSimpleFunction = finder.referenceFunctionThatOrFail(CallableId(FqName("kotlin.collections"), Name.identifier("listOf"))) { symbol ->
-        val parameters = symbol.owner.parameters
-        parameters.size == 1 && parameters[0].isVararg
+    val readWritePropertyIrClassSymbol by lazy { finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin.properties"), topLevelName = Name.identifier("ReadWriteProperty"))) }
+    val readWritePropertyGetValueIrSimpleFunctionSymbol by lazy { readWritePropertyIrClassSymbol.referenceFunctionThatOrFail("getValue") }
+    val readWritePropertySetValueIrSimpleFunctionSymbol by lazy { readWritePropertyIrClassSymbol.referenceFunctionThatOrFail("setValue") }
+    val listIrClassSymbol by lazy { finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin.collections"), topLevelName = Name.identifier("List"))) }
+    val listGetIrSimpleFunctionSymbol by lazy { listIrClassSymbol.referenceFunctionThatOrFail("get") }
+    val listOfIrSimpleFunction by lazy {
+        finder.referenceFunctionThatOrFail(CallableId(FqName("kotlin.collections"), Name.identifier("listOf"))) { symbol ->
+            val parameters = symbol.owner.parameters
+            parameters.size == 1 && parameters[0].isVararg
+        }
     }
-    val mapIrClassSymbol = finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin.collections"), topLevelName = Name.identifier("Map")))
-    val mapGetIrSimpleFunctionSymbol = mapIrClassSymbol.referenceFunctionThatOrFail("get")
-    val mapOfIrSimpleFunction = finder.referenceFunctionThatOrFail(CallableId(FqName("kotlin.collections"), Name.identifier("mapOf"))) { symbol ->
-        val parameters = symbol.owner.parameters
-        parameters.size == 1 && parameters[0].isVararg
+    val mapIrClassSymbol by lazy { finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin.collections"), topLevelName = Name.identifier("Map"))) }
+    val mapGetIrSimpleFunctionSymbol by lazy { mapIrClassSymbol.referenceFunctionThatOrFail("get") }
+    val mapOfIrSimpleFunction by lazy {
+        finder.referenceFunctionThatOrFail(CallableId(FqName("kotlin.collections"), Name.identifier("mapOf"))) { symbol ->
+            val parameters = symbol.owner.parameters
+            parameters.size == 1 && parameters[0].isVararg
+        }
     }
-    val pairIrClassSymbol = finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin"), topLevelName = Name.identifier("Pair")))
-    val pairIrConstructorSymbol = pairIrClassSymbol.constructors.single()
+    val pairIrClassSymbol by lazy { finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin"), topLevelName = Name.identifier("Pair"))) }
+    val pairIrConstructorSymbol by lazy { pairIrClassSymbol.constructors.single() }
     
     //  Library
-    val koneContextIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(koneContextClassId)
-    val koneContextHolderIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(koneContextHolderClassId)
+    val koneContextIrClassSymbol: IrClassSymbol by lazy { finder.referenceClassOrFail(koneContextClassId) }
+    val koneContextHolderIrClassSymbol: IrClassSymbol by lazy { finder.referenceClassOrFail(koneContextHolderClassId) }
     
     // Public runtime
-    val koneContextHolderIncludeAnnotationIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(koneContextHolderIncludeAnnotationClassId)
-    val koneContextHolderExcludeAnnotationIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(koneContextHolderExcludeAnnotationClassId)
-    val useLocallyAsExtensionReceiversIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(useLocallyAsExtensionReceiversFunctionCallableId)
-    val useLocallyAsContextsIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(useLocallyAsContextsFunctionCallableId)
-    val unwrapLocallyAsExtensionReceiversIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(unwrapLocallyAsExtensionReceiversFunctionCallableId)
+    val koneContextHolderIncludeAnnotationIrClassSymbol: IrClassSymbol by lazy { finder.referenceClassOrFail(koneContextHolderIncludeAnnotationClassId) }
+    val koneContextHolderExcludeAnnotationIrClassSymbol: IrClassSymbol by lazy { finder.referenceClassOrFail(koneContextHolderExcludeAnnotationClassId) }
+    val useLocallyAsExtensionReceiversIrSimpleFunctionSymbol: IrSimpleFunctionSymbol by lazy { finder.referenceFunctionThatOrFail(useLocallyAsExtensionReceiversFunctionCallableId) }
+    val useLocallyAsContextsIrSimpleFunctionSymbol: IrSimpleFunctionSymbol by lazy { finder.referenceFunctionThatOrFail(useLocallyAsContextsFunctionCallableId) }
+    val unwrapLocallyAsExtensionReceiversIrSimpleFunctionSymbol: IrSimpleFunctionSymbol by lazy { finder.referenceFunctionThatOrFail(unwrapLocallyAsExtensionReceiversFunctionCallableId) }
     
     // Private runtime
 }

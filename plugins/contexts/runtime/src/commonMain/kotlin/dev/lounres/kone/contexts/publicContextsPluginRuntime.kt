@@ -30,9 +30,9 @@ public annotation class KoneContextHolderExclude
 public fun KoneContext.Companion.useLocallyAsExtensionReceivers(vararg koneContext: KoneContext) {
     contextsPluginExceptionForRuntimeDeclarations()
 }
-public fun KoneContext.Companion.useLocallyAsContexts(vararg koneContext: KoneContext) {
-    contextsPluginExceptionForRuntimeDeclarations()
-}
+//public fun KoneContext.Companion.useLocallyAsContexts(vararg koneContext: KoneContext) {
+//    contextsPluginExceptionForRuntimeDeclarations()
+//}
 //public inline fun <Result> KoneContextHolder.Companion.unwrapInBlockAsExtensionReceivers(vararg koneContextHolder: KoneContextHolder, block: () -> Result): Result {
 //    contract {
 //        callsInPlace(block, InvocationKind.EXACTLY_ONCE)

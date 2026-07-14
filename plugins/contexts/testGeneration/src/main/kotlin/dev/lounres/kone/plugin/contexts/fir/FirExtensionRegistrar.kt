@@ -11,7 +11,7 @@ import org.jetbrains.kotlin.fir.extensions.FirExtensionRegistrar
 class DeclarationExtensionRegistrar : FirExtensionRegistrar() {
     override fun ExtensionRegistrarContext.configurePlugin() {
         +::FirUseLocallyAsExtensionReceiversExpressionResolutionExtension
-        +::FirUseLocallyAsContextsExpressionResolutionExtension
+//        +::FirUseLocallyAsContextsExpressionResolutionExtension
         +::FirUnwrapLocallyAsExtensionReceiversExpressionResolutionExtension
     }
 }
