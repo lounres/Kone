@@ -13,6 +13,7 @@ import dev.jamesyox.svg4kt.attr.types.obj.Length
 import dev.jamesyox.svg4kt.attr.types.obj.Point
 import dev.jamesyox.svg4kt.attr.types.obj.SvgColor
 import dev.jamesyox.svg4kt.tags.*
+import dev.lounres.kone.algebraic.div
 import dev.lounres.kone.algebraic.minus
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.collections.interop.toList
@@ -40,6 +41,7 @@ import dev.lounres.kone.scope
 import kotlin.jvm.JvmInline
 import kotlin.math.PI
 import kotlin.math.abs
+import kotlin.math.sqrt
 
 
 public val KoneColor.svg4kt: SvgColor get() = SvgColor.Hex.RGBA(toRgbaUInt().toLong())
@@ -445,9 +447,8 @@ internal class KoneCanvasSvg4ktPathContext(
         val size = size * zoom
         val isMoreThanHalf = abs(sweepAngle.inRadians()) >= PI
         val isPositiveArc = sweepAngle.inRadians() > 0.0
-        // TODO: It's incorrect!!! 'size' and 'rotation' are not took into account in 'startVector' and 'endVector'!
-        val startVector = Vector2(sin(startAngle), cos(startAngle))
-        val endVector = Vector2(sin(startAngle + sweepAngle), cos(startAngle + sweepAngle))
+        val startVector = Vector2(cos(startAngle), sin(startAngle)) / sqrt((cos(startAngle - rotation) / size.x).let { it * it } + (sin(startAngle - rotation) / size.y).let { it * it })
+        val endVector = Vector2(cos(startAngle + sweepAngle), sin(startAngle + sweepAngle)) / sqrt((cos(startAngle + sweepAngle - rotation) / size.x).let { it * it } + (sin(startAngle + sweepAngle - rotation) / size.y).let { it * it })
         val finalPoint = endVector - startVector
         context.add("a ${size.x} ${size.y} ${rotation.inDegrees()} ${if (isMoreThanHalf) 1 else 0} ${if (isPositiveArc) 1 else 0} ${finalPoint.x} ${finalPoint.y}")
     }

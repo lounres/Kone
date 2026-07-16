@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.PathBuilder
 import androidx.compose.ui.graphics.vector.toPath
+import dev.lounres.kone.algebraic.div
 import dev.lounres.kone.algebraic.minus
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.collections.iterables.isNotEmpty
@@ -39,6 +40,7 @@ import dev.lounres.kone.registry.getOrNull
 import kotlin.jvm.JvmInline
 import kotlin.math.PI
 import kotlin.math.abs
+import kotlin.math.sqrt
 
 
 public val KoneColor.composeMultiplatform: Color get() = Color(toArgbUInt().toInt())
@@ -479,9 +481,8 @@ internal class KoneCanvasComposeMultiplatformPathContext(
     override fun arcRelative(size: Vector2<Double>, rotation: Angle, startAngle: Angle, sweepAngle: Angle) {
         KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
         val size = size * zoom
-        // TODO: It's incorrect!!! 'size' and 'rotation' are not took into account in 'startVector' and 'endVector'!
-        val startVector = Vector2(sin(startAngle), cos(startAngle))
-        val endVector = Vector2(sin(startAngle + sweepAngle), cos(startAngle + sweepAngle))
+        val startVector = Vector2(cos(startAngle), sin(startAngle)) / sqrt((cos(startAngle - rotation) / size.x).let { it * it } + (sin(startAngle - rotation) / size.y).let { it * it })
+        val endVector = Vector2(cos(startAngle + sweepAngle), sin(startAngle + sweepAngle)) / sqrt((cos(startAngle + sweepAngle - rotation) / size.x).let { it * it } + (sin(startAngle + sweepAngle - rotation) / size.y).let { it * it })
         val finalPoint = endVector - startVector
         context.arcToRelative(
             a = size.x.toFloat(),
