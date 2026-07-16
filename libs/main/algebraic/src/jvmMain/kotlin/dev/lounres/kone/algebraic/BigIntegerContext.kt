@@ -25,8 +25,8 @@ private data object BigIntegerContext : Reification<BigInteger>, Equality<BigInt
     override fun reify(element: Any?): BigInteger = element as? BigInteger ?: reificationException()
     // endregion
     
-    override val numberIsZero: IsZero<BigInteger> = IsZero { this == BigInteger.ZERO }
-    override val numberIsOne: IsOne<BigInteger> = IsOne { this == BigInteger.ONE }
+    override val numberIsZero: IsZero<BigInteger> = IsZero { it == BigInteger.ZERO }
+    override val numberIsOne: IsOne<BigInteger> = IsOne { it == BigInteger.ONE }
     
     override fun BigInteger.compareWith(other: BigInteger): ComparisonResult = this.compareTo(other).asComparisonResult()
 
@@ -38,48 +38,48 @@ private data object BigIntegerContext : Reification<BigInteger>, Equality<BigInt
     override fun valueOf(arg: Long): BigInteger = arg.toBigInteger()
     override fun valueOf(arg: ULong): BigInteger = arg.toBigInteger()
     
-    override val numberPlusInt: Plus<BigInteger, Int, BigInteger> = Plus { other -> this.add(other.toBigInteger()) }
-    override val numberMinusInt: Minus<BigInteger, Int, BigInteger> = Minus { other -> this.subtract(other.toBigInteger()) }
-    override val numberTimesInt: Times<BigInteger, Int, BigInteger> = Times { other -> this.multiply(other.toBigInteger()) }
+    override val numberPlusInt: Plus<BigInteger, Int, BigInteger> = Plus { left, right -> left.add(right.toBigInteger()) }
+    override val numberMinusInt: Minus<BigInteger, Int, BigInteger> = Minus { left, right -> left.subtract(right.toBigInteger()) }
+    override val numberTimesInt: Times<BigInteger, Int, BigInteger> = Times { left, right -> left.multiply(right.toBigInteger()) }
     
-    override val numberPlusUInt: Plus<BigInteger, UInt, BigInteger> = Plus { other -> this.add(other.toBigInteger()) }
-    override val numberMinusUInt: Minus<BigInteger, UInt, BigInteger> = Minus { other -> this.subtract(other.toBigInteger()) }
-    override val numberTimesUInt: Times<BigInteger, UInt, BigInteger> = Times { other -> this.multiply(other.toBigInteger()) }
+    override val numberPlusUInt: Plus<BigInteger, UInt, BigInteger> = Plus { left, right -> left.add(right.toBigInteger()) }
+    override val numberMinusUInt: Minus<BigInteger, UInt, BigInteger> = Minus { left, right -> left.subtract(right.toBigInteger()) }
+    override val numberTimesUInt: Times<BigInteger, UInt, BigInteger> = Times { left, right -> left.multiply(right.toBigInteger()) }
     
-    override val numberPlusLong: Plus<BigInteger, Long, BigInteger> = Plus { other -> this.add(other.toBigInteger()) }
-    override val numberMinusLong: Minus<BigInteger, Long, BigInteger> = Minus { other -> this.subtract(other.toBigInteger()) }
-    override val numberTimesLong: Times<BigInteger, Long, BigInteger> = Times { other -> this.multiply(other.toBigInteger()) }
+    override val numberPlusLong: Plus<BigInteger, Long, BigInteger> = Plus { left, right -> left.add(right.toBigInteger()) }
+    override val numberMinusLong: Minus<BigInteger, Long, BigInteger> = Minus { left, right -> left.subtract(right.toBigInteger()) }
+    override val numberTimesLong: Times<BigInteger, Long, BigInteger> = Times { left, right -> left.multiply(right.toBigInteger()) }
     
-    override val numberPlusULong: Plus<BigInteger, ULong, BigInteger> = Plus { other -> this.add(other.toBigInteger()) }
-    override val numberMinusULong: Minus<BigInteger, ULong, BigInteger> = Minus { other -> this.subtract(other.toBigInteger()) }
-    override val numberTimesULong: Times<BigInteger, ULong, BigInteger> = Times { other -> this.multiply(other.toBigInteger()) }
+    override val numberPlusULong: Plus<BigInteger, ULong, BigInteger> = Plus { left, right -> left.add(right.toBigInteger()) }
+    override val numberMinusULong: Minus<BigInteger, ULong, BigInteger> = Minus { left, right -> left.subtract(right.toBigInteger()) }
+    override val numberTimesULong: Times<BigInteger, ULong, BigInteger> = Times { left, right -> left.multiply(right.toBigInteger()) }
     
-    override val intPlusNumber: Plus<Int, BigInteger, BigInteger> = Plus { other -> this.toBigInteger().add(other) }
-    override val intMinusNumber: Minus<Int, BigInteger, BigInteger> = Minus { other -> this.toBigInteger().subtract(other) }
-    override val intTimesNumber: Times<Int, BigInteger, BigInteger> = Times { other -> this.toBigInteger().multiply(other) }
+    override val intPlusNumber: Plus<Int, BigInteger, BigInteger> = Plus { left, right -> left.toBigInteger().add(right) }
+    override val intMinusNumber: Minus<Int, BigInteger, BigInteger> = Minus { left, right -> left.toBigInteger().subtract(right) }
+    override val intTimesNumber: Times<Int, BigInteger, BigInteger> = Times { left, right -> left.toBigInteger().multiply(right) }
     
-    override val uIntPlusNumber: Plus<UInt, BigInteger, BigInteger> = Plus { other -> this.toBigInteger().add(other) }
-    override val uIntMinusNumber: Minus<UInt, BigInteger, BigInteger> = Minus { other -> this.toBigInteger().subtract(other) }
-    override val uIntTimesNumber: Times<UInt, BigInteger, BigInteger> = Times { other -> this.toBigInteger().multiply(other) }
+    override val uIntPlusNumber: Plus<UInt, BigInteger, BigInteger> = Plus { left, right -> left.toBigInteger().add(right) }
+    override val uIntMinusNumber: Minus<UInt, BigInteger, BigInteger> = Minus { left, right -> left.toBigInteger().subtract(right) }
+    override val uIntTimesNumber: Times<UInt, BigInteger, BigInteger> = Times { left, right -> left.toBigInteger().multiply(right) }
     
-    override val longPlusNumber: Plus<Long, BigInteger, BigInteger> = Plus { other -> this.toBigInteger().add(other) }
-    override val longMinusNumber: Minus<Long, BigInteger, BigInteger> = Minus { other -> this.toBigInteger().subtract(other) }
-    override val longTimesNumber: Times<Long, BigInteger, BigInteger> = Times { other -> this.toBigInteger().multiply(other) }
+    override val longPlusNumber: Plus<Long, BigInteger, BigInteger> = Plus { left, right -> left.toBigInteger().add(right) }
+    override val longMinusNumber: Minus<Long, BigInteger, BigInteger> = Minus { left, right -> left.toBigInteger().subtract(right) }
+    override val longTimesNumber: Times<Long, BigInteger, BigInteger> = Times { left, right -> left.toBigInteger().multiply(right) }
     
-    override val uLongPlusNumber: Plus<ULong, BigInteger, BigInteger> = Plus { other -> this.toBigInteger().add(other) }
-    override val uLongMinusNumber: Minus<ULong, BigInteger, BigInteger> = Minus { other -> this.toBigInteger().subtract(other) }
-    override val uLongTimesNumber: Times<ULong, BigInteger, BigInteger> = Times { other -> this.toBigInteger().multiply(other) }
+    override val uLongPlusNumber: Plus<ULong, BigInteger, BigInteger> = Plus { left, right -> left.toBigInteger().add(right) }
+    override val uLongMinusNumber: Minus<ULong, BigInteger, BigInteger> = Minus { left, right -> left.toBigInteger().subtract(right) }
+    override val uLongTimesNumber: Times<ULong, BigInteger, BigInteger> = Times { left, right -> left.toBigInteger().multiply(right) }
     
-    override val numberUnaryMinus: UnaryMinus<BigInteger, BigInteger> = UnaryMinus { this.negate() }
-    override val numberPlusNumber: Plus<BigInteger, BigInteger, BigInteger> = Plus { other -> this.add(other) }
-    override val numberMinusNumber: Minus<BigInteger, BigInteger, BigInteger> = Minus { other -> this.subtract(other) }
-    override val numberTimesNumber: Times<BigInteger, BigInteger, BigInteger> = Times { other -> this.multiply(other) }
-    override val numberDivideRemainderNumber: DivideRemainder<BigInteger, BigInteger, EuclideanDivisionResult<BigInteger>> = DivideRemainder { other ->
-        val [quotient, remainder] = this.divideAndRemainder(other)
+    override val numberUnaryMinus: UnaryMinus<BigInteger, BigInteger> = UnaryMinus { it.negate() }
+    override val numberPlusNumber: Plus<BigInteger, BigInteger, BigInteger> = Plus { left, right -> left.add(right) }
+    override val numberMinusNumber: Minus<BigInteger, BigInteger, BigInteger> = Minus { left, right -> left.subtract(right) }
+    override val numberTimesNumber: Times<BigInteger, BigInteger, BigInteger> = Times { left, right -> left.multiply(right) }
+    override val numberDivideRemainderNumber: DivideRemainder<BigInteger, BigInteger, EuclideanDivisionResult<BigInteger>> = DivideRemainder { left, right ->
+        val [quotient, remainder] = left.divideAndRemainder(right)
         EuclideanDivisionResult(quotient = quotient, remainder = remainder)
     }
-    override val numberDivideNumber: Divide<BigInteger, BigInteger, BigInteger> = Divide { other -> this.divide(other) }
-    override val numberRemainderNumber: Remainder<BigInteger, BigInteger, BigInteger> = Remainder { other -> this.remainder(other) }
+    override val numberDivideNumber: Divide<BigInteger, BigInteger, BigInteger> = Divide { left, right -> left.divide(right) }
+    override val numberRemainderNumber: Remainder<BigInteger, BigInteger, BigInteger> = Remainder { left, right -> left.remainder(right) }
 }
 
 // TODO: KT-11968

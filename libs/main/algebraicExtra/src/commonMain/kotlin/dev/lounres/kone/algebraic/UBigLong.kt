@@ -97,8 +97,8 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
     
     // region Equality
     override fun UBigLong.equalsTo(other: UBigLong): Boolean = this.magnitude contentEquals other.magnitude
-    override val numberIsZero: IsZero<UBigLong> = IsZero { this.magnitude.isEmpty() }
-    override val numberIsOne: IsOne<UBigLong> = IsOne { this.magnitude.let { it.size == 1u && it[0u] == 1uL } }
+    override val numberIsZero: IsZero<UBigLong> = IsZero { it.magnitude.isEmpty() }
+    override val numberIsOne: IsOne<UBigLong> = IsOne { it.magnitude.let { it.size == 1u && it[0u] == 1uL } }
     // endregion
     
     // region Conversion
@@ -123,14 +123,14 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
     // endregion
     
     // region UBigLong-UBigLong operations
-    override val numberPlusNumber: Plus<UBigLong, UBigLong, UBigLong> = Plus { other ->
-        val maxSize = maxOf(this.magnitude.size, other.magnitude.size)
+    override val numberPlusNumber: Plus<UBigLong, UBigLong, UBigLong> = Plus { left, right ->
+        val maxSize = maxOf(left.magnitude.size, right.magnitude.size)
         val result = KoneMutableULongArray.fill(maxSize + 1u)
         var carry = 0uL
         for (index in 0u ..< maxSize) {
             val additionResult = add(
-                this.magnitude.let { if (it.size > index) it[index] else 0uL },
-                other.magnitude.let { if (it.size > index) it[index] else 0uL },
+                left.magnitude.let { if (it.size > index) it[index] else 0uL },
+                right.magnitude.let { if (it.size > index) it[index] else 0uL },
                 carry
             )
             result[index] = additionResult.first
@@ -139,15 +139,15 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
         result[maxSize] = carry
         UBigLong(result.removeLeadingZeros())
     }
-    override val numberMinusNumber: Minus<UBigLong, UBigLong, UBigLong> = Minus { other ->
-        if (this lt other) negativeSubtractionResultInExtendedSemiring()
+    override val numberMinusNumber: Minus<UBigLong, UBigLong, UBigLong> = Minus { left, right ->
+        if (left lt right) negativeSubtractionResultInExtendedSemiring()
         
-        val result = KoneMutableULongArray.generate(this.magnitude.size) { this.magnitude[it] }
+        val result = KoneMutableULongArray.generate(left.magnitude.size) { left.magnitude[it] }
         var anticarry = 0uL
         
         for (index in 0u ..< result.size) {
             var nextAnticarry = 0uL
-            val otherValue = other.magnitude.let { if (it.size > index) it[index] else 0uL }
+            val otherValue = right.magnitude.let { if (it.size > index) it[index] else 0uL }
             if (result[index] < otherValue) nextAnticarry++
             result[index] -= otherValue
             if (result[index] < anticarry) nextAnticarry++
@@ -158,16 +158,16 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
         UBigLong(result.removeLeadingZeros())
     }
     // TODO: Experiment with Karatsuba algorithm, Toom–Cook algorithm and FFT-based algorithms
-    override val numberTimesNumber: Times<UBigLong, UBigLong, UBigLong> = Times { other ->
-        KoneContextHolder.unwrapLocallyAsExtensionReceivers(this@UBigLongContext)
+    override val numberTimesNumber: Times<UBigLong, UBigLong, UBigLong> = Times { left, right ->
+        KoneContextHolder.unwrapLocallyAsExtensionReceivers(this)
         
-        if (this@Times.isZero() || other.isZero()) return@Times zero
-        if (this@Times.isOne()) return@Times other
-        if (other.isOne()) return@Times this@Times
+        if (left.isZero() || right.isZero()) return@Times zero
+        if (left.isOne()) return@Times right
+        if (right.isOne()) return@Times left
         
-        val result = KoneMutableULongArray.fill(this@Times.magnitude.size + other.magnitude.size)
-        for (thisIndex in 0u ..< this@Times.magnitude.size) for (otherIndex in 0u ..< other.magnitude.size) {
-            val productResult = multiply(this@Times.magnitude[thisIndex], other.magnitude[otherIndex])
+        val result = KoneMutableULongArray.fill(left.magnitude.size + right.magnitude.size)
+        for (thisIndex in 0u ..< left.magnitude.size) for (otherIndex in 0u ..< right.magnitude.size) {
+            val productResult = multiply(left.magnitude[thisIndex], right.magnitude[otherIndex])
             var carry = productResult.second
             val additionResult = add(result[thisIndex + otherIndex], productResult.first)
             result[thisIndex + otherIndex] = additionResult.first
@@ -184,18 +184,18 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
         UBigLong(result.removeLeadingZeros())
     }
     // TODO: Experiment with https://en.wikipedia.org/wiki/Division_algorithm#Integer_division_(unsigned)_with_remainder
-    override val numberDivideRemainderNumber: DivideRemainder<UBigLong, UBigLong, EuclideanDivisionResult<UBigLong>> = DivideRemainder { other ->
+    override val numberDivideRemainderNumber: DivideRemainder<UBigLong, UBigLong, EuclideanDivisionResult<UBigLong>> = DivideRemainder { left, right ->
         KoneContextHolder.unwrapLocallyAsExtensionReceivers(this@UBigLongContext)
         
-        if (other.magnitude.isEmpty()) divisionByZero()
-        if (this@DivideRemainder.magnitude.isEmpty()) return@DivideRemainder EuclideanDivisionResult(zero, zero)
-        if (other.magnitude.size > this@DivideRemainder.magnitude.size) return@DivideRemainder EuclideanDivisionResult(
+        if (right.magnitude.isEmpty()) divisionByZero()
+        if (left.magnitude.isEmpty()) return@DivideRemainder EuclideanDivisionResult(zero, zero)
+        if (right.magnitude.size > left.magnitude.size) return@DivideRemainder EuclideanDivisionResult(
             quotient = zero,
-            remainder = this@DivideRemainder,
+            remainder = left,
         )
         
-        val dividend = KoneMutableULongArray.fill(other.magnitude.size + 1u)
-        val quotient = KoneMutableULongArray.fill(this@DivideRemainder.magnitude.size - other.magnitude.size + 1u)
+        val dividend = KoneMutableULongArray.fill(right.magnitude.size + 1u)
+        val quotient = KoneMutableULongArray.fill(left.magnitude.size - right.magnitude.size + 1u)
         fun shiftLeftDividendByOneBit() {
             for (index in dividend.lastIndex downTo 1u) {
                 dividend[index] = (dividend[index] shl 1) or (dividend[index - 1u] shr 63)
@@ -231,10 +231,10 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
             }
         }
         fun isDividendAtLeastDivisor(): Boolean {
-            if (dividend[other.magnitude.size] != 0uL) return true
-            for (index in other.magnitude.lastIndex downTo 0u) {
-                if (dividend[index] > other.magnitude[index]) return true
-                if (dividend[index] < other.magnitude[index]) return false
+            if (dividend[right.magnitude.size] != 0uL) return true
+            for (index in right.magnitude.lastIndex downTo 0u) {
+                if (dividend[index] > right.magnitude[index]) return true
+                if (dividend[index] < right.magnitude[index]) return false
             }
             return true
         }
@@ -243,7 +243,7 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
             
             for (index in 0u ..< dividend.size) {
                 var nextAnticarry = 0uL
-                val otherValue = other.magnitude.let { if (it.size > index) it[index] else 0uL }
+                val otherValue = right.magnitude.let { if (it.size > index) it[index] else 0uL }
                 if (dividend[index] < otherValue) nextAnticarry++
                 dividend[index] -= otherValue
                 if (dividend[index] < anticarry) nextAnticarry++
@@ -252,8 +252,8 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
             }
         }
         
-        for (index in this@DivideRemainder.magnitude.lastIndex downTo 0u) for (bitIndex in 63 downTo 0) {
-            val bit = (this@DivideRemainder.magnitude[index] shr bitIndex) and 1u
+        for (index in left.magnitude.lastIndex downTo 0u) for (bitIndex in 63 downTo 0) {
+            val bit = (left.magnitude[index] shr bitIndex) and 1u
             
             shiftLeftDividendByOneBit()
             shiftLeftQuotientByOneBit()
@@ -269,15 +269,15 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
             remainder = UBigLong(dividend.removeLeadingZeros()),
         )
     }
-    override val numberDivideNumber: Divide<UBigLong, UBigLong, UBigLong> = Divide { other ->
+    override val numberDivideNumber: Divide<UBigLong, UBigLong, UBigLong> = Divide { left, right ->
         KoneContextHolder.unwrapLocallyAsExtensionReceivers(this@UBigLongContext)
         
-        if (other.magnitude.isEmpty()) divisionByZero()
-        if (this@Divide.magnitude.isEmpty()) return@Divide zero
-        if (other.magnitude.size > this@Divide.magnitude.size) return@Divide zero
+        if (right.magnitude.isEmpty()) divisionByZero()
+        if (left.magnitude.isEmpty()) return@Divide zero
+        if (right.magnitude.size > left.magnitude.size) return@Divide zero
         
-        val dividend = KoneMutableULongArray.fill(other.magnitude.size + 1u)
-        val quotient = KoneMutableULongArray.fill(this@Divide.magnitude.size - other.magnitude.size + 1u)
+        val dividend = KoneMutableULongArray.fill(right.magnitude.size + 1u)
+        val quotient = KoneMutableULongArray.fill(left.magnitude.size - right.magnitude.size + 1u)
         fun shiftLeftDividendByOneBit() {
             for (index in dividend.lastIndex downTo 1u) {
                 dividend[index] = (dividend[index] shl 1) or (dividend[index - 1u] shr 63)
@@ -313,10 +313,10 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
             }
         }
         fun isDividendAtLeastDivisor(): Boolean {
-            if (dividend[other.magnitude.size] != 0uL) return true
-            for (index in other.magnitude.lastIndex downTo 0u) {
-                if (dividend[index] > other.magnitude[index]) return true
-                if (dividend[index] < other.magnitude[index]) return false
+            if (dividend[right.magnitude.size] != 0uL) return true
+            for (index in right.magnitude.lastIndex downTo 0u) {
+                if (dividend[index] > right.magnitude[index]) return true
+                if (dividend[index] < right.magnitude[index]) return false
             }
             return true
         }
@@ -325,7 +325,7 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
             
             for (index in 0u ..< dividend.size) {
                 var nextAnticarry = 0uL
-                val otherValue = other.magnitude.let { if (it.size > index) it[index] else 0uL }
+                val otherValue = right.magnitude.let { if (it.size > index) it[index] else 0uL }
                 if (dividend[index] < otherValue) nextAnticarry++
                 dividend[index] -= otherValue
                 if (dividend[index] < anticarry) nextAnticarry++
@@ -334,8 +334,8 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
             }
         }
         
-        for (index in this@Divide.magnitude.lastIndex downTo 0u) for (bitIndex in 63 downTo 0) {
-            val bit = (this@Divide.magnitude[index] shr bitIndex) and 1u
+        for (index in left.magnitude.lastIndex downTo 0u) for (bitIndex in 63 downTo 0) {
+            val bit = (left.magnitude[index] shr bitIndex) and 1u
             
             shiftLeftDividendByOneBit()
             shiftLeftQuotientByOneBit()
@@ -348,14 +348,14 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
         
         UBigLong(quotient.removeLeadingZeros())
     }
-    override val numberRemainderNumber: Remainder<UBigLong, UBigLong, UBigLong> = Remainder { other ->
+    override val numberRemainderNumber: Remainder<UBigLong, UBigLong, UBigLong> = Remainder { left, right ->
         KoneContextHolder.unwrapLocallyAsExtensionReceivers(this@UBigLongContext)
         
-        if (other.magnitude.isEmpty()) divisionByZero()
-        if (this@Remainder.magnitude.isEmpty()) return@Remainder zero
-        if (other.magnitude.size > this@Remainder.magnitude.size) return@Remainder this@Remainder
+        if (right.magnitude.isEmpty()) divisionByZero()
+        if (left.magnitude.isEmpty()) return@Remainder zero
+        if (right.magnitude.size > left.magnitude.size) return@Remainder left
         
-        val dividend = KoneMutableULongArray.fill(other.magnitude.size + 1u)
+        val dividend = KoneMutableULongArray.fill(right.magnitude.size + 1u)
         fun shiftLeftDividendByOneBit() {
             for (index in dividend.lastIndex downTo 1u) {
                 dividend[index] = (dividend[index] shl 1) or (dividend[index - 1u] shr 63)
@@ -374,10 +374,10 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
             }
         }
         fun isDividendAtLeastDivisor(): Boolean {
-            if (dividend[other.magnitude.size] != 0uL) return true
-            for (index in other.magnitude.lastIndex downTo 0u) {
-                if (dividend[index] > other.magnitude[index]) return true
-                if (dividend[index] < other.magnitude[index]) return false
+            if (dividend[right.magnitude.size] != 0uL) return true
+            for (index in right.magnitude.lastIndex downTo 0u) {
+                if (dividend[index] > right.magnitude[index]) return true
+                if (dividend[index] < right.magnitude[index]) return false
             }
             return true
         }
@@ -386,7 +386,7 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
             
             for (index in 0u ..< dividend.size) {
                 var nextAnticarry = 0uL
-                val otherValue = other.magnitude.let { if (it.size > index) it[index] else 0uL }
+                val otherValue = right.magnitude.let { if (it.size > index) it[index] else 0uL }
                 if (dividend[index] < otherValue) nextAnticarry++
                 dividend[index] -= otherValue
                 if (dividend[index] < anticarry) nextAnticarry++
@@ -395,8 +395,8 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
             }
         }
         
-        for (index in this@Remainder.magnitude.lastIndex downTo 0u) for (bitIndex in 63 downTo 0) {
-            val bit = (this@Remainder.magnitude[index] shr bitIndex) and 1u
+        for (index in left.magnitude.lastIndex downTo 0u) for (bitIndex in 63 downTo 0) {
+            val bit = (left.magnitude[index] shr bitIndex) and 1u
             
             shiftLeftDividendByOneBit()
             if (bit == 1uL) addOneToDividend()

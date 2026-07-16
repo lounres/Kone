@@ -32,8 +32,8 @@ private data object ByteContext: Reification<Byte>, Equality<Byte>, Order<Byte>,
     // endregion
     
     // region Equality
-    override val numberIsZero: IsZero<Byte> = IsZero { this == zero }
-    override val numberIsOne: IsOne<Byte> = IsOne { this == one }
+    override val numberIsZero: IsZero<Byte> = IsZero { it == zero }
+    override val numberIsOne: IsOne<Byte> = IsOne { it == one }
     // endregion
     
     // region Order
@@ -53,65 +53,65 @@ private data object ByteContext: Reification<Byte>, Equality<Byte>, Order<Byte>,
     // endregion
     
     // region Byte-Int operations
-    override val numberPlusInt: Plus<Byte, Int, Byte> = Plus { other -> (this + other).toByte() }
-    override val numberMinusInt: Minus<Byte, Int, Byte> = Minus { other -> (this - other).toByte() }
-    override val numberTimesInt: Times<Byte, Int, Byte> = Times { other -> (this * other).toByte() }
+    override val numberPlusInt: Plus<Byte, Int, Byte> = Plus { left, right -> (left + right).toByte() }
+    override val numberMinusInt: Minus<Byte, Int, Byte> = Minus { left, right -> (left - right).toByte() }
+    override val numberTimesInt: Times<Byte, Int, Byte> = Times { left, right -> (left * right).toByte() }
     // endregion
     
     // region Byte-UInt operations
-    override val numberPlusUInt: Plus<Byte, UInt, Byte> = Plus { other -> (this + other.toByte()).toByte() }
-    override val numberMinusUInt: Minus<Byte, UInt, Byte> = Minus { other -> (this - other.toByte()).toByte() }
-    override val numberTimesUInt: Times<Byte, UInt, Byte> = Times { other -> (this * other.toByte()).toByte() }
+    override val numberPlusUInt: Plus<Byte, UInt, Byte> = Plus { left, right -> (left + right.toByte()).toByte() }
+    override val numberMinusUInt: Minus<Byte, UInt, Byte> = Minus { left, right -> (left - right.toByte()).toByte() }
+    override val numberTimesUInt: Times<Byte, UInt, Byte> = Times { left, right -> (left * right.toByte()).toByte() }
     // endregion
 
     // region Byte-Long operations
-    override val numberPlusLong: Plus<Byte, Long, Byte> = Plus { other -> (this + other).toByte() }
-    override val numberMinusLong: Minus<Byte, Long, Byte> = Minus { other -> (this - other).toByte() }
-    override val numberTimesLong: Times<Byte, Long, Byte> = Times { other -> (this * other).toByte() }
+    override val numberPlusLong: Plus<Byte, Long, Byte> = Plus { left, right -> (left + right).toByte() }
+    override val numberMinusLong: Minus<Byte, Long, Byte> = Minus { left, right -> (left - right).toByte() }
+    override val numberTimesLong: Times<Byte, Long, Byte> = Times { left, right -> (left * right).toByte() }
     // endregion
     
     // region Byte-ULong operations
-    override val numberPlusULong: Plus<Byte, ULong, Byte> = Plus { other -> (this + other.toByte()).toByte() }
-    override val numberMinusULong: Minus<Byte, ULong, Byte> = Minus { other -> (this - other.toByte()).toByte() }
-    override val numberTimesULong: Times<Byte, ULong, Byte> = Times { other -> (this * other.toByte()).toByte() }
+    override val numberPlusULong: Plus<Byte, ULong, Byte> = Plus { left, right -> (left + right.toByte()).toByte() }
+    override val numberMinusULong: Minus<Byte, ULong, Byte> = Minus { left, right -> (left - right.toByte()).toByte() }
+    override val numberTimesULong: Times<Byte, ULong, Byte> = Times { left, right -> (left * right.toByte()).toByte() }
     // endregion
     
     // region Int-Byte operations
-    override val intPlusNumber: Plus<Int, Byte, Byte> = Plus { other -> (this + other).toByte() }
-    override val intMinusNumber: Minus<Int, Byte, Byte> = Minus { other -> (this - other).toByte() }
-    override val intTimesNumber: Times<Int, Byte, Byte> = Times { other -> (this * other).toByte() }
+    override val intPlusNumber: Plus<Int, Byte, Byte> = Plus { left, right -> (left + right).toByte() }
+    override val intMinusNumber: Minus<Int, Byte, Byte> = Minus { left, right -> (left - right).toByte() }
+    override val intTimesNumber: Times<Int, Byte, Byte> = Times { left, right -> (left * right).toByte() }
     // endregion
     
     // region UInt-Byte operations
-    override val uIntPlusNumber: Plus<UInt, Byte, Byte> = Plus { other -> (this.toByte() + other).toByte() }
-    override val uIntMinusNumber: Minus<UInt, Byte, Byte> = Minus { other -> (this.toByte() - other).toByte() }
-    override val uIntTimesNumber: Times<UInt, Byte, Byte> = Times { other -> (this.toByte() * other).toByte() }
+    override val uIntPlusNumber: Plus<UInt, Byte, Byte> = Plus { left, right -> (left.toByte() + right).toByte() }
+    override val uIntMinusNumber: Minus<UInt, Byte, Byte> = Minus { left, right -> (left.toByte() - right).toByte() }
+    override val uIntTimesNumber: Times<UInt, Byte, Byte> = Times { left, right -> (left.toByte() * right).toByte() }
     // endregion
 
     // region Long-Byte operations
-    override val longPlusNumber: Plus<Long, Byte, Byte> = Plus { other -> (this + other).toByte() }
-    override val longMinusNumber: Minus<Long, Byte, Byte> = Minus { other -> (this - other).toByte() }
-    override val longTimesNumber: Times<Long, Byte, Byte> = Times { other -> (this * other).toByte() }
+    override val longPlusNumber: Plus<Long, Byte, Byte> = Plus { left, right -> (left + right).toByte() }
+    override val longMinusNumber: Minus<Long, Byte, Byte> = Minus { left, right -> (left - right).toByte() }
+    override val longTimesNumber: Times<Long, Byte, Byte> = Times { left, right -> (left * right).toByte() }
     // endregion
     
     // region ULong-Byte operations
-    override val uLongPlusNumber: Plus<ULong, Byte, Byte> = Plus { other -> (this.toByte() + other).toByte() }
-    override val uLongMinusNumber: Minus<ULong, Byte, Byte> = Minus { other -> (this.toByte() - other).toByte() }
-    override val uLongTimesNumber: Times<ULong, Byte, Byte> = Times { other -> (this.toByte() * other).toByte() }
+    override val uLongPlusNumber: Plus<ULong, Byte, Byte> = Plus { left, right -> (left.toByte() + right).toByte() }
+    override val uLongMinusNumber: Minus<ULong, Byte, Byte> = Minus { left, right -> (left.toByte() - right).toByte() }
+    override val uLongTimesNumber: Times<ULong, Byte, Byte> = Times { left, right -> (left.toByte() * right).toByte() }
     // endregion
     
     // region Byte-Byte operations
-    override val numberUnaryMinus: UnaryMinus<Byte, Byte> = UnaryMinus { (-this).toByte() }
-    override val numberPlusNumber: Plus<Byte, Byte, Byte> = Plus { other -> (this + other).toByte() }
-    override val numberMinusNumber: Minus<Byte, Byte, Byte> = Minus { other -> (this - other).toByte() }
-    override val numberTimesNumber: Times<Byte, Byte, Byte> = Times { other -> (this * other).toByte() }
+    override val numberUnaryMinus: UnaryMinus<Byte, Byte> = UnaryMinus { (-it).toByte() }
+    override val numberPlusNumber: Plus<Byte, Byte, Byte> = Plus { left, right -> (left + right).toByte() }
+    override val numberMinusNumber: Minus<Byte, Byte, Byte> = Minus { left, right -> (left - right).toByte() }
+    override val numberTimesNumber: Times<Byte, Byte, Byte> = Times { left, right -> (left * right).toByte() }
     override val numberDivideRemainderNumber: DivideRemainder<Byte, Byte, EuclideanDivisionResult<Byte>> =
-        DivideRemainder { other ->
-            if (other == 0.toByte()) divisionByZero()
-            else EuclideanDivisionResult(quotient = (this / other).toByte(), remainder = (this % other).toByte())
+        DivideRemainder { left, right ->
+            if (right == 0.toByte()) divisionByZero()
+            else EuclideanDivisionResult(quotient = (left / right).toByte(), remainder = (left % right).toByte())
         }
-    override val numberDivideNumber: Divide<Byte, Byte, Byte> = Divide { other -> if (other == 0.toByte()) divisionByZero() else (this / other).toByte() }
-    override val numberRemainderNumber: Remainder<Byte, Byte, Byte> = Remainder { other -> if (other == 0.toByte()) divisionByZero() else (this % other).toByte() }
+    override val numberDivideNumber: Divide<Byte, Byte, Byte> = Divide { left, right -> if (right == 0.toByte()) divisionByZero() else (left / right).toByte() }
+    override val numberRemainderNumber: Remainder<Byte, Byte, Byte> = Remainder { left, right -> if (right == 0.toByte()) divisionByZero() else (left % right).toByte() }
     // endregion
 }
 
@@ -206,8 +206,8 @@ private data object ShortContext: Reification<Short>, Equality<Short>, Order<Sho
     // endregion
     
     // region Equality
-    override val numberIsZero: IsZero<Short> = IsZero { this == zero }
-    override val numberIsOne: IsOne<Short> = IsOne { this == one }
+    override val numberIsZero: IsZero<Short> = IsZero { it == zero }
+    override val numberIsOne: IsOne<Short> = IsOne { it == one }
     // endregion
     
     // region Order
@@ -227,65 +227,65 @@ private data object ShortContext: Reification<Short>, Equality<Short>, Order<Sho
     // endregion
     
     // region Short-Int operations
-    override val numberPlusInt: Plus<Short, Int, Short> = Plus { other -> (this + other).toShort() }
-    override val numberMinusInt: Minus<Short, Int, Short> = Minus { other -> (this - other).toShort() }
-    override val numberTimesInt: Times<Short, Int, Short> = Times { other -> (this * other).toShort() }
+    override val numberPlusInt: Plus<Short, Int, Short> = Plus { left, right -> (left + right).toShort() }
+    override val numberMinusInt: Minus<Short, Int, Short> = Minus { left, right -> (left - right).toShort() }
+    override val numberTimesInt: Times<Short, Int, Short> = Times { left, right -> (left * right).toShort() }
     // endregion
     
     // region Short-UInt operations
-    override val numberPlusUInt: Plus<Short, UInt, Short> = Plus { other -> (this + other.toShort()).toShort() }
-    override val numberMinusUInt: Minus<Short, UInt, Short> = Minus { other -> (this - other.toShort()).toShort() }
-    override val numberTimesUInt: Times<Short, UInt, Short> = Times { other -> (this * other.toShort()).toShort() }
+    override val numberPlusUInt: Plus<Short, UInt, Short> = Plus { left, right -> (left + right.toShort()).toShort() }
+    override val numberMinusUInt: Minus<Short, UInt, Short> = Minus { left, right -> (left - right.toShort()).toShort() }
+    override val numberTimesUInt: Times<Short, UInt, Short> = Times { left, right -> (left * right.toShort()).toShort() }
     // endregion
     
     // region Short-Long operations
-    override val numberPlusLong: Plus<Short, Long, Short> = Plus { other -> (this + other).toShort() }
-    override val numberMinusLong: Minus<Short, Long, Short> = Minus { other -> (this - other).toShort() }
-    override val numberTimesLong: Times<Short, Long, Short> = Times { other -> (this * other).toShort() }
+    override val numberPlusLong: Plus<Short, Long, Short> = Plus { left, right -> (left + right).toShort() }
+    override val numberMinusLong: Minus<Short, Long, Short> = Minus { left, right -> (left - right).toShort() }
+    override val numberTimesLong: Times<Short, Long, Short> = Times { left, right -> (left * right).toShort() }
     // endregion
     
     // region Short-ULong operations
-    override val numberPlusULong: Plus<Short, ULong, Short> = Plus { other -> (this + other.toShort()).toShort() }
-    override val numberMinusULong: Minus<Short, ULong, Short> = Minus { other -> (this - other.toShort()).toShort() }
-    override val numberTimesULong: Times<Short, ULong, Short> = Times { other -> (this * other.toShort()).toShort() }
+    override val numberPlusULong: Plus<Short, ULong, Short> = Plus { left, right -> (left + right.toShort()).toShort() }
+    override val numberMinusULong: Minus<Short, ULong, Short> = Minus { left, right -> (left - right.toShort()).toShort() }
+    override val numberTimesULong: Times<Short, ULong, Short> = Times { left, right -> (left * right.toShort()).toShort() }
     // endregion
     
     // region Int-Short operations
-    override val intPlusNumber: Plus<Int, Short, Short> = Plus { other -> (this + other).toShort() }
-    override val intMinusNumber: Minus<Int, Short, Short> = Minus { other -> (this - other).toShort() }
-    override val intTimesNumber: Times<Int, Short, Short> = Times { other -> (this * other).toShort() }
+    override val intPlusNumber: Plus<Int, Short, Short> = Plus { left, right -> (left + right).toShort() }
+    override val intMinusNumber: Minus<Int, Short, Short> = Minus { left, right -> (left - right).toShort() }
+    override val intTimesNumber: Times<Int, Short, Short> = Times { left, right -> (left * right).toShort() }
     // endregion
     
     // region UInt-Short operations
-    override val uIntPlusNumber: Plus<UInt, Short, Short> = Plus { other -> (this.toShort() + other).toShort() }
-    override val uIntMinusNumber: Minus<UInt, Short, Short> = Minus { other -> (this.toShort() - other).toShort() }
-    override val uIntTimesNumber: Times<UInt, Short, Short> = Times { other -> (this.toShort() * other).toShort() }
+    override val uIntPlusNumber: Plus<UInt, Short, Short> = Plus { left, right -> (left.toShort() + right).toShort() }
+    override val uIntMinusNumber: Minus<UInt, Short, Short> = Minus { left, right -> (left.toShort() - right).toShort() }
+    override val uIntTimesNumber: Times<UInt, Short, Short> = Times { left, right -> (left.toShort() * right).toShort() }
     // endregion
     
     // region Long-Short operations
-    override val longPlusNumber: Plus<Long, Short, Short> = Plus { other -> (this + other).toShort() }
-    override val longMinusNumber: Minus<Long, Short, Short> = Minus { other -> (this - other).toShort() }
-    override val longTimesNumber: Times<Long, Short, Short> = Times { other -> (this * other).toShort() }
+    override val longPlusNumber: Plus<Long, Short, Short> = Plus { left, right -> (left + right).toShort() }
+    override val longMinusNumber: Minus<Long, Short, Short> = Minus { left, right -> (left - right).toShort() }
+    override val longTimesNumber: Times<Long, Short, Short> = Times { left, right -> (left * right).toShort() }
     // endregion
     
     // region ULong-Short operations
-    override val uLongPlusNumber: Plus<ULong, Short, Short> = Plus { other -> (this.toShort() + other).toShort() }
-    override val uLongMinusNumber: Minus<ULong, Short, Short> = Minus { other -> (this.toShort() - other).toShort() }
-    override val uLongTimesNumber: Times<ULong, Short, Short> = Times { other -> (this.toShort() * other).toShort() }
+    override val uLongPlusNumber: Plus<ULong, Short, Short> = Plus { left, right -> (left.toShort() + right).toShort() }
+    override val uLongMinusNumber: Minus<ULong, Short, Short> = Minus { left, right -> (left.toShort() - right).toShort() }
+    override val uLongTimesNumber: Times<ULong, Short, Short> = Times { left, right -> (left.toShort() * right).toShort() }
     // endregion
     
     // region Short-Short operations
-    override val numberUnaryMinus: UnaryMinus<Short, Short> = UnaryMinus { (-this).toShort() }
-    override val numberPlusNumber: Plus<Short, Short, Short> = Plus { other -> (this + other).toShort() }
-    override val numberMinusNumber: Minus<Short, Short, Short> = Minus { other -> (this - other).toShort() }
-    override val numberTimesNumber: Times<Short, Short, Short> = Times { other -> (this * other).toShort() }
+    override val numberUnaryMinus: UnaryMinus<Short, Short> = UnaryMinus { (-it).toShort() }
+    override val numberPlusNumber: Plus<Short, Short, Short> = Plus { left, right -> (left + right).toShort() }
+    override val numberMinusNumber: Minus<Short, Short, Short> = Minus { left, right -> (left - right).toShort() }
+    override val numberTimesNumber: Times<Short, Short, Short> = Times { left, right -> (left * right).toShort() }
     override val numberDivideRemainderNumber: DivideRemainder<Short, Short, EuclideanDivisionResult<Short>> =
-        DivideRemainder { other ->
-            if (other == 0.toShort()) divisionByZero()
-            else EuclideanDivisionResult(quotient = (this / other).toShort(), remainder = (this % other).toShort())
+        DivideRemainder { left, right ->
+            if (right == 0.toShort()) divisionByZero()
+            else EuclideanDivisionResult(quotient = (left / right).toShort(), remainder = (left % right).toShort())
         }
-    override val numberDivideNumber: Divide<Short, Short, Short> = Divide { other -> if (other == 0.toShort()) divisionByZero() else (this / other).toShort() }
-    override val numberRemainderNumber: Remainder<Short, Short, Short> = Remainder { other -> if (other == 0.toShort()) divisionByZero() else (this % other).toShort() }
+    override val numberDivideNumber: Divide<Short, Short, Short> = Divide { left, right -> if (right == 0.toShort()) divisionByZero() else (left / right).toShort() }
+    override val numberRemainderNumber: Remainder<Short, Short, Short> = Remainder { left, right -> if (right == 0.toShort()) divisionByZero() else (left % right).toShort() }
     // endregion
 }
 
@@ -380,8 +380,8 @@ private data object IntContext: Reification<Int>, Equality<Int>, Order<Int>, Has
     // endregion
     
     // region Equality
-    override val numberIsZero: IsZero<Int> = IsZero { this == zero }
-    override val numberIsOne: IsOne<Int> = IsOne { this == one }
+    override val numberIsZero: IsZero<Int> = IsZero { it == zero }
+    override val numberIsOne: IsOne<Int> = IsOne { it == one }
     // endregion
     
     // region Order
@@ -401,65 +401,65 @@ private data object IntContext: Reification<Int>, Equality<Int>, Order<Int>, Has
     // endregion
     
     // region Int-Int operations
-    override val numberPlusInt: Plus<Int, Int, Int> = Plus { other -> (this + other) }
-    override val numberMinusInt: Minus<Int, Int, Int> = Minus { other -> (this - other) }
-    override val numberTimesInt: Times<Int, Int, Int> = Times { other -> (this * other) }
+    override val numberPlusInt: Plus<Int, Int, Int> = Plus { left, right -> (left + right) }
+    override val numberMinusInt: Minus<Int, Int, Int> = Minus { left, right -> (left - right) }
+    override val numberTimesInt: Times<Int, Int, Int> = Times { left, right -> (left * right) }
     // endregion
     
     // region Int-UInt operations
-    override val numberPlusUInt: Plus<Int, UInt, Int> = Plus { other -> (this + other.toInt()) }
-    override val numberMinusUInt: Minus<Int, UInt, Int> = Minus { other -> (this - other.toInt()) }
-    override val numberTimesUInt: Times<Int, UInt, Int> = Times { other -> (this * other.toInt()) }
+    override val numberPlusUInt: Plus<Int, UInt, Int> = Plus { left, right -> (left + right.toInt()) }
+    override val numberMinusUInt: Minus<Int, UInt, Int> = Minus { left, right -> (left - right.toInt()) }
+    override val numberTimesUInt: Times<Int, UInt, Int> = Times { left, right -> (left * right.toInt()) }
     // endregion
     
     // region Int-Long operations
-    override val numberPlusLong: Plus<Int, Long, Int> = Plus { other -> (this + other).toInt() }
-    override val numberMinusLong: Minus<Int, Long, Int> = Minus { other -> (this - other).toInt() }
-    override val numberTimesLong: Times<Int, Long, Int> = Times { other -> (this * other).toInt() }
+    override val numberPlusLong: Plus<Int, Long, Int> = Plus { left, right -> (left + right).toInt() }
+    override val numberMinusLong: Minus<Int, Long, Int> = Minus { left, right -> (left - right).toInt() }
+    override val numberTimesLong: Times<Int, Long, Int> = Times { left, right -> (left * right).toInt() }
     // endregion
     
     // region Int-ULong operations
-    override val numberPlusULong: Plus<Int, ULong, Int> = Plus { other -> (this + other.toInt()) }
-    override val numberMinusULong: Minus<Int, ULong, Int> = Minus { other -> (this - other.toInt()) }
-    override val numberTimesULong: Times<Int, ULong, Int> = Times { other -> (this * other.toInt()) }
+    override val numberPlusULong: Plus<Int, ULong, Int> = Plus { left, right -> (left + right.toInt()) }
+    override val numberMinusULong: Minus<Int, ULong, Int> = Minus { left, right -> (left - right.toInt()) }
+    override val numberTimesULong: Times<Int, ULong, Int> = Times { left, right -> (left * right.toInt()) }
     // endregion
     
     // region Int-Int operations
-    override val intPlusNumber: Plus<Int, Int, Int> = Plus { other -> (this + other) }
-    override val intMinusNumber: Minus<Int, Int, Int> = Minus { other -> (this - other) }
-    override val intTimesNumber: Times<Int, Int, Int> = Times { other -> (this * other) }
+    override val intPlusNumber: Plus<Int, Int, Int> = Plus { left, right -> (left + right) }
+    override val intMinusNumber: Minus<Int, Int, Int> = Minus { left, right -> (left - right) }
+    override val intTimesNumber: Times<Int, Int, Int> = Times { left, right -> (left * right) }
     // endregion
     
     // region UInt-Int operations
-    override val uIntPlusNumber: Plus<UInt, Int, Int> = Plus { other -> (this.toInt() + other) }
-    override val uIntMinusNumber: Minus<UInt, Int, Int> = Minus { other -> (this.toInt() - other) }
-    override val uIntTimesNumber: Times<UInt, Int, Int> = Times { other -> (this.toInt() * other) }
+    override val uIntPlusNumber: Plus<UInt, Int, Int> = Plus { left, right -> (left.toInt() + right) }
+    override val uIntMinusNumber: Minus<UInt, Int, Int> = Minus { left, right -> (left.toInt() - right) }
+    override val uIntTimesNumber: Times<UInt, Int, Int> = Times { left, right -> (left.toInt() * right) }
     // endregion
     
     // region Long-Int operations
-    override val longPlusNumber: Plus<Long, Int, Int> = Plus { other -> (this + other).toInt() }
-    override val longMinusNumber: Minus<Long, Int, Int> = Minus { other -> (this - other).toInt() }
-    override val longTimesNumber: Times<Long, Int, Int> = Times { other -> (this * other).toInt() }
+    override val longPlusNumber: Plus<Long, Int, Int> = Plus { left, right -> (left + right).toInt() }
+    override val longMinusNumber: Minus<Long, Int, Int> = Minus { left, right -> (left - right).toInt() }
+    override val longTimesNumber: Times<Long, Int, Int> = Times { left, right -> (left * right).toInt() }
     // endregion
     
     // region ULong-Int operations
-    override val uLongPlusNumber: Plus<ULong, Int, Int> = Plus { other -> (this.toInt() + other) }
-    override val uLongMinusNumber: Minus<ULong, Int, Int> = Minus { other -> (this.toInt() - other) }
-    override val uLongTimesNumber: Times<ULong, Int, Int> = Times { other -> (this.toInt() * other) }
+    override val uLongPlusNumber: Plus<ULong, Int, Int> = Plus { left, right -> (left.toInt() + right) }
+    override val uLongMinusNumber: Minus<ULong, Int, Int> = Minus { left, right -> (left.toInt() - right) }
+    override val uLongTimesNumber: Times<ULong, Int, Int> = Times { left, right -> (left.toInt() * right) }
     // endregion
     
     // region Int-Int operations
-    override val numberUnaryMinus: UnaryMinus<Int, Int> = UnaryMinus { (-this) }
-    override val numberPlusNumber: Plus<Int, Int, Int> = Plus { other -> (this + other) }
-    override val numberMinusNumber: Minus<Int, Int, Int> = Minus { other -> (this - other) }
-    override val numberTimesNumber: Times<Int, Int, Int> = Times { other -> (this * other) }
+    override val numberUnaryMinus: UnaryMinus<Int, Int> = UnaryMinus { -it }
+    override val numberPlusNumber: Plus<Int, Int, Int> = Plus { left, right -> (left + right) }
+    override val numberMinusNumber: Minus<Int, Int, Int> = Minus { left, right -> (left - right) }
+    override val numberTimesNumber: Times<Int, Int, Int> = Times { left, right -> (left * right) }
     override val numberDivideRemainderNumber: DivideRemainder<Int, Int, EuclideanDivisionResult<Int>> =
-        DivideRemainder { other ->
-            if (other == 0.toInt()) divisionByZero()
-            else EuclideanDivisionResult(quotient = (this / other), remainder = (this % other))
+        DivideRemainder { left, right ->
+            if (right == 0.toInt()) divisionByZero()
+            else EuclideanDivisionResult(quotient = (left / right), remainder = (left % right))
         }
-    override val numberDivideNumber: Divide<Int, Int, Int> = Divide { other -> if (other == 0.toInt()) divisionByZero() else (this / other) }
-    override val numberRemainderNumber: Remainder<Int, Int, Int> = Remainder { other -> if (other == 0.toInt()) divisionByZero() else (this % other) }
+    override val numberDivideNumber: Divide<Int, Int, Int> = Divide { left, right -> if (right == 0.toInt()) divisionByZero() else (left / right) }
+    override val numberRemainderNumber: Remainder<Int, Int, Int> = Remainder { left, right -> if (right == 0.toInt()) divisionByZero() else (left % right) }
     // endregion
 }
 
@@ -554,8 +554,8 @@ private data object LongContext: Reification<Long>, Equality<Long>, Order<Long>,
     // endregion
     
     // region Equality
-    override val numberIsZero: IsZero<Long> = IsZero { this == zero }
-    override val numberIsOne: IsOne<Long> = IsOne { this == one }
+    override val numberIsZero: IsZero<Long> = IsZero { it == zero }
+    override val numberIsOne: IsOne<Long> = IsOne { it == one }
     // endregion
     
     // region Order
@@ -575,65 +575,65 @@ private data object LongContext: Reification<Long>, Equality<Long>, Order<Long>,
     // endregion
     
     // region Long-Int operations
-    override val numberPlusInt: Plus<Long, Int, Long> = Plus { other -> (this + other) }
-    override val numberMinusInt: Minus<Long, Int, Long> = Minus { other -> (this - other) }
-    override val numberTimesInt: Times<Long, Int, Long> = Times { other -> (this * other) }
+    override val numberPlusInt: Plus<Long, Int, Long> = Plus { left, right -> (left + right) }
+    override val numberMinusInt: Minus<Long, Int, Long> = Minus { left, right -> (left - right) }
+    override val numberTimesInt: Times<Long, Int, Long> = Times { left, right -> (left * right) }
     // endregion
     
     // region Long-UInt operations
-    override val numberPlusUInt: Plus<Long, UInt, Long> = Plus { other -> (this + other.toLong()) }
-    override val numberMinusUInt: Minus<Long, UInt, Long> = Minus { other -> (this - other.toLong()) }
-    override val numberTimesUInt: Times<Long, UInt, Long> = Times { other -> (this * other.toLong()) }
+    override val numberPlusUInt: Plus<Long, UInt, Long> = Plus { left, right -> (left + right.toLong()) }
+    override val numberMinusUInt: Minus<Long, UInt, Long> = Minus { left, right -> (left - right.toLong()) }
+    override val numberTimesUInt: Times<Long, UInt, Long> = Times { left, right -> (left * right.toLong()) }
     // endregion
     
     // region Long-Long operations
-    override val numberPlusLong: Plus<Long, Long, Long> = Plus { other -> (this + other) }
-    override val numberMinusLong: Minus<Long, Long, Long> = Minus { other -> (this - other) }
-    override val numberTimesLong: Times<Long, Long, Long> = Times { other -> (this * other) }
+    override val numberPlusLong: Plus<Long, Long, Long> = Plus { left, right -> (left + right) }
+    override val numberMinusLong: Minus<Long, Long, Long> = Minus { left, right -> (left - right) }
+    override val numberTimesLong: Times<Long, Long, Long> = Times { left, right -> (left * right) }
     // endregion
     
     // region Long-ULong operations
-    override val numberPlusULong: Plus<Long, ULong, Long> = Plus { other -> (this + other.toLong()) }
-    override val numberMinusULong: Minus<Long, ULong, Long> = Minus { other -> (this - other.toLong()) }
-    override val numberTimesULong: Times<Long, ULong, Long> = Times { other -> (this * other.toLong()) }
+    override val numberPlusULong: Plus<Long, ULong, Long> = Plus { left, right -> (left + right.toLong()) }
+    override val numberMinusULong: Minus<Long, ULong, Long> = Minus { left, right -> (left - right.toLong()) }
+    override val numberTimesULong: Times<Long, ULong, Long> = Times { left, right -> (left * right.toLong()) }
     // endregion
     
     // region Int-Long operations
-    override val intPlusNumber: Plus<Int, Long, Long> = Plus { other -> (this + other) }
-    override val intMinusNumber: Minus<Int, Long, Long> = Minus { other -> (this - other) }
-    override val intTimesNumber: Times<Int, Long, Long> = Times { other -> (this * other) }
+    override val intPlusNumber: Plus<Int, Long, Long> = Plus { left, right -> (left + right) }
+    override val intMinusNumber: Minus<Int, Long, Long> = Minus { left, right -> (left - right) }
+    override val intTimesNumber: Times<Int, Long, Long> = Times { left, right -> (left * right) }
     // endregion
     
     // region UInt-Long operations
-    override val uIntPlusNumber: Plus<UInt, Long, Long> = Plus { other -> (this.toLong() + other) }
-    override val uIntMinusNumber: Minus<UInt, Long, Long> = Minus { other -> (this.toLong() - other) }
-    override val uIntTimesNumber: Times<UInt, Long, Long> = Times { other -> (this.toLong() * other) }
+    override val uIntPlusNumber: Plus<UInt, Long, Long> = Plus { left, right -> (left.toLong() + right) }
+    override val uIntMinusNumber: Minus<UInt, Long, Long> = Minus { left, right -> (left.toLong() - right) }
+    override val uIntTimesNumber: Times<UInt, Long, Long> = Times { left, right -> (left.toLong() * right) }
     // endregion
     
     // region Long-Long operations
-    override val longPlusNumber: Plus<Long, Long, Long> = Plus { other -> (this + other) }
-    override val longMinusNumber: Minus<Long, Long, Long> = Minus { other -> (this - other) }
-    override val longTimesNumber: Times<Long, Long, Long> = Times { other -> (this * other) }
+    override val longPlusNumber: Plus<Long, Long, Long> = Plus { left, right -> (left + right) }
+    override val longMinusNumber: Minus<Long, Long, Long> = Minus { left, right -> (left - right) }
+    override val longTimesNumber: Times<Long, Long, Long> = Times { left, right -> (left * right) }
     // endregion
     
     // region ULong-Long operations
-    override val uLongPlusNumber: Plus<ULong, Long, Long> = Plus { other -> (this.toLong() + other) }
-    override val uLongMinusNumber: Minus<ULong, Long, Long> = Minus { other -> (this.toLong() - other) }
-    override val uLongTimesNumber: Times<ULong, Long, Long> = Times { other -> (this.toLong() * other) }
+    override val uLongPlusNumber: Plus<ULong, Long, Long> = Plus { left, right -> (left.toLong() + right) }
+    override val uLongMinusNumber: Minus<ULong, Long, Long> = Minus { left, right -> (left.toLong() - right) }
+    override val uLongTimesNumber: Times<ULong, Long, Long> = Times { left, right -> (left.toLong() * right) }
     // endregion
     
     // region Long-Long operations
-    override val numberUnaryMinus: UnaryMinus<Long, Long> = UnaryMinus { (-this) }
-    override val numberPlusNumber: Plus<Long, Long, Long> = Plus { other -> (this + other) }
-    override val numberMinusNumber: Minus<Long, Long, Long> = Minus { other -> (this - other) }
-    override val numberTimesNumber: Times<Long, Long, Long> = Times { other -> (this * other) }
+    override val numberUnaryMinus: UnaryMinus<Long, Long> = UnaryMinus { it }
+    override val numberPlusNumber: Plus<Long, Long, Long> = Plus { left, right -> (left + right) }
+    override val numberMinusNumber: Minus<Long, Long, Long> = Minus { left, right -> (left - right) }
+    override val numberTimesNumber: Times<Long, Long, Long> = Times { left, right -> (left * right) }
     override val numberDivideRemainderNumber: DivideRemainder<Long, Long, EuclideanDivisionResult<Long>> =
-        DivideRemainder { other ->
-            if (other == 0.toLong()) divisionByZero()
-            else EuclideanDivisionResult(quotient = (this / other), remainder = (this % other))
+        DivideRemainder { left, right ->
+            if (right == 0.toLong()) divisionByZero()
+            else EuclideanDivisionResult(quotient = (left / right), remainder = (left % right))
         }
-    override val numberDivideNumber: Divide<Long, Long, Long> = Divide { other -> if (other == 0.toLong()) divisionByZero() else (this / other) }
-    override val numberRemainderNumber: Remainder<Long, Long, Long> = Remainder { other -> if (other == 0.toLong()) divisionByZero() else (this % other) }
+    override val numberDivideNumber: Divide<Long, Long, Long> = Divide { left, right -> if (right == 0.toLong()) divisionByZero() else (left / right) }
+    override val numberRemainderNumber: Remainder<Long, Long, Long> = Remainder { left, right -> if (right == 0.toLong()) divisionByZero() else (left % right) }
     // endregion
 }
 
@@ -728,8 +728,8 @@ private data object UByteContext: Reification<UByte>, Equality<UByte>, Order<UBy
     // endregion
     
     // region Equality
-    override val numberIsZero: IsZero<UByte> = IsZero { this == zero }
-    override val numberIsOne: IsOne<UByte> = IsOne { this == one }
+    override val numberIsZero: IsZero<UByte> = IsZero { it == zero }
+    override val numberIsOne: IsOne<UByte> = IsOne { it == one }
     // endregion
     
     // region Order
@@ -747,42 +747,42 @@ private data object UByteContext: Reification<UByte>, Equality<UByte>, Order<UBy
     // endregion
     
     // region UByte-UInt operations
-    override val numberPlusUInt: Plus<UByte, UInt, UByte> = Plus { other -> (this + other).toUByte() }
-    override val numberMinusUInt: Minus<UByte, UInt, UByte> = Minus { other -> (this - other).toUByte() }
-    override val numberTimesUInt: Times<UByte, UInt, UByte> = Times { other -> (this * other).toUByte() }
+    override val numberPlusUInt: Plus<UByte, UInt, UByte> = Plus { left, right -> (left + right).toUByte() }
+    override val numberMinusUInt: Minus<UByte, UInt, UByte> = Minus { left, right -> (left - right).toUByte() }
+    override val numberTimesUInt: Times<UByte, UInt, UByte> = Times { left, right -> (left * right).toUByte() }
     // endregion
     
     // region UByte-ULong operations
-    override val numberPlusULong: Plus<UByte, ULong, UByte> = Plus { other -> (this + other).toUByte() }
-    override val numberMinusULong: Minus<UByte, ULong, UByte> = Minus { other -> (this - other).toUByte() }
-    override val numberTimesULong: Times<UByte, ULong, UByte> = Times { other -> (this * other).toUByte() }
+    override val numberPlusULong: Plus<UByte, ULong, UByte> = Plus { left, right -> (left + right).toUByte() }
+    override val numberMinusULong: Minus<UByte, ULong, UByte> = Minus { left, right -> (left - right).toUByte() }
+    override val numberTimesULong: Times<UByte, ULong, UByte> = Times { left, right -> (left * right).toUByte() }
     // endregion
     
     // region UInt-UByte operations
-    override val uIntPlusNumber: Plus<UInt, UByte, UByte> = Plus { other -> (this + other).toUByte() }
-    override val uIntMinusNumber: Minus<UInt, UByte, UByte> = Minus { other -> (this - other).toUByte() }
-    override val uIntTimesNumber: Times<UInt, UByte, UByte> = Times { other -> (this * other).toUByte() }
+    override val uIntPlusNumber: Plus<UInt, UByte, UByte> = Plus { left, right -> (left + right).toUByte() }
+    override val uIntMinusNumber: Minus<UInt, UByte, UByte> = Minus { left, right -> (left - right).toUByte() }
+    override val uIntTimesNumber: Times<UInt, UByte, UByte> = Times { left, right -> (left * right).toUByte() }
     // endregion
     
     // region ULong-UByte operations
-    override val uLongPlusNumber: Plus<ULong, UByte, UByte> = Plus { other -> (this + other).toUByte() }
-    override val uLongMinusNumber: Minus<ULong, UByte, UByte> = Minus { other -> (this - other).toUByte() }
-    override val uLongTimesNumber: Times<ULong, UByte, UByte> = Times { other -> (this * other).toUByte() }
+    override val uLongPlusNumber: Plus<ULong, UByte, UByte> = Plus { left, right -> (left + right).toUByte() }
+    override val uLongMinusNumber: Minus<ULong, UByte, UByte> = Minus { left, right -> (left - right).toUByte() }
+    override val uLongTimesNumber: Times<ULong, UByte, UByte> = Times { left, right -> (left * right).toUByte() }
     // endregion
     
     // region UByte-UByte operations
-    override val numberPlusNumber: Plus<UByte, UByte, UByte> = Plus { other -> (this + other).toUByte() }
-    override val numberMinusNumber: Minus<UByte, UByte, UByte> = Minus { other -> (this - other).toUByte() }
-    override val numberTimesNumber: Times<UByte, UByte, UByte> = Times { other -> (this * other).toUByte() }
-    override val numberDivideRemainderNumber: DivideRemainder<UByte, UByte, EuclideanDivisionResult<UByte>> = DivideRemainder { other ->
-        if (other == 0.toUByte()) divisionByZero()
+    override val numberPlusNumber: Plus<UByte, UByte, UByte> = Plus { left, right -> (left + right).toUByte() }
+    override val numberMinusNumber: Minus<UByte, UByte, UByte> = Minus { left, right -> (left - right).toUByte() }
+    override val numberTimesNumber: Times<UByte, UByte, UByte> = Times { left, right -> (left * right).toUByte() }
+    override val numberDivideRemainderNumber: DivideRemainder<UByte, UByte, EuclideanDivisionResult<UByte>> = DivideRemainder { left, right ->
+        if (right == 0.toUByte()) divisionByZero()
         else EuclideanDivisionResult(
-            quotient = (this / other).toUByte(),
-            remainder = (this % other).toUByte(),
+            quotient = (left / right).toUByte(),
+            remainder = (left % right).toUByte(),
         )
     }
-    override val numberDivideNumber: Divide<UByte, UByte, UByte> = Divide { other -> if (other == 0.toUByte()) divisionByZero() else (this / other).toUByte() }
-    override val numberRemainderNumber: Remainder<UByte, UByte, UByte> = Remainder { other -> if (other == 0.toUByte()) divisionByZero() else (this % other).toUByte() }
+    override val numberDivideNumber: Divide<UByte, UByte, UByte> = Divide { left, right -> if (right == 0.toUByte()) divisionByZero() else (left / right).toUByte() }
+    override val numberRemainderNumber: Remainder<UByte, UByte, UByte> = Remainder { left, right -> if (right == 0.toUByte()) divisionByZero() else (left % right).toUByte() }
     override val powerNumberUInt: Power<UByte, UInt, UByte> = Power { base, exponent -> base squaringPower exponent }
     override val powerNumberULong: Power<UByte, ULong, UByte> = Power { base, exponent -> base squaringPower exponent }
     // endregion
@@ -854,8 +854,8 @@ private data object UShortContext: Reification<UShort>, Equality<UShort>, Order<
     // endregion
     
     // region Equality
-    override val numberIsZero: IsZero<UShort> = IsZero { this == zero }
-    override val numberIsOne: IsOne<UShort> = IsOne { this == one }
+    override val numberIsZero: IsZero<UShort> = IsZero { it == zero }
+    override val numberIsOne: IsOne<UShort> = IsOne { it == one }
     // endregion
     
     // region Order
@@ -873,42 +873,42 @@ private data object UShortContext: Reification<UShort>, Equality<UShort>, Order<
     // endregion
     
     // region UShort-UInt operations
-    override val numberPlusUInt: Plus<UShort, UInt, UShort> = Plus { other -> (this + other).toUShort() }
-    override val numberMinusUInt: Minus<UShort, UInt, UShort> = Minus { other -> (this - other).toUShort() }
-    override val numberTimesUInt: Times<UShort, UInt, UShort> = Times { other -> (this * other).toUShort() }
+    override val numberPlusUInt: Plus<UShort, UInt, UShort> = Plus { left, right -> (left + right).toUShort() }
+    override val numberMinusUInt: Minus<UShort, UInt, UShort> = Minus { left, right -> (left - right).toUShort() }
+    override val numberTimesUInt: Times<UShort, UInt, UShort> = Times { left, right -> (left * right).toUShort() }
     // endregion
     
     // region UShort-ULong operations
-    override val numberPlusULong: Plus<UShort, ULong, UShort> = Plus { other -> (this + other).toUShort() }
-    override val numberMinusULong: Minus<UShort, ULong, UShort> = Minus { other -> (this - other).toUShort() }
-    override val numberTimesULong: Times<UShort, ULong, UShort> = Times { other -> (this * other).toUShort() }
+    override val numberPlusULong: Plus<UShort, ULong, UShort> = Plus { left, right -> (left + right).toUShort() }
+    override val numberMinusULong: Minus<UShort, ULong, UShort> = Minus { left, right -> (left - right).toUShort() }
+    override val numberTimesULong: Times<UShort, ULong, UShort> = Times { left, right -> (left * right).toUShort() }
     // endregion
     
     // region UInt-UShort operations
-    override val uIntPlusNumber: Plus<UInt, UShort, UShort> = Plus { other -> (this + other).toUShort() }
-    override val uIntMinusNumber: Minus<UInt, UShort, UShort> = Minus { other -> (this - other).toUShort() }
-    override val uIntTimesNumber: Times<UInt, UShort, UShort> = Times { other -> (this * other).toUShort() }
+    override val uIntPlusNumber: Plus<UInt, UShort, UShort> = Plus { left, right -> (left + right).toUShort() }
+    override val uIntMinusNumber: Minus<UInt, UShort, UShort> = Minus { left, right -> (left - right).toUShort() }
+    override val uIntTimesNumber: Times<UInt, UShort, UShort> = Times { left, right -> (left * right).toUShort() }
     // endregion
     
     // region ULong-UShort operations
-    override val uLongPlusNumber: Plus<ULong, UShort, UShort> = Plus { other -> (this + other).toUShort() }
-    override val uLongMinusNumber: Minus<ULong, UShort, UShort> = Minus { other -> (this - other).toUShort() }
-    override val uLongTimesNumber: Times<ULong, UShort, UShort> = Times { other -> (this * other).toUShort() }
+    override val uLongPlusNumber: Plus<ULong, UShort, UShort> = Plus { left, right -> (left + right).toUShort() }
+    override val uLongMinusNumber: Minus<ULong, UShort, UShort> = Minus { left, right -> (left - right).toUShort() }
+    override val uLongTimesNumber: Times<ULong, UShort, UShort> = Times { left, right -> (left * right).toUShort() }
     // endregion
     
     // region UShort-UShort operations
-    override val numberPlusNumber: Plus<UShort, UShort, UShort> = Plus { other -> (this + other).toUShort() }
-    override val numberMinusNumber: Minus<UShort, UShort, UShort> = Minus { other -> (this - other).toUShort() }
-    override val numberTimesNumber: Times<UShort, UShort, UShort> = Times { other -> (this * other).toUShort() }
-    override val numberDivideRemainderNumber: DivideRemainder<UShort, UShort, EuclideanDivisionResult<UShort>> = DivideRemainder { other ->
-        if (other == 0.toUShort()) divisionByZero()
+    override val numberPlusNumber: Plus<UShort, UShort, UShort> = Plus { left, right -> (left + right).toUShort() }
+    override val numberMinusNumber: Minus<UShort, UShort, UShort> = Minus { left, right -> (left - right).toUShort() }
+    override val numberTimesNumber: Times<UShort, UShort, UShort> = Times { left, right -> (left * right).toUShort() }
+    override val numberDivideRemainderNumber: DivideRemainder<UShort, UShort, EuclideanDivisionResult<UShort>> = DivideRemainder { left, right ->
+        if (right == 0.toUShort()) divisionByZero()
         else EuclideanDivisionResult(
-            quotient = (this / other).toUShort(),
-            remainder = (this % other).toUShort(),
+            quotient = (left / right).toUShort(),
+            remainder = (left % right).toUShort(),
         )
     }
-    override val numberDivideNumber: Divide<UShort, UShort, UShort> = Divide { other -> if (other == 0.toUShort()) divisionByZero() else (this / other).toUShort() }
-    override val numberRemainderNumber: Remainder<UShort, UShort, UShort> = Remainder { other -> if (other == 0.toUShort()) divisionByZero() else (this % other).toUShort() }
+    override val numberDivideNumber: Divide<UShort, UShort, UShort> = Divide { left, right -> if (right == 0.toUShort()) divisionByZero() else (left / right).toUShort() }
+    override val numberRemainderNumber: Remainder<UShort, UShort, UShort> = Remainder { left, right -> if (right == 0.toUShort()) divisionByZero() else (left % right).toUShort() }
     override val powerNumberUInt: Power<UShort, UInt, UShort> = Power { base, exponent -> base squaringPower exponent }
     override val powerNumberULong: Power<UShort, ULong, UShort> = Power { base, exponent -> base squaringPower exponent }
     // endregion
@@ -980,8 +980,8 @@ private data object UIntContext: Reification<UInt>, Equality<UInt>, Order<UInt>,
     // endregion
     
     // region Equality
-    override val numberIsZero: IsZero<UInt> = IsZero { this == zero }
-    override val numberIsOne: IsOne<UInt> = IsOne { this == one }
+    override val numberIsZero: IsZero<UInt> = IsZero { it == zero }
+    override val numberIsOne: IsOne<UInt> = IsOne { it == one }
     // endregion
     
     // region Order
@@ -999,42 +999,42 @@ private data object UIntContext: Reification<UInt>, Equality<UInt>, Order<UInt>,
     // endregion
     
     // region UInt-UInt operations
-    override val numberPlusUInt: Plus<UInt, UInt, UInt> = Plus { other -> (this + other) }
-    override val numberMinusUInt: Minus<UInt, UInt, UInt> = Minus { other -> (this - other) }
-    override val numberTimesUInt: Times<UInt, UInt, UInt> = Times { other -> (this * other) }
+    override val numberPlusUInt: Plus<UInt, UInt, UInt> = Plus { left, right -> (left + right) }
+    override val numberMinusUInt: Minus<UInt, UInt, UInt> = Minus { left, right -> (left - right) }
+    override val numberTimesUInt: Times<UInt, UInt, UInt> = Times { left, right -> (left * right) }
     // endregion
     
     // region UInt-ULong operations
-    override val numberPlusULong: Plus<UInt, ULong, UInt> = Plus { other -> (this + other).toUInt() }
-    override val numberMinusULong: Minus<UInt, ULong, UInt> = Minus { other -> (this - other).toUInt() }
-    override val numberTimesULong: Times<UInt, ULong, UInt> = Times { other -> (this * other).toUInt() }
+    override val numberPlusULong: Plus<UInt, ULong, UInt> = Plus { left, right -> (left + right).toUInt() }
+    override val numberMinusULong: Minus<UInt, ULong, UInt> = Minus { left, right -> (left - right).toUInt() }
+    override val numberTimesULong: Times<UInt, ULong, UInt> = Times { left, right -> (left * right).toUInt() }
     // endregion
     
     // region UInt-UInt operations
-    override val uIntPlusNumber: Plus<UInt, UInt, UInt> = Plus { other -> (this + other) }
-    override val uIntMinusNumber: Minus<UInt, UInt, UInt> = Minus { other -> (this - other) }
-    override val uIntTimesNumber: Times<UInt, UInt, UInt> = Times { other -> (this * other) }
+    override val uIntPlusNumber: Plus<UInt, UInt, UInt> = Plus { left, right -> (left + right) }
+    override val uIntMinusNumber: Minus<UInt, UInt, UInt> = Minus { left, right -> (left - right) }
+    override val uIntTimesNumber: Times<UInt, UInt, UInt> = Times { left, right -> (left * right) }
     // endregion
     
     // region ULong-UInt operations
-    override val uLongPlusNumber: Plus<ULong, UInt, UInt> = Plus { other -> (this + other).toUInt() }
-    override val uLongMinusNumber: Minus<ULong, UInt, UInt> = Minus { other -> (this - other).toUInt() }
-    override val uLongTimesNumber: Times<ULong, UInt, UInt> = Times { other -> (this * other).toUInt() }
+    override val uLongPlusNumber: Plus<ULong, UInt, UInt> = Plus { left, right -> (left + right).toUInt() }
+    override val uLongMinusNumber: Minus<ULong, UInt, UInt> = Minus { left, right -> (left - right).toUInt() }
+    override val uLongTimesNumber: Times<ULong, UInt, UInt> = Times { left, right -> (left * right).toUInt() }
     // endregion
     
     // region UInt-UInt operations
-    override val numberPlusNumber: Plus<UInt, UInt, UInt> = Plus { other -> (this + other) }
-    override val numberMinusNumber: Minus<UInt, UInt, UInt> = Minus { other -> (this - other) }
-    override val numberTimesNumber: Times<UInt, UInt, UInt> = Times { other -> (this * other) }
-    override val numberDivideRemainderNumber: DivideRemainder<UInt, UInt, EuclideanDivisionResult<UInt>> = DivideRemainder { other ->
-        if (other == 0.toUInt()) divisionByZero()
+    override val numberPlusNumber: Plus<UInt, UInt, UInt> = Plus { left, right -> (left + right) }
+    override val numberMinusNumber: Minus<UInt, UInt, UInt> = Minus { left, right -> (left - right) }
+    override val numberTimesNumber: Times<UInt, UInt, UInt> = Times { left, right -> (left * right) }
+    override val numberDivideRemainderNumber: DivideRemainder<UInt, UInt, EuclideanDivisionResult<UInt>> = DivideRemainder { left, right ->
+        if (right == 0.toUInt()) divisionByZero()
         else EuclideanDivisionResult(
-            quotient = (this / other),
-            remainder = (this % other),
+            quotient = (left / right),
+            remainder = (left % right),
         )
     }
-    override val numberDivideNumber: Divide<UInt, UInt, UInt> = Divide { other -> if (other == 0.toUInt()) divisionByZero() else (this / other) }
-    override val numberRemainderNumber: Remainder<UInt, UInt, UInt> = Remainder { other -> if (other == 0.toUInt()) divisionByZero() else (this % other) }
+    override val numberDivideNumber: Divide<UInt, UInt, UInt> = Divide { left, right -> if (right == 0.toUInt()) divisionByZero() else (left / right) }
+    override val numberRemainderNumber: Remainder<UInt, UInt, UInt> = Remainder { left, right -> if (right == 0.toUInt()) divisionByZero() else (left % right) }
     override val powerNumberUInt: Power<UInt, UInt, UInt> = Power { base, exponent -> base squaringPower exponent }
     override val powerNumberULong: Power<UInt, ULong, UInt> = Power { base, exponent -> base squaringPower exponent }
     // endregion
@@ -1106,8 +1106,8 @@ private data object ULongContext: Reification<ULong>, Equality<ULong>, Order<ULo
     // endregion
     
     // region Equality
-    override val numberIsZero: IsZero<ULong> = IsZero { this == zero }
-    override val numberIsOne: IsOne<ULong> = IsOne { this == one }
+    override val numberIsZero: IsZero<ULong> = IsZero { it == zero }
+    override val numberIsOne: IsOne<ULong> = IsOne { it == one }
     // endregion
     
     // region Order
@@ -1125,42 +1125,42 @@ private data object ULongContext: Reification<ULong>, Equality<ULong>, Order<ULo
     // endregion
     
     // region ULong-UInt operations
-    override val numberPlusUInt: Plus<ULong, UInt, ULong> = Plus { other -> (this + other) }
-    override val numberMinusUInt: Minus<ULong, UInt, ULong> = Minus { other -> (this - other) }
-    override val numberTimesUInt: Times<ULong, UInt, ULong> = Times { other -> (this * other) }
+    override val numberPlusUInt: Plus<ULong, UInt, ULong> = Plus { left, right -> (left + right) }
+    override val numberMinusUInt: Minus<ULong, UInt, ULong> = Minus { left, right -> (left - right) }
+    override val numberTimesUInt: Times<ULong, UInt, ULong> = Times { left, right -> (left * right) }
     // endregion
     
     // region ULong-ULong operations
-    override val numberPlusULong: Plus<ULong, ULong, ULong> = Plus { other -> (this + other) }
-    override val numberMinusULong: Minus<ULong, ULong, ULong> = Minus { other -> (this - other) }
-    override val numberTimesULong: Times<ULong, ULong, ULong> = Times { other -> (this * other) }
+    override val numberPlusULong: Plus<ULong, ULong, ULong> = Plus { left, right -> (left + right) }
+    override val numberMinusULong: Minus<ULong, ULong, ULong> = Minus { left, right -> (left - right) }
+    override val numberTimesULong: Times<ULong, ULong, ULong> = Times { left, right -> (left * right) }
     // endregion
     
     // region UInt-ULong operations
-    override val uIntPlusNumber: Plus<UInt, ULong, ULong> = Plus { other -> (this + other) }
-    override val uIntMinusNumber: Minus<UInt, ULong, ULong> = Minus { other -> (this - other) }
-    override val uIntTimesNumber: Times<UInt, ULong, ULong> = Times { other -> (this * other) }
+    override val uIntPlusNumber: Plus<UInt, ULong, ULong> = Plus { left, right -> (left + right) }
+    override val uIntMinusNumber: Minus<UInt, ULong, ULong> = Minus { left, right -> (left - right) }
+    override val uIntTimesNumber: Times<UInt, ULong, ULong> = Times { left, right -> (left * right) }
     // endregion
     
     // region ULong-ULong operations
-    override val uLongPlusNumber: Plus<ULong, ULong, ULong> = Plus { other -> (this + other) }
-    override val uLongMinusNumber: Minus<ULong, ULong, ULong> = Minus { other -> (this - other) }
-    override val uLongTimesNumber: Times<ULong, ULong, ULong> = Times { other -> (this * other) }
+    override val uLongPlusNumber: Plus<ULong, ULong, ULong> = Plus { left, right -> (left + right) }
+    override val uLongMinusNumber: Minus<ULong, ULong, ULong> = Minus { left, right -> (left - right) }
+    override val uLongTimesNumber: Times<ULong, ULong, ULong> = Times { left, right -> (left * right) }
     // endregion
     
     // region ULong-ULong operations
-    override val numberPlusNumber: Plus<ULong, ULong, ULong> = Plus { other -> (this + other) }
-    override val numberMinusNumber: Minus<ULong, ULong, ULong> = Minus { other -> (this - other) }
-    override val numberTimesNumber: Times<ULong, ULong, ULong> = Times { other -> (this * other) }
-    override val numberDivideRemainderNumber: DivideRemainder<ULong, ULong, EuclideanDivisionResult<ULong>> = DivideRemainder { other ->
-        if (other == 0.toULong()) divisionByZero()
+    override val numberPlusNumber: Plus<ULong, ULong, ULong> = Plus { left, right -> (left + right) }
+    override val numberMinusNumber: Minus<ULong, ULong, ULong> = Minus { left, right -> (left - right) }
+    override val numberTimesNumber: Times<ULong, ULong, ULong> = Times { left, right -> (left * right) }
+    override val numberDivideRemainderNumber: DivideRemainder<ULong, ULong, EuclideanDivisionResult<ULong>> = DivideRemainder { left, right ->
+        if (right == 0.toULong()) divisionByZero()
         else EuclideanDivisionResult(
-            quotient = (this / other),
-            remainder = (this % other),
+            quotient = (left / right),
+            remainder = (left % right),
         )
     }
-    override val numberDivideNumber: Divide<ULong, ULong, ULong> = Divide { other -> if (other == 0.toULong()) divisionByZero() else (this / other) }
-    override val numberRemainderNumber: Remainder<ULong, ULong, ULong> = Remainder { other -> if (other == 0.toULong()) divisionByZero() else (this % other) }
+    override val numberDivideNumber: Divide<ULong, ULong, ULong> = Divide { left, right -> if (right == 0.toULong()) divisionByZero() else (left / right) }
+    override val numberRemainderNumber: Remainder<ULong, ULong, ULong> = Remainder { left, right -> if (right == 0.toULong()) divisionByZero() else (left % right) }
     override val powerNumberUInt: Power<ULong, UInt, ULong> = Power { base, exponent -> base squaringPower exponent }
     override val powerNumberULong: Power<ULong, ULong, ULong> = Power { base, exponent -> base squaringPower exponent }
     // endregion
@@ -1242,8 +1242,8 @@ private data object DoubleContext: Reification<Double>, Equality<Double>, Order<
     
     // region Equality
     override fun Double.equalsTo(other: Double): Boolean = this == other
-    override val numberIsZero: IsZero<Double> = IsZero { this == 0.0 }
-    override val numberIsOne: IsOne<Double> = IsOne { this == 1.0 }
+    override val numberIsZero: IsZero<Double> = IsZero { it == 0.0 }
+    override val numberIsOne: IsOne<Double> = IsOne { it == 1.0 }
     // endregion
 
     // region Conversion
@@ -1254,59 +1254,59 @@ private data object DoubleContext: Reification<Double>, Equality<Double>, Order<
     // endregion
     
     // region Double-Int operations
-    override val numberPlusInt: Plus<Double, Int, Double> = Plus { other -> (this + other) }
-    override val numberMinusInt: Minus<Double, Int, Double> = Minus { other -> (this - other) }
-    override val numberTimesInt: Times<Double, Int, Double> = Times { other -> (this * other) }
+    override val numberPlusInt: Plus<Double, Int, Double> = Plus { left, right -> (left + right) }
+    override val numberMinusInt: Minus<Double, Int, Double> = Minus { left, right -> (left - right) }
+    override val numberTimesInt: Times<Double, Int, Double> = Times { left, right -> (left * right) }
     // endregion
     
     // region Double-UInt operations
-    override val numberPlusUInt: Plus<Double, UInt, Double> = Plus { other -> (this + other.toDouble()) }
-    override val numberMinusUInt: Minus<Double, UInt, Double> = Minus { other -> (this - other.toDouble()) }
-    override val numberTimesUInt: Times<Double, UInt, Double> = Times { other -> (this * other.toDouble()) }
+    override val numberPlusUInt: Plus<Double, UInt, Double> = Plus { left, right -> (left + right.toDouble()) }
+    override val numberMinusUInt: Minus<Double, UInt, Double> = Minus { left, right -> (left - right.toDouble()) }
+    override val numberTimesUInt: Times<Double, UInt, Double> = Times { left, right -> (left * right.toDouble()) }
     // endregion
     
     // region Double-Long operations
-    override val numberPlusLong: Plus<Double, Long, Double> = Plus { other -> (this + other) }
-    override val numberMinusLong: Minus<Double, Long, Double> = Minus { other -> (this - other) }
-    override val numberTimesLong: Times<Double, Long, Double> = Times { other -> (this * other) }
+    override val numberPlusLong: Plus<Double, Long, Double> = Plus { left, right -> (left + right) }
+    override val numberMinusLong: Minus<Double, Long, Double> = Minus { left, right -> (left - right) }
+    override val numberTimesLong: Times<Double, Long, Double> = Times { left, right -> (left * right) }
     // endregion
     
     // region Double-ULong operations
-    override val numberPlusULong: Plus<Double, ULong, Double> = Plus { other -> (this + other.toDouble()) }
-    override val numberMinusULong: Minus<Double, ULong, Double> = Minus { other -> (this - other.toDouble()) }
-    override val numberTimesULong: Times<Double, ULong, Double> = Times { other -> (this * other.toDouble()) }
+    override val numberPlusULong: Plus<Double, ULong, Double> = Plus { left, right -> (left + right.toDouble()) }
+    override val numberMinusULong: Minus<Double, ULong, Double> = Minus { left, right -> (left - right.toDouble()) }
+    override val numberTimesULong: Times<Double, ULong, Double> = Times { left, right -> (left * right.toDouble()) }
     // endregion
     
     // region Int-Double operations
-    override val intPlusNumber: Plus<Int, Double, Double> = Plus { other -> (this + other) }
-    override val intMinusNumber: Minus<Int, Double, Double> = Minus { other -> (this - other) }
-    override val intTimesNumber: Times<Int, Double, Double> = Times { other -> (this * other) }
+    override val intPlusNumber: Plus<Int, Double, Double> = Plus { left, right -> (left + right) }
+    override val intMinusNumber: Minus<Int, Double, Double> = Minus { left, right -> (left - right) }
+    override val intTimesNumber: Times<Int, Double, Double> = Times { left, right -> (left * right) }
     // endregion
     
     // region UInt-Double operations
-    override val uIntPlusNumber: Plus<UInt, Double, Double> = Plus { other -> (this.toDouble() + other) }
-    override val uIntMinusNumber: Minus<UInt, Double, Double> = Minus { other -> (this.toDouble() - other) }
-    override val uIntTimesNumber: Times<UInt, Double, Double> = Times { other -> (this.toDouble() * other) }
+    override val uIntPlusNumber: Plus<UInt, Double, Double> = Plus { left, right -> (left.toDouble() + right) }
+    override val uIntMinusNumber: Minus<UInt, Double, Double> = Minus { left, right -> (left.toDouble() - right) }
+    override val uIntTimesNumber: Times<UInt, Double, Double> = Times { left, right -> (left.toDouble() * right) }
     // endregion
     
     // region Long-Double operations
-    override val longPlusNumber: Plus<Long, Double, Double> = Plus { other -> (this + other) }
-    override val longMinusNumber: Minus<Long, Double, Double> = Minus { other -> (this - other) }
-    override val longTimesNumber: Times<Long, Double, Double> = Times { other -> (this * other) }
+    override val longPlusNumber: Plus<Long, Double, Double> = Plus { left, right -> (left + right) }
+    override val longMinusNumber: Minus<Long, Double, Double> = Minus { left, right -> (left - right) }
+    override val longTimesNumber: Times<Long, Double, Double> = Times { left, right -> (left * right) }
     // endregion
     
     // region ULong-Double operations
-    override val uLongPlusNumber: Plus<ULong, Double, Double> = Plus { other -> (this.toDouble() + other) }
-    override val uLongMinusNumber: Minus<ULong, Double, Double> = Minus { other -> (this.toDouble() - other) }
-    override val uLongTimesNumber: Times<ULong, Double, Double> = Times { other -> (this.toDouble() * other) }
+    override val uLongPlusNumber: Plus<ULong, Double, Double> = Plus { left, right -> (left.toDouble() + right) }
+    override val uLongMinusNumber: Minus<ULong, Double, Double> = Minus { left, right -> (left.toDouble() - right) }
+    override val uLongTimesNumber: Times<ULong, Double, Double> = Times { left, right -> (left.toDouble() * right) }
     // endregion
     
     // region Double-Double operations
-    override val numberUnaryMinus: UnaryMinus<Double, Double> = UnaryMinus { -this }
-    override val numberPlusNumber: Plus<Double, Double, Double> = Plus { other -> this + other }
-    override val numberMinusNumber: Minus<Double, Double, Double> = Minus { other -> this - other }
-    override val numberTimesNumber: Times<Double, Double, Double> = Times { other -> this * other }
-    override val numberDivideNumber: Divide<Double, Double, Double> = Divide { other -> this / other }
+    override val numberUnaryMinus: UnaryMinus<Double, Double> = UnaryMinus { -it }
+    override val numberPlusNumber: Plus<Double, Double, Double> = Plus { left, right -> left + right }
+    override val numberMinusNumber: Minus<Double, Double, Double> = Minus { left, right -> left - right }
+    override val numberTimesNumber: Times<Double, Double, Double> = Times { left, right -> left * right }
+    override val numberDivideNumber: Divide<Double, Double, Double> = Divide { left, right -> left / right }
     override val powerNumberUInt: Power<Double, UInt, Double> = Power { base, exponent -> base.kpow(exponent.toDouble()) }
     override val powerNumberULong: Power<Double, ULong, Double> = Power { base, exponent -> base.kpow(exponent.toDouble()) }
     override val powerNumberInt: Power<Double, Int, Double> = Power { base, exponent -> base.kpow(exponent) }
@@ -1410,8 +1410,8 @@ private data object FloatContext: Reification<Float>, Equality<Float>, Order<Flo
     
     // region Equality
     override fun Float.equalsTo(other: Float): Boolean = this == other
-    override val numberIsZero: IsZero<Float> = IsZero { this == 0f }
-    override val numberIsOne: IsOne<Float> = IsOne { this == 1f }
+    override val numberIsZero: IsZero<Float> = IsZero { it == 0f }
+    override val numberIsOne: IsOne<Float> = IsOne { it == 1f }
     // endregion
     
     // region Conversion
@@ -1422,59 +1422,59 @@ private data object FloatContext: Reification<Float>, Equality<Float>, Order<Flo
     // endregion
     
     // region Float-Int operations
-    override val numberPlusInt: Plus<Float, Int, Float> = Plus { other -> (this + other) }
-    override val numberMinusInt: Minus<Float, Int, Float> = Minus { other -> (this - other) }
-    override val numberTimesInt: Times<Float, Int, Float> = Times { other -> (this * other) }
+    override val numberPlusInt: Plus<Float, Int, Float> = Plus { left, right -> (left + right) }
+    override val numberMinusInt: Minus<Float, Int, Float> = Minus { left, right -> (left - right) }
+    override val numberTimesInt: Times<Float, Int, Float> = Times { left, right -> (left * right) }
     // endregion
     
     // region Float-UInt operations
-    override val numberPlusUInt: Plus<Float, UInt, Float> = Plus { other -> (this + other.toFloat()) }
-    override val numberMinusUInt: Minus<Float, UInt, Float> = Minus { other -> (this - other.toFloat()) }
-    override val numberTimesUInt: Times<Float, UInt, Float> = Times { other -> (this * other.toFloat()) }
+    override val numberPlusUInt: Plus<Float, UInt, Float> = Plus { left, right -> (left + right.toFloat()) }
+    override val numberMinusUInt: Minus<Float, UInt, Float> = Minus { left, right -> (left - right.toFloat()) }
+    override val numberTimesUInt: Times<Float, UInt, Float> = Times { left, right -> (left * right.toFloat()) }
     // endregion
     
     // region Float-Long operations
-    override val numberPlusLong: Plus<Float, Long, Float> = Plus { other -> (this + other) }
-    override val numberMinusLong: Minus<Float, Long, Float> = Minus { other -> (this - other) }
-    override val numberTimesLong: Times<Float, Long, Float> = Times { other -> (this * other) }
+    override val numberPlusLong: Plus<Float, Long, Float> = Plus { left, right -> (left + right) }
+    override val numberMinusLong: Minus<Float, Long, Float> = Minus { left, right -> (left - right) }
+    override val numberTimesLong: Times<Float, Long, Float> = Times { left, right -> (left * right) }
     // endregion
     
     // region Float-ULong operations
-    override val numberPlusULong: Plus<Float, ULong, Float> = Plus { other -> (this + other.toFloat()) }
-    override val numberMinusULong: Minus<Float, ULong, Float> = Minus { other -> (this - other.toFloat()) }
-    override val numberTimesULong: Times<Float, ULong, Float> = Times { other -> (this * other.toFloat()) }
+    override val numberPlusULong: Plus<Float, ULong, Float> = Plus { left, right -> (left + right.toFloat()) }
+    override val numberMinusULong: Minus<Float, ULong, Float> = Minus { left, right -> (left - right.toFloat()) }
+    override val numberTimesULong: Times<Float, ULong, Float> = Times { left, right -> (left * right.toFloat()) }
     // endregion
     
     // region Int-Float operations
-    override val intPlusNumber: Plus<Int, Float, Float> = Plus { other -> (this + other) }
-    override val intMinusNumber: Minus<Int, Float, Float> = Minus { other -> (this - other) }
-    override val intTimesNumber: Times<Int, Float, Float> = Times { other -> (this * other) }
+    override val intPlusNumber: Plus<Int, Float, Float> = Plus { left, right -> (left + right) }
+    override val intMinusNumber: Minus<Int, Float, Float> = Minus { left, right -> (left - right) }
+    override val intTimesNumber: Times<Int, Float, Float> = Times { left, right -> (left * right) }
     // endregion
     
     // region UInt-Float operations
-    override val uIntPlusNumber: Plus<UInt, Float, Float> = Plus { other -> (this.toFloat() + other) }
-    override val uIntMinusNumber: Minus<UInt, Float, Float> = Minus { other -> (this.toFloat() - other) }
-    override val uIntTimesNumber: Times<UInt, Float, Float> = Times { other -> (this.toFloat() * other) }
+    override val uIntPlusNumber: Plus<UInt, Float, Float> = Plus { left, right -> (left.toFloat() + right) }
+    override val uIntMinusNumber: Minus<UInt, Float, Float> = Minus { left, right -> (left.toFloat() - right) }
+    override val uIntTimesNumber: Times<UInt, Float, Float> = Times { left, right -> (left.toFloat() * right) }
     // endregion
     
     // region Long-Float operations
-    override val longPlusNumber: Plus<Long, Float, Float> = Plus { other -> (this + other) }
-    override val longMinusNumber: Minus<Long, Float, Float> = Minus { other -> (this - other) }
-    override val longTimesNumber: Times<Long, Float, Float> = Times { other -> (this * other) }
+    override val longPlusNumber: Plus<Long, Float, Float> = Plus { left, right -> (left + right) }
+    override val longMinusNumber: Minus<Long, Float, Float> = Minus { left, right -> (left - right) }
+    override val longTimesNumber: Times<Long, Float, Float> = Times { left, right -> (left * right) }
     // endregion
     
     // region ULong-Float operations
-    override val uLongPlusNumber: Plus<ULong, Float, Float> = Plus { other -> (this.toFloat() + other) }
-    override val uLongMinusNumber: Minus<ULong, Float, Float> = Minus { other -> (this.toFloat() - other) }
-    override val uLongTimesNumber: Times<ULong, Float, Float> = Times { other -> (this.toFloat() * other) }
+    override val uLongPlusNumber: Plus<ULong, Float, Float> = Plus { left, right -> (left.toFloat() + right) }
+    override val uLongMinusNumber: Minus<ULong, Float, Float> = Minus { left, right -> (left.toFloat() - right) }
+    override val uLongTimesNumber: Times<ULong, Float, Float> = Times { left, right -> (left.toFloat() * right) }
     // endregion
     
     // region Float-Float operations
-    override val numberUnaryMinus: UnaryMinus<Float, Float> = UnaryMinus { -this }
-    override val numberPlusNumber: Plus<Float, Float, Float> = Plus { other -> this + other }
-    override val numberMinusNumber: Minus<Float, Float, Float> = Minus { other -> this - other }
-    override val numberTimesNumber: Times<Float, Float, Float> = Times { other -> this * other }
-    override val numberDivideNumber: Divide<Float, Float, Float> = Divide { other -> this / other }
+    override val numberUnaryMinus: UnaryMinus<Float, Float> = UnaryMinus { -it }
+    override val numberPlusNumber: Plus<Float, Float, Float> = Plus { left, right -> left + right }
+    override val numberMinusNumber: Minus<Float, Float, Float> = Minus { left, right -> left - right }
+    override val numberTimesNumber: Times<Float, Float, Float> = Times { left, right -> left * right }
+    override val numberDivideNumber: Divide<Float, Float, Float> = Divide { left, right -> left / right }
     override val powerNumberUInt: Power<Float, UInt, Float> = Power { base, exponent -> base.kpow(exponent.toFloat()) }
     override val powerNumberULong: Power<Float, ULong, Float> = Power { base, exponent -> base.kpow(exponent.toFloat()) }
     override val powerNumberInt: Power<Float, Int, Float> = Power { base, exponent -> base.kpow(exponent) }

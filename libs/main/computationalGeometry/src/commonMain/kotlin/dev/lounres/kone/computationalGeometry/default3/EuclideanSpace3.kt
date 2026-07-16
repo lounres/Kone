@@ -80,97 +80,97 @@ public class EuclideanSpace3OverRing<Number>(
     
     // region Equality
     override val numberIsZero: IsZero<Vector3<Number>> = IsZero {
-        this.content.all { ring.numberIsZero { it.isZero() } }
+        it.content.all { ring.numberIsZero { it.isZero() } }
     }
     // endregion
     
     // region Vector-Int operations
-    override val numberTimesInt: Times<Vector3<Number>, Int, Vector3<Number>> = Times { other ->
-        Vector3(this.content.map { ring.numberTimesInt { it * other } })
+    override val numberTimesInt: Times<Vector3<Number>, Int, Vector3<Number>> = Times { left, right ->
+        Vector3(left.content.map { ring.numberTimesInt { it * right } })
     }
     // endregion
     
     // region Vector-UInt operations
-    override val numberTimesUInt: Times<Vector3<Number>, UInt, Vector3<Number>> = Times { other ->
-        Vector3(this.content.map { ring.numberTimesUInt { it * other } })
+    override val numberTimesUInt: Times<Vector3<Number>, UInt, Vector3<Number>> = Times { left, right ->
+        Vector3(left.content.map { ring.numberTimesUInt { it * right } })
     }
     // endregion
     
     // region Vector-Long operations
-    override val numberTimesLong: Times<Vector3<Number>, Long, Vector3<Number>> = Times { other ->
-        Vector3(this.content.map { ring.numberTimesLong { it * other } })
+    override val numberTimesLong: Times<Vector3<Number>, Long, Vector3<Number>> = Times { left, right ->
+        Vector3(left.content.map { ring.numberTimesLong { it * right } })
     }
     // endregion
     
     // region Vector-ULong operations
-    override val numberTimesULong: Times<Vector3<Number>, ULong, Vector3<Number>> = Times { other ->
-        Vector3(this.content.map { ring.numberTimesULong { it * other } })
+    override val numberTimesULong: Times<Vector3<Number>, ULong, Vector3<Number>> = Times { left, right ->
+        Vector3(left.content.map { ring.numberTimesULong { it * right } })
     }
     // endregion
     
     // region Vector-Number operations
-    override val vectorTimesNumber: Times<Vector3<Number>, Number, Vector3<Number>> = Times { other ->
-        Vector3(this.content.map { ring.numberTimesNumber { it * other } })
+    override val vectorTimesNumber: Times<Vector3<Number>, Number, Vector3<Number>> = Times { left, right ->
+        Vector3(left.content.map { ring.numberTimesNumber { it * right } })
     }
     // endregion
     
     // region Int-Vector operations
-    override val intTimesNumber: Times<Int, Vector3<Number>, Vector3<Number>> = Times { other ->
-        Vector3(other.content.map { ring.intTimesNumber { this * it } })
+    override val intTimesNumber: Times<Int, Vector3<Number>, Vector3<Number>> = Times { left, right ->
+        Vector3(right.content.map { ring.intTimesNumber { left * it } })
     }
     // endregion
     
     // region UInt-Vector operations
-    override val uIntTimesNumber: Times<UInt, Vector3<Number>, Vector3<Number>> = Times { other ->
-        Vector3(other.content.map { ring.uIntTimesNumber { this * it } })
+    override val uIntTimesNumber: Times<UInt, Vector3<Number>, Vector3<Number>> = Times { left, right ->
+        Vector3(right.content.map { ring.uIntTimesNumber { left * it } })
     }
     // endregion
     
     // region Long-Vector operations
-    override val longTimesNumber: Times<Long, Vector3<Number>, Vector3<Number>> = Times { other ->
-        Vector3(other.content.map { ring.longTimesNumber { this * it } })
+    override val longTimesNumber: Times<Long, Vector3<Number>, Vector3<Number>> = Times { left, right ->
+        Vector3(right.content.map { ring.longTimesNumber { left * it } })
     }
     // endregion
     
     // region ULong-Vector operations
-    override val uLongTimesNumber: Times<ULong, Vector3<Number>, Vector3<Number>> = Times { other ->
-        Vector3(other.content.map { ring.uLongTimesNumber { this * it } })
+    override val uLongTimesNumber: Times<ULong, Vector3<Number>, Vector3<Number>> = Times { left, right ->
+        Vector3(right.content.map { ring.uLongTimesNumber { left * it } })
     }
     // endregion
     
     // region Number-Vector operations
-    override val numberTimesVector: Times<Number, Vector3<Number>, Vector3<Number>> = Times { other ->
-        Vector3(other.content.map { ring.numberTimesNumber { this * it } })
+    override val numberTimesVector: Times<Number, Vector3<Number>, Vector3<Number>> = Times { left, right ->
+        Vector3(right.content.map { ring.numberTimesNumber { left * it } })
     }
     // endregion
     
     // region Vector-Vector operations
     override val numberUnaryMinus: UnaryMinus<Vector3<Number>, Vector3<Number>> = UnaryMinus {
-        Vector3(this.content.map { ring.numberUnaryMinus { -it } })
+        Vector3(it.content.map { ring.numberUnaryMinus { -it } })
     }
-    override val numberPlusNumber: Plus<Vector3<Number>, Vector3<Number>, Vector3<Number>> = Plus { other ->
-        Vector3(MDList1.generate(3u) { ring.numberPlusNumber { this.content[it] + other.content[it] } })
+    override val numberPlusNumber: Plus<Vector3<Number>, Vector3<Number>, Vector3<Number>> = Plus { left, right ->
+        Vector3(MDList1.generate(3u) { ring.numberPlusNumber { left.content[it] + right.content[it] } })
     }
-    override val numberMinusNumber: Minus<Vector3<Number>, Vector3<Number>, Vector3<Number>> = Minus { other ->
-        Vector3(MDList1.generate(3u) { ring.numberMinusNumber { this.content[it] - other.content[it] } })
+    override val numberMinusNumber: Minus<Vector3<Number>, Vector3<Number>, Vector3<Number>> = Minus { left, right ->
+        Vector3(MDList1.generate(3u) { ring.numberMinusNumber { left.content[it] - right.content[it] } })
     }
     // endregion
     
-    override val pointPlusVector: Plus<Point3<Number>, Vector3<Number>, Point3<Number>> = Plus { other ->
-        Point3(MDList1.generate(3u) { ring.numberPlusNumber { this.content[it] + other.content[it] } })
+    override val pointPlusVector: Plus<Point3<Number>, Vector3<Number>, Point3<Number>> = Plus { left, right ->
+        Point3(MDList1.generate(3u) { ring.numberPlusNumber { left.content[it] + right.content[it] } })
     }
-    override val vectorPlusPoint: Plus<Vector3<Number>, Point3<Number>, Point3<Number>> = Plus { other ->
-        Point3(MDList1.generate(3u) { ring.numberPlusNumber { this.content[it] + other.content[it] } })
+    override val vectorPlusPoint: Plus<Vector3<Number>, Point3<Number>, Point3<Number>> = Plus { left, right ->
+        Point3(MDList1.generate(3u) { ring.numberPlusNumber { left.content[it] + right.content[it] } })
     }
-    override val pointMinusVector: Minus<Point3<Number>, Vector3<Number>, Point3<Number>> = Minus { other ->
-        Point3(MDList1.generate(3u) { ring.numberMinusNumber { this.content[it] - other.content[it] } })
+    override val pointMinusVector: Minus<Point3<Number>, Vector3<Number>, Point3<Number>> = Minus { left, right ->
+        Point3(MDList1.generate(3u) { ring.numberMinusNumber { left.content[it] - right.content[it] } })
     }
-    override val pointMinusPoint: Minus<Point3<Number>, Point3<Number>, Vector3<Number>> = Minus { other ->
-        Vector3(MDList1.generate(3u) { ring.numberMinusNumber { this.content[it] - other.content[it] } })
+    override val pointMinusPoint: Minus<Point3<Number>, Point3<Number>, Vector3<Number>> = Minus { left, right ->
+        Vector3(MDList1.generate(3u) { ring.numberMinusNumber { left.content[it] - right.content[it] } })
     }
     
-    override val vectorDotVector: Dot<Vector3<Number>, Vector3<Number>, Number> = Dot { other ->
-        context(ring, ring.numberTimesNumber) { (0u ..< 3u).toKoneList().sumOf { this.content[it] * other.content[it] } }
+    override val vectorDotVector: Dot<Vector3<Number>, Vector3<Number>, Number> = Dot { left, right ->
+        context(ring, ring.numberTimesNumber) { (0u ..< 3u).toKoneList().sumOf { left.content[it] * right.content[it] } }
     }
     
     public companion object;
@@ -204,112 +204,112 @@ public class EuclideanSpace3OverField<Number>(
     
     // region Equality
     override val numberIsZero: IsZero<Vector3<Number>> = IsZero {
-        this.content.all { field.numberIsZero { it.isZero() } }
+        it.content.all { field.numberIsZero { it.isZero() } }
     }
     // endregion
     
     // region Vector-Int operations
-    override val numberTimesInt: Times<Vector3<Number>, Int, Vector3<Number>> = Times { other ->
-        Vector3(this.content.map { field.numberTimesInt { it * other } })
+    override val numberTimesInt: Times<Vector3<Number>, Int, Vector3<Number>> = Times { left, right ->
+        Vector3(left.content.map { field.numberTimesInt { it * right } })
     }
-    override val vectorDivideInt: Divide<Vector3<Number>, Int, Vector3<Number>> = Divide { other ->
-        Vector3(this.content.map { field.numberDivideInt { it / other } })
+    override val vectorDivideInt: Divide<Vector3<Number>, Int, Vector3<Number>> = Divide { left, right ->
+        Vector3(left.content.map { field.numberDivideInt { it / right } })
     }
     // endregion
     
     // region Vector-UInt operations
-    override val numberTimesUInt: Times<Vector3<Number>, UInt, Vector3<Number>> = Times { other ->
-        Vector3(this.content.map { field.numberTimesUInt { it * other } })
+    override val numberTimesUInt: Times<Vector3<Number>, UInt, Vector3<Number>> = Times { left, right ->
+        Vector3(left.content.map { field.numberTimesUInt { it * right } })
     }
-    override val vectorDivideUInt: Divide<Vector3<Number>, UInt, Vector3<Number>> = Divide { other ->
-        Vector3(this.content.map { field.numberDivideUInt { it / other } })
+    override val vectorDivideUInt: Divide<Vector3<Number>, UInt, Vector3<Number>> = Divide { left, right ->
+        Vector3(left.content.map { field.numberDivideUInt { it / right } })
     }
     // endregion
     
     // region Vector-Long operations
-    override val numberTimesLong: Times<Vector3<Number>, Long, Vector3<Number>> = Times { other ->
-        Vector3(this.content.map { field.numberTimesLong { it * other } })
+    override val numberTimesLong: Times<Vector3<Number>, Long, Vector3<Number>> = Times { left, right ->
+        Vector3(left.content.map { field.numberTimesLong { it * right } })
     }
-    override val vectorDivideLong: Divide<Vector3<Number>, Long, Vector3<Number>> = Divide { other ->
-        Vector3(this.content.map { field.numberDivideLong { it / other } })
+    override val vectorDivideLong: Divide<Vector3<Number>, Long, Vector3<Number>> = Divide { left, right ->
+        Vector3(left.content.map { field.numberDivideLong { it / right } })
     }
     // endregion
     
     // region Vector-ULong operations
-    override val numberTimesULong: Times<Vector3<Number>, ULong, Vector3<Number>> = Times { other ->
-        Vector3(this.content.map { field.numberTimesULong { it * other } })
+    override val numberTimesULong: Times<Vector3<Number>, ULong, Vector3<Number>> = Times { left, right ->
+        Vector3(left.content.map { field.numberTimesULong { it * right } })
     }
-    override val vectorDivideULong: Divide<Vector3<Number>, ULong, Vector3<Number>> = Divide { other ->
-        Vector3(this.content.map { field.numberDivideULong { it / other } })
+    override val vectorDivideULong: Divide<Vector3<Number>, ULong, Vector3<Number>> = Divide { left, right ->
+        Vector3(left.content.map { field.numberDivideULong { it / right } })
     }
     // endregion
     
     // region Vector-Number operations
-    override val vectorTimesNumber: Times<Vector3<Number>, Number, Vector3<Number>> = Times { other ->
-        Vector3(this.content.map { field.numberTimesNumber { it * other } })
+    override val vectorTimesNumber: Times<Vector3<Number>, Number, Vector3<Number>> = Times { left, right ->
+        Vector3(left.content.map { field.numberTimesNumber { it * right } })
     }
-    override val vectorDivideNumber: Divide<Vector3<Number>, Number, Vector3<Number>> = Divide { other ->
-        Vector3(this.content.map { field.numberDivideNumber { it / other } })
+    override val vectorDivideNumber: Divide<Vector3<Number>, Number, Vector3<Number>> = Divide { left, right ->
+        Vector3(left.content.map { field.numberDivideNumber { it / right } })
     }
     // endregion
     
     // region Int-Vector operations
-    override val intTimesNumber: Times<Int, Vector3<Number>, Vector3<Number>> = Times { other ->
-        Vector3(other.content.map { field.intTimesNumber { this * it } })
+    override val intTimesNumber: Times<Int, Vector3<Number>, Vector3<Number>> = Times { left, right ->
+        Vector3(right.content.map { field.intTimesNumber { left * it } })
     }
     // endregion
     
     // region UInt-Vector operations
-    override val uIntTimesNumber: Times<UInt, Vector3<Number>, Vector3<Number>> = Times { other ->
-        Vector3(other.content.map { field.uIntTimesNumber { this * it } })
+    override val uIntTimesNumber: Times<UInt, Vector3<Number>, Vector3<Number>> = Times { left, right ->
+        Vector3(right.content.map { field.uIntTimesNumber { left * it } })
     }
     // endregion
     
     // region Long-Vector operations
-    override val longTimesNumber: Times<Long, Vector3<Number>, Vector3<Number>> = Times { other ->
-        Vector3(other.content.map { field.longTimesNumber { this * it } })
+    override val longTimesNumber: Times<Long, Vector3<Number>, Vector3<Number>> = Times { left, right ->
+        Vector3(right.content.map { field.longTimesNumber { left * it } })
     }
     // endregion
     
     // region ULong-Vector operations
-    override val uLongTimesNumber: Times<ULong, Vector3<Number>, Vector3<Number>> = Times { other ->
-        Vector3(other.content.map { field.uLongTimesNumber { this * it } })
+    override val uLongTimesNumber: Times<ULong, Vector3<Number>, Vector3<Number>> = Times { left, right ->
+        Vector3(right.content.map { field.uLongTimesNumber { left * it } })
     }
     // endregion
     
     // region Number-Vector operations
-    override val numberTimesVector: Times<Number, Vector3<Number>, Vector3<Number>> = Times { other ->
-        Vector3(other.content.map { field.numberTimesNumber { this * it } })
+    override val numberTimesVector: Times<Number, Vector3<Number>, Vector3<Number>> = Times { left, right ->
+        Vector3(right.content.map { field.numberTimesNumber { left * it } })
     }
     // endregion
     
     // region Vector-Vector operations
     override val numberUnaryMinus: UnaryMinus<Vector3<Number>, Vector3<Number>> = UnaryMinus {
-        Vector3(this.content.map { field.numberUnaryMinus { -it } })
+        Vector3(it.content.map { field.numberUnaryMinus { -it } })
     }
-    override val numberPlusNumber: Plus<Vector3<Number>, Vector3<Number>, Vector3<Number>> = Plus { other ->
-        Vector3(MDList1.generate(3u) { field.numberPlusNumber { this.content[it] + other.content[it] } })
+    override val numberPlusNumber: Plus<Vector3<Number>, Vector3<Number>, Vector3<Number>> = Plus { left, right ->
+        Vector3(MDList1.generate(3u) { field.numberPlusNumber { left.content[it] + right.content[it] } })
     }
-    override val numberMinusNumber: Minus<Vector3<Number>, Vector3<Number>, Vector3<Number>> = Minus { other ->
-        Vector3(MDList1.generate(3u) { field.numberMinusNumber { this.content[it] - other.content[it] } })
+    override val numberMinusNumber: Minus<Vector3<Number>, Vector3<Number>, Vector3<Number>> = Minus { left, right ->
+        Vector3(MDList1.generate(3u) { field.numberMinusNumber { left.content[it] - right.content[it] } })
     }
     // endregion
     
-    override val pointPlusVector: Plus<Point3<Number>, Vector3<Number>, Point3<Number>> = Plus { other ->
-        Point3(MDList1.generate(3u) { field.numberPlusNumber { this.content[it] + other.content[it] } })
+    override val pointPlusVector: Plus<Point3<Number>, Vector3<Number>, Point3<Number>> = Plus { left, right ->
+        Point3(MDList1.generate(3u) { field.numberPlusNumber { left.content[it] + right.content[it] } })
     }
-    override val vectorPlusPoint: Plus<Vector3<Number>, Point3<Number>, Point3<Number>> = Plus { other ->
-        Point3(MDList1.generate(3u) { field.numberPlusNumber { this.content[it] + other.content[it] } })
+    override val vectorPlusPoint: Plus<Vector3<Number>, Point3<Number>, Point3<Number>> = Plus { left, right ->
+        Point3(MDList1.generate(3u) { field.numberPlusNumber { left.content[it] + right.content[it] } })
     }
-    override val pointMinusVector: Minus<Point3<Number>, Vector3<Number>, Point3<Number>> = Minus { other ->
-        Point3(MDList1.generate(3u) { field.numberMinusNumber { this.content[it] - other.content[it] } })
+    override val pointMinusVector: Minus<Point3<Number>, Vector3<Number>, Point3<Number>> = Minus { left, right ->
+        Point3(MDList1.generate(3u) { field.numberMinusNumber { left.content[it] - right.content[it] } })
     }
-    override val pointMinusPoint: Minus<Point3<Number>, Point3<Number>, Vector3<Number>> = Minus { other ->
-        Vector3(MDList1.generate(3u) { field.numberMinusNumber { this.content[it] - other.content[it] } })
+    override val pointMinusPoint: Minus<Point3<Number>, Point3<Number>, Vector3<Number>> = Minus { left, right ->
+        Vector3(MDList1.generate(3u) { field.numberMinusNumber { left.content[it] - right.content[it] } })
     }
     
-    override val vectorDotVector: Dot<Vector3<Number>, Vector3<Number>, Number> = Dot { other ->
-        context(field, field.numberTimesNumber) { (0u ..< 3u).toKoneList().sumOf { this.content[it] * other.content[it] } }
+    override val vectorDotVector: Dot<Vector3<Number>, Vector3<Number>, Number> = Dot { left, right ->
+        context(field, field.numberTimesNumber) { (0u ..< 3u).toKoneList().sumOf { left.content[it] * right.content[it] } }
     }
     
     public companion object;

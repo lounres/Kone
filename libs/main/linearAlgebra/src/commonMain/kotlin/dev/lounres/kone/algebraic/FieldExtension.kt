@@ -17,7 +17,7 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 public interface FieldExtension<Number, Vector> : CommutativeAlgebra<Number, Vector>, Field<Vector>, VectorSpace<Number, Vector> {
     @KoneContextHolderInclude
-    public val numberDivideVector: Divide<Number, Vector, Vector> get() = Divide { other -> numberDivideNumber { valueOf(this) / other } }
+    public val numberDivideVector: Divide<Number, Vector, Vector> get() = Divide { left, right -> numberDivideNumber { valueOf(left) / right } }
     
     @KoneContextHolderExclude
     override val vectorDivideInt: Divide<Vector, Int, Vector> get() = numberDivideInt

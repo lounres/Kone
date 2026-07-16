@@ -158,6 +158,7 @@ public inline fun <reified K, V> KoneMap<out K, V>.withSetOrChangedReified(
         transformOnChange = transformOnChange,
     )
 
+@IgnorableReturnValue
 public fun <K, V, D: KoneMutableMap<K, V>> KoneMap<out K, V>.copyTo(destination: D): D {
     for (entry in this) {
         destination[entry.key] = entry.value
@@ -165,6 +166,7 @@ public fun <K, V, D: KoneMutableMap<K, V>> KoneMap<out K, V>.copyTo(destination:
     return destination
 }
 
+@IgnorableReturnValue
 public inline fun <K, V: W, W, D: KoneMutableMap<K, W>> KoneMap<out K, V>.copyToBy(destination: D, resolve: (key: K, currentValue: W, newValue: V) -> W): D {
     for (entry in this) {
         destination.setOrChange(entry.key, { entry.value }, { resolve(entry.key, it, entry.value) })
@@ -172,6 +174,7 @@ public inline fun <K, V: W, W, D: KoneMutableMap<K, W>> KoneMap<out K, V>.copyTo
     return destination
 }
 
+@IgnorableReturnValue
 public inline fun <K, V, W, D: KoneMutableMap<K, W>> KoneMap<out K, V>.copyMapTo(destination: D, transform: (KoneMapEntry<K, V>) -> W): D {
     for (entry in this) {
         destination[entry.key] = transform(entry)
@@ -304,9 +307,10 @@ public inline fun <reified K, V1: W, V2: W, W> mergeByReified(
         resolve
     )
 
-public inline fun <T, K, V, D : KoneMutableMap<K, V>> KoneIterable<T>.associateTo(destination: D, transform: (T) -> Pair<K, V>, resolve: (key: K, currentValue: V, newValue: V) -> V): D {
+@IgnorableReturnValue
+public inline fun <T, K, V, D : KoneMutableMap<K, V>> KoneIterable<T>.associateTo(destination: D, transform: (T) -> KoneMapEntry<K, V>, resolve: (key: K, currentValue: V, newValue: V) -> V): D {
     for (element in this) {
-        [val key, val value] = transform(element)
+        val [key, value] = transform(element)
         destination.setOrChange(key, { value }, { resolve(key, it, value) })
     }
     return destination
@@ -333,7 +337,7 @@ public inline fun <T, K, V> KoneIterable<T>.associate(
     keyEquality: Equality<K> = Equality.defaultFor(),
     keyHashing: Hashing<K>? = null,
     keyOrder: Order<K>? = null,
-    transform: (T) -> Pair<K, V>,
+    transform: (T) -> KoneMapEntry<K, V>,
     resolve: (key: K, currentValue: V, newValue: V) -> V
 ): KoneMap<K, V> =
     associateTo(KoneMutableMap.of(keyEquality = keyEquality, keyHashing = keyHashing, keyOrder = keyOrder), transform, resolve)
@@ -343,7 +347,7 @@ public inline fun <T, K, V> KoneIterable<T>.associateReified(
     keyEquality: Equality<K> = Equality.defaultFor(),
     keyHashing: Hashing<K>? = null,
     keyOrder: Order<K>? = null,
-    transform: (T) -> Pair<K, V>,
+    transform: (T) -> KoneMapEntry<K, V>,
     resolve: (key: K, currentValue: V, newValue: V) -> V
 ): KoneReifiedMap<K, V> =
     associateTo(KoneMutableReifiedMap.of(keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing, keyOrder = keyOrder), transform, resolve)
@@ -352,7 +356,7 @@ public inline fun <T, reified K, V> KoneIterable<T>.associateReified(
     keyEquality: Equality<K> = Equality.defaultFor(),
     keyHashing: Hashing<K>? = null,
     keyOrder: Order<K>? = null,
-    transform: (T) -> Pair<K, V>,
+    transform: (T) -> KoneMapEntry<K, V>,
     resolve: (key: K, currentValue: V, newValue: V) -> V,
 ): KoneReifiedMap<K, V> =
     associateReified(
@@ -474,9 +478,11 @@ public inline fun <T, reified K> KoneIterable<T>.associateByReified(
         resolve
     )
 
+@IgnorableReturnValue
 public inline fun <K, V, W, D : KoneMutableMap<in K, W>> KoneMap<out K, V>.mapValuesTo(destination: D, transform: (KoneMapEntry<K, V>) -> W, resolve: (key: K, currentValue: W, newValue: W) -> W): D =
     nodesView.associateByTo(destination, { it.key }, transform, resolve)
 
+@IgnorableReturnValue
 public inline fun <K, V, L, D : KoneMutableMap<in L, V>> KoneMap<out K, V>.mapKeysTo(destination: D, transform: (KoneMapEntry<K, V>) -> L, resolve: (key: L, currentValue: V, newValue: V) -> V): D =
     nodesView.associateByTo(destination, transform, { it.value }, resolve)
 

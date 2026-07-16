@@ -45,9 +45,9 @@ public interface EuclideanSemiring<Number> : CommutativeSemiring<Number> {
     @KoneContextHolderInclude
     public val numberDivideRemainderNumber: DivideRemainder<Number, Number, EuclideanDivisionResult<Number>>
     @KoneContextHolderInclude
-    public val numberDivideNumber: Divide<Number, Number, Number> get() = Divide { other -> numberDivideRemainderNumber { this divrem other }.quotient }
+    public val numberDivideNumber: Divide<Number, Number, Number> get() = Divide { left, right -> numberDivideRemainderNumber { left divrem right }.quotient }
     @KoneContextHolderInclude
-    public val numberRemainderNumber: Remainder<Number, Number, Number> get() = Remainder { other -> numberDivideRemainderNumber { this divrem other }.remainder }
+    public val numberRemainderNumber: Remainder<Number, Number, Number> get() = Remainder { left, right -> numberDivideRemainderNumber { left divrem right }.remainder }
     
     public companion object;
     

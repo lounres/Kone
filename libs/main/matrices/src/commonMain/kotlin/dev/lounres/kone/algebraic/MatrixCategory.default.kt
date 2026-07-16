@@ -20,74 +20,74 @@ private class MatrixCategoryOverRingViaDefault<Number, Matrix : MDList2<Number>>
     private val ring: CommutativeRing<Number>,
 ) : MatrixCategoryOverRing<Number, Matrix> {
     // region Matrix-Int operations
-    override val matrixTimesInt: Times<Matrix, Int, Matrix> = Times { other ->
-        matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> ring.numberTimesInt { this[row, column] * other } }
+    override val matrixTimesInt: Times<Matrix, Int, Matrix> = Times { left, right ->
+        matrixFactory.generateMatrix(rowNumber = left.rowNumber, columnNumber = left.columnNumber) { row, column -> ring.numberTimesInt { left[row, column] * right } }
     }
     // endregion
     
     // region Matrix-UInt operations
-    override val matrixTimesUInt: Times<Matrix, UInt, Matrix> = Times { other ->
-        matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> ring.numberTimesUInt { this[row, column] * other } }
+    override val matrixTimesUInt: Times<Matrix, UInt, Matrix> = Times { left, right ->
+        matrixFactory.generateMatrix(rowNumber = left.rowNumber, columnNumber = left.columnNumber) { row, column -> ring.numberTimesUInt { left[row, column] * right } }
     }
     // endregion
     
     // region Matrix-Long operations
-    override val matrixTimesLong: Times<Matrix, Long, Matrix> = Times { other ->
-        matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> ring.numberTimesLong { this[row, column] * other } }
+    override val matrixTimesLong: Times<Matrix, Long, Matrix> = Times { left, right ->
+        matrixFactory.generateMatrix(rowNumber = left.rowNumber, columnNumber = left.columnNumber) { row, column -> ring.numberTimesLong { left[row, column] * right } }
     }
     // endregion
     
     // region Matrix-ULong operations
-    override val matrixTimesULong: Times<Matrix, ULong, Matrix> = Times { other ->
-        matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> ring.numberTimesULong { this[row, column] * other } }
+    override val matrixTimesULong: Times<Matrix, ULong, Matrix> = Times { left, right ->
+        matrixFactory.generateMatrix(rowNumber = left.rowNumber, columnNumber = left.columnNumber) { row, column -> ring.numberTimesULong { left[row, column] * right } }
     }
     // endregion
     
     // region Matrix-Number operations
-    override val matrixTimesNumber: Times<Matrix, Number, Matrix> = Times { other ->
-        matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> ring.numberTimesNumber { this[row, column] * other } }
+    override val matrixTimesNumber: Times<Matrix, Number, Matrix> = Times { left, right ->
+        matrixFactory.generateMatrix(rowNumber = left.rowNumber, columnNumber = left.columnNumber) { row, column -> ring.numberTimesNumber { left[row, column] * right } }
     }
     // endregion
     
     // region Int-Matrix operations
-    override val intTimesMatrix: Times<Int, Matrix, Matrix> = Times { other ->
-        matrixFactory.generateMatrix(rowNumber = other.rowNumber, columnNumber = other.columnNumber) { row, column -> ring.intTimesNumber { this * other[row, column] } }
+    override val intTimesMatrix: Times<Int, Matrix, Matrix> = Times { left, right ->
+        matrixFactory.generateMatrix(rowNumber = right.rowNumber, columnNumber = right.columnNumber) { row, column -> ring.intTimesNumber { left * right[row, column] } }
     }
     // endregion
     
     // region UInt-Matrix operations
-    override val uIntTimesMatrix: Times<UInt, Matrix, Matrix> = Times { other ->
-        matrixFactory.generateMatrix(rowNumber = other.rowNumber, columnNumber = other.columnNumber) { row, column -> ring.uIntTimesNumber { this * other[row, column] } }
+    override val uIntTimesMatrix: Times<UInt, Matrix, Matrix> = Times { left, right ->
+        matrixFactory.generateMatrix(rowNumber = right.rowNumber, columnNumber = right.columnNumber) { row, column -> ring.uIntTimesNumber { left * right[row, column] } }
     }
     // endregion
     
     // region Long-Matrix operations
-    override val longTimesMatrix: Times<Long, Matrix, Matrix> = Times { other ->
-        matrixFactory.generateMatrix(rowNumber = other.rowNumber, columnNumber = other.columnNumber) { row, column -> ring.longTimesNumber { this * other[row, column] } }
+    override val longTimesMatrix: Times<Long, Matrix, Matrix> = Times { left, right ->
+        matrixFactory.generateMatrix(rowNumber = right.rowNumber, columnNumber = right.columnNumber) { row, column -> ring.longTimesNumber { left * right[row, column] } }
     }
     // endregion
     
     // region ULong-Matrix operations
-    override val uLongTimesMatrix: Times<ULong, Matrix, Matrix> = Times { other ->
-        matrixFactory.generateMatrix(rowNumber = other.rowNumber, columnNumber = other.columnNumber) { row, column -> ring.uLongTimesNumber { this * other[row, column] } }
+    override val uLongTimesMatrix: Times<ULong, Matrix, Matrix> = Times { left, right ->
+        matrixFactory.generateMatrix(rowNumber = right.rowNumber, columnNumber = right.columnNumber) { row, column -> ring.uLongTimesNumber { left * right[row, column] } }
     }
     // endregion
     
     // region Number-Matrix operations
-    override val numberTimesMatrix: Times<Number, Matrix, Matrix> = Times { other ->
-        matrixFactory.generateMatrix(rowNumber = other.rowNumber, columnNumber = other.columnNumber) { row, column -> ring.numberTimesNumber { this * other[row, column] } }
+    override val numberTimesMatrix: Times<Number, Matrix, Matrix> = Times { left, right ->
+        matrixFactory.generateMatrix(rowNumber = right.rowNumber, columnNumber = right.columnNumber) { row, column -> ring.numberTimesNumber { left * right[row, column] } }
     }
     // endregion
     
     // region Matrix-Matrix operations
     override val matrixUnaryMinus: UnaryMinus<Matrix, Matrix> = UnaryMinus {
-        matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> ring.numberUnaryMinus { -this[row, column] } }
+        matrixFactory.generateMatrix(rowNumber = it.rowNumber, columnNumber = it.columnNumber) { row, column -> ring.numberUnaryMinus { -it[row, column] } }
     }
-    override val matrixPlusMatrix: Plus<Matrix, Matrix, Matrix> = Plus { other ->
-        matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> ring.numberPlusNumber { this[row, column] + other[row, column] } }
+    override val matrixPlusMatrix: Plus<Matrix, Matrix, Matrix> = Plus { left, right ->
+        matrixFactory.generateMatrix(rowNumber = left.rowNumber, columnNumber = left.columnNumber) { row, column -> ring.numberPlusNumber { left[row, column] + right[row, column] } }
     }
-    override val matrixMinusMatrix: Minus<Matrix, Matrix, Matrix> = Minus { other ->
-        matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> ring.numberMinusNumber { this[row, column] - other[row, column] } }
+    override val matrixMinusMatrix: Minus<Matrix, Matrix, Matrix> = Minus { left, right ->
+        matrixFactory.generateMatrix(rowNumber = left.rowNumber, columnNumber = left.columnNumber) { row, column -> ring.numberMinusNumber { left[row, column] - right[row, column] } }
     }
     // endregion
 }
@@ -127,89 +127,89 @@ private class MatrixCategoryOverFieldViaDefault<Number, Matrix : MDList2<Number>
     private val field: Field<Number>,
 ) : MatrixCategoryOverField<Number, Matrix> {
     // region Matrix-Int operations
-    override val matrixTimesInt: Times<Matrix, Int, Matrix> = Times { other ->
-        matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field.numberTimesInt { this[row, column] * other } }
+    override val matrixTimesInt: Times<Matrix, Int, Matrix> = Times { left, right ->
+        matrixFactory.generateMatrix(rowNumber = left.rowNumber, columnNumber = left.columnNumber) { row, column -> field.numberTimesInt { left[row, column] * right } }
     }
-    override val matrixDivideInt: Divide<Matrix, Int, Matrix> = Divide { other ->
-        matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field.numberDivideInt { this[row, column] / other } }
+    override val matrixDivideInt: Divide<Matrix, Int, Matrix> = Divide { left, right ->
+        matrixFactory.generateMatrix(rowNumber = left.rowNumber, columnNumber = left.columnNumber) { row, column -> field.numberDivideInt { left[row, column] / right } }
     }
     // endregion
     
     // region Matrix-UInt operations
-    override val matrixTimesUInt: Times<Matrix, UInt, Matrix> = Times { other ->
-        matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field.numberTimesUInt { this[row, column] * other } }
+    override val matrixTimesUInt: Times<Matrix, UInt, Matrix> = Times { left, right ->
+        matrixFactory.generateMatrix(rowNumber = left.rowNumber, columnNumber = left.columnNumber) { row, column -> field.numberTimesUInt { left[row, column] * right } }
     }
-    override val matrixDivideUInt: Divide<Matrix, UInt, Matrix> = Divide { other ->
-        matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field.numberDivideUInt { this[row, column] / other } }
+    override val matrixDivideUInt: Divide<Matrix, UInt, Matrix> = Divide { left, right ->
+        matrixFactory.generateMatrix(rowNumber = left.rowNumber, columnNumber = left.columnNumber) { row, column -> field.numberDivideUInt { left[row, column] / right } }
     }
     // endregion
     
     // region Matrix-Long operations
-    override val matrixTimesLong: Times<Matrix, Long, Matrix> = Times { other ->
-        matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field.numberTimesLong { this[row, column] * other } }
+    override val matrixTimesLong: Times<Matrix, Long, Matrix> = Times { left, right ->
+        matrixFactory.generateMatrix(rowNumber = left.rowNumber, columnNumber = left.columnNumber) { row, column -> field.numberTimesLong { left[row, column] * right } }
     }
-    override val matrixDivideLong: Divide<Matrix, Long, Matrix> = Divide { other ->
-        matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field.numberDivideLong { this[row, column] / other } }
+    override val matrixDivideLong: Divide<Matrix, Long, Matrix> = Divide { left, right ->
+        matrixFactory.generateMatrix(rowNumber = left.rowNumber, columnNumber = left.columnNumber) { row, column -> field.numberDivideLong { left[row, column] / right } }
     }
     // endregion
     
     // region Matrix-ULong operations
-    override val matrixTimesULong: Times<Matrix, ULong, Matrix> = Times { other ->
-        matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field.numberTimesULong { this[row, column] * other } }
+    override val matrixTimesULong: Times<Matrix, ULong, Matrix> = Times { left, right ->
+        matrixFactory.generateMatrix(rowNumber = left.rowNumber, columnNumber = left.columnNumber) { row, column -> field.numberTimesULong { left[row, column] * right } }
     }
-    override val matrixDivideULong: Divide<Matrix, ULong, Matrix> = Divide { other ->
-        matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field.numberDivideULong { this[row, column] / other } }
+    override val matrixDivideULong: Divide<Matrix, ULong, Matrix> = Divide { left, right ->
+        matrixFactory.generateMatrix(rowNumber = left.rowNumber, columnNumber = left.columnNumber) { row, column -> field.numberDivideULong { left[row, column] / right } }
     }
     // endregion
     
     // region Matrix-Number operations
-    override val matrixTimesNumber: Times<Matrix, Number, Matrix> = Times { other ->
-        matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field.numberTimesNumber { this[row, column] * other } }
+    override val matrixTimesNumber: Times<Matrix, Number, Matrix> = Times { left, right ->
+        matrixFactory.generateMatrix(rowNumber = left.rowNumber, columnNumber = left.columnNumber) { row, column -> field.numberTimesNumber { left[row, column] * right } }
     }
-    override val matrixDivideNumber: Divide<Matrix, Number, Matrix> = Divide { other ->
-        matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field.numberDivideNumber { this[row, column] / other } }
+    override val matrixDivideNumber: Divide<Matrix, Number, Matrix> = Divide { left, right ->
+        matrixFactory.generateMatrix(rowNumber = left.rowNumber, columnNumber = left.columnNumber) { row, column -> field.numberDivideNumber { left[row, column] / right } }
     }
     // endregion
     
     // region Int-Matrix operations
-    override val intTimesMatrix: Times<Int, Matrix, Matrix> = Times { other ->
-        matrixFactory.generateMatrix(rowNumber = other.rowNumber, columnNumber = other.columnNumber) { row, column -> field.intTimesNumber { this * other[row, column] } }
+    override val intTimesMatrix: Times<Int, Matrix, Matrix> = Times { left, right ->
+        matrixFactory.generateMatrix(rowNumber = right.rowNumber, columnNumber = right.columnNumber) { row, column -> field.intTimesNumber { left * right[row, column] } }
     }
     // endregion
     
     // region UInt-Matrix operations
-    override val uIntTimesMatrix: Times<UInt, Matrix, Matrix> = Times { other ->
-        matrixFactory.generateMatrix(rowNumber = other.rowNumber, columnNumber = other.columnNumber) { row, column -> field.uIntTimesNumber { this * other[row, column] } }
+    override val uIntTimesMatrix: Times<UInt, Matrix, Matrix> = Times { left, right ->
+        matrixFactory.generateMatrix(rowNumber = right.rowNumber, columnNumber = right.columnNumber) { row, column -> field.uIntTimesNumber { left * right[row, column] } }
     }
     // endregion
     
     // region Long-Matrix operations
-    override val longTimesMatrix: Times<Long, Matrix, Matrix> = Times { other ->
-        matrixFactory.generateMatrix(rowNumber = other.rowNumber, columnNumber = other.columnNumber) { row, column -> field.longTimesNumber { this * other[row, column] } }
+    override val longTimesMatrix: Times<Long, Matrix, Matrix> = Times { left, right ->
+        matrixFactory.generateMatrix(rowNumber = right.rowNumber, columnNumber = right.columnNumber) { row, column -> field.longTimesNumber { left * right[row, column] } }
     }
     // endregion
     
     // region ULong-Matrix operations
-    override val uLongTimesMatrix: Times<ULong, Matrix, Matrix> = Times { other ->
-        matrixFactory.generateMatrix(rowNumber = other.rowNumber, columnNumber = other.columnNumber) { row, column -> field.uLongTimesNumber { this * other[row, column] } }
+    override val uLongTimesMatrix: Times<ULong, Matrix, Matrix> = Times { left, right ->
+        matrixFactory.generateMatrix(rowNumber = right.rowNumber, columnNumber = right.columnNumber) { row, column -> field.uLongTimesNumber { left * right[row, column] } }
     }
     // endregion
     
     // region Number-Matrix operations
-    override val numberTimesMatrix: Times<Number, Matrix, Matrix> = Times { other ->
-        matrixFactory.generateMatrix(rowNumber = other.rowNumber, columnNumber = other.columnNumber) { row, column -> field.numberTimesNumber { this * other[row, column] } }
+    override val numberTimesMatrix: Times<Number, Matrix, Matrix> = Times { left, right ->
+        matrixFactory.generateMatrix(rowNumber = right.rowNumber, columnNumber = right.columnNumber) { row, column -> field.numberTimesNumber { left * right[row, column] } }
     }
     // endregion
     
     // region Matrix-Matrix operations
     override val matrixUnaryMinus: UnaryMinus<Matrix, Matrix> = UnaryMinus {
-        matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field.numberUnaryMinus { -this[row, column] } }
+        matrixFactory.generateMatrix(rowNumber = it.rowNumber, columnNumber = it.columnNumber) { row, column -> field.numberUnaryMinus { -it[row, column] } }
     }
-    override val matrixPlusMatrix: Plus<Matrix, Matrix, Matrix> = Plus { other ->
-        matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field.numberPlusNumber { this[row, column] + other[row, column] } }
+    override val matrixPlusMatrix: Plus<Matrix, Matrix, Matrix> = Plus { left, right ->
+        matrixFactory.generateMatrix(rowNumber = left.rowNumber, columnNumber = left.columnNumber) { row, column -> field.numberPlusNumber { left[row, column] + right[row, column] } }
     }
-    override val matrixMinusMatrix: Minus<Matrix, Matrix, Matrix> = Minus { other ->
-        matrixFactory.generateMatrix(rowNumber = rowNumber, columnNumber = columnNumber) { row, column -> field.numberMinusNumber { this[row, column] - other[row, column] } }
+    override val matrixMinusMatrix: Minus<Matrix, Matrix, Matrix> = Minus { left, right ->
+        matrixFactory.generateMatrix(rowNumber = left.rowNumber, columnNumber = left.columnNumber) { row, column -> field.numberMinusNumber { left[row, column] - right[row, column] } }
     }
     // endregion
 }

@@ -22,20 +22,20 @@ public interface Algebra<Number, Vector> : Module<Number, Vector>, Ring<Vector> 
     
     // region Vector-Number operations
     @KoneContextHolderInclude
-    public val vectorPlusNumber: Plus<Vector, Number, Vector> get() = Plus { other -> numberPlusNumber { this + valueOf(other) } }
+    public val vectorPlusNumber: Plus<Vector, Number, Vector> get() = Plus { left, right -> numberPlusNumber { left + valueOf(right) } }
     @KoneContextHolderInclude
-    public val vectorMinusNumber: Minus<Vector, Number, Vector> get() = Minus { other -> numberMinusNumber { this - valueOf(other) } }
+    public val vectorMinusNumber: Minus<Vector, Number, Vector> get() = Minus { left, right -> numberMinusNumber { left - valueOf(right) } }
     @KoneContextHolderInclude
-    public override val vectorTimesNumber: Times<Vector, Number, Vector> get() = Times { other -> numberTimesNumber { this * valueOf(other) } }
+    public override val vectorTimesNumber: Times<Vector, Number, Vector> get() = Times { left, right -> numberTimesNumber { left * valueOf(right) } }
     // endregion
     
     // region Number-Vector operations
     @KoneContextHolderInclude
-    public val numberPlusVector: Plus<Number, Vector, Vector> get() = Plus { other -> numberPlusNumber { valueOf(this) + other } }
+    public val numberPlusVector: Plus<Number, Vector, Vector> get() = Plus { left, right -> numberPlusNumber { valueOf(left) + right } }
     @KoneContextHolderInclude
-    public val numberMinusVector: Minus<Number, Vector, Vector> get() = Minus { other -> numberMinusNumber { valueOf(this) - other } }
+    public val numberMinusVector: Minus<Number, Vector, Vector> get() = Minus { left, right -> numberMinusNumber { valueOf(left) - right } }
     @KoneContextHolderInclude
-    public override val numberTimesVector: Times<Number, Vector, Vector> get() = Times { other -> numberTimesNumber { valueOf(this) * other } }
+    public override val numberTimesVector: Times<Number, Vector, Vector> get() = Times { left, right -> numberTimesNumber { valueOf(left) * right } }
     // endregion
     
     public companion object;

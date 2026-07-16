@@ -24,23 +24,23 @@ public interface Field<Number> : CommutativeRing<Number> {
     @KoneContextHolderInclude
     public val numberDivideNumber: Divide<Number, Number, Number>
     @KoneContextHolderInclude
-    public val numberReciprocal: Reciprocal<Number, Number> get() = Reciprocal { numberDivideNumber { one / this } }
+    public val numberReciprocal: Reciprocal<Number, Number> get() = Reciprocal { numberDivideNumber { one / it } }
     @KoneContextHolderInclude
-    public val numberDivideInt: Divide<Number, Int, Number> get() = Divide { other -> numberDivideNumber { this / valueOf(other) } }
+    public val numberDivideInt: Divide<Number, Int, Number> get() = Divide { left, right -> numberDivideNumber { left / valueOf(right) } }
     @KoneContextHolderInclude
-    public val numberDivideUInt: Divide<Number, UInt, Number> get() = Divide { other -> numberDivideNumber { this / valueOf(other) } }
+    public val numberDivideUInt: Divide<Number, UInt, Number> get() = Divide { left, right -> numberDivideNumber { left / valueOf(right) } }
     @KoneContextHolderInclude
-    public val numberDivideLong: Divide<Number, Long, Number> get() = Divide { other -> numberDivideNumber { this / valueOf(other) } }
+    public val numberDivideLong: Divide<Number, Long, Number> get() = Divide { left, right -> numberDivideNumber { left / valueOf(right) } }
     @KoneContextHolderInclude
-    public val numberDivideULong: Divide<Number, ULong, Number> get() = Divide { other -> numberDivideNumber { this / valueOf(other) } }
+    public val numberDivideULong: Divide<Number, ULong, Number> get() = Divide { left, right -> numberDivideNumber { left / valueOf(right) } }
     @KoneContextHolderInclude
-    public val intDivideNumber: Divide<Int, Number, Number> get() = Divide { other -> numberDivideNumber { valueOf(this) / other } }
+    public val intDivideNumber: Divide<Int, Number, Number> get() = Divide { left, right -> numberDivideNumber { valueOf(left) / right } }
     @KoneContextHolderInclude
-    public val uIntDivideNumber: Divide<UInt, Number, Number> get() = Divide { other -> numberDivideNumber { valueOf(this) / other } }
+    public val uIntDivideNumber: Divide<UInt, Number, Number> get() = Divide { left, right -> numberDivideNumber { valueOf(left) / right } }
     @KoneContextHolderInclude
-    public val longDivideNumber: Divide<Long, Number, Number> get() = Divide { other -> numberDivideNumber { valueOf(this) / other } }
+    public val longDivideNumber: Divide<Long, Number, Number> get() = Divide { left, right -> numberDivideNumber { valueOf(left) / right } }
     @KoneContextHolderInclude
-    public val uLongDivideNumber: Divide<ULong, Number, Number> get() = Divide { other -> numberDivideNumber { valueOf(this) / other } }
+    public val uLongDivideNumber: Divide<ULong, Number, Number> get() = Divide { left, right -> numberDivideNumber { valueOf(left) / right } }
     @KoneContextHolderInclude
     public val powerNumberInt: Power<Number, Int, Number>
         get() = Power { base, exponent ->

@@ -61,17 +61,17 @@ public interface AffineSpaceOverField<Number, Vector, Point> : VectorSpace<Numbe
 private class AffineSpaceOverFieldViaVectorSpace<Number, Vector>(
     private val vectorSpace: VectorSpace<Number, Vector>,
 ) : AffineSpaceOverField<Number, Vector, PointWrapper<Vector>>, VectorSpace<Number, Vector> by vectorSpace {
-    override val pointPlusVector: Plus<PointWrapper<Vector>, Vector, PointWrapper<Vector>> = Plus { other ->
-        vectorSpace.numberPlusNumber { PointWrapper(this.vector + other) }
+    override val pointPlusVector: Plus<PointWrapper<Vector>, Vector, PointWrapper<Vector>> = Plus { left, right ->
+        vectorSpace.numberPlusNumber { PointWrapper(left.vector + right) }
     }
-    override val pointMinusVector: Minus<PointWrapper<Vector>, Vector, PointWrapper<Vector>> = Minus { other ->
-        vectorSpace.numberMinusNumber { PointWrapper(this.vector - other) }
+    override val pointMinusVector: Minus<PointWrapper<Vector>, Vector, PointWrapper<Vector>> = Minus { left, right ->
+        vectorSpace.numberMinusNumber { PointWrapper(left.vector - right) }
     }
-    override val vectorPlusPoint: Plus<Vector, PointWrapper<Vector>, PointWrapper<Vector>> = Plus { other ->
-        vectorSpace.numberPlusNumber { PointWrapper(this + other.vector) }
+    override val vectorPlusPoint: Plus<Vector, PointWrapper<Vector>, PointWrapper<Vector>> = Plus { left, right ->
+        vectorSpace.numberPlusNumber { PointWrapper(left + right.vector) }
     }
-    override val pointMinusPoint: Minus<PointWrapper<Vector>, PointWrapper<Vector>, Vector> = Minus { other ->
-        vectorSpace.numberMinusNumber { this.vector - other.vector }
+    override val pointMinusPoint: Minus<PointWrapper<Vector>, PointWrapper<Vector>, Vector> = Minus { left, right ->
+        vectorSpace.numberMinusNumber { left.vector - right.vector }
     }
 }
 

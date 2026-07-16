@@ -49,7 +49,7 @@ context(koneContextRegistry: KoneContextRegistry.Provider)
 public fun <@Supply Number> MatrixFactory.Companion.viaDefault(): MatrixFactory<Number, MDList2<Number>> {
     val koneContextRegistry = koneContextRegistry.get()
     return viaDefault(
-        ring = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) { "MatrixFactory.default<${suppliedTypeOf<Number>()}>" }
+        ring = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) { "MatrixFactory.viaDefault<${suppliedTypeOf<Number>()}>" }
     )
 }
 

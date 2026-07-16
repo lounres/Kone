@@ -17,22 +17,22 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 public interface Group<Number> : Monoid<Number> {
     // region Number-Int operations
     @KoneContextHolderInclude
-    public val numberTimesInt: Times<Number, Int, Number> get() = Times { other -> this doublingTimes other }
+    public val numberTimesInt: Times<Number, Int, Number> get() = Times { left, right -> left doublingTimes right }
     // endregion
     
     // region Number-Long operations
     @KoneContextHolderInclude
-    public val numberTimesLong: Times<Number, Long, Number> get() = Times { other -> this doublingTimes other }
+    public val numberTimesLong: Times<Number, Long, Number> get() = Times { left, right -> left doublingTimes right }
     // endregion
     
     // region Int-Number operations
     @KoneContextHolderInclude
-    public val intTimesNumber: Times<Int, Number, Number> get() = Times { other -> this doublingTimes other }
+    public val intTimesNumber: Times<Int, Number, Number> get() = Times { left, right -> left doublingTimes right }
     // endregion
     
     // region Long-Number operations
     @KoneContextHolderInclude
-    public val longTimesNumber: Times<Long, Number, Number> get() = Times { other -> this doublingTimes other }
+    public val longTimesNumber: Times<Long, Number, Number> get() = Times { left, right -> left doublingTimes right }
     // endregion
     
     // region Number-Number operations

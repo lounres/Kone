@@ -815,6 +815,7 @@ public inline fun <Key, Value> KoneIterable<Key>.associateWithReified(
         valueSelector = valueSelector,
     )
 
+@IgnorableReturnValue
 public inline fun <K, V, W, D : KoneMutableMap<in K, in W>> KoneMap<out K, V>.mapValuesTo(destination: D, transform: (KoneMapEntry<K, V>) -> W): D =
     nodesView.associateByTo(destination, { it.key }, transform)
 

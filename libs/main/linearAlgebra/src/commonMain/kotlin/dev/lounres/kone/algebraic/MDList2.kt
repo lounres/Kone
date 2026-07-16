@@ -27,12 +27,12 @@ private class MDList2Algebra<Number>(
     
     // region Equality
     override val numberIsZero: IsZero<MDList2<Number>> = IsZero {
-        require(this.rowNumber == dimension && this.columnNumber == dimension) { TODO() }
-        this.all { ring.numberIsZero { it.isZero() } }
+        require(it.rowNumber == dimension && it.columnNumber == dimension) { TODO() }
+        it.all { value -> ring.numberIsZero { value.isZero() } }
     }
     override val numberIsOne: IsOne<MDList2<Number>> = IsOne {
-        require(this.rowNumber == dimension && this.columnNumber == dimension) { TODO() }
-        this.allIndexed { rowIndex, columnIndex, value -> if (rowIndex == columnIndex) ring.numberIsOne { value.isOne() } else ring.numberIsZero { value.isZero() } }
+        require(it.rowNumber == dimension && it.columnNumber == dimension) { TODO() }
+        it.allIndexed { rowIndex, columnIndex, value -> if (rowIndex == columnIndex) ring.numberIsOne { value.isOne() } else ring.numberIsZero { value.isZero() } }
     }
     // endregion
     
@@ -52,175 +52,175 @@ private class MDList2Algebra<Number>(
     // endregion
     
     // region Matrix-Int operations
-    override val numberPlusInt: Plus<MDList2<Number>, Int, MDList2<Number>> = Plus { other ->
-        require(this.rowNumber == dimension && this.columnNumber == dimension) { TODO() }
-        this.mapIndexed { rowIndex, columnIndex, number -> ring.numberPlusInt { if (rowIndex == columnIndex) number + other else number } }
+    override val numberPlusInt: Plus<MDList2<Number>, Int, MDList2<Number>> = Plus { left, right ->
+        require(left.rowNumber == dimension && left.columnNumber == dimension) { TODO() }
+        left.mapIndexed { rowIndex, columnIndex, number -> ring.numberPlusInt { if (rowIndex == columnIndex) number + right else number } }
     }
-    override val numberMinusInt: Minus<MDList2<Number>, Int, MDList2<Number>> = Minus { other ->
-        require(this.rowNumber == dimension && this.columnNumber == dimension) { TODO() }
-        this.mapIndexed { rowIndex, columnIndex, number -> ring.numberMinusInt { if (rowIndex == columnIndex) number - other else number } }
+    override val numberMinusInt: Minus<MDList2<Number>, Int, MDList2<Number>> = Minus { left, right ->
+        require(left.rowNumber == dimension && left.columnNumber == dimension) { TODO() }
+        left.mapIndexed { rowIndex, columnIndex, number -> ring.numberMinusInt { if (rowIndex == columnIndex) number - right else number } }
     }
-    override val numberTimesInt: Times<MDList2<Number>, Int, MDList2<Number>> = Times { other ->
-        require(this.rowNumber == dimension && this.columnNumber == dimension) { TODO() }
-        this.map { ring.numberTimesInt { it * other } }
+    override val numberTimesInt: Times<MDList2<Number>, Int, MDList2<Number>> = Times { left, right ->
+        require(left.rowNumber == dimension && left.columnNumber == dimension) { TODO() }
+        left.map { ring.numberTimesInt { it * right } }
     }
     // endregion
     
     // region Matrix-UInt operations
-    override val numberPlusUInt: Plus<MDList2<Number>, UInt, MDList2<Number>> = Plus { other ->
-        require(this.rowNumber == dimension && this.columnNumber == dimension) { TODO() }
-        this.mapIndexed { rowIndex, columnIndex, number -> ring.numberPlusUInt { if (rowIndex == columnIndex) number + other else number } }
+    override val numberPlusUInt: Plus<MDList2<Number>, UInt, MDList2<Number>> = Plus { left, right ->
+        require(left.rowNumber == dimension && left.columnNumber == dimension) { TODO() }
+        left.mapIndexed { rowIndex, columnIndex, number -> ring.numberPlusUInt { if (rowIndex == columnIndex) number + right else number } }
     }
-    override val numberMinusUInt: Minus<MDList2<Number>, UInt, MDList2<Number>> = Minus { other ->
-        require(this.rowNumber == dimension && this.columnNumber == dimension) { TODO() }
-        this.mapIndexed { rowIndex, columnIndex, number -> ring.numberMinusUInt { if (rowIndex == columnIndex) number - other else number } }
+    override val numberMinusUInt: Minus<MDList2<Number>, UInt, MDList2<Number>> = Minus { left, right ->
+        require(left.rowNumber == dimension && left.columnNumber == dimension) { TODO() }
+        left.mapIndexed { rowIndex, columnIndex, number -> ring.numberMinusUInt { if (rowIndex == columnIndex) number - right else number } }
     }
-    override val numberTimesUInt: Times<MDList2<Number>, UInt, MDList2<Number>> = Times { other ->
-        require(this.rowNumber == dimension && this.columnNumber == dimension) { TODO() }
-        this.map { ring.numberTimesUInt { it * other } }
-    }
-    // endregion
-    
-    // region Matrix-ULong operations
-    override val numberPlusLong: Plus<MDList2<Number>, Long, MDList2<Number>> = Plus { other ->
-        require(this.rowNumber == dimension && this.columnNumber == dimension) { TODO() }
-        this.mapIndexed { rowIndex, columnIndex, number -> ring.numberPlusLong { if (rowIndex == columnIndex) number + other else number } }
-    }
-    override val numberMinusLong: Minus<MDList2<Number>, Long, MDList2<Number>> = Minus { other ->
-        require(this.rowNumber == dimension && this.columnNumber == dimension) { TODO() }
-        this.mapIndexed { rowIndex, columnIndex, number -> ring.numberMinusLong { if (rowIndex == columnIndex) number - other else number } }
-    }
-    override val numberTimesLong: Times<MDList2<Number>, Long, MDList2<Number>> = Times { other ->
-        require(this.rowNumber == dimension && this.columnNumber == dimension) { TODO() }
-        this.map { ring.numberTimesLong { it * other } }
+    override val numberTimesUInt: Times<MDList2<Number>, UInt, MDList2<Number>> = Times { left, right ->
+        require(left.rowNumber == dimension && left.columnNumber == dimension) { TODO() }
+        left.map { ring.numberTimesUInt { it * right } }
     }
     // endregion
     
     // region Matrix-ULong operations
-    override val numberPlusULong: Plus<MDList2<Number>, ULong, MDList2<Number>> = Plus { other ->
-        require(this.rowNumber == dimension && this.columnNumber == dimension) { TODO() }
-        this.mapIndexed { rowIndex, columnIndex, number -> ring.numberPlusULong { if (rowIndex == columnIndex) number + other else number } }
+    override val numberPlusLong: Plus<MDList2<Number>, Long, MDList2<Number>> = Plus { left, right ->
+        require(left.rowNumber == dimension && left.columnNumber == dimension) { TODO() }
+        left.mapIndexed { rowIndex, columnIndex, number -> ring.numberPlusLong { if (rowIndex == columnIndex) number + right else number } }
     }
-    override val numberMinusULong: Minus<MDList2<Number>, ULong, MDList2<Number>> = Minus { other ->
-        require(this.rowNumber == dimension && this.columnNumber == dimension) { TODO() }
-        this.mapIndexed { rowIndex, columnIndex, number -> ring.numberMinusULong { if (rowIndex == columnIndex) number - other else number } }
+    override val numberMinusLong: Minus<MDList2<Number>, Long, MDList2<Number>> = Minus { left, right ->
+        require(left.rowNumber == dimension && left.columnNumber == dimension) { TODO() }
+        left.mapIndexed { rowIndex, columnIndex, number -> ring.numberMinusLong { if (rowIndex == columnIndex) number - right else number } }
     }
-    override val numberTimesULong: Times<MDList2<Number>, ULong, MDList2<Number>> = Times { other ->
-        require(this.rowNumber == dimension && this.columnNumber == dimension) { TODO() }
-        this.map { ring.numberTimesULong { it * other } }
+    override val numberTimesLong: Times<MDList2<Number>, Long, MDList2<Number>> = Times { left, right ->
+        require(left.rowNumber == dimension && left.columnNumber == dimension) { TODO() }
+        left.map { ring.numberTimesLong { it * right } }
+    }
+    // endregion
+    
+    // region Matrix-ULong operations
+    override val numberPlusULong: Plus<MDList2<Number>, ULong, MDList2<Number>> = Plus { left, right ->
+        require(left.rowNumber == dimension && left.columnNumber == dimension) { TODO() }
+        left.mapIndexed { rowIndex, columnIndex, number -> ring.numberPlusULong { if (rowIndex == columnIndex) number + right else number } }
+    }
+    override val numberMinusULong: Minus<MDList2<Number>, ULong, MDList2<Number>> = Minus { left, right ->
+        require(left.rowNumber == dimension && left.columnNumber == dimension) { TODO() }
+        left.mapIndexed { rowIndex, columnIndex, number -> ring.numberMinusULong { if (rowIndex == columnIndex) number - right else number } }
+    }
+    override val numberTimesULong: Times<MDList2<Number>, ULong, MDList2<Number>> = Times { left, right ->
+        require(left.rowNumber == dimension && left.columnNumber == dimension) { TODO() }
+        left.map { ring.numberTimesULong { it * right } }
     }
     // endregion
     
     // region Matrix-Number operations
-    override val vectorPlusNumber: Plus<MDList2<Number>, Number, MDList2<Number>> = Plus { other ->
-        require(this.rowNumber == dimension && this.columnNumber == dimension) { TODO() }
-        this.mapIndexed { rowIndex, columnIndex, number -> ring.numberPlusNumber { if (rowIndex == columnIndex) number + other else number } }
+    override val vectorPlusNumber: Plus<MDList2<Number>, Number, MDList2<Number>> = Plus { left, right ->
+        require(left.rowNumber == dimension && left.columnNumber == dimension) { TODO() }
+        left.mapIndexed { rowIndex, columnIndex, number -> ring.numberPlusNumber { if (rowIndex == columnIndex) number + right else number } }
     }
-    override val vectorMinusNumber: Minus<MDList2<Number>, Number, MDList2<Number>> = Minus { other ->
-        require(this.rowNumber == dimension && this.columnNumber == dimension) { TODO() }
-        this.mapIndexed { rowIndex, columnIndex, number -> ring.numberMinusNumber { if (rowIndex == columnIndex) number - other else number } }
+    override val vectorMinusNumber: Minus<MDList2<Number>, Number, MDList2<Number>> = Minus { left, right ->
+        require(left.rowNumber == dimension && left.columnNumber == dimension) { TODO() }
+        left.mapIndexed { rowIndex, columnIndex, number -> ring.numberMinusNumber { if (rowIndex == columnIndex) number - right else number } }
     }
-    override val vectorTimesNumber: Times<MDList2<Number>, Number, MDList2<Number>> = Times { other ->
-        require(this.rowNumber == dimension && this.columnNumber == dimension) { TODO() }
-        this.map { ring.numberTimesNumber { it * other } }
+    override val vectorTimesNumber: Times<MDList2<Number>, Number, MDList2<Number>> = Times { left, right ->
+        require(left.rowNumber == dimension && left.columnNumber == dimension) { TODO() }
+        left.map { ring.numberTimesNumber { it * right } }
     }
     // endregion
     
     // region Int-Matrix operations
-    override val intPlusNumber: Plus<Int, MDList2<Number>, MDList2<Number>> = Plus { other ->
-        require(other.rowNumber == dimension && other.columnNumber == dimension) { TODO() }
-        other.mapIndexed { rowIndex, columnIndex, number -> ring.intPlusNumber { if (rowIndex == columnIndex) this + number else number } }
+    override val intPlusNumber: Plus<Int, MDList2<Number>, MDList2<Number>> = Plus { left, right ->
+        require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
+        right.mapIndexed { rowIndex, columnIndex, number -> ring.intPlusNumber { if (rowIndex == columnIndex) left + number else number } }
     }
-    override val intMinusNumber: Minus<Int, MDList2<Number>, MDList2<Number>> = Minus { other ->
-        require(other.rowNumber == dimension && other.columnNumber == dimension) { TODO() }
-        other.mapIndexed { rowIndex, columnIndex, number -> context(ring.intMinusNumber, ring.numberUnaryMinus) { if (rowIndex == columnIndex) this - number else -number } }
+    override val intMinusNumber: Minus<Int, MDList2<Number>, MDList2<Number>> = Minus { left, right ->
+        require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
+        right.mapIndexed { rowIndex, columnIndex, number -> context(ring.intMinusNumber, ring.numberUnaryMinus) { if (rowIndex == columnIndex) left - number else -number } }
     }
-    override val intTimesNumber: Times<Int, MDList2<Number>, MDList2<Number>> = Times { other ->
-        require(other.rowNumber == dimension && other.columnNumber == dimension) { TODO() }
-        other.map { ring.intTimesNumber { this * it } }
+    override val intTimesNumber: Times<Int, MDList2<Number>, MDList2<Number>> = Times { left, right ->
+        require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
+        right.map { ring.intTimesNumber { left * it } }
     }
     // endregion
     
     // region UInt-Matrix operations
-    override val uIntPlusNumber: Plus<UInt, MDList2<Number>, MDList2<Number>> = Plus { other ->
-        require(other.rowNumber == dimension && other.columnNumber == dimension) { TODO() }
-        other.mapIndexed { rowIndex, columnIndex, number -> ring.uIntPlusNumber { if (rowIndex == columnIndex) this + number else number } }
+    override val uIntPlusNumber: Plus<UInt, MDList2<Number>, MDList2<Number>> = Plus { left, right ->
+        require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
+        right.mapIndexed { rowIndex, columnIndex, number -> ring.uIntPlusNumber { if (rowIndex == columnIndex) left + number else number } }
     }
-    override val uIntMinusNumber: Minus<UInt, MDList2<Number>, MDList2<Number>> = Minus { other ->
-        require(other.rowNumber == dimension && other.columnNumber == dimension) { TODO() }
-        other.mapIndexed { rowIndex, columnIndex, number -> context(ring.uIntMinusNumber, ring.numberUnaryMinus) { if (rowIndex == columnIndex) this - number else -number } }
+    override val uIntMinusNumber: Minus<UInt, MDList2<Number>, MDList2<Number>> = Minus { left, right ->
+        require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
+        right.mapIndexed { rowIndex, columnIndex, number -> context(ring.uIntMinusNumber, ring.numberUnaryMinus) { if (rowIndex == columnIndex) left - number else -number } }
     }
-    override val uIntTimesNumber: Times<UInt, MDList2<Number>, MDList2<Number>> = Times { other ->
-        require(other.rowNumber == dimension && other.columnNumber == dimension) { TODO() }
-        other.map { ring.uIntTimesNumber { this * it } }
+    override val uIntTimesNumber: Times<UInt, MDList2<Number>, MDList2<Number>> = Times { left, right ->
+        require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
+        right.map { ring.uIntTimesNumber { left * it } }
     }
     // endregion
     
     // region Long-Matrix operations
-    override val longPlusNumber: Plus<Long, MDList2<Number>, MDList2<Number>> = Plus { other ->
-        require(other.rowNumber == dimension && other.columnNumber == dimension) { TODO() }
-        other.mapIndexed { rowIndex, columnIndex, number -> ring.longPlusNumber { if (rowIndex == columnIndex) this + number else number } }
+    override val longPlusNumber: Plus<Long, MDList2<Number>, MDList2<Number>> = Plus { left, right ->
+        require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
+        right.mapIndexed { rowIndex, columnIndex, number -> ring.longPlusNumber { if (rowIndex == columnIndex) left + number else number } }
     }
-    override val longMinusNumber: Minus<Long, MDList2<Number>, MDList2<Number>> = Minus { other ->
-        require(other.rowNumber == dimension && other.columnNumber == dimension) { TODO() }
-        other.mapIndexed { rowIndex, columnIndex, number -> context(ring.longMinusNumber, ring.numberUnaryMinus) { if (rowIndex == columnIndex) this - number else -number } }
+    override val longMinusNumber: Minus<Long, MDList2<Number>, MDList2<Number>> = Minus { left, right ->
+        require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
+        right.mapIndexed { rowIndex, columnIndex, number -> context(ring.longMinusNumber, ring.numberUnaryMinus) { if (rowIndex == columnIndex) left - number else -number } }
     }
-    override val longTimesNumber: Times<Long, MDList2<Number>, MDList2<Number>> = Times { other ->
-        require(other.rowNumber == dimension && other.columnNumber == dimension) { TODO() }
-        other.map { ring.longTimesNumber { this * it } }
+    override val longTimesNumber: Times<Long, MDList2<Number>, MDList2<Number>> = Times { left, right ->
+        require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
+        right.map { ring.longTimesNumber { left * it } }
     }
     // endregion
     
     // region ULong-Matrix operations
-    override val uLongPlusNumber: Plus<ULong, MDList2<Number>, MDList2<Number>> = Plus { other ->
-        require(other.rowNumber == dimension && other.columnNumber == dimension) { TODO() }
-        other.mapIndexed { rowIndex, columnIndex, number -> ring.uLongPlusNumber { if (rowIndex == columnIndex) this + number else number } }
+    override val uLongPlusNumber: Plus<ULong, MDList2<Number>, MDList2<Number>> = Plus { left, right ->
+        require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
+        right.mapIndexed { rowIndex, columnIndex, number -> ring.uLongPlusNumber { if (rowIndex == columnIndex) left + number else number } }
     }
-    override val uLongMinusNumber: Minus<ULong, MDList2<Number>, MDList2<Number>> = Minus { other ->
-        require(other.rowNumber == dimension && other.columnNumber == dimension) { TODO() }
-        other.mapIndexed { rowIndex, columnIndex, number -> context(ring.uLongMinusNumber, ring.numberUnaryMinus) { if (rowIndex == columnIndex) this - number else -number } }
+    override val uLongMinusNumber: Minus<ULong, MDList2<Number>, MDList2<Number>> = Minus { left, right ->
+        require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
+        right.mapIndexed { rowIndex, columnIndex, number -> context(ring.uLongMinusNumber, ring.numberUnaryMinus) { if (rowIndex == columnIndex) left - number else -number } }
     }
-    override val uLongTimesNumber: Times<ULong, MDList2<Number>, MDList2<Number>> = Times { other ->
-        require(other.rowNumber == dimension && other.columnNumber == dimension) { TODO() }
-        other.map { ring.uLongTimesNumber { this * it } }
+    override val uLongTimesNumber: Times<ULong, MDList2<Number>, MDList2<Number>> = Times { left, right ->
+        require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
+        right.map { ring.uLongTimesNumber { left * it } }
     }
     // endregion
     
     // region Number-Matrix operations
-    override val numberPlusVector: Plus<Number, MDList2<Number>, MDList2<Number>> = Plus { other ->
-        require(other.rowNumber == dimension && other.columnNumber == dimension) { TODO() }
-        other.mapIndexed { rowIndex, columnIndex, number -> ring.numberPlusNumber { if (rowIndex == columnIndex) this + number else number } }
+    override val numberPlusVector: Plus<Number, MDList2<Number>, MDList2<Number>> = Plus { left, right ->
+        require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
+        right.mapIndexed { rowIndex, columnIndex, number -> ring.numberPlusNumber { if (rowIndex == columnIndex) left + number else number } }
     }
-    override val numberMinusVector: Minus<Number, MDList2<Number>, MDList2<Number>> = Minus { other ->
-        require(other.rowNumber == dimension && other.columnNumber == dimension) { TODO() }
-        other.mapIndexed { rowIndex, columnIndex, number -> context(ring.numberMinusNumber, ring.numberUnaryMinus) { if (rowIndex == columnIndex) this - number else -number } }
+    override val numberMinusVector: Minus<Number, MDList2<Number>, MDList2<Number>> = Minus { left, right ->
+        require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
+        right.mapIndexed { rowIndex, columnIndex, number -> context(ring.numberMinusNumber, ring.numberUnaryMinus) { if (rowIndex == columnIndex) left - number else -number } }
     }
-    override val numberTimesVector: Times<Number, MDList2<Number>, MDList2<Number>> = Times { other ->
-        require(other.rowNumber == dimension && other.columnNumber == dimension) { TODO() }
-        other.map { ring.numberTimesNumber { this * it } }
+    override val numberTimesVector: Times<Number, MDList2<Number>, MDList2<Number>> = Times { left, right ->
+        require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
+        right.map { ring.numberTimesNumber { left * it } }
     }
     // endregion
     
     // region Matrix-Matrix operations
     override val numberUnaryMinus: UnaryMinus<MDList2<Number>, MDList2<Number>> = UnaryMinus {
-        require(this.rowNumber == dimension && this.columnNumber == dimension) { TODO() }
-        this.map { ring.numberUnaryMinus { -it } }
+        require(it.rowNumber == dimension && it.columnNumber == dimension) { TODO() }
+        it.map { ring.numberUnaryMinus { -it } }
     }
-    override val numberPlusNumber: Plus<MDList2<Number>, MDList2<Number>, MDList2<Number>> = Plus { other ->
-        require(this.rowNumber == dimension && this.columnNumber == dimension) { TODO() }
-        require(other.rowNumber == dimension && other.columnNumber == dimension) { TODO() }
-        MDList2.generate(dimension, dimension) { row, column -> ring.numberPlusNumber { this[row, column] + other[row, column] } }
+    override val numberPlusNumber: Plus<MDList2<Number>, MDList2<Number>, MDList2<Number>> = Plus { left, right ->
+        require(left.rowNumber == dimension && left.columnNumber == dimension) { TODO() }
+        require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
+        MDList2.generate(dimension, dimension) { row, column -> ring.numberPlusNumber { left[row, column] + right[row, column] } }
     }
-    override val numberMinusNumber: Minus<MDList2<Number>, MDList2<Number>, MDList2<Number>> = Minus { other ->
-        require(this.rowNumber == dimension && this.columnNumber == dimension) { TODO() }
-        require(other.rowNumber == dimension && other.columnNumber == dimension) { TODO() }
-        MDList2.generate(dimension, dimension) { row, column -> ring.numberMinusNumber { this[row, column] - other[row, column] } }
+    override val numberMinusNumber: Minus<MDList2<Number>, MDList2<Number>, MDList2<Number>> = Minus { left, right ->
+        require(left.rowNumber == dimension && left.columnNumber == dimension) { TODO() }
+        require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
+        MDList2.generate(dimension, dimension) { row, column -> ring.numberMinusNumber { left[row, column] - right[row, column] } }
     }
-    override val numberTimesNumber: Times<MDList2<Number>, MDList2<Number>, MDList2<Number>> = Times { other ->
-        require(this.rowNumber == dimension && this.columnNumber == dimension) { TODO() }
-        require(other.rowNumber == dimension && other.columnNumber == dimension) { TODO() }
+    override val numberTimesNumber: Times<MDList2<Number>, MDList2<Number>, MDList2<Number>> = Times { left, right ->
+        require(left.rowNumber == dimension && left.columnNumber == dimension) { TODO() }
+        require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
         MDList2.generate(dimension, dimension) { row, column ->
-            context(ring, ring.numberTimesNumber) { (0u ..< dimension).toKoneList().sumOf { this[row, it] * other[it, column] } }
+            context(ring, ring.numberTimesNumber) { (0u ..< dimension).toKoneList().sumOf { left[row, it] * right[it, column] } }
         }
     }
     // endregion

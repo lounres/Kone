@@ -12,13 +12,17 @@ import dev.lounres.kone.suppliedTypes.Supply
 import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
-public fun interface Dot<in Left, in Right, out Result> : KoneContext {
+public interface Dot<in Left, in Right, out Result> : KoneContext {
     public infix fun Left.dot(other: Right): Result
     
     @Suppliable
     public class Key<@Supply Left, @Supply Right, @Supply Result> : SuppliedTypeRegistryKey<Dot<Left, Right, Result>>() {
         override fun toString(): String = "dev.lounres.kone.algebraic.Dot.Key<${suppliedTypeOf<Left>()}, ${suppliedTypeOf<Right>()}, ${suppliedTypeOf<Result>()}>"
     }
+}
+
+public inline fun <Left, Right, Result> Dot(crossinline block: (left: Left, right: Right) -> Result): Dot<Left, Right, Result> = object : Dot<Left, Right, Result> {
+    override fun Left.dot(other: Right): Result = block(this, other)
 }
 
 context(dot: Dot<Left, Right, Result>)
