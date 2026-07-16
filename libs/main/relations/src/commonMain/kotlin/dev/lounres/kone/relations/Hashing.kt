@@ -104,3 +104,7 @@ public inline fun <Element> Hashing(crossinline hasher: (Element) -> Int): Hashi
  * and which [Hashing.hash] operator just uses [Any.hashCode] operator's result as a return value.
  */
 public fun <Element> Hashing.Companion.defaultFor(): Hashing<Element> = DefaultHashing
+
+public val <Element: Any> Hashing<Element>.nullable: Hashing<Element?> get() = Hashing {
+    if (it == null) 0 else with(this) { it.hash() }
+}

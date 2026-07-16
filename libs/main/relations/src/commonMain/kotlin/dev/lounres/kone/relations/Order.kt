@@ -260,6 +260,42 @@ public fun <Target, Element> Order.Companion.byOrdered(vararg selectors: (Target
     return@Order Equal
 }
 
+public val <Element: Any> Order<Element>.withNullAsLeast: Order<Element?> get() = Order<Element?> { left, right ->
+    when {
+        left == null && right == null -> Equal
+        left == null -> LeftIsLessThanRight
+        right == null -> LeftIsGreaterThanRight
+        else -> with(this) { left compareWith right }
+    }
+}
+
+public val <Element: Any> Order<Element>.withNullAsGreatest: Order<Element?> get() = Order<Element?> { left, right ->
+    when {
+        left == null && right == null -> Equal
+        left == null -> LeftIsGreaterThanRight
+        right == null -> LeftIsLessThanRight
+        else -> with(this) { left compareWith right }
+    }
+}
+
+public val <Element: Any> Comparator<Element>.withNullAsLeast: Comparator<Element?> get() = Comparator { left, right ->
+    when {
+        left == null && right == null -> Equal
+        left == null -> LeftIsLessThanRight
+        right == null -> LeftIsGreaterThanRight
+        else -> this.compare(left, right)
+    }
+}
+
+public val <Element: Any> Comparator<Element>.withNullAsGreatest: Comparator<Element?> get() = Comparator { left, right ->
+    when {
+        left == null && right == null -> Equal
+        left == null -> LeftIsGreaterThanRight
+        right == null -> LeftIsLessThanRight
+        else -> this.compare(left, right)
+    }
+}
+
 /**
  * Returns [Order] instance which [Order.compareTo] operator just uses [Comparable.compareTo] operator's result as a return value.
  */

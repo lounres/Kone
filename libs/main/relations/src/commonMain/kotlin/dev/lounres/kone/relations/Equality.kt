@@ -9,6 +9,7 @@ package dev.lounres.kone.relations
 
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.registry.correspondsTo
@@ -176,3 +177,11 @@ public fun <Element> Equality.Companion.defaultFor(): Equality<Element> = Defaul
 public fun <Element> Equality.Companion.absoluteFor(): Equality<Element> = AbsoluteEquality
 public fun <Element> Equality.Companion.allwaysAcceptingFor(): Equality<Element> = AllwaysAcceptingEquality
 public fun <Element> Equality.Companion.allwaysDenyingFor(): Equality<Element> = AllwaysDenyingEquality
+
+public val <Element: Any> Equality<Element>.nullable: Equality<Element?> get() = Equality { left, right ->
+    when {
+        left == null && right == null -> true
+        left == null || right == null -> false
+        else -> this { left eq right }
+    }
+}
