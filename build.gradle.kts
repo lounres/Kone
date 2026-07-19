@@ -368,7 +368,7 @@ stal {
 //                macosArm64()
             }
             afterEvaluate {
-                yarn.lockFileDirectory = rootDir.resolve("gradle")
+                yarn.lockFileDirectoryProperty = rootDir.resolve("gradle")
             }
         }
         "kotlin android" {
