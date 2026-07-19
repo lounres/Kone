@@ -16,14 +16,16 @@ import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import dev.lounres.kone.algebraic.div
+import dev.lounres.kone.algebraic.minus
+import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.algebraic.unaryMinus
 import dev.lounres.kone.computationalGeometry.default2.EuclideanSpace2OverField
 import dev.lounres.kone.computationalGeometry.default2.Point2
 import dev.lounres.kone.computationalGeometry.default2.Vector2
-import dev.lounres.kone.contexts.KoneContextHolder
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.buildWithProvider
-import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.misc.canvas.*
 import dev.lounres.kone.registry.*
 import dev.lounres.kone.scope
@@ -176,7 +178,7 @@ public fun KoneComposeMapCanvas(modifier: Modifier = Modifier, canvasController:
         modifier = Modifier
             .pointerInput(null) {
                 detectDragGestures { _, [x, y] ->
-                    KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+                    KoneContext.unwrap(euclideanSpace)
                     setOffset(getOffset() - Vector2(x.toDouble(), -y.toDouble()) / getZoom())
                 }
             }
@@ -188,7 +190,7 @@ public fun KoneComposeMapCanvas(modifier: Modifier = Modifier, canvasController:
                         it.pointerInput(clickController, clickConsumer) {
                             detectTapGestures { coordinates ->
                                 val _ = runCatching {
-                                    KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+                                    KoneContext.unwrap(euclideanSpace)
                                     val coordinates = Vector2(
                                         size.width.toDouble() / 2 - coordinates.x.toDouble(),
                                         coordinates.y.toDouble() - size.height.toDouble() / 2
@@ -205,14 +207,14 @@ public fun KoneComposeMapCanvas(modifier: Modifier = Modifier, canvasController:
             .pointerInput(canvasData) {
                 val coercionRange = canvasData.getOrNull(KoneCanvasZoomCoercionRange)
                 awaitPointerEventScope {
-                    KoneContextHolder.unwrapLocallyAsExtensionReceivers(euclideanSpace)
+                    KoneContext.unwrap(euclideanSpace)
                     var isHovered = true
                     val change = currentEvent.changes.first()
                     val coordinates = Vector2(
                         size.width.toDouble() / 2 - change.position.x.toDouble(),
                         change.position.y.toDouble() - size.height.toDouble() / 2
                     )
-                    pointerPosition = getOffset() + -coordinates / getZoom()
+                    pointerPosition = getOffset() - coordinates / getZoom()
                     while (true) {
                         val event = awaitPointerEvent()
                         when (event.type) {
@@ -229,7 +231,7 @@ public fun KoneComposeMapCanvas(modifier: Modifier = Modifier, canvasController:
                                             size.width.toDouble() / 2 - change.position.x.toDouble(),
                                             change.position.y.toDouble() - size.height.toDouble() / 2
                                         )
-                                        pointerPosition = getOffset() + -coordinates / getZoom()
+                                        pointerPosition = getOffset() - coordinates / getZoom()
                                     }
                                 }
                             }
