@@ -6,8 +6,8 @@
 package dev.lounres.kone.algebraic.util
 
 import dev.lounres.kone.algebraic.*
-import dev.lounres.kone.contexts.KoneContextHolder
-import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.contexts.unwrap
 
 
 // region Number-Int additive operations
@@ -37,8 +37,8 @@ import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
  */
 context(ring: Ring<Number>)
 public infix fun <Number> Number.doublingPlus(other: Int): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring)
-    return rightAddMultipliedByDoubling(this@doublingPlus, ring.one, other, { left, right -> left + right }, { left, right -> left - right })
+    KoneContext.unwrap(ring)
+    return rightAddMultipliedByDoubling(this, ring.one, other, { left, right -> left + right }, { left, right -> left - right })
 }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -66,8 +66,8 @@ public infix fun <Number> Number.doublingPlus(other: Int): Number {
  */
 context(ring: Ring<Number>)
 public infix fun <Number> Number.doublingMinus(other: Int): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring)
-    return rightAddMultipliedByDoubling(this@doublingMinus, ring.one, -other, { left, right -> left + right }, { left, right -> left - right })
+    KoneContext.unwrap(ring)
+    return rightAddMultipliedByDoubling(this, ring.one, -other, { left, right -> left + right }, { left, right -> left - right })
 }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -96,8 +96,8 @@ public infix fun <Number> Number.doublingMinus(other: Int): Number {
  */
 context(group: Group<Number>)
 public infix fun <Number> Number.doublingTimes(other: Int): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(group)
-    return rightMultiplyByDoubling(this@doublingTimes, other, { group.zero }, { left, right -> left + right }, { c -> -c })
+    KoneContext.unwrap(group)
+    return rightMultiplyByDoubling(this, other, { group.zero }, { left, right -> left + right }, { c -> -c })
 }
 // endregion
 
@@ -124,8 +124,8 @@ public infix fun <Number> Number.doublingTimes(other: Int): Number {
  */
 context(ring: Semiring<Number>)
 public infix fun <Number> Number.doublingPlus(other: UInt): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring)
-    return rightAddMultipliedByDoubling(this@doublingPlus, ring.one, other) { left, right -> left + right }
+    KoneContext.unwrap(ring)
+    return rightAddMultipliedByDoubling(this, ring.one, other) { left, right -> left + right }
 }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -149,8 +149,8 @@ public infix fun <Number> Number.doublingPlus(other: UInt): Number {
  */
 context(ring: Ring<Number>)
 public infix fun <Number> Number.doublingMinus(other: UInt): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring)
-    return rightAddMultipliedByDoubling(this@doublingMinus, -ring.one, other) { left, right -> left + right }
+    KoneContext.unwrap(ring)
+    return rightAddMultipliedByDoubling(this, -ring.one, other) { left, right -> left + right }
 }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -174,8 +174,8 @@ public infix fun <Number> Number.doublingMinus(other: UInt): Number {
  */
 context(monoid: Monoid<Number>)
 public infix fun <Number> Number.doublingTimes(other: UInt): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(monoid)
-    return rightMultiplyByDoubling(this@doublingTimes, other, { monoid.zero }) { left, right -> left + right }
+    KoneContext.unwrap(monoid)
+    return rightMultiplyByDoubling(this, other, { monoid.zero }) { left, right -> left + right }
 }
 // endregion
 
@@ -207,8 +207,8 @@ public infix fun <Number> Number.doublingTimes(other: UInt): Number {
  */
 context(ring: Ring<Number>)
 public infix fun <Number> Number.doublingPlus(other: Long): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring)
-    return rightAddMultipliedByDoubling(this@doublingPlus, ring.one, other, { left, right -> left + right }, { left, right -> left - right })
+    KoneContext.unwrap(ring)
+    return rightAddMultipliedByDoubling(this, ring.one, other, { left, right -> left + right }, { left, right -> left - right })
 }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -236,8 +236,8 @@ public infix fun <Number> Number.doublingPlus(other: Long): Number {
  */
 context(ring: Ring<Number>)
 public infix fun <Number> Number.doublingMinus(other: Long): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring)
-    return rightAddMultipliedByDoubling(this@doublingMinus, ring.one, -other, { left, right -> left + right }, { left, right -> left - right })
+    KoneContext.unwrap(ring)
+    return rightAddMultipliedByDoubling(this, ring.one, -other, { left, right -> left + right }, { left, right -> left - right })
 }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -266,8 +266,8 @@ public infix fun <Number> Number.doublingMinus(other: Long): Number {
  */
 context(group: Group<Number>)
 public infix fun <Number> Number.doublingTimes(other: Long): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(group)
-    return rightMultiplyByDoubling(this@doublingTimes, other, { group.zero }, { left, right -> left + right }, { c -> -c })
+    KoneContext.unwrap(group)
+    return rightMultiplyByDoubling(this, other, { group.zero }, { left, right -> left + right }, { c -> -c })
 }
 // endregion
 
@@ -294,8 +294,8 @@ public infix fun <Number> Number.doublingTimes(other: Long): Number {
  */
 context(ring: Semiring<Number>)
 public infix fun <Number> Number.doublingPlus(other: ULong): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring)
-    return rightAddMultipliedByDoubling(this@doublingPlus, ring.one, other) { left, right -> left + right }
+    KoneContext.unwrap(ring)
+    return rightAddMultipliedByDoubling(this, ring.one, other) { left, right -> left + right }
 }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -319,8 +319,8 @@ public infix fun <Number> Number.doublingPlus(other: ULong): Number {
  */
 context(ring: Ring<Number>)
 public infix fun <Number> Number.doublingMinus(other: ULong): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring)
-    return rightAddMultipliedByDoubling(this@doublingMinus, -ring.one, other) { left, right -> left + right }
+    KoneContext.unwrap(ring)
+    return rightAddMultipliedByDoubling(this, -ring.one, other) { left, right -> left + right }
 }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -344,8 +344,8 @@ public infix fun <Number> Number.doublingMinus(other: ULong): Number {
  */
 context(monoid: Monoid<Number>)
 public infix fun <Number> Number.doublingTimes(other: ULong): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(monoid)
-    return rightMultiplyByDoubling(this@doublingTimes, other, { monoid.zero }) { left, right -> left + right }
+    KoneContext.unwrap(monoid)
+    return rightMultiplyByDoubling(this, other, { monoid.zero }) { left, right -> left + right }
 }
 // endregion
 
@@ -376,8 +376,8 @@ public infix fun <Number> Number.doublingTimes(other: ULong): Number {
  */
 context(ring: Ring<Number>)
 public infix fun <Number> Int.doublingPlus(other: Number): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring)
-    return rightAddMultipliedByDoubling(other, ring.one, this@doublingPlus, { left, right -> left + right }, { left, right -> left - right })
+    KoneContext.unwrap(ring)
+    return rightAddMultipliedByDoubling(other, ring.one, this, { left, right -> left + right }, { left, right -> left - right })
 }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -405,8 +405,8 @@ public infix fun <Number> Int.doublingPlus(other: Number): Number {
  */
 context(ring: Ring<Number>)
 public infix fun <Number> Int.doublingMinus(other: Number): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring)
-    return rightAddMultipliedByDoubling(-other, ring.one, this@doublingMinus, { left, right -> left + right }, { left, right -> left - right })
+    KoneContext.unwrap(ring)
+    return rightAddMultipliedByDoubling(-other, ring.one, this, { left, right -> left + right }, { left, right -> left - right })
 }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -435,8 +435,8 @@ public infix fun <Number> Int.doublingMinus(other: Number): Number {
  */
 context(group: Group<Number>)
 public infix fun <Number> Int.doublingTimes(other: Number): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(group)
-    return rightMultiplyByDoubling(other, this@doublingTimes, { group.zero }, { left, right -> left + right }, { c -> -c })
+    KoneContext.unwrap(group)
+    return rightMultiplyByDoubling(other, this, { group.zero }, { left, right -> left + right }, { c -> -c })
 }
 // endregion
 
@@ -463,8 +463,8 @@ public infix fun <Number> Int.doublingTimes(other: Number): Number {
  */
 context(ring: Semiring<Number>)
 public infix fun <Number> UInt.doublingPlus(other: Number): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring)
-    return rightAddMultipliedByDoubling(other, ring.one, this@doublingPlus) { left, right -> left + right }
+    KoneContext.unwrap(ring)
+    return rightAddMultipliedByDoubling(other, ring.one, this) { left, right -> left + right }
 }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -488,8 +488,8 @@ public infix fun <Number> UInt.doublingPlus(other: Number): Number {
  */
 context(ring: Ring<Number>)
 public infix fun <Number> UInt.doublingMinus(other: Number): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring)
-    return rightAddMultipliedByDoubling(-other, ring.one, this@doublingMinus) { left, right -> left + right }
+    KoneContext.unwrap(ring)
+    return rightAddMultipliedByDoubling(-other, ring.one, this) { left, right -> left + right }
 }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -513,8 +513,8 @@ public infix fun <Number> UInt.doublingMinus(other: Number): Number {
  */
 context(monoid: Monoid<Number>)
 public infix fun <Number> UInt.doublingTimes(other: Number): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(monoid)
-    return rightMultiplyByDoubling(other, this@doublingTimes, { monoid.zero }) { left, right -> left + right }
+    KoneContext.unwrap(monoid)
+    return rightMultiplyByDoubling(other, this, { monoid.zero }) { left, right -> left + right }
 }
 // endregion
 
@@ -545,8 +545,8 @@ public infix fun <Number> UInt.doublingTimes(other: Number): Number {
  */
 context(ring: Ring<Number>)
 public infix fun <Number> Long.doublingPlus(other: Number): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring)
-    return rightAddMultipliedByDoubling(other, ring.one, this@doublingPlus, { left, right -> left + right }, { left, right -> left - right })
+    KoneContext.unwrap(ring)
+    return rightAddMultipliedByDoubling(other, ring.one, this, { left, right -> left + right }, { left, right -> left - right })
 }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -574,8 +574,8 @@ public infix fun <Number> Long.doublingPlus(other: Number): Number {
  */
 context(ring: Ring<Number>)
 public infix fun <Number> Long.doublingMinus(other: Number): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring)
-    return rightAddMultipliedByDoubling(-other, ring.one, this@doublingMinus, { left, right -> left + right }, { left, right -> left - right })
+    KoneContext.unwrap(ring)
+    return rightAddMultipliedByDoubling(-other, ring.one, this, { left, right -> left + right }, { left, right -> left - right })
 }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -604,8 +604,8 @@ public infix fun <Number> Long.doublingMinus(other: Number): Number {
  */
 context(group: Group<Number>)
 public infix fun <Number> Long.doublingTimes(other: Number): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(group)
-    return rightMultiplyByDoubling(other, this@doublingTimes, { group.zero }, { left, right -> left + right }, { c -> -c })
+    KoneContext.unwrap(group)
+    return rightMultiplyByDoubling(other, this, { group.zero }, { left, right -> left + right }, { c -> -c })
 }
 // endregion
 
@@ -632,8 +632,8 @@ public infix fun <Number> Long.doublingTimes(other: Number): Number {
  */
 context(ring: Semiring<Number>)
 public infix fun <Number> ULong.doublingPlus(other: Number): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring)
-    return rightAddMultipliedByDoubling(other, ring.one, this@doublingPlus) { left, right -> left + right }
+    KoneContext.unwrap(ring)
+    return rightAddMultipliedByDoubling(other, ring.one, this) { left, right -> left + right }
 }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -657,8 +657,8 @@ public infix fun <Number> ULong.doublingPlus(other: Number): Number {
  */
 context(ring: Ring<Number>)
 public infix fun <Number> ULong.doublingMinus(other: Number): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring)
-    return rightAddMultipliedByDoubling(-other, ring.one, this@doublingMinus) { left, right -> left + right }
+    KoneContext.unwrap(ring)
+    return rightAddMultipliedByDoubling(-other, ring.one, this) { left, right -> left + right }
 }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -682,8 +682,8 @@ public infix fun <Number> ULong.doublingMinus(other: Number): Number {
  */
 context(monoid: Monoid<Number>)
 public infix fun <Number> ULong.doublingTimes(other: Number): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(monoid)
-    return rightMultiplyByDoubling(other, this@doublingTimes, { monoid.zero }) { left, right -> left + right }
+    KoneContext.unwrap(monoid)
+    return rightMultiplyByDoubling(other, this, { monoid.zero }) { left, right -> left + right }
 }
 // endregion
 
@@ -715,8 +715,8 @@ public infix fun <Number> ULong.doublingTimes(other: Number): Number {
  */
 context(field: Field<Number>)
 public infix fun <Number> Number.squaringPower(exponent: Int): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(field)
-    return rightMultiplyByDoubling(this@squaringPower, exponent, { field.one }, { left, right -> left * right }, { v -> v.reciprocal() })
+    KoneContext.unwrap(field)
+    return rightMultiplyByDoubling(this, exponent, { field.one }, { left, right -> left * right }, { v -> v.reciprocal() })
 }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -740,8 +740,8 @@ public infix fun <Number> Number.squaringPower(exponent: Int): Number {
  */
 context(ring: Semiring<Number>)
 public infix fun <Number> Number.squaringPower(exponent: UInt): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring)
-    return rightMultiplyByDoubling(this@squaringPower, exponent, { ring.one }, { left, right -> left * right })
+    KoneContext.unwrap(ring)
+    return rightMultiplyByDoubling(this, exponent, { ring.one }, { left, right -> left * right })
 }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -770,8 +770,8 @@ public infix fun <Number> Number.squaringPower(exponent: UInt): Number {
  */
 context(field: Field<Number>)
 public infix fun <Number> Number.squaringPower(exponent: Long): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(field)
-    return rightMultiplyByDoubling(this@squaringPower, exponent, { field.one }, { left, right -> left * right }, { v -> v.reciprocal() })
+    KoneContext.unwrap(field)
+    return rightMultiplyByDoubling(this, exponent, { field.one }, { left, right -> left * right }, { v -> v.reciprocal() })
 }
 /**
  * Applies multiplication-by-doubling algorithm (a.k.a. [exponentiation by squaring](https://en.wikipedia.org/wiki/Exponentiation_by_squaring))
@@ -795,7 +795,7 @@ public infix fun <Number> Number.squaringPower(exponent: Long): Number {
  */
 context(ring: Semiring<Number>)
 public infix fun <Number> Number.squaringPower(exponent: ULong): Number {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring)
-    return rightMultiplyByDoubling(this@squaringPower, exponent, { ring.one }, { left, right -> left * right })
+    KoneContext.unwrap(ring)
+    return rightMultiplyByDoubling(this, exponent, { ring.one }, { left, right -> left * right })
 }
 //endregion

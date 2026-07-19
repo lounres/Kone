@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.contexts.KoneContextHolder
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextHolderInclude
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
@@ -14,7 +14,7 @@ import dev.lounres.kone.suppliedTypes.Supply
 import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
-public interface Semigroup<Number> : KoneContextHolder {
+public interface Semigroup<Number> : KoneContext {
     // region Number-Number operations
     @KoneContextHolderInclude
     public val numberPlusNumber: Plus<Number, Number, Number>
