@@ -160,7 +160,9 @@ class FirUnwrapExpressionResolutionExtension(session: FirSession) : FirExpressio
         containingCallableSymbol: FirBasedSymbol<*>,
     ): List<ImplicitExtensionReceiverValue> = context(session) {
         if (functionCall.calleeReference.resolved?.resolvedSymbol != unwrapFirFunctionSymbol) return emptyList()
-        val holdersToUnwrap = (functionCall.arguments.single() as FirVarargArgumentsExpression).arguments.map { it.resolvedType.unwrapToSimpleTypeUsingLowerBound() }
+        check(functionCall.arguments.size <= 1)
+        val varargArgument = (functionCall.arguments.getOrNull(0) ?: return emptyList()) as FirVarargArgumentsExpression
+        val holdersToUnwrap = varargArgument.arguments.map { it.resolvedType.unwrapToSimpleTypeUsingLowerBound() }
         val fakeValueParameter = buildValueParameter {
             resolvePhase = FirResolvePhase.BODY_RESOLVE
             moduleData = session.moduleData
