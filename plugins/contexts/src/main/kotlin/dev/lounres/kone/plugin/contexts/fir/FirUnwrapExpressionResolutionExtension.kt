@@ -164,6 +164,7 @@ class FirUnwrapExpressionResolutionExtension(session: FirSession) : FirExpressio
         sessionHolder: SessionAndScopeSessionHolder,
         containingCallableSymbol: FirBasedSymbol<*>,
     ): List<ImplicitExtensionReceiverValue> = context(session) {
+        if (sessionHolder !is FirAbstractBodyResolveTransformer.BodyResolveTransformerComponents) return listOf()
         if (functionCall.calleeReference.resolved?.resolvedSymbol != unwrapFirFunctionSymbol) return emptyList()
         check(functionCall.arguments.size <= 1)
         val varargArgument = (functionCall.arguments.getOrNull(0) ?: return emptyList()) as FirVarargArgumentsExpression
@@ -232,7 +233,6 @@ class FirUnwrapExpressionResolutionExtension(session: FirSession) : FirExpressio
                 )
             }
         }
-        sessionHolder as FirAbstractBodyResolveTransformer.BodyResolveTransformerComponents
         val bodyResolveContext = sessionHolder.context
         bodyResolveContext.replaceTowerDataContext(bodyResolveContext.towerDataContext.addContextGroups(newImplicitContextParameters))
         emptyList()
