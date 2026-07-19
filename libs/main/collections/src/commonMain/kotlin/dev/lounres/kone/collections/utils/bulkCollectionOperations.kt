@@ -953,8 +953,8 @@ private class KoneChunkedLambdaIterator<Element, Result>(
 public fun <E, R> KoneIterator<E>.chunked(size: UInt, mapper: (chunk: KoneList<E>) -> R): KoneIterator<R> = KoneChunkedLambdaIterator(this, size, mapper)
 
 public fun <E> KoneIterable<E>.chunked(size: UInt): KoneList<KoneList<E>> {
-    val fullChunks = this@chunked.size / size
-    val allChunks = if (this@chunked.size % size != 0u) fullChunks + 1u else fullChunks
+    val fullChunks = this.size / size
+    val allChunks = if (this.size % size != 0u) fullChunks + 1u else fullChunks
     val chunks = KoneArrayFixedCapacityList<KoneList<E>>(allChunks)
     val iterator = iterator()
     repeat(fullChunks) {
@@ -969,8 +969,8 @@ public fun <E> KoneIterable<E>.chunked(size: UInt): KoneList<KoneList<E>> {
 }
 
 public fun <E, R> KoneIterable<E>.chunked(size: UInt, mapper: (chunk: KoneList<E>) -> R): KoneList<R> {
-    val fullChunks = this@chunked.size / size
-    val allChunks = if (this@chunked.size % size != 0u) fullChunks + 1u else fullChunks
+    val fullChunks = this.size / size
+    val allChunks = if (this.size % size != 0u) fullChunks + 1u else fullChunks
     val chunks = KoneArrayFixedCapacityList<R>(allChunks)
     val iterator = iterator()
     repeat(fullChunks) {
