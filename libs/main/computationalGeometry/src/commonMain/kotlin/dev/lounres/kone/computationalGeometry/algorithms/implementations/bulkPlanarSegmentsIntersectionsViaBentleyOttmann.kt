@@ -26,10 +26,10 @@ import dev.lounres.kone.computationalGeometry.algorithms.SegmentBulkIntersection
 import dev.lounres.kone.computationalGeometry.algorithms.SegmentWithSegmentIntersectionOverField
 import dev.lounres.kone.computationalGeometry.curves.Segment
 import dev.lounres.kone.computationalGeometry.curves.end
-import dev.lounres.kone.contexts.KoneContextHolder
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
@@ -111,7 +111,7 @@ private class BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann<
         basis: VectorSpaceBasis.Finite<Number, Vector>,
         intersectionComputer: SegmentBulkIntersectionOverFieldComputer<Number, Vector, Point>,
     ): KoneSequence<BulkPlanarSegmentsIntersectionsOverFieldComputer.IntersectionResult<Number, Vector, Point>> = context(numberOrder, numberField, euclideanSpace, intersectionComputer) {
-        KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField, euclideanSpace)
+        KoneContext.unwrap(numberField, euclideanSpace)
         
         val pointOrder = Order<Point> { left, right ->
             val differenceBasisDecomposition = basis.decompose(left - right)

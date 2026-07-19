@@ -27,10 +27,10 @@ import dev.lounres.kone.computationalGeometry.algorithms.DelaunayTriangulationOv
 import dev.lounres.kone.computationalGeometry.algorithms.convexHull
 import dev.lounres.kone.computationalGeometry.algorithms.gramSchmidtOrthogonalization
 import dev.lounres.kone.computationalGeometry.polytopes.*
-import dev.lounres.kone.contexts.KoneContextHolder
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
@@ -233,7 +233,7 @@ private class DelaunayTriangulationOverRingComputerViaConvexHull<@Supply Number,
         basis: ModuleBasis.Finite<Number, Vector>
     ): PolytopicConstruction = context(ring, order, euclideanSpace, paraboloidEuclideanSpaceOverRing, paraboloidConvexHullOverRingComputer) {
         require(this.isNotEmpty()) { "Can't construct Delaunay triangulation of an empty vertices collection." }
-        KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring, euclideanSpace, paraboloidEuclideanSpaceOverRing)
+        KoneContext.unwrap(ring, euclideanSpace, paraboloidEuclideanSpaceOverRing)
         
         val verticesDimension: UInt = basis.size
         

@@ -8,6 +8,7 @@ package dev.lounres.kone.computationalGeometry.algorithms
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.algebraic.basis.ModuleBasis
 import dev.lounres.kone.algebraic.basis.ModuleBasisDecomposition
+import dev.lounres.kone.algebraic.minus
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.getAndMoveNext
@@ -19,8 +20,7 @@ import dev.lounres.kone.computationalGeometry.EuclideanSpaceOverRing
 import dev.lounres.kone.computationalGeometry.dot
 import dev.lounres.kone.computationalGeometry.polytopes.Polytope
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.contexts.KoneContextHolder
-import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.suppliedTypes.Suppliable
@@ -56,9 +56,9 @@ public fun <Number, Vector, Point> KoneIterable<Point>.convexHull(): Polytope = 
 // TODO: Move somewhere
 context(ring: Ring<Number>, euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>)
 internal fun <Number, Vector, Point> KoneIterable<Point>.pointsetBasis(): ModuleBasis.Finite<Number, Vector> {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring, euclideanSpace)
+    KoneContext.unwrap(ring, euclideanSpace)
     
-    val verticesIterator = this@pointsetBasis.iterator()
+    val verticesIterator = this.iterator()
     val start = verticesIterator.getAndMoveNext()
     val vectors = verticesIterator.toKoneList().map { it - start }
     
