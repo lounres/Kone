@@ -181,7 +181,7 @@ public fun LabeledPolynomial.MonomialSignature.Companion.degreeLexicographicOrde
 ): Order<LabeledPolynomial.MonomialSignature> = object : Order<LabeledPolynomial.MonomialSignature> {
     private val fallbackOrder = LabeledPolynomial.MonomialSignature.lexicographicOrder(variableOrder, degreeOrder)
     override fun LabeledPolynomial.MonomialSignature.compareWith(other: LabeledPolynomial.MonomialSignature): ComparisonResult {
-        val degreeComparisonResult = context(degreeOrder, UInt.monoid()) { this@compareWith.valuesView.sum() compareWith other.valuesView.sum() }
+        val degreeComparisonResult = context(degreeOrder, UInt.monoid()) { this.valuesView.sum() compareWith other.valuesView.sum() }
         if (degreeComparisonResult != Equal) return degreeComparisonResult
         return with(fallbackOrder) { this@compareWith compareWith other }
     }

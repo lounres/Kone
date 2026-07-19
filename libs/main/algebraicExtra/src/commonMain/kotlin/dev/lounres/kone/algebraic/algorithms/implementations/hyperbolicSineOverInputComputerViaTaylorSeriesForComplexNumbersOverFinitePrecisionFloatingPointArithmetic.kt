@@ -32,9 +32,9 @@ private class HyperbolicSineOverInputComputerViaTaylorSeriesForComplexNumbersOve
         var stepNumber = 1u
         while (true) {
             stepNumber++
-            step *= this@sinhOverThis / stepNumber
+            step *= this / stepNumber
             stepNumber++
-            step *= this@sinhOverThis / stepNumber
+            step *= this / stepNumber
             if (step.isZero()) break
             
             val oldResult = result

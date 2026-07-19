@@ -107,19 +107,19 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
     // endregion
     
     // region UBigLong-UInt operations
-    public operator fun UBigLong.div(other: UInt): UBigLong = this / valueOf(other)
+    public operator fun UBigLong.div(other: UInt): UBigLong = context(numberDivideNumber) { this / valueOf(other) }
     // endregion
 
     // region UBigLong-ULong operations
-    public operator fun UBigLong.div(other: ULong): UBigLong = this / valueOf(other)
+    public operator fun UBigLong.div(other: ULong): UBigLong = context(numberDivideNumber) { this / valueOf(other) }
     // endregion
 
     // region UInt-UBigLong operations
-    public operator fun UInt.div(other: UBigLong): UBigLong = valueOf(this) / other
+    public operator fun UInt.div(other: UBigLong): UBigLong = context(numberDivideNumber) { valueOf(this) / other }
     // endregion
 
     // region ULong-UBigLong operations
-    public operator fun ULong.div(other: UBigLong): UBigLong = valueOf(this) / other
+    public operator fun ULong.div(other: UBigLong): UBigLong = context(numberDivideNumber) { valueOf(this) / other }
     // endregion
     
     // region UBigLong-UBigLong operations
@@ -185,8 +185,6 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
     }
     // TODO: Experiment with https://en.wikipedia.org/wiki/Division_algorithm#Integer_division_(unsigned)_with_remainder
     override val numberDivideRemainderNumber: DivideRemainder<UBigLong, UBigLong, EuclideanDivisionResult<UBigLong>> = DivideRemainder { left, right ->
-        KoneContext.unwrap(this@UBigLongContext)
-        
         if (right.magnitude.isEmpty()) divisionByZero()
         if (left.magnitude.isEmpty()) return@DivideRemainder EuclideanDivisionResult(zero, zero)
         if (right.magnitude.size > left.magnitude.size) return@DivideRemainder EuclideanDivisionResult(
@@ -270,8 +268,6 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
         )
     }
     override val numberDivideNumber: Divide<UBigLong, UBigLong, UBigLong> = Divide { left, right ->
-        KoneContext.unwrap(this@UBigLongContext)
-        
         if (right.magnitude.isEmpty()) divisionByZero()
         if (left.magnitude.isEmpty()) return@Divide zero
         if (right.magnitude.size > left.magnitude.size) return@Divide zero
@@ -349,8 +345,6 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
         UBigLong(quotient.removeLeadingZeros())
     }
     override val numberRemainderNumber: Remainder<UBigLong, UBigLong, UBigLong> = Remainder { left, right ->
-        KoneContext.unwrap(this@UBigLongContext)
-        
         if (right.magnitude.isEmpty()) divisionByZero()
         if (left.magnitude.isEmpty()) return@Remainder zero
         if (right.magnitude.size > left.magnitude.size) return@Remainder left
@@ -511,15 +505,6 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
 // TODO: Replace with context-providing functions that hide the ccontext object
 public val UBigLong.Companion.context: UBigLongContext get() = UBigLongContext
 
-// region UBigLong-UBigLong operations
-context(context: UBigLongContext)
-public infix fun UBigLong.divrem(other: UBigLong): EuclideanDivisionResult<UBigLong> = with(context) { this@divrem divrem other }
-context(context: UBigLongContext)
-public operator fun UBigLong.div(other: UBigLong): UBigLong = with(context) { this@div / other }
-context(context: UBigLongContext)
-public operator fun UBigLong.rem(other: UBigLong): UBigLong = with(context) { this@rem % other }
-// endregion
-
 // region Bitwise operations
 context(context: UBigLongContext)
 public infix fun UBigLong.shr(bitCount: UInt): UBigLong = with(context) { this@shr shr bitCount }
@@ -556,7 +541,7 @@ public fun UBigLong.toString(radix: UInt): String {
     require(radix in 2u .. 36u) { "radix $radix was not in valid range 2..36" }
     KoneContext.unwrap(UBigLong.context)
     
-    if (this@toString.isZero()) return "0"
+    if (this.isZero()) return "0"
     
     return buildString {
         val radix = UBigLong.context.valueOf(radix)
