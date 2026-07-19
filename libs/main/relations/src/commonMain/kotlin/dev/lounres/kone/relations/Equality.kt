@@ -112,7 +112,7 @@ public inline infix fun <Element> Element.equalsTo(other: Element): Boolean = wi
  */
 // FIXME: KT-5351
 context(_: Equality<Element>)
-public inline infix fun <Element> Element.notEqualsTo(other: Element): Boolean = !(this@notEqualsTo equalsTo other)
+public inline infix fun <Element> Element.notEqualsTo(other: Element): Boolean = !(this equalsTo other)
 /**
  * Checks equality of [this] and [other] elements in the provided [Equality] context.
  * A shortcut for [equalsTo].
