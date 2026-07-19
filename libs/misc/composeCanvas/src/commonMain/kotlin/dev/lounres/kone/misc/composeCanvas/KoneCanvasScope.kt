@@ -354,8 +354,8 @@ public fun KoneCanvasScope.drawLine(
             StrokeCap.Butt -> KoneCanvasPath {
                 moveTo(start + strokeVector)
                 lineTo(end + strokeVector)
-                lineTo(end + -strokeVector)
-                lineTo(start + -strokeVector)
+                lineTo(end - strokeVector)
+                lineTo(start - strokeVector)
                 lineTo(start + strokeVector)
             }
             StrokeCap.Round -> KoneCanvasPath {
@@ -363,12 +363,12 @@ public fun KoneCanvasScope.drawLine(
             }
             StrokeCap.Square -> KoneCanvasPath {
                 val directionPadVector = strokeVector.let { Vector2(it.y, -it.x) }
-                val start = start + -directionPadVector
+                val start = start - directionPadVector
                 val end = end + directionPadVector
                 moveTo(start + strokeVector)
                 lineTo(end + strokeVector)
-                lineTo(end + -strokeVector)
-                lineTo(start + -strokeVector)
+                lineTo(end - strokeVector)
+                lineTo(start - strokeVector)
                 lineTo(start + strokeVector)
             }
             else -> error("Unknown kind of cap")
@@ -400,8 +400,8 @@ public fun KoneCanvasScope.drawLine(
             StrokeCap.Butt -> KoneCanvasPath {
                 moveTo(start + strokeVector)
                 lineTo(end + strokeVector)
-                lineTo(end + -strokeVector)
-                lineTo(start + -strokeVector)
+                lineTo(end - strokeVector)
+                lineTo(start - strokeVector)
                 lineTo(start + strokeVector)
             }
             StrokeCap.Round -> KoneCanvasPath {
@@ -409,12 +409,12 @@ public fun KoneCanvasScope.drawLine(
             }
             StrokeCap.Square -> KoneCanvasPath {
                 val directionPadVector = strokeVector.let { Vector2(it.y, -it.x) }
-                val start = start + -directionPadVector
+                val start = start - directionPadVector
                 val end = end + directionPadVector
                 moveTo(start + strokeVector)
                 lineTo(end + strokeVector)
-                lineTo(end + -strokeVector)
-                lineTo(start + -strokeVector)
+                lineTo(end - strokeVector)
+                lineTo(start - strokeVector)
                 lineTo(start + strokeVector)
             }
             else -> error("Unknown kind of cap")
@@ -444,9 +444,9 @@ public fun KoneCanvasScope.drawRectangle(
         brush = brush,
         path = KoneCanvasPath {
             moveTo(center + widthVector + heightVector)
-            lineTo(center + -widthVector + heightVector)
-            lineTo(center + -widthVector + -heightVector)
-            lineTo(center + widthVector + -heightVector)
+            lineTo(center - widthVector + heightVector)
+            lineTo(center - widthVector - heightVector)
+            lineTo(center + widthVector - heightVector)
             lineTo(center + widthVector + heightVector)
         },
         alpha = alpha,
@@ -473,9 +473,9 @@ public fun KoneCanvasScope.drawRectangle(
         color = color,
         path = KoneCanvasPath {
             moveTo(center + widthVector + heightVector)
-            lineTo(center + -widthVector + heightVector)
-            lineTo(center + -widthVector + -heightVector)
-            lineTo(center + widthVector + -heightVector)
+            lineTo(center - widthVector + heightVector)
+            lineTo(center - widthVector - heightVector)
+            lineTo(center + widthVector - heightVector)
             lineTo(center + widthVector + heightVector)
         },
         alpha = alpha,
