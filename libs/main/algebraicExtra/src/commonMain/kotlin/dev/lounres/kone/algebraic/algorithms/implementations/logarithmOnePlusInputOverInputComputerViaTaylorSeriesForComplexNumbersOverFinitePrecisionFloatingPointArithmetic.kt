@@ -10,10 +10,10 @@ import dev.lounres.kone.algebraic.algorithms.LogarithmComputer
 import dev.lounres.kone.algebraic.algorithms.LogarithmOnePlusInputOverInputComputer
 import dev.lounres.kone.algebraic.algorithms.PositiveSquareRootComputer
 import dev.lounres.kone.algebraic.algorithms.logarithm
-import dev.lounres.kone.context
-import dev.lounres.kone.contexts.KoneContextHolder
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.localContexts
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
@@ -43,14 +43,15 @@ private class LogarithmOnePlusInputOverInputComputerViaTaylorSeriesForComplexNum
             numberPositiveSquareRootComputer,
             complexNumberLogarithmComputer,
         ) {
-            KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberRing, complexNumberField)
-            if (this@logarithmOnePlusThisOverThis.absoluteValue() leq threshold) {
+            KoneContext.unwrap(numberRing, complexNumberField)
+            localContexts(complexNumberField.numberPlusInt)
+            if (this.absoluteValue() leq threshold) {
                 var result = complexNumberField.one
                 var stepNumerator = complexNumberField.one
                 var stepDenominator = 1u
                 while (true) {
                     stepDenominator++
-                    stepNumerator *= -this@logarithmOnePlusThisOverThis
+                    stepNumerator *= -this
                     val step = stepNumerator / stepDenominator
                     if (step.isZero()) break
                     
@@ -59,7 +60,7 @@ private class LogarithmOnePlusInputOverInputComputerViaTaylorSeriesForComplexNum
                     if (oldResult eq result) break
                 }
                 result
-            } else (this@logarithmOnePlusThisOverThis + 1).logarithm() / this@logarithmOnePlusThisOverThis
+            } else (this + 1).logarithm() / this
         }
 }
 

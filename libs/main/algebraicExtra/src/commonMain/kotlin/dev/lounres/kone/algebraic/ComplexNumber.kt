@@ -9,10 +9,10 @@ import dev.lounres.kone.algebraic.algorithms.PlanarVectorArgumentComputer
 import dev.lounres.kone.algebraic.algorithms.PositiveSquareRootComputer
 import dev.lounres.kone.algebraic.algorithms.planarVectorArgument
 import dev.lounres.kone.algebraic.algorithms.positiveSquareRoot
-import dev.lounres.kone.contexts.KoneContextHolder
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
@@ -276,7 +276,7 @@ private class ComplexNumberFieldExtension<Number>(
         }
     }
     override val intDivideNumber: Divide<Int, ComplexNumber<Number>, ComplexNumber<Number>> = Divide { left, right ->
-        KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField)
+        KoneContext.unwrap(numberField)
         val commonMultiplier = left / (right.realPart.let { it * it } + right.imaginaryPart.let { it * it })
         ComplexNumber(
             realPart = right.realPart * commonMultiplier,
@@ -307,7 +307,7 @@ private class ComplexNumberFieldExtension<Number>(
         }
     }
     override val uIntDivideNumber: Divide<UInt, ComplexNumber<Number>, ComplexNumber<Number>> = Divide { left, right ->
-        KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField)
+        KoneContext.unwrap(numberField)
         val commonMultiplier = left / (right.realPart.let { it * it } + right.imaginaryPart.let { it * it })
         ComplexNumber(
             realPart = right.realPart * commonMultiplier,
@@ -338,7 +338,7 @@ private class ComplexNumberFieldExtension<Number>(
         }
     }
     override val longDivideNumber: Divide<Long, ComplexNumber<Number>, ComplexNumber<Number>> = Divide { left, right ->
-        KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField)
+        KoneContext.unwrap(numberField)
         val commonMultiplier = left / (right.realPart.let { it * it } + right.imaginaryPart.let { it * it })
         ComplexNumber(
             realPart = right.realPart * commonMultiplier,
@@ -369,7 +369,7 @@ private class ComplexNumberFieldExtension<Number>(
         }
     }
     override val uLongDivideNumber: Divide<ULong, ComplexNumber<Number>, ComplexNumber<Number>> = Divide { left, right ->
-        KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField)
+        KoneContext.unwrap(numberField)
         val commonMultiplier = left / (right.realPart.let { it * it } + right.imaginaryPart.let { it * it })
         ComplexNumber(
             realPart = right.realPart * commonMultiplier,
@@ -400,7 +400,7 @@ private class ComplexNumberFieldExtension<Number>(
         }
     }
     override val numberDivideVector: Divide<Number, ComplexNumber<Number>, ComplexNumber<Number>> = Divide { left, right ->
-        KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField)
+        KoneContext.unwrap(numberField)
         val commonMultiplier = left / (right.realPart.let { it * it } + right.imaginaryPart.let { it * it })
         ComplexNumber(
             realPart = right.realPart * commonMultiplier,
@@ -435,14 +435,14 @@ private class ComplexNumberFieldExtension<Number>(
         }
     }
     override val numberTimesNumber: Times<ComplexNumber<Number>, ComplexNumber<Number>, ComplexNumber<Number>> = Times { left, right ->
-        KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField)
+        KoneContext.unwrap(numberField)
         ComplexNumber(
             realPart = left.realPart * right.realPart - left.imaginaryPart * right.imaginaryPart,
             imaginaryPart = left.realPart * right.imaginaryPart + left.imaginaryPart * right.realPart,
         )
     }
     override val numberReciprocal: Reciprocal<ComplexNumber<Number>, ComplexNumber<Number>> = Reciprocal {
-        KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField)
+        KoneContext.unwrap(numberField)
         val norm = it.realPart.let { it * it } + it.imaginaryPart.let { it * it }
         ComplexNumber(
             realPart = it.realPart / norm,
@@ -450,7 +450,7 @@ private class ComplexNumberFieldExtension<Number>(
         )
     }
     override val numberDivideNumber: Divide<ComplexNumber<Number>, ComplexNumber<Number>, ComplexNumber<Number>> = Divide { left, right ->
-        KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField)
+        KoneContext.unwrap(numberField)
         val norm = (right.realPart.let { it * it } + right.imaginaryPart.let { it * it })
         ComplexNumber(
             realPart = (left.realPart * right.realPart + left.imaginaryPart * right.imaginaryPart) / norm,

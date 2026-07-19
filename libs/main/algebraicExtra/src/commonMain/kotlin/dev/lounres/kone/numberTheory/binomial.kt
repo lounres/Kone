@@ -10,8 +10,8 @@ import dev.lounres.kone.algebraic.div
 import dev.lounres.kone.algebraic.minus
 import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.contexts.KoneContextHolder
-import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.contexts.unwrap
 
 
 // region Int
@@ -34,7 +34,7 @@ public fun binomial(n: Int, k: Int): Int {
 context(field: Field<N>)
 public fun <N> binomialPolynomial(n: N, k: Int): N {
     require(k >= 0) { "Binomial coefficient C(n, k) is undefined for negative k=$k"}
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(field)
+    KoneContext.unwrap(field)
     var acc = field.one
     for (i in 1..k) acc = acc * (n - (i - 1)) / i
     return acc
@@ -56,7 +56,7 @@ public fun risingBinomial(n: Int, k: Int): Int {
 context(field: Field<N>)
 public fun <N> risingBinomialPolynomial(n: N, k: Int): N {
     require(k >= 0) { "Binomial coefficient C(n, k) is undefined for negative k=$k"}
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(field)
+    KoneContext.unwrap(field)
     var acc = field.one
     for (i in 1..k) acc = acc * (n + (i - 1)) / i
     return acc
@@ -82,7 +82,7 @@ public fun binomial(n: UInt, k: UInt): UInt {
  */
 context(field: Field<N>)
 public fun <N> binomialPolynomial(n: N, k: UInt): N {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(field)
+    KoneContext.unwrap(field)
     var acc = field.one
     for (i in 1u..k) acc = acc * (n - (i - 1u)) / i
     return acc
@@ -102,7 +102,7 @@ public fun risingBinomial(n: UInt, k: UInt): UInt {
  */
 context(field: Field<N>)
 public fun <N> risingBinomialPolynomial(n: N, k: UInt): N {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(field)
+    KoneContext.unwrap(field)
     var acc = field.one
     for (i in 1u..k) acc = acc * (n + (i - 1u)) / i
     return acc
@@ -130,7 +130,7 @@ public fun binomial(n: Long, k: Long): Long {
 context(field: Field<N>)
 public fun <N> binomialPolynomial(n: N, k: Long): N {
     require(k >= 0L) { "Binomial coefficient C(n, k) is undefined for negative k=$k"}
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(field)
+    KoneContext.unwrap(field)
     var acc = field.one
     for (i in 1L..k) acc = acc * (n - (i - 1L)) / i
     return acc
@@ -152,7 +152,7 @@ public fun risingBinomial(n: Long, k: Long): Long {
 context(field: Field<N>)
 public fun <N> risingBinomialPolynomial(n: N, k: Long): N {
     require(k >= 0L) { "Binomial coefficient C(n, k) is undefined for negative k=$k"}
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(field)
+    KoneContext.unwrap(field)
     var acc = field.one
     for (i in 1L..k) acc = acc * (n + (i - 1L)) / i
     return acc
@@ -179,7 +179,7 @@ public fun binomial(n: ULong, k: ULong): ULong {
 context(field: Field<N>)
 public fun <N> binomialPolynomial(n: N, k: ULong): N {
     require(k >= 0uL) { "Binomial coefficient C(n, k) is undefined for negative k=$k"}
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(field)
+    KoneContext.unwrap(field)
     var acc = field.one
     for (i in 1uL..k) acc = acc * (n - (i - 1uL)) / i
     return acc
@@ -199,7 +199,7 @@ public fun risingBinomial(n: ULong, k: ULong): ULong {
  */
 context(field: Field<N>)
 public fun <N> risingBinomialPolynomial(n: N, k: ULong): N {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(field)
+    KoneContext.unwrap(field)
     var acc = field.one
     for (i in 1uL..k) acc = acc * (n + (i - 1uL)) / i
     return acc

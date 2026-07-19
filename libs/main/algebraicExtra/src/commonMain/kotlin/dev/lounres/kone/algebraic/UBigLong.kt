@@ -13,9 +13,9 @@ import dev.lounres.kone.collections.array.*
 import dev.lounres.kone.collections.iterables.contains
 import dev.lounres.kone.collections.list.lastIndex
 import dev.lounres.kone.collections.utils.slice
-import dev.lounres.kone.contexts.KoneContextHolder
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
@@ -159,7 +159,7 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
     }
     // TODO: Experiment with Karatsuba algorithm, Toom–Cook algorithm and FFT-based algorithms
     override val numberTimesNumber: Times<UBigLong, UBigLong, UBigLong> = Times { left, right ->
-        KoneContextHolder.unwrapLocallyAsExtensionReceivers(this)
+        KoneContext.unwrap(this)
         
         if (left.isZero() || right.isZero()) return@Times zero
         if (left.isOne()) return@Times right
@@ -185,7 +185,7 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
     }
     // TODO: Experiment with https://en.wikipedia.org/wiki/Division_algorithm#Integer_division_(unsigned)_with_remainder
     override val numberDivideRemainderNumber: DivideRemainder<UBigLong, UBigLong, EuclideanDivisionResult<UBigLong>> = DivideRemainder { left, right ->
-        KoneContextHolder.unwrapLocallyAsExtensionReceivers(this@UBigLongContext)
+        KoneContext.unwrap(this@UBigLongContext)
         
         if (right.magnitude.isEmpty()) divisionByZero()
         if (left.magnitude.isEmpty()) return@DivideRemainder EuclideanDivisionResult(zero, zero)
@@ -270,7 +270,7 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
         )
     }
     override val numberDivideNumber: Divide<UBigLong, UBigLong, UBigLong> = Divide { left, right ->
-        KoneContextHolder.unwrapLocallyAsExtensionReceivers(this@UBigLongContext)
+        KoneContext.unwrap(this@UBigLongContext)
         
         if (right.magnitude.isEmpty()) divisionByZero()
         if (left.magnitude.isEmpty()) return@Divide zero
@@ -349,7 +349,7 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
         UBigLong(quotient.removeLeadingZeros())
     }
     override val numberRemainderNumber: Remainder<UBigLong, UBigLong, UBigLong> = Remainder { left, right ->
-        KoneContextHolder.unwrapLocallyAsExtensionReceivers(this@UBigLongContext)
+        KoneContext.unwrap(this@UBigLongContext)
         
         if (right.magnitude.isEmpty()) divisionByZero()
         if (left.magnitude.isEmpty()) return@Remainder zero
@@ -554,7 +554,7 @@ public fun String.toUBigLong(radix: UInt = 10u): UBigLong {
 
 public fun UBigLong.toString(radix: UInt): String {
     require(radix in 2u .. 36u) { "radix $radix was not in valid range 2..36" }
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(UBigLong.context)
+    KoneContext.unwrap(UBigLong.context)
     
     if (this@toString.isZero()) return "0"
     

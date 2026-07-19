@@ -8,8 +8,8 @@ package dev.lounres.kone.numberTheory
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.utils.reduce
-import dev.lounres.kone.contexts.KoneContextHolder
-import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.contexts.unwrap
 import kotlin.math.abs
 
 
@@ -130,7 +130,7 @@ internal tailrec fun bezoutIdentityWithGCDInternalLogic(a: Long, b: Long, m1: Lo
  */
 context(ring: EuclideanSemiring<N>)
 public tailrec fun <N> gcd(a: N, b: N): N {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring)
+    KoneContext.unwrap(ring)
     return if (a.isZero()) b else gcd(b % a, a)
 }
 
@@ -161,7 +161,7 @@ public fun <N> bezoutIdentityWithGCD(a: N, b: N): BezoutCoefficientsWithGCD<N> =
  */
 context(ring: EuclideanRing<N>)
 internal tailrec fun <N> bezoutIdentityWithGCDInternalLogic(a: N, b: N, m1: N, m2: N, m3: N, m4: N): BezoutCoefficientsWithGCD<N> {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring)
+    KoneContext.unwrap(ring)
     return if (b.isZero()) BezoutCoefficientsWithGCD(m1, m3, a) else {
         val (quotient, remainder) = a divrem b
         bezoutIdentityWithGCDInternalLogic(b, remainder, m2, m1 - quotient * m2, m4, m3 - quotient * m4)

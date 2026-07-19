@@ -11,9 +11,10 @@ import dev.lounres.kone.algebraic.algorithms.SquareRootsComputer
 import dev.lounres.kone.algebraic.algorithms.positiveSquareRoot
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.of
-import dev.lounres.kone.contexts.KoneContextHolder
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.localContexts
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
@@ -34,7 +35,8 @@ private class SquareRootsComputerViaDefaultForComplexNumbers<Number>(
             order,
             positiveSquareRootComputer,
         ) {
-            KoneContextHolder.unwrapLocallyAsExtensionReceivers(field)
+            KoneContext.unwrap(field)
+            localContexts(field.numberDivideInt)
             val absoluteValue = this@squareRoots.absoluteValue()
             if (absoluteValue.isZero()) return KoneList.of(ComplexNumber(field.zero, field.zero))
             val cosWhole = this@squareRoots.realPart
