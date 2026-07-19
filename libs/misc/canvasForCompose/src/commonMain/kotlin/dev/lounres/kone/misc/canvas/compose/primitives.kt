@@ -27,7 +27,9 @@ import dev.lounres.kone.computationalGeometry.angles.*
 import dev.lounres.kone.computationalGeometry.default2.EuclideanSpace2OverField
 import dev.lounres.kone.computationalGeometry.default2.Point2
 import dev.lounres.kone.computationalGeometry.default2.Vector2
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.contexts.localContexts
 import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.misc.canvas.*
 import dev.lounres.kone.misc.canvas.common.*
@@ -199,6 +201,8 @@ public fun KoneCanvasComposeMultiplatformContext.rectangle(
         val euclideanSpace = providedKoneContextRegistry?.getOrNull(EuclideanSpace2OverField.Key<Double>())
             ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
         KoneContext.unwrap(euclideanSpace)
+        localContexts(euclideanSpace.vectorDivideInt)
+        
         val data = contextRegistry.getOrNull(KoneCanvasData.Key)
         val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
         val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
@@ -316,6 +320,8 @@ public fun KoneCanvasComposeMultiplatformContext.ellipse(
         val euclideanSpace = providedKoneContextRegistry?.getOrNull(EuclideanSpace2OverField.Key<Double>())
             ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
         KoneContext.unwrap(euclideanSpace)
+        localContexts(euclideanSpace.vectorDivideInt)
+        
         val data = contextRegistry.getOrNull(KoneCanvasData.Key)
         val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
         val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
