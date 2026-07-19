@@ -6,8 +6,7 @@
 package dev.lounres.kone.algebraic.util
 
 import dev.lounres.kone.algebraic.*
-import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localContexts
 
 
 // region Number-Int additive operations
@@ -37,7 +36,7 @@ import dev.lounres.kone.contexts.unwrap
  */
 context(ring: Ring<Number>)
 public infix fun <Number> Number.doublingPlus(other: Int): Number {
-    KoneContext.unwrap(ring)
+    localContexts(ring.numberPlusNumber, ring.numberMinusNumber)
     return rightAddMultipliedByDoubling(this, ring.one, other, { left, right -> left + right }, { left, right -> left - right })
 }
 /**
@@ -66,7 +65,7 @@ public infix fun <Number> Number.doublingPlus(other: Int): Number {
  */
 context(ring: Ring<Number>)
 public infix fun <Number> Number.doublingMinus(other: Int): Number {
-    KoneContext.unwrap(ring)
+    localContexts(ring.numberPlusNumber, ring.numberMinusNumber)
     return rightAddMultipliedByDoubling(this, ring.one, -other, { left, right -> left + right }, { left, right -> left - right })
 }
 /**
@@ -96,7 +95,7 @@ public infix fun <Number> Number.doublingMinus(other: Int): Number {
  */
 context(group: Group<Number>)
 public infix fun <Number> Number.doublingTimes(other: Int): Number {
-    KoneContext.unwrap(group)
+    localContexts(group.numberPlusNumber, group.numberUnaryMinus)
     return rightMultiplyByDoubling(this, other, { group.zero }, { left, right -> left + right }, { c -> -c })
 }
 // endregion
@@ -124,7 +123,7 @@ public infix fun <Number> Number.doublingTimes(other: Int): Number {
  */
 context(ring: Semiring<Number>)
 public infix fun <Number> Number.doublingPlus(other: UInt): Number {
-    KoneContext.unwrap(ring)
+    localContexts(ring.numberPlusNumber)
     return rightAddMultipliedByDoubling(this, ring.one, other) { left, right -> left + right }
 }
 /**
@@ -149,7 +148,7 @@ public infix fun <Number> Number.doublingPlus(other: UInt): Number {
  */
 context(ring: Ring<Number>)
 public infix fun <Number> Number.doublingMinus(other: UInt): Number {
-    KoneContext.unwrap(ring)
+    localContexts(ring.numberPlusNumber, ring.numberUnaryMinus)
     return rightAddMultipliedByDoubling(this, -ring.one, other) { left, right -> left + right }
 }
 /**
@@ -174,7 +173,7 @@ public infix fun <Number> Number.doublingMinus(other: UInt): Number {
  */
 context(monoid: Monoid<Number>)
 public infix fun <Number> Number.doublingTimes(other: UInt): Number {
-    KoneContext.unwrap(monoid)
+    localContexts(monoid.numberPlusNumber)
     return rightMultiplyByDoubling(this, other, { monoid.zero }) { left, right -> left + right }
 }
 // endregion
@@ -207,7 +206,7 @@ public infix fun <Number> Number.doublingTimes(other: UInt): Number {
  */
 context(ring: Ring<Number>)
 public infix fun <Number> Number.doublingPlus(other: Long): Number {
-    KoneContext.unwrap(ring)
+    localContexts(ring.numberPlusNumber, ring.numberMinusNumber)
     return rightAddMultipliedByDoubling(this, ring.one, other, { left, right -> left + right }, { left, right -> left - right })
 }
 /**
@@ -236,7 +235,7 @@ public infix fun <Number> Number.doublingPlus(other: Long): Number {
  */
 context(ring: Ring<Number>)
 public infix fun <Number> Number.doublingMinus(other: Long): Number {
-    KoneContext.unwrap(ring)
+    localContexts(ring.numberPlusNumber, ring.numberMinusNumber)
     return rightAddMultipliedByDoubling(this, ring.one, -other, { left, right -> left + right }, { left, right -> left - right })
 }
 /**
@@ -266,7 +265,7 @@ public infix fun <Number> Number.doublingMinus(other: Long): Number {
  */
 context(group: Group<Number>)
 public infix fun <Number> Number.doublingTimes(other: Long): Number {
-    KoneContext.unwrap(group)
+    localContexts(group.numberPlusNumber, group.numberUnaryMinus)
     return rightMultiplyByDoubling(this, other, { group.zero }, { left, right -> left + right }, { c -> -c })
 }
 // endregion
@@ -294,7 +293,7 @@ public infix fun <Number> Number.doublingTimes(other: Long): Number {
  */
 context(ring: Semiring<Number>)
 public infix fun <Number> Number.doublingPlus(other: ULong): Number {
-    KoneContext.unwrap(ring)
+    localContexts(ring.numberPlusNumber)
     return rightAddMultipliedByDoubling(this, ring.one, other) { left, right -> left + right }
 }
 /**
@@ -319,7 +318,7 @@ public infix fun <Number> Number.doublingPlus(other: ULong): Number {
  */
 context(ring: Ring<Number>)
 public infix fun <Number> Number.doublingMinus(other: ULong): Number {
-    KoneContext.unwrap(ring)
+    localContexts(ring.numberPlusNumber, ring.numberUnaryMinus)
     return rightAddMultipliedByDoubling(this, -ring.one, other) { left, right -> left + right }
 }
 /**
@@ -344,7 +343,7 @@ public infix fun <Number> Number.doublingMinus(other: ULong): Number {
  */
 context(monoid: Monoid<Number>)
 public infix fun <Number> Number.doublingTimes(other: ULong): Number {
-    KoneContext.unwrap(monoid)
+    localContexts(monoid.numberPlusNumber)
     return rightMultiplyByDoubling(this, other, { monoid.zero }) { left, right -> left + right }
 }
 // endregion
@@ -376,7 +375,7 @@ public infix fun <Number> Number.doublingTimes(other: ULong): Number {
  */
 context(ring: Ring<Number>)
 public infix fun <Number> Int.doublingPlus(other: Number): Number {
-    KoneContext.unwrap(ring)
+    localContexts(ring.numberPlusNumber, ring.numberMinusNumber)
     return rightAddMultipliedByDoubling(other, ring.one, this, { left, right -> left + right }, { left, right -> left - right })
 }
 /**
@@ -405,7 +404,7 @@ public infix fun <Number> Int.doublingPlus(other: Number): Number {
  */
 context(ring: Ring<Number>)
 public infix fun <Number> Int.doublingMinus(other: Number): Number {
-    KoneContext.unwrap(ring)
+    localContexts(ring.numberUnaryMinus, ring.numberPlusNumber, ring.numberMinusNumber)
     return rightAddMultipliedByDoubling(-other, ring.one, this, { left, right -> left + right }, { left, right -> left - right })
 }
 /**
@@ -435,7 +434,7 @@ public infix fun <Number> Int.doublingMinus(other: Number): Number {
  */
 context(group: Group<Number>)
 public infix fun <Number> Int.doublingTimes(other: Number): Number {
-    KoneContext.unwrap(group)
+    localContexts(group.numberPlusNumber, group.numberUnaryMinus)
     return rightMultiplyByDoubling(other, this, { group.zero }, { left, right -> left + right }, { c -> -c })
 }
 // endregion
@@ -463,7 +462,7 @@ public infix fun <Number> Int.doublingTimes(other: Number): Number {
  */
 context(ring: Semiring<Number>)
 public infix fun <Number> UInt.doublingPlus(other: Number): Number {
-    KoneContext.unwrap(ring)
+    localContexts(ring.numberPlusNumber)
     return rightAddMultipliedByDoubling(other, ring.one, this) { left, right -> left + right }
 }
 /**
@@ -488,7 +487,7 @@ public infix fun <Number> UInt.doublingPlus(other: Number): Number {
  */
 context(ring: Ring<Number>)
 public infix fun <Number> UInt.doublingMinus(other: Number): Number {
-    KoneContext.unwrap(ring)
+    localContexts(ring.numberPlusNumber, ring.numberUnaryMinus)
     return rightAddMultipliedByDoubling(-other, ring.one, this) { left, right -> left + right }
 }
 /**
@@ -513,7 +512,7 @@ public infix fun <Number> UInt.doublingMinus(other: Number): Number {
  */
 context(monoid: Monoid<Number>)
 public infix fun <Number> UInt.doublingTimes(other: Number): Number {
-    KoneContext.unwrap(monoid)
+    localContexts(monoid.numberPlusNumber)
     return rightMultiplyByDoubling(other, this, { monoid.zero }) { left, right -> left + right }
 }
 // endregion
@@ -545,7 +544,7 @@ public infix fun <Number> UInt.doublingTimes(other: Number): Number {
  */
 context(ring: Ring<Number>)
 public infix fun <Number> Long.doublingPlus(other: Number): Number {
-    KoneContext.unwrap(ring)
+    localContexts(ring.numberPlusNumber, ring.numberMinusNumber)
     return rightAddMultipliedByDoubling(other, ring.one, this, { left, right -> left + right }, { left, right -> left - right })
 }
 /**
@@ -574,7 +573,7 @@ public infix fun <Number> Long.doublingPlus(other: Number): Number {
  */
 context(ring: Ring<Number>)
 public infix fun <Number> Long.doublingMinus(other: Number): Number {
-    KoneContext.unwrap(ring)
+    localContexts(ring.numberUnaryMinus, ring.numberPlusNumber, ring.numberMinusNumber)
     return rightAddMultipliedByDoubling(-other, ring.one, this, { left, right -> left + right }, { left, right -> left - right })
 }
 /**
@@ -604,7 +603,7 @@ public infix fun <Number> Long.doublingMinus(other: Number): Number {
  */
 context(group: Group<Number>)
 public infix fun <Number> Long.doublingTimes(other: Number): Number {
-    KoneContext.unwrap(group)
+    localContexts(group.numberPlusNumber, group.numberUnaryMinus)
     return rightMultiplyByDoubling(other, this, { group.zero }, { left, right -> left + right }, { c -> -c })
 }
 // endregion
@@ -632,7 +631,7 @@ public infix fun <Number> Long.doublingTimes(other: Number): Number {
  */
 context(ring: Semiring<Number>)
 public infix fun <Number> ULong.doublingPlus(other: Number): Number {
-    KoneContext.unwrap(ring)
+    localContexts(ring.numberPlusNumber)
     return rightAddMultipliedByDoubling(other, ring.one, this) { left, right -> left + right }
 }
 /**
@@ -657,7 +656,7 @@ public infix fun <Number> ULong.doublingPlus(other: Number): Number {
  */
 context(ring: Ring<Number>)
 public infix fun <Number> ULong.doublingMinus(other: Number): Number {
-    KoneContext.unwrap(ring)
+    localContexts(ring.numberPlusNumber, ring.numberUnaryMinus)
     return rightAddMultipliedByDoubling(-other, ring.one, this) { left, right -> left + right }
 }
 /**
@@ -682,7 +681,7 @@ public infix fun <Number> ULong.doublingMinus(other: Number): Number {
  */
 context(monoid: Monoid<Number>)
 public infix fun <Number> ULong.doublingTimes(other: Number): Number {
-    KoneContext.unwrap(monoid)
+    localContexts(monoid.numberPlusNumber)
     return rightMultiplyByDoubling(other, this, { monoid.zero }) { left, right -> left + right }
 }
 // endregion
@@ -715,7 +714,7 @@ public infix fun <Number> ULong.doublingTimes(other: Number): Number {
  */
 context(field: Field<Number>)
 public infix fun <Number> Number.squaringPower(exponent: Int): Number {
-    KoneContext.unwrap(field)
+    localContexts(field.numberTimesNumber, field.numberReciprocal)
     return rightMultiplyByDoubling(this, exponent, { field.one }, { left, right -> left * right }, { v -> v.reciprocal() })
 }
 /**
@@ -740,7 +739,7 @@ public infix fun <Number> Number.squaringPower(exponent: Int): Number {
  */
 context(ring: Semiring<Number>)
 public infix fun <Number> Number.squaringPower(exponent: UInt): Number {
-    KoneContext.unwrap(ring)
+    localContexts(ring.numberTimesNumber)
     return rightMultiplyByDoubling(this, exponent, { ring.one }, { left, right -> left * right })
 }
 /**
@@ -770,7 +769,7 @@ public infix fun <Number> Number.squaringPower(exponent: UInt): Number {
  */
 context(field: Field<Number>)
 public infix fun <Number> Number.squaringPower(exponent: Long): Number {
-    KoneContext.unwrap(field)
+    localContexts(field.numberTimesNumber, field.numberReciprocal)
     return rightMultiplyByDoubling(this, exponent, { field.one }, { left, right -> left * right }, { v -> v.reciprocal() })
 }
 /**
@@ -795,7 +794,7 @@ public infix fun <Number> Number.squaringPower(exponent: Long): Number {
  */
 context(ring: Semiring<Number>)
 public infix fun <Number> Number.squaringPower(exponent: ULong): Number {
-    KoneContext.unwrap(ring)
+    localContexts(ring.numberTimesNumber)
     return rightMultiplyByDoubling(this, exponent, { ring.one }, { left, right -> left * right })
 }
 //endregion
