@@ -9,7 +9,7 @@ class Work(private val n: Int) {
     fun work(): Int = n
 }
 
-interface Bar : KoneContextHolder {
+interface Bar : KoneContext {
     @KoneContextHolderInclude
     val baz: Work get() = Work(179)
 }
@@ -22,6 +22,6 @@ class Baz : Bar {
 }
 
 fun box(): String {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(Baz())
+    KoneContext.unwrap(Baz())
     return if (work() == 57) "OK" else "INCORRECT"
 }

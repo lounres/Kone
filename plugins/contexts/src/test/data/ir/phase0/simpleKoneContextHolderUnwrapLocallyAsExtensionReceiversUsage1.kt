@@ -5,13 +5,13 @@ package foo.bar
 import dev.lounres.kone.contexts.*
 
 
-class Foo<X> : KoneContextHolder {
+class Foo<X> : KoneContext {
     @KoneContextHolderInclude
     val bar: List<X> get() = emptyList()
     val baz: Set<X> get() = emptySet()
 }
 
 fun box(): String {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(Foo<Int>())
+    KoneContext.unwrap(Foo<Int>())
     return if (contextOf<List<Int>>().isEmpty()) "OK" else "INCORRECT"
 }

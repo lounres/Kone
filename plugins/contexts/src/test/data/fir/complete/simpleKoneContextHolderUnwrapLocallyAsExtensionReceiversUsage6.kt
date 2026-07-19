@@ -5,7 +5,7 @@ package foo.bar
 import dev.lounres.kone.contexts.*
 
 
-interface Bar : KoneContextHolder {
+interface Bar : KoneContext {
     @KoneContextHolderInclude
     val bar: Int get() = 179
 }
@@ -18,6 +18,6 @@ class Baz : Bar {
 }
 
 fun box(): String {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(Baz())
+    KoneContext.unwrap(Baz())
     return if (contextOf<Int>() == 57) "OK" else "INCORRECT"
 }

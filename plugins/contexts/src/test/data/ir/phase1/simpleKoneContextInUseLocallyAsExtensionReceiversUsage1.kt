@@ -10,6 +10,6 @@ class Baz : KoneContext {
 }
 
 fun box(): String {
-    KoneContext.useLocallyAsExtensionReceivers(Baz())
+    localReceivers(Baz())
     return if (gee == 57) "OK" else "INCORRECT"
 }

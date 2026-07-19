@@ -8,18 +8,18 @@ package dev.lounres.kone.plugin.contexts
 import org.jetbrains.kotlin.name.Name
 
 
-const val useLocallyAsExtensionReceiversFakeValueParameterNameString = "<Kone contexts useLocallyAsExtensionReceivers receiver holder>"
-const val useLocallyAsContextsFakeValueParameterNameString = "<Kone contexts useLocallyAsContexts receiver holder>"
-const val useLocallyAsContextsActualValueParameterNameString = "<Kone contexts useLocallyAsContexts receiver itself>"
-const val unwrapLocallyAsExtensionReceiversFakeValueParameterNameString = "<Kone contexts unwrapLocallyAsExtensionReceivers receiver holder>"
+const val localReceiversFakeValueParameterNameString = "<Kone contexts localReceivers receiver holder>"
+const val localContextsFakeValueParameterNameString = "<Kone contexts localContexts context holder>"
+const val localContextsActualValueParameterNameString = "<Kone contexts localContexts context itself>"
+const val unwrapFakeValueParameterNameString = "<Kone contexts unwrap context holder>"
 
-val useLocallyAsExtensionReceiversFakeValueParameterName = Name.special(useLocallyAsExtensionReceiversFakeValueParameterNameString)
-val useLocallyAsContextsFakeValueParameterName = Name.special(useLocallyAsContextsFakeValueParameterNameString)
-val useLocallyAsContextsActualValueParameterName = Name.special(useLocallyAsContextsActualValueParameterNameString)
-val unwrapLocallyAsExtensionReceiversFakeValueParameterName = Name.special(unwrapLocallyAsExtensionReceiversFakeValueParameterNameString)
+val localReceiversFakeValueParameterName = Name.special(localReceiversFakeValueParameterNameString)
+val localContextsFakeValueParameterName = Name.special(localContextsFakeValueParameterNameString)
+val localContextsActualValueParameterName = Name.special(localContextsActualValueParameterNameString)
+val unwrapFakeValueParameterName = Name.special(unwrapFakeValueParameterNameString)
 
 val fakeValueParametersNameStrings = setOf<String>(
-    useLocallyAsExtensionReceiversFakeValueParameterNameString,
-    useLocallyAsContextsFakeValueParameterNameString,
-    unwrapLocallyAsExtensionReceiversFakeValueParameterNameString
+    localReceiversFakeValueParameterNameString,
+    localContextsFakeValueParameterNameString,
+    unwrapFakeValueParameterNameString
 )

@@ -25,7 +25,3 @@ public inline operator fun <KoneContextType: KoneContext, Result> KoneContextTyp
     }
     return block(this)
 }
-
-public interface KoneContextHolder : KoneContext {
-    public companion object;
-}

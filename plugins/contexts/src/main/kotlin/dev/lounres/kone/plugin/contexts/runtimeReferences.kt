@@ -18,9 +18,9 @@ const val koneContextHolderClassShortNameString = "KoneContextHolder"
 // Public runtime
 const val koneContextHolderIncludeAnnotationShortNameString = "KoneContextHolderInclude"
 const val koneContextHolderExcludeAnnotationShortNameString = "KoneContextHolderExclude"
-const val useLocallyAsExtensionReceiversFunctionShortNameString = "useLocallyAsExtensionReceivers"
-const val useLocallyAsContextsFunctionShortNameString = "useLocallyAsContexts"
-const val unwrapLocallyAsExtensionReceiversFunctionShortNameString = "unwrapLocallyAsExtensionReceivers"
+const val localReceiversFunctionShortNameString = "localReceivers"
+const val localContextsFunctionShortNameString = "localContexts"
+const val unwrapFunctionShortNameString = "unwrap"
 // Private runtime
 
 val koneContextsPackageFQName = FqName(koneContextsPackageFQNameString)
@@ -30,9 +30,9 @@ val koneContextHolderClassShortName = FqName(koneContextHolderClassShortNameStri
 // Public runtime
 val koneContextHolderIncludeAnnotationShortName = FqName(koneContextHolderIncludeAnnotationShortNameString)
 val koneContextHolderExcludeAnnotationShortName = FqName(koneContextHolderExcludeAnnotationShortNameString)
-val useLocallyAsExtensionReceiversFunctionShortName = Name.identifier(useLocallyAsExtensionReceiversFunctionShortNameString)
-val useLocallyAsContextsFunctionShortName = Name.identifier(useLocallyAsContextsFunctionShortNameString)
-val unwrapLocallyAsExtensionReceiversFunctionShortName = Name.identifier(unwrapLocallyAsExtensionReceiversFunctionShortNameString)
+val localReceiversFunctionShortName = Name.identifier(localReceiversFunctionShortNameString)
+val localContextsFunctionShortName = Name.identifier(localContextsFunctionShortNameString)
+val unwrapFunctionShortName = Name.identifier(unwrapFunctionShortNameString)
 // Private runtime
 
 // Library
@@ -57,19 +57,19 @@ val koneContextHolderExcludeAnnotationClassId = ClassId(
     relativeClassName = koneContextHolderExcludeAnnotationShortName,
     isLocal = false,
 )
-val useLocallyAsExtensionReceiversFunctionCallableId = CallableId(
+val localReceiversFunctionCallableId = CallableId(
     packageName = koneContextsPackageFQName,
     className = null,
-    callableName = useLocallyAsExtensionReceiversFunctionShortName,
+    callableName = localReceiversFunctionShortName,
 )
-val useLocallyAsContextsFunctionCallableId = CallableId(
+val localContextsFunctionCallableId = CallableId(
     packageName = koneContextsPackageFQName,
     className = null,
-    callableName = useLocallyAsContextsFunctionShortName,
+    callableName = localContextsFunctionShortName,
 )
-val unwrapLocallyAsExtensionReceiversFunctionCallableId = CallableId(
+val unwrapFunctionCallableId = CallableId(
     packageName = koneContextsPackageFQName,
     className = null,
-    callableName = unwrapLocallyAsExtensionReceiversFunctionShortName,
+    callableName = unwrapFunctionShortName,
 )
 // Private runtime

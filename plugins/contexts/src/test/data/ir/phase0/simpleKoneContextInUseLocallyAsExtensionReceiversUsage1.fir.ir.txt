@@ -31,16 +31,15 @@ FILE fqName:foo.bar fileName:/simpleKoneContextInUseLocallyAsExtensionReceiversU
         public open fun toString (): kotlin.String declared in dev.lounres.kone.contexts.KoneContext
   FUN name:box visibility:public modality:FINAL returnType:kotlin.String
     BLOCK_BODY
-      CALL 'public final fun useLocallyAsExtensionReceivers (<this>: dev.lounres.kone.contexts.KoneContext.Companion, vararg koneContext: dev.lounres.kone.contexts.KoneContext): kotlin.Unit declared in dev.lounres.kone.contexts' type=kotlin.Unit origin=null
-        ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.contexts.KoneContext.Companion
-        ARG koneContext: VARARG type=kotlin.Array<out dev.lounres.kone.contexts.KoneContext> varargElementType=dev.lounres.kone.contexts.KoneContext
+      CALL 'public final fun localReceivers (vararg receivers: kotlin.Any?): kotlin.Unit declared in dev.lounres.kone.contexts' type=kotlin.Unit origin=null
+        ARG receivers: VARARG type=kotlin.Array<out kotlin.Any?> varargElementType=kotlin.Any?
           CONSTRUCTOR_CALL 'public constructor <init> () declared in foo.bar.Baz' type=foo.bar.Baz origin=null
       RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in foo.bar'
         WHEN type=kotlin.String origin=IF
           BRANCH
             if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
               ARG arg0: CALL 'public final fun <get-gee> (): kotlin.Int declared in foo.bar.Baz' type=kotlin.Int origin=GET_PROPERTY
-                ARG <this>: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts useLocallyAsExtensionReceivers receiver holder>|' type=foo.bar.Baz
+                ARG <this>: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts localReceivers receiver holder>|' type=foo.bar.Baz
               ARG arg1: CONST Int type=kotlin.Int value=57
             then: CONST String type=kotlin.String value="OK"
           BRANCH

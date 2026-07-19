@@ -172,10 +172,12 @@ class ContextsFakeValueParametersReplacementTransformer(
             val statement = iterator.next()
             val newStatement = statement.transform(this, null)
             if (newStatement is IrCall) when(newStatement.symbol) {
-                irRuntimeReferences.useLocallyAsExtensionReceiversIrSimpleFunctionSymbol -> {
+                irRuntimeReferences.localReceiversIrSimpleFunctionSymbol,
+                irRuntimeReferences.localContextsIrSimpleFunctionSymbol,
+                -> {
                     iterator.remove()
-                    check(newStatement.arguments.size == 2)
-                    val vararg = newStatement.arguments.last() as IrVararg
+                    check(newStatement.arguments.size == 1)
+                    val vararg = newStatement.arguments[0] as IrVararg
                     for (context in vararg.elements) {
                         if (context !is IrExpression) continue
                         val contextVariable = Scope(declarationSymbolsStack.last()).createTemporaryVariable(context)
@@ -187,25 +189,10 @@ class ContextsFakeValueParametersReplacementTransformer(
                         )
                     }
                 }
-//                irRuntimeReferences.useLocallyAsContextsIrSimpleFunctionSymbol -> {
-//                    iterator.remove()
-//                    check(newStatement.arguments.size == 2)
-//                    val vararg = newStatement.arguments.last() as IrVararg
-//                    for (context in vararg.elements) {
-//                        if (context !is IrExpression) continue
-//                        val contextVariable = Scope(declarationSymbolsStack.last()).createTemporaryVariable(context)
-//                        iterator.add(contextVariable)
-//                        expressions.add(
-//                            UsedOrUnwrappedExpression(contextVariable.type) {
-//                                IrGetValueImpl(UNDEFINED_OFFSET, UNDEFINED_OFFSET, contextVariable.symbol)
-//                            }
-//                        )
-//                    }
-//                }
-                irRuntimeReferences.unwrapLocallyAsExtensionReceiversIrSimpleFunctionSymbol -> {
+                irRuntimeReferences.unwrapIrSimpleFunctionSymbol -> {
                     iterator.remove()
                     check(newStatement.arguments.size == 2)
-                    val vararg = newStatement.arguments.last() as IrVararg
+                    val vararg = newStatement.arguments[1] as IrVararg
                     for (holder in vararg.elements) {
                         if (holder !is IrExpression) continue
                         val holderVariable = Scope(declarationSymbolsStack.last()).createTemporaryVariable(holder)

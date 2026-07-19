@@ -32,8 +32,8 @@ import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstance
 
 
-class FirUnwrapLocallyAsExtensionReceiversExpressionResolutionExtension(session: FirSession) : FirExpressionResolutionExtension(session) {
-    data object GeneratedReceiverFromUnwrapLocallyAsExtensionReceiversFunctionKey : GeneratedDeclarationKey()
+class FirUnwrapExpressionResolutionExtension(session: FirSession) : FirExpressionResolutionExtension(session) {
+    data object GeneratedReceiverFromUnwrapFunctionKey : GeneratedDeclarationKey()
     
     companion object {
         private data class ClassSuperClassesAndTypeRealisation(
@@ -148,9 +148,9 @@ class FirUnwrapLocallyAsExtensionReceiversExpressionResolutionExtension(session:
         private fun FirPropertySymbol.isExclude() = hasAnnotation(koneContextHolderExcludeAnnotationClassId, session)
     }
     
-    private val unwrapLocallyAsExtensionReceiversFirFunctionSymbol by lazy {
+    private val unwrapFirFunctionSymbol by lazy {
         session.symbolProvider
-            .getTopLevelFunctionSymbols(koneContextsPackageFQName, unwrapLocallyAsExtensionReceiversFunctionShortName)
+            .getTopLevelFunctionSymbols(koneContextsPackageFQName, unwrapFunctionShortName)
             .firstIsInstance<FirFunctionSymbol<*>>()
     }
     
@@ -159,16 +159,16 @@ class FirUnwrapLocallyAsExtensionReceiversExpressionResolutionExtension(session:
         sessionHolder: SessionAndScopeSessionHolder,
         containingCallableSymbol: FirBasedSymbol<*>,
     ): List<ImplicitExtensionReceiverValue> = context(session) {
-        if (functionCall.calleeReference.resolved?.resolvedSymbol != unwrapLocallyAsExtensionReceiversFirFunctionSymbol) return emptyList()
+        if (functionCall.calleeReference.resolved?.resolvedSymbol != unwrapFirFunctionSymbol) return emptyList()
         val holdersToUnwrap = (functionCall.arguments.single() as FirVarargArgumentsExpression).arguments.map { it.resolvedType.unwrapToSimpleTypeUsingLowerBound() }
         val fakeValueParameter = buildValueParameter {
             resolvePhase = FirResolvePhase.BODY_RESOLVE
             moduleData = session.moduleData
-            origin = GeneratedReceiverFromUnwrapLocallyAsExtensionReceiversFunctionKey.origin
+            origin = GeneratedReceiverFromUnwrapFunctionKey.origin
             symbol = FirValueParameterSymbol()
-            containingDeclarationSymbol = unwrapLocallyAsExtensionReceiversFirFunctionSymbol
+            containingDeclarationSymbol = unwrapFirFunctionSymbol
             returnTypeRef = session.builtinTypes.nullableAnyType
-            name = unwrapLocallyAsExtensionReceiversFakeValueParameterName
+            name = unwrapFakeValueParameterName
         }
         holdersToUnwrap.flatMap { holder ->
             val classesProperties = holder.allProperties()
@@ -200,7 +200,7 @@ class FirUnwrapLocallyAsExtensionReceiversExpressionResolutionExtension(session:
                 val receiverParameter = buildReceiverParameter {
                     resolvePhase = FirResolvePhase.BODY_RESOLVE
                     moduleData = session.moduleData
-                    origin = GeneratedReceiverFromUnwrapLocallyAsExtensionReceiversFunctionKey.origin
+                    origin = GeneratedReceiverFromUnwrapFunctionKey.origin
                     symbol = FirReceiverParameterSymbol()
                     typeRef = buildResolvedTypeRef {
                         coneType = it

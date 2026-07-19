@@ -1,24 +1,24 @@
 FILE fqName:foo.bar fileName:/simpleKoneContextHolderUnwrapLocallyAsExtensionReceiversUsage1.kt
-  CLASS CLASS name:Foo modality:FINAL visibility:public superTypes:[dev.lounres.kone.contexts.KoneContextHolder]
+  CLASS CLASS name:Foo modality:FINAL visibility:public superTypes:[dev.lounres.kone.contexts.KoneContext]
     thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Foo<X of foo.bar.Foo>
     TYPE_PARAMETER name:X index:0 variance: superTypes:[kotlin.Any?] reified:false
     CONSTRUCTOR visibility:public returnType:foo.bar.Foo<X of foo.bar.Foo> [primary]
       BLOCK_BODY
         DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
-        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:Foo modality:FINAL visibility:public superTypes:[dev.lounres.kone.contexts.KoneContextHolder]' type=kotlin.Unit
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:Foo modality:FINAL visibility:public superTypes:[dev.lounres.kone.contexts.KoneContext]' type=kotlin.Unit
     FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
       VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
       VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
       overridden:
-        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in dev.lounres.kone.contexts.KoneContextHolder
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in dev.lounres.kone.contexts.KoneContext
     FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
       VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
       overridden:
-        public open fun hashCode (): kotlin.Int declared in dev.lounres.kone.contexts.KoneContextHolder
+        public open fun hashCode (): kotlin.Int declared in dev.lounres.kone.contexts.KoneContext
     FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
       VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
       overridden:
-        public open fun toString (): kotlin.String declared in dev.lounres.kone.contexts.KoneContextHolder
+        public open fun toString (): kotlin.String declared in dev.lounres.kone.contexts.KoneContext
     PROPERTY name:bar visibility:public modality:FINAL [val]
       annotations:
         KoneContextHolderInclude
@@ -39,9 +39,9 @@ FILE fqName:foo.bar fileName:/simpleKoneContextHolderUnwrapLocallyAsExtensionRec
               TYPE_ARG T: X of foo.bar.Foo
   FUN name:box visibility:public modality:FINAL returnType:kotlin.String
     BLOCK_BODY
-      CALL 'public final fun unwrapLocallyAsExtensionReceivers (<this>: dev.lounres.kone.contexts.KoneContextHolder.Companion, vararg koneContextHolder: dev.lounres.kone.contexts.KoneContextHolder): kotlin.Unit declared in dev.lounres.kone.contexts' type=kotlin.Unit origin=null
-        ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.contexts.KoneContextHolder.Companion
-        ARG koneContextHolder: VARARG type=kotlin.Array<out dev.lounres.kone.contexts.KoneContextHolder> varargElementType=dev.lounres.kone.contexts.KoneContextHolder
+      CALL 'public final fun unwrap (<this>: dev.lounres.kone.contexts.KoneContext.Companion, vararg koneContexts: dev.lounres.kone.contexts.KoneContext): kotlin.Unit declared in dev.lounres.kone.contexts' type=kotlin.Unit origin=null
+        ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.contexts.KoneContext.Companion
+        ARG koneContexts: VARARG type=kotlin.Array<out dev.lounres.kone.contexts.KoneContext> varargElementType=dev.lounres.kone.contexts.KoneContext
           CONSTRUCTOR_CALL 'public constructor <init> () declared in foo.bar.Foo' type=foo.bar.Foo<kotlin.Int> origin=null
             TYPE_ARG (of class) X: kotlin.Int
       RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in foo.bar'
@@ -50,7 +50,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextHolderUnwrapLocallyAsExtensionRec
             if: CALL 'public abstract fun isEmpty (): kotlin.Boolean declared in kotlin.collections.List' type=kotlin.Boolean origin=null
               ARG <this>: CALL 'public final fun contextOf <A> (context: @[NoInfer] A of kotlin.contextOf): @[NoInfer] A of kotlin.contextOf declared in kotlin' type=@[NoInfer] kotlin.collections.List<kotlin.Int> origin=null
                 TYPE_ARG A: kotlin.collections.List<kotlin.Int>
-                ARG context: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts unwrapLocallyAsExtensionReceivers receiver holder>|' type=kotlin.collections.List<kotlin.Int>
+                ARG context: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts unwrap context holder>|' type=kotlin.collections.List<kotlin.Int>
             then: CONST String type=kotlin.String value="OK"
           BRANCH
             if: CONST Boolean type=kotlin.Boolean value=true

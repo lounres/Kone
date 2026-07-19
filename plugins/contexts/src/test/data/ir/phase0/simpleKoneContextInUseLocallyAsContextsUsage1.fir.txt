@@ -16,9 +16,9 @@ FILE: simpleKoneContextInUseLocallyAsContextsUsage1.kt
             ^ R|<local>/foo|.R|foo/bar/Foo.bar|
         }
     public final fun box(): R|kotlin/String| {
-        Q|dev/lounres/kone/contexts/KoneContext|.R|dev/lounres/kone/contexts/useLocallyAsContexts|(vararg(R|foo/bar/Foo.Foo|()))
+        R|dev/lounres/kone/contexts/localContexts|(vararg(R|foo/bar/Foo.Foo|()))
         ^box when () {
-            ==(context(R|<local>/<Kone contexts useLocallyAsContexts receiver itself>|) R|foo/bar/baz|, Int(57)) ->  {
+            ==(context(this@R|<local>/<Kone contexts localContexts context holder>|) R|foo/bar/baz|, Int(57)) ->  {
                 String(OK)
             }
             else ->  {

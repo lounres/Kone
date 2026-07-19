@@ -9,13 +9,13 @@ fun interface CoolContext<X> {
     fun makeItCool(): X
 }
 
-object Foo : KoneContextHolder {
+object Foo : KoneContext {
     @KoneContextHolderInclude
     val bar = CoolContext { 57 }
     val baz = CoolContext { 179 }
 }
 
 fun box(): String {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(Foo)
+    KoneContext.unwrap(Foo)
     return if (makeItCool() == 57) "OK" else "INCORRECT"
 }

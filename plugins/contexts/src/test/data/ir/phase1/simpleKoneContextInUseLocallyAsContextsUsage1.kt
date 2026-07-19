@@ -13,6 +13,6 @@ context(foo: Foo)
 val baz: Int get() = foo.bar
 
 fun box(): String {
-    KoneContext.useLocallyAsContexts(Foo())
+    localContexts(Foo())
     return if (baz == 57) "OK" else "INCORRECT"
 }
