@@ -19,6 +19,8 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Density
+import dev.lounres.kone.algebraic.minus
+import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.collections.array.KoneDoubleArray
 import dev.lounres.kone.collections.array.of
@@ -28,8 +30,8 @@ import dev.lounres.kone.computationalGeometry.angles.degrees
 import dev.lounres.kone.computationalGeometry.angles.plus
 import dev.lounres.kone.computationalGeometry.angles.sin
 import dev.lounres.kone.computationalGeometry.default2.Vector2
-import dev.lounres.kone.contexts.KoneContextHolder
-import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.contexts.unwrap
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.exp
 
@@ -186,7 +188,7 @@ public inline fun Modifier.defaultKoneCanvasPointerInput(
         }
         .pointerInput(Unit) {
             awaitPointerEventScope {
-                KoneContextHolder.unwrapLocallyAsExtensionReceivers(koneCanvasEuclideanSpace)
+                KoneContext.unwrap(koneCanvasEuclideanSpace)
                 var currentPressPosition: Offset? = null
                 while (true) {
                     val event = awaitPointerEvent()

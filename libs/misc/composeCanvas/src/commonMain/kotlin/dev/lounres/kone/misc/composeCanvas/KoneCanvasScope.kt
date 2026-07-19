@@ -15,6 +15,8 @@ import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultBlendMo
 import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
+import dev.lounres.kone.algebraic.minus
+import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.algebraic.unaryMinus
 import dev.lounres.kone.collections.array.KoneDoubleArray
@@ -27,8 +29,8 @@ import dev.lounres.kone.computationalGeometry.angles.sin
 import dev.lounres.kone.computationalGeometry.default2.Point2
 import dev.lounres.kone.computationalGeometry.default2.Vector2
 import dev.lounres.kone.computationalGeometry.lengthSquared
-import dev.lounres.kone.contexts.KoneContextHolder
-import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.contexts.unwrap
 import kotlin.math.sqrt
 
 
@@ -344,7 +346,7 @@ public fun KoneCanvasScope.drawLine(
     colorFilter: ColorFilter? = null,
     blendMode: BlendMode = DefaultBlendMode
 ) {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(koneCanvasEuclideanSpace)
+    KoneContext.unwrap(koneCanvasEuclideanSpace)
     val directionVector = end - start
     val strokeVector = directionVector.let { Vector2(-it.y, it.x) } * (strokeWidth / 2 / sqrt(directionVector.lengthSquared()))
     drawPath(
@@ -390,7 +392,7 @@ public fun KoneCanvasScope.drawLine(
     colorFilter: ColorFilter? = null,
     blendMode: BlendMode = DefaultBlendMode
 ) {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(koneCanvasEuclideanSpace)
+    KoneContext.unwrap(koneCanvasEuclideanSpace)
     val directionVector = end - start
     val strokeVector = directionVector.let { Vector2(-it.y, it.x) } * (strokeWidth / 2 / sqrt(directionVector.lengthSquared()))
     drawPath(
@@ -435,7 +437,7 @@ public fun KoneCanvasScope.drawRectangle(
     colorFilter: ColorFilter? = null,
     blendMode: BlendMode = DefaultBlendMode
 ) {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(koneCanvasEuclideanSpace)
+    KoneContext.unwrap(koneCanvasEuclideanSpace)
     val widthVector = Vector2(cos(direction), sin(direction)) * size.width
     val heightVector = Vector2(-sin(direction), cos(direction)) * size.height
     drawPath(
@@ -464,7 +466,7 @@ public fun KoneCanvasScope.drawRectangle(
     colorFilter: ColorFilter? = null,
     blendMode: BlendMode = DefaultBlendMode
 ) {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(koneCanvasEuclideanSpace)
+    KoneContext.unwrap(koneCanvasEuclideanSpace)
     val widthVector = Vector2(cos(direction), sin(direction)) * (size.width / 2)
     val heightVector = Vector2(-sin(direction), cos(direction)) * (size.height / 2)
     drawPath(
@@ -545,7 +547,7 @@ public fun KoneCanvasScope.drawEllipse(
     colorFilter: ColorFilter? = null,
     blendMode: BlendMode = DefaultBlendMode
 ) {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(koneCanvasEuclideanSpace)
+    KoneContext.unwrap(koneCanvasEuclideanSpace)
     val cos = cos(direction)
     val sin = sin(direction)
     val width = size.width / 2
@@ -577,7 +579,7 @@ public fun KoneCanvasScope.drawEllipse(
     colorFilter: ColorFilter? = null,
     blendMode: BlendMode = DefaultBlendMode
 ) {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(koneCanvasEuclideanSpace)
+    KoneContext.unwrap(koneCanvasEuclideanSpace)
     val cos = cos(direction)
     val sin = sin(direction)
     val width = size.width / 2
@@ -640,7 +642,7 @@ public fun KoneCanvasScope.drawImage(
     colorFilter: ColorFilter? = null,
     blendMode: BlendMode = DefaultBlendMode
 ) {
-    KoneContextHolder.unwrapLocallyAsExtensionReceivers(koneCanvasEuclideanSpace)
+    KoneContext.unwrap(koneCanvasEuclideanSpace)
     val cos = cos(direction)
     val sin = sin(direction)
     drawImage(
