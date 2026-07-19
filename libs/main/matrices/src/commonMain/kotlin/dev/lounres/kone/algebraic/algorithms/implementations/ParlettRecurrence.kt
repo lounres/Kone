@@ -25,9 +25,8 @@ import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.build
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.relations.equality
 import dev.lounres.kone.multidimensionalCollections.relations.hashing
@@ -79,13 +78,13 @@ public class ParlettRecurrenceAtomicBlockImageComputerViaTaylorSeriesForComplexN
             matrixProductComputer,
         ) {
             require(this.rowNumber == this.columnNumber) { TODO() }
-            val size = this@atomicBlockImage.rowNumber
+            val size = this.rowNumber
             
-            KoneContextHolder.unwrapLocallyAsExtensionReceivers(field, complexNumberField, matrixCategoryOverField)
+            KoneContext.unwrap(field, complexNumberField, matrixCategoryOverField)
             
-            val spectre = KoneList.generate(size) { this@atomicBlockImage[it, it] }
+            val spectre = KoneList.generate(size) { this[it, it] }
             val sigma = spectre.sum() / size
-            val m = this@atomicBlockImage - matrixFactory.mapMatrix(
+            val m = this - matrixFactory.mapMatrix(
                 columnNumber = size,
                 rowNumber = size,
                 numbers = KoneMap.build(
@@ -101,7 +100,7 @@ public class ParlettRecurrenceAtomicBlockImageComputerViaTaylorSeriesForComplexN
                     y.add(
                         (0u ..< i)
                             .asKoneSequence()
-                            .fold(complexNumberField.one) { accumulator, j -> accumulator + y[j] * this@atomicBlockImage[size - 1u - i, size - 1u - j] }
+                            .fold(complexNumberField.one) { accumulator, j -> accumulator + y[j] * this[size - 1u - i, size - 1u - j] }
                     )
                 }
                 y.maxOf<_, Number> { it.norm() }
@@ -168,7 +167,7 @@ public class ParlettRecurrence<Number, Matrix : MDList2<ComplexNumber<Number>>>(
             val leftSize = leftSylvester.rowNumber
             val rightSize = rightSylvester.rowNumber
             
-            KoneContextHolder.unwrapLocallyAsExtensionReceivers(matrixCategoryOverField)
+            KoneContext.unwrap(matrixCategoryOverField)
             
             val solution = SettableMDList2.generate<ComplexNumber<Number>?>(
                 rowNumber = leftSize,
@@ -234,21 +233,21 @@ public class ParlettRecurrence<Number, Matrix : MDList2<ComplexNumber<Number>>>(
             order,
             complexNumberField,
         ) {
-            KoneContextHolder.unwrapLocallyAsExtensionReceivers(complexNumberField)
-            val blockIndices = KoneMutableUIntArray.fill(this@blockPattern.size, UInt.MAX_VALUE)
+            KoneContext.unwrap(complexNumberField)
+            val blockIndices = KoneMutableUIntArray.fill(this.size, UInt.MAX_VALUE)
             var setsNumber = 0u
-            for (i in 0u ..< this@blockPattern.size) {
+            for (i in 0u ..< this.size) {
                 if (blockIndices[i] == UInt.MAX_VALUE) {
                     blockIndices[i] = setsNumber.also { setsNumber++ }
                 }
-                for (j in i + 1u ..< this@blockPattern.size) {
-                    if (blockIndices[j] != blockIndices[i] && (this@blockPattern[j] - this@blockPattern[i]).norm() leq blockingParameterSquared) {
+                for (j in i + 1u ..< this.size) {
+                    if (blockIndices[j] != blockIndices[i] && (this[j] - this[i]).norm() leq blockingParameterSquared) {
                         if (blockIndices[j] == UInt.MAX_VALUE) {
                             blockIndices[j] = blockIndices[i]
                         } else {
                             val maxIndex = maxOf(blockIndices[i], blockIndices[j])
                             val minIndex = minOf(blockIndices[i], blockIndices[j])
-                            for (t in 0u ..< this@blockPattern.size)
+                            for (t in 0u ..< this.size)
                                 when {
                                     blockIndices[t] == UInt.MAX_VALUE -> {}
                                     blockIndices[t] > maxIndex -> blockIndices[t]--
@@ -298,9 +297,9 @@ public class ParlettRecurrence<Number, Matrix : MDList2<ComplexNumber<Number>>>(
             matrixProductComputer,
             parlettRecurrenceAtomicBlockImageComputer,
         ) {
-            KoneContextHolder.unwrapLocallyAsExtensionReceivers(matrixCategoryOverField)
+            KoneContext.unwrap(matrixCategoryOverField)
             
-            val input = this@image
+            val input = this
             val blocksOnDiagonalNumber = input.blocksOnDiagonalNumber
             val result = Blocked<Matrix?>(
                 blocksOnDiagonalNumber = blocksOnDiagonalNumber,

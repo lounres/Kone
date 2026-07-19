@@ -18,12 +18,11 @@ import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.utils.maxOf
 import dev.lounres.kone.collections.utils.withIndex
-import dev.lounres.kone.contexts.KoneContextHolder
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.buildWithProvider
-import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.contexts.koneContext
-import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
 import dev.lounres.kone.registry.RegisteredValueProvider
@@ -716,7 +715,7 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
             private val complexNumberFieldExtension = ComplexNumber.fieldExtensionOver(numberField)
             private val positiveSquareRootComputer = PositiveSquareRootComputer.viaDefaultForDouble()
             override fun evaluate(derivativeOrder: UInt, value: ComplexNumber<Number>): ComplexNumber<Number> {
-                KoneContextHolder.unwrapLocallyAsExtensionReceivers(complexNumberFieldExtension)
+                KoneContext.unwrap(complexNumberFieldExtension)
                 return when (derivativeOrder) {
                     0u -> value * value
                     1u -> 2 * value

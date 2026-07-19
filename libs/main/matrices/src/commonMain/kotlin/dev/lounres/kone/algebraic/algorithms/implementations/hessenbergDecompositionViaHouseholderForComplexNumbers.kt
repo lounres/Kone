@@ -17,10 +17,10 @@ import dev.lounres.kone.collections.utils.max
 import dev.lounres.kone.collections.utils.sum
 import dev.lounres.kone.collections.utils.sumOf
 import dev.lounres.kone.context
-import dev.lounres.kone.contexts.KoneContextHolder
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.multidimensionalCollections.MDIndex
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
@@ -73,7 +73,7 @@ private class HessenbergDecompositionComputerViaHouseholderForComplexNumbers<Num
             matrixProductComputer,
             conjugateTransposeMatrixComputer,
         ) {
-            KoneContextHolder.unwrapLocallyAsExtensionReceivers(
+            KoneContext.unwrap(
                 numberField,
                 complexNumberFieldExtension,
                 matrixCategoryOverField,

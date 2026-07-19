@@ -13,13 +13,11 @@ import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.build
 import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.collections.utils.sumOf
-import dev.lounres.kone.context
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
-import dev.lounres.kone.contexts.useLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.localContexts
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.relations.equality
 import dev.lounres.kone.multidimensionalCollections.relations.hashing
@@ -63,7 +61,7 @@ private class SchurDecompositionComputerViaGolubVanLoanForComplexNumbers<Number,
         val h = SettableMDList2.generate(n, n) { row, column -> h0[row, column] }
         
         scope {
-            KoneContext.useLocallyAsExtensionReceivers(
+            localContexts(
                 numberField,
                 complexNumberFieldExtension,
                 numberOrder,
@@ -73,10 +71,13 @@ private class SchurDecompositionComputerViaGolubVanLoanForComplexNumbers<Number,
                 matrixProductComputer,
                 conjugateTransposeMatrixComputer,
             )
-            KoneContextHolder.unwrapLocallyAsExtensionReceivers(
+            KoneContext.unwrap(
                 numberField,
                 complexNumberFieldExtension,
                 matrixCategoryOverField,
+            )
+            localContexts(
+                complexNumberFieldExtension.numberDivideInt
             )
             
             var k = 0u

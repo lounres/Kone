@@ -18,11 +18,10 @@ import dev.lounres.kone.algebraic.reciprocal
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.utils.maxOf
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
-import dev.lounres.kone.contexts.useLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.localContexts
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.registry.*
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.suppliedTypes.Suppliable
@@ -97,8 +96,8 @@ private class ScalarBaseForMatrixLogarithmWithComplexNumberConvexHullBoundViaDef
         else context(complexNumberFieldExtension.numberReciprocal, complexNumberFieldExtension.powerNumberUInt) { value.reciprocal().pow(derivativeOrder) }
     
     override fun bound(derivativeOrder: UInt, convexHullVertices: KoneIterable<ComplexNumber<Number>>): Number {
-        KoneContext.useLocallyAsExtensionReceivers(order, numberField, positiveSquareRootComputer, logarithmComputer, planarVectorArgumentComputer)
-        KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberField)
+        localContexts(order, numberField, positiveSquareRootComputer, logarithmComputer, planarVectorArgumentComputer)
+        KoneContext.unwrap(numberField)
         
         return if (derivativeOrder == 0u) convexHullVertices.maxOf<_, Number> { ComplexNumber(it.absoluteValue().logarithm(), it.argument()).norm() }.positiveSquareRoot()
         else convexHullVertices.maxOf<_, Number> { it.norm() }.positiveSquareRoot().reciprocal().pow(derivativeOrder)

@@ -13,10 +13,10 @@ import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.algebraic.algorithms.isAntisymmetric
 import dev.lounres.kone.algebraic.isNotZero
 import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.contexts.KoneContextHolder
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
@@ -31,11 +31,11 @@ private class IsAntisymmetricMatrixCheckerViaDefault<Number, Matrix : MDList2<Nu
     private val numberRing: CommutativeRing<Number>,
 ) : IsAntisymmetricMatrixChecker<Number, Matrix> {
     override fun Matrix.isAntisymmetric(): Boolean {
-        KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberRing)
+        KoneContext.unwrap(numberRing)
         if (rowNumber != columnNumber) return false
-        for (row in 0u ..< rowNumber) if (this@isAntisymmetric[row, row].isNotZero()) return false
+        for (row in 0u ..< rowNumber) if (this[row, row].isNotZero()) return false
         for (row in 1u ..< rowNumber) for (column in 0u ..< row) {
-            if ((this@isAntisymmetric[row, column] + this@isAntisymmetric[column, row]).isNotZero()) return false
+            if ((this[row, column] + this[column, row]).isNotZero()) return false
         }
         return true
     }

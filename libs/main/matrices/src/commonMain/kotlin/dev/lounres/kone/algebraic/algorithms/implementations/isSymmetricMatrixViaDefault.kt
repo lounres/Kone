@@ -10,10 +10,9 @@ import dev.lounres.kone.algebraic.algorithms.IsSymmetricMatrixChecker
 import dev.lounres.kone.algebraic.algorithms.IsSymmetricMatrixKey
 import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.algebraic.algorithms.isSymmetric
-import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.useLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.localContexts
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
@@ -30,7 +29,7 @@ private class IsSymmetricMatrixCheckerViaDefault<Number, Matrix : MDList2<Number
     private val numberEquality: Equality<Number>,
 ) : IsSymmetricMatrixChecker<Number, Matrix> {
     override fun Matrix.isSymmetric(): Boolean {
-        KoneContext.useLocallyAsExtensionReceivers(numberEquality)
+        localContexts(numberEquality)
         if (rowNumber != columnNumber) return false
         for (row in 1u ..< rowNumber) for (column in 0u ..< row) {
             if (this@isSymmetric[row, column] neq this@isSymmetric[column, row]) return false

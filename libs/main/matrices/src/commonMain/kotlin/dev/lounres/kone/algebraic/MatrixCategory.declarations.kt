@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.contexts.KoneContextHolder
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextHolderInclude
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.ImpliedKeysRegistry
@@ -16,7 +16,7 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 // The underlying ring is commutative
-public interface MatrixCategoryOverRing<Number, Matrix: MDList2<Number>> : KoneContextHolder {
+public interface MatrixCategoryOverRing<Number, Matrix: MDList2<Number>> : KoneContext {
     // region Matrix-Int operations
     @KoneContextHolderInclude
     public val matrixTimesInt: Times<Matrix, Int, Matrix>

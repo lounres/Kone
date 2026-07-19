@@ -9,10 +9,11 @@ import dev.lounres.kone.algebraic.CommutativeRing
 import dev.lounres.kone.algebraic.MatrixFactory
 import dev.lounres.kone.algebraic.algorithms.MatrixProductComputer
 import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
+import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.contexts.KoneContextHolder
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
@@ -30,12 +31,12 @@ private class MatrixProductComputerViaDefault<Number, Matrix : MDList2<Number>>(
     override fun Matrix.times(other: Matrix): Matrix {
         require(this.columnNumber == other.rowNumber) { "Cannot multiply two matrices with incompatible sizes: ${this.rowNumber}✖${this.columnNumber} and ${other.rowNumber}✖${other.columnNumber}" }
         
-        KoneContextHolder.unwrapLocallyAsExtensionReceivers(ring)
+        KoneContext.unwrap(ring)
         
-        return matrixFactory.generateMatrix(rowNumber = this@times.rowNumber, columnNumber = other.columnNumber) { row, column ->
+        return matrixFactory.generateMatrix(rowNumber = this.rowNumber, columnNumber = other.columnNumber) { row, column ->
             var sum = ring.zero
             
-            for (i in 0u ..< this@times.columnNumber) sum += this@times[row, i] * other[i, column]
+            for (i in 0u ..< this.columnNumber) sum += this[row, i] * other[i, column]
             
             sum
         }

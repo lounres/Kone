@@ -13,11 +13,10 @@ import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.algebraic.algorithms.isScalar
 import dev.lounres.kone.algebraic.isNotZero
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.contexts.KoneContextHolder
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrapLocallyAsExtensionReceivers
-import dev.lounres.kone.contexts.useLocallyAsExtensionReceivers
+import dev.lounres.kone.contexts.localContexts
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
@@ -35,17 +34,17 @@ private class IsScalarMatrixCheckerViaDefault<Number, Matrix : MDList2<Number>>(
     private val numberRing: CommutativeRing<Number>,
 ) : IsScalarMatrixChecker<Number, Matrix> {
     override fun Matrix.isScalar(): Boolean {
-        KoneContext.useLocallyAsExtensionReceivers(numberEquality)
-        KoneContextHolder.unwrapLocallyAsExtensionReceivers(numberRing)
+        localContexts(numberEquality)
+        KoneContext.unwrap(numberRing)
         if (rowNumber != columnNumber) return false
         if (rowNumber == 0u) return true
         for (row in 1u ..< rowNumber) for (column in 0u ..< row) {
-            if (this@isScalar[row, column].isNotZero()) return false
-            if (this@isScalar[column, row].isNotZero()) return false
+            if (this[row, column].isNotZero()) return false
+            if (this[column, row].isNotZero()) return false
         }
-        val scalar = this@isScalar[0u, 0u]
+        val scalar = this[0u, 0u]
         for (row in 1u ..< rowNumber)
-            if (this@isScalar[row, row] neq scalar) return false
+            if (this[row, row] neq scalar) return false
         return true
     }
 }
