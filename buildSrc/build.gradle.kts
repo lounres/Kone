@@ -1,10 +1,11 @@
 plugins {
-    alias(versions.plugins.kotlin.jvm)
+    alias(versions.plugins.kotlin.jvm)/* version "2.4.20-dev-6724"*/
     alias(versions.plugins.kotlinx.serialization)
     `kotlin-dsl`
 }
 
 repositories {
+    maven("https://packages.jetbrains.team/maven/p/ij/intellij-dependencies/")
     mavenCentral()
     gradlePluginPortal()
 }

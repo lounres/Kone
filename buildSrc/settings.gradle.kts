@@ -20,3 +20,12 @@ dependencyResolutionManagement {
         create("versions").from("dev.lounres:versions:$versions")
     }
 }
+
+pluginManagement {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        gradlePluginPortal()
+        maven("https://packages.jetbrains.team/maven/p/ij/intellij-dependencies/")
+    }
+}
