@@ -116,11 +116,17 @@ FILE fqName:foo.bar fileName:/simpleKoneContextHolderUnwrapLocallyAsExtensionRec
         WHEN type=kotlin.String origin=IF
           BRANCH
             if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
-              ARG arg0: CALL 'public final fun work (): kotlin.Int declared in foo.bar.Work' type=kotlin.Int origin=null
-                ARG <this>: CALL 'public final fun <get-bar> (): foo.bar.Work declared in foo.bar.Baz' type=foo.bar.Work origin=null
+              ARG arg0: CALL 'public final fun work (work: foo.bar.Work): kotlin.Int declared in foo.bar' type=kotlin.Int origin=null
+                ARG work: CALL 'public final fun <get-bar> (): foo.bar.Work declared in foo.bar.Baz' type=foo.bar.Work origin=null
                   ARG <this>: GET_VAR 'val tmp_0: foo.bar.Baz declared in foo.bar.box' type=foo.bar.Baz origin=null
               ARG arg1: CONST Int type=kotlin.Int value=57
             then: CONST String type=kotlin.String value="OK"
           BRANCH
             if: CONST Boolean type=kotlin.Boolean value=true
             then: CONST String type=kotlin.String value="INCORRECT"
+  FUN name:work visibility:public modality:FINAL returnType:kotlin.Int
+    VALUE_PARAMETER kind:Context name:work index:0 type:foo.bar.Work
+    BLOCK_BODY
+      RETURN type=kotlin.Nothing from='public final fun work (work: foo.bar.Work): kotlin.Int declared in foo.bar'
+        CALL 'public final fun work (): kotlin.Int declared in foo.bar.Work' type=kotlin.Int origin=null
+          ARG <this>: GET_VAR 'work: foo.bar.Work declared in foo.bar.work' type=foo.bar.Work origin=null

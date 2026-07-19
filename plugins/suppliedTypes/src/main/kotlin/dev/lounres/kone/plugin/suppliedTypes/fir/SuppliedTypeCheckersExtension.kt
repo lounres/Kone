@@ -105,7 +105,7 @@ class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckers
         override fun check(declaration: FirClass) {
             val declarationSymbol = declaration.symbol
             val suppliableClassFirClassSymbol = context.session.symbolProvider.getClassLikeSymbolByClassId(suppliableClassClassClassId)!!
-            val suppliableSuperTypesSymbols = declarationSymbol.resolvedSuperTypes.map { it.toClassSymbol()!! }.filter { it.isSuppliable && it != suppliableClassFirClassSymbol }
+            val suppliableSuperTypesSymbols = declarationSymbol.resolvedSuperTypes.mapNotNull { it.toClassSymbol() }.filter { it.isSuppliable && it != suppliableClassFirClassSymbol }
             if (!declarationSymbol.isSuppliable && suppliableSuperTypesSymbols.isNotEmpty())
                 reporter.reportOn(
                     source = declaration.source,

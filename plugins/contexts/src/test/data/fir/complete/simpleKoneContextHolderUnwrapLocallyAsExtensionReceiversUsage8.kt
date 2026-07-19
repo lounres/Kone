@@ -9,6 +9,9 @@ class Work(private val n: Int) {
     fun work(): Int = n
 }
 
+context(work: Work)
+fun work(): Int = work.work()
+
 interface Bar : KoneContext {
     @KoneContextHolderInclude
     val baz: Work get() = Work(179)

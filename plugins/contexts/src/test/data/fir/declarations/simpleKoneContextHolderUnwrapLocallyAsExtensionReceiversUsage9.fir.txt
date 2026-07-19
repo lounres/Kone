@@ -5,9 +5,23 @@ FILE: simpleKoneContextHolderUnwrapLocallyAsExtensionReceiversUsage9.kt
         public abstract operator fun R|Left|.plus(other: R|Right|): R|Result|
 
     }
+    context(plus: R|foo/bar/Plus<Left, Right, Result>|)
+    public final operator fun <Left, Right, Result> R|Left|.plus(other: R|Right|): R|Result| {
+        ^plus R|kotlin/with|<R|foo/bar/Plus<Left, Right, Result>|, R|Result|>(R|<local>/plus|, <L> = with@fun R|foo/bar/Plus<Left, Right, Result>|.<anonymous>(): R|Result| <inline=Inline, kind=EXACTLY_ONCE>  {
+            ^ (this@R|special/anonymous|, this@R|foo/bar/plus|).R|SubstitutionOverride<foo/bar/Plus.plus: R|Result|>|(R|<local>/other|)
+        }
+        )
+    }
     public abstract fun interface Minus<in Left, in Right, out Result> : R|dev/lounres/kone/contexts/KoneContext| {
         public abstract operator fun R|Left|.minus(other: R|Right|): R|Result|
 
+    }
+    context(minus: R|foo/bar/Minus<Left, Right, Result>|)
+    public final operator fun <Left, Right, Result> R|Left|.minus(other: R|Right|): R|Result| {
+        ^minus R|kotlin/with|<R|foo/bar/Minus<Left, Right, Result>|, R|Result|>(R|<local>/minus|, <L> = with@fun R|foo/bar/Minus<Left, Right, Result>|.<anonymous>(): R|Result| <inline=Inline, kind=EXACTLY_ONCE>  {
+            ^ (this@R|special/anonymous|, this@R|foo/bar/minus|).R|SubstitutionOverride<foo/bar/Minus.minus: R|Result|>|(R|<local>/other|)
+        }
+        )
     }
     public abstract interface Semigroup<Number> : R|dev/lounres/kone/contexts/KoneContext| {
         @R|dev/lounres/kone/contexts/KoneContextHolderInclude|() public abstract val numberPlusNumber: R|foo/bar/Plus<Number, Number, Number>|
@@ -36,10 +50,10 @@ FILE: simpleKoneContextHolderUnwrapLocallyAsExtensionReceiversUsage9.kt
     public final infix fun <Number> R|Number|.doublingPlus(other: R|kotlin/Int|): R|Number| {
         Q|dev/lounres/kone/contexts/KoneContext|.R|dev/lounres/kone/contexts/unwrap|(vararg(R|<local>/ring|))
         ^doublingPlus R|foo/bar/rightAddMultipliedByDoubling|<R|Number|>(this@R|foo/bar/doublingPlus|, R|<local>/ring|.R|SubstitutionOverride<foo/bar/Ring.one: R|Number|>|, R|<local>/other|, rightAddMultipliedByDoubling@fun <anonymous>(left: R|Number|, right: R|Number|): R|Number| <inline=Inline, kind=UNKNOWN>  {
-            ^ (this@R|<local>/<Kone contexts unwrap context holder>|, R|<local>/left|).R|SubstitutionOverride<foo/bar/Plus.plus: R|Number|>|(R|<local>/right|)
+            ^ context(this@R|<local>/<Kone contexts unwrap context holder>|) R|<local>/left|.R|foo/bar/plus|<R|Number|, R|Number|, R|Number|>(R|<local>/right|)
         }
         , rightAddMultipliedByDoubling@fun <anonymous>(left: R|Number|, right: R|Number|): R|Number| <inline=Inline, kind=UNKNOWN>  {
-            ^ (this@R|<local>/<Kone contexts unwrap context holder>|, R|<local>/left|).R|SubstitutionOverride<foo/bar/Minus.minus: R|Number|>|(R|<local>/right|)
+            ^ context(this@R|<local>/<Kone contexts unwrap context holder>|) R|<local>/left|.R|foo/bar/minus|<R|Number|, R|Number|, R|Number|>(R|<local>/right|)
         }
         )
     }

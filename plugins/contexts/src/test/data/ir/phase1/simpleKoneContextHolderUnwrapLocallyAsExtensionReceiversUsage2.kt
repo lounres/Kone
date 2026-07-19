@@ -9,6 +9,9 @@ fun interface CoolContext<X> {
     fun makeItCool(): X
 }
 
+context(coolContext: CoolContext<X>)
+fun <X> makeItCool(): X = coolContext.makeItCool()
+
 object Foo : KoneContext {
     @KoneContextHolderInclude
     val bar = CoolContext { 57 }

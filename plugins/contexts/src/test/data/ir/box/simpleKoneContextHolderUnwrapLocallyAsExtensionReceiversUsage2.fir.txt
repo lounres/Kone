@@ -5,6 +5,10 @@ FILE: simpleKoneContextHolderUnwrapLocallyAsExtensionReceiversUsage2.kt
         public abstract fun makeItCool(): R|X|
 
     }
+    context(coolContext: R|foo/bar/CoolContext<X>|)
+    public final fun <X> makeItCool(): R|X| {
+        ^makeItCool R|<local>/coolContext|.R|SubstitutionOverride<foo/bar/CoolContext.makeItCool: R|X|>|()
+    }
     public final object Foo : R|dev/lounres/kone/contexts/KoneContext| {
         private constructor(): R|foo/bar/Foo| {
             super<R|kotlin/Any|>()
@@ -26,7 +30,7 @@ FILE: simpleKoneContextHolderUnwrapLocallyAsExtensionReceiversUsage2.kt
     public final fun box(): R|kotlin/String| {
         Q|dev/lounres/kone/contexts/KoneContext|.R|dev/lounres/kone/contexts/unwrap|(vararg(Q|foo/bar/Foo|))
         ^box when () {
-            ==(this@R|<local>/<Kone contexts unwrap context holder>|.R|SubstitutionOverride<foo/bar/CoolContext.makeItCool: R|kotlin/Int|>|(), Int(57)) ->  {
+            ==(context(this@R|<local>/<Kone contexts unwrap context holder>|) R|foo/bar/makeItCool|<R|kotlin/Int|>(), Int(57)) ->  {
                 String(OK)
             }
             else ->  {

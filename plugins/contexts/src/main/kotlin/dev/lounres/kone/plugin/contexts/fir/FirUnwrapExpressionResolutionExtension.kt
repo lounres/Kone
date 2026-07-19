@@ -6,6 +6,7 @@
 package dev.lounres.kone.plugin.contexts.fir
 
 import dev.lounres.kone.plugin.contexts.*
+import dev.lounres.kone.plugin.contexts.fir.FirLocalContextsExpressionResolutionExtension.GeneratedReceiverFromLocalContextsFunctionKey
 import org.jetbrains.kotlin.GeneratedDeclarationKey
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.SessionAndScopeSessionHolder
@@ -21,14 +22,17 @@ import org.jetbrains.kotlin.fir.expressions.arguments
 import org.jetbrains.kotlin.fir.extensions.FirExpressionResolutionExtension
 import org.jetbrains.kotlin.fir.moduleData
 import org.jetbrains.kotlin.fir.references.resolved
+import org.jetbrains.kotlin.fir.resolve.calls.ImplicitContextParameterValue
 import org.jetbrains.kotlin.fir.resolve.calls.ImplicitExtensionReceiverValue
 import org.jetbrains.kotlin.fir.resolve.providers.symbolProvider
 import org.jetbrains.kotlin.fir.resolve.substitution.substitutorByMap
+import org.jetbrains.kotlin.fir.resolve.transformers.body.resolve.FirAbstractBodyResolveTransformer
 import org.jetbrains.kotlin.fir.symbols.FirBasedSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.*
 import org.jetbrains.kotlin.fir.types.*
 import org.jetbrains.kotlin.fir.types.builder.buildResolvedTypeRef
 import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.util.PrivateForInline
 import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstance
 
 
@@ -154,6 +158,7 @@ class FirUnwrapExpressionResolutionExtension(session: FirSession) : FirExpressio
             .firstIsInstance<FirFunctionSymbol<*>>()
     }
     
+    @OptIn(PrivateForInline::class)
     override fun addNewImplicitReceivers(
         functionCall: FirFunctionCall,
         sessionHolder: SessionAndScopeSessionHolder,
@@ -172,7 +177,7 @@ class FirUnwrapExpressionResolutionExtension(session: FirSession) : FirExpressio
             returnTypeRef = session.builtinTypes.nullableAnyType
             name = unwrapFakeValueParameterName
         }
-        holdersToUnwrap.flatMap { holder ->
+        val newImplicitContextParameters = holdersToUnwrap.flatMap { holder ->
             val classesProperties = holder.allProperties()
             val possiblePropertiesToUnwrap = classesProperties.values.flatMap { it.values }
             val decidingProperties = buildSet<FirPropertySymbol> {
@@ -209,13 +214,27 @@ class FirUnwrapExpressionResolutionExtension(session: FirSession) : FirExpressio
                     }
                     containingDeclarationSymbol = fakeValueParameter.symbol
                 }
-                ImplicitExtensionReceiverValue(
-                    boundSymbol = receiverParameter.symbol,
+                val valueParameterSymbol = buildValueParameter {
+                    resolvePhase = FirResolvePhase.BODY_RESOLVE
+                    moduleData = session.moduleData
+                    origin = GeneratedReceiverFromLocalContextsFunctionKey.origin
+                    returnTypeRef = buildResolvedTypeRef {
+                        coneType = it
+                    }
+                    name = localContextsActualValueParameterName
+                    symbol = FirValueParameterSymbol()
+                    containingDeclarationSymbol = fakeValueParameter.symbol
+                    valueParameterKind = ContextParameter
+                }.apply { fakeReceiver = receiverParameter }
+                ImplicitContextParameterValue(
+                    boundSymbol = valueParameterSymbol.symbol,
                     type = it,
-                    useSiteSession = sessionHolder.session,
-                    scopeSession = sessionHolder.scopeSession
                 )
             }
         }
+        sessionHolder as FirAbstractBodyResolveTransformer.BodyResolveTransformerComponents
+        val bodyResolveContext = sessionHolder.context
+        bodyResolveContext.replaceTowerDataContext(bodyResolveContext.towerDataContext.addContextGroups(newImplicitContextParameters))
+        emptyList()
     }
 }
