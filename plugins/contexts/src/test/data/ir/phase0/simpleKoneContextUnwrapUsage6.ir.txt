@@ -1,0 +1,89 @@
+FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage6.kt
+  CLASS CLASS name:Baz modality:FINAL visibility:public superTypes:[foo.bar.Bar]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Baz
+    PROPERTY name:baz visibility:public modality:FINAL [val]
+      annotations:
+        KoneContextHolderInclude
+      FIELD PROPERTY_BACKING_FIELD name:baz type:kotlin.Int visibility:private [final]
+        EXPRESSION_BODY
+          CONST Int type=kotlin.Int value=57
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-baz> visibility:public modality:FINAL returnType:kotlin.Int
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Baz
+        correspondingProperty: PROPERTY name:baz visibility:public modality:FINAL [val]
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-baz> (): kotlin.Int declared in foo.bar.Baz'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:baz type:kotlin.Int visibility:private [final]' type=kotlin.Int origin=null
+              receiver: GET_VAR '<this>: foo.bar.Baz declared in foo.bar.Baz.<get-baz>' type=foo.bar.Baz origin=null
+    CONSTRUCTOR visibility:public returnType:foo.bar.Baz [primary]
+      BLOCK_BODY
+        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:Baz modality:FINAL visibility:public superTypes:[foo.bar.Bar]' type=kotlin.Unit
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in foo.bar.Bar
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in foo.bar.Bar
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in foo.bar.Bar
+    PROPERTY name:bar visibility:public modality:OPEN [val]
+      annotations:
+        KoneContextHolderExclude
+      overridden:
+        public open bar: kotlin.Int declared in foo.bar.Bar
+      FUN name:<get-bar> visibility:public modality:OPEN returnType:kotlin.Int
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Baz
+        correspondingProperty: PROPERTY name:bar visibility:public modality:OPEN [val]
+        overridden:
+          public open fun <get-bar> (): kotlin.Int declared in foo.bar.Bar
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public open fun <get-bar> (): kotlin.Int declared in foo.bar.Baz'
+            CALL 'public open fun <get-bar> (): kotlin.Int declared in foo.bar.Bar' superQualifier='CLASS INTERFACE name:Bar modality:ABSTRACT visibility:public superTypes:[dev.lounres.kone.contexts.KoneContext]' type=kotlin.Int origin=GET_PROPERTY
+              ARG <this>: GET_VAR '<this>: foo.bar.Baz declared in foo.bar.Baz.<get-bar>' type=foo.bar.Baz origin=IMPLICIT_ARGUMENT
+  CLASS INTERFACE name:Bar modality:ABSTRACT visibility:public superTypes:[dev.lounres.kone.contexts.KoneContext]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Bar
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in dev.lounres.kone.contexts.KoneContext
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in dev.lounres.kone.contexts.KoneContext
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in dev.lounres.kone.contexts.KoneContext
+    PROPERTY name:bar visibility:public modality:OPEN [val]
+      annotations:
+        KoneContextHolderInclude
+      FUN name:<get-bar> visibility:public modality:OPEN returnType:kotlin.Int
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Bar
+        correspondingProperty: PROPERTY name:bar visibility:public modality:OPEN [val]
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public open fun <get-bar> (): kotlin.Int declared in foo.bar.Bar'
+            CONST Int type=kotlin.Int value=179
+  FUN name:box visibility:public modality:FINAL returnType:kotlin.String
+    BLOCK_BODY
+      CALL 'public final fun unwrap (<this>: dev.lounres.kone.contexts.KoneContext.Companion, vararg koneContexts: dev.lounres.kone.contexts.KoneContext): kotlin.Unit declared in dev.lounres.kone.contexts' type=kotlin.Unit origin=null
+        ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.contexts.KoneContext.Companion
+        ARG koneContexts: VARARG type=kotlin.Array<out dev.lounres.kone.contexts.KoneContext> varargElementType=dev.lounres.kone.contexts.KoneContext
+          CONSTRUCTOR_CALL 'public constructor <init> () declared in foo.bar.Baz' type=foo.bar.Baz origin=null
+      RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in foo.bar'
+        WHEN type=kotlin.String origin=IF
+          BRANCH
+            if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+              ARG arg0: CALL 'public final fun contextOf <A> (context: @[NoInfer] A of kotlin.contextOf): @[NoInfer] A of kotlin.contextOf declared in kotlin' type=@[NoInfer] kotlin.Int origin=null
+                TYPE_ARG A: kotlin.Int
+                ARG context: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts unwrap context holder>|' type=kotlin.Int
+              ARG arg1: CONST Int type=kotlin.Int value=57
+            then: CONST String type=kotlin.String value="OK"
+          BRANCH
+            if: CONST Boolean type=kotlin.Boolean value=true
+            then: CONST String type=kotlin.String value="INCORRECT"

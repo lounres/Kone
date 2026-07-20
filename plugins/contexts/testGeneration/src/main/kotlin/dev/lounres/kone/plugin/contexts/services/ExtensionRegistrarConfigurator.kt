@@ -30,7 +30,7 @@ class FirDeclarationsConfigurator(testServices: TestServices) : EnvironmentConfi
         module: TestModule,
         configuration: CompilerConfiguration
     ) {
-        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
+//        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
         
         FirExtensionRegistrarAdapter.registerExtension(DeclarationExtensionRegistrar())
     }
@@ -41,7 +41,7 @@ class FirDiagnosticConfigurator(testServices: TestServices) : EnvironmentConfigu
         module: TestModule,
         configuration: CompilerConfiguration
     ) {
-        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
+//        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
         
         FirExtensionRegistrarAdapter.registerExtension(DiagnosticExtensionRegistrar())
     }
@@ -52,7 +52,7 @@ class FirCompleteExtensionRegistrarConfigurator(testServices: TestServices) : En
         module: TestModule,
         configuration: CompilerConfiguration
     ) {
-        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
+//        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
         
         FirExtensionRegistrarAdapter.registerExtension(FirContextsExtensionRegistrar())
     }
@@ -73,12 +73,11 @@ class IrPartialExtensionRegistrarConfigurator(
         module: TestModule,
         configuration: CompilerConfiguration
     ) {
-        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
+//        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
 
         FirExtensionRegistrarAdapter.registerExtension(FirContextsExtensionRegistrar())
         IrGenerationExtension.registerExtension(
             ContextsIrGenerationExtension(
-                messageCollector = messageCollector,
                 lastPhase = lastPhase
             )
         )
@@ -90,10 +89,10 @@ class CompleteExtensionRegistrarConfigurator(testServices: TestServices) : Envir
         module: TestModule,
         configuration: CompilerConfiguration
     ) {
-        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
+//        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
         
         FirExtensionRegistrarAdapter.registerExtension(FirContextsExtensionRegistrar())
-        IrGenerationExtension.registerExtension(ContextsIrGenerationExtension(messageCollector))
+        IrGenerationExtension.registerExtension(ContextsIrGenerationExtension())
     }
 }
 
@@ -102,9 +101,9 @@ class TestExtensionRegistrarConfigurator(testServices: TestServices) : Environme
         module: TestModule,
         configuration: CompilerConfiguration
     ) {
-        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
+//        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
         
         FirExtensionRegistrarAdapter.registerExtension(FirContextsExtensionRegistrar())
-        IrGenerationExtension.registerExtension(ContextsIrGenerationExtension(messageCollector))
+        IrGenerationExtension.registerExtension(ContextsIrGenerationExtension())
     }
 }

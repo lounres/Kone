@@ -1,4 +1,4 @@
-FILE: simpleKoneContextHolderUnwrapLocallyAsExtensionReceiversUsage2.kt
+FILE: simpleKoneContextUnwrapUsage2.kt
     package foo.bar
 
     public abstract fun interface CoolContext<X> : R|kotlin/Any| {

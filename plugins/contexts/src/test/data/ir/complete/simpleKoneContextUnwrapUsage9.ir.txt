@@ -1,0 +1,281 @@
+FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage9.kt
+  CLASS INTERFACE name:Group modality:ABSTRACT visibility:public superTypes:[foo.bar.Semigroup<Number of foo.bar.Group>]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Group<Number of foo.bar.Group>
+    TYPE_PARAMETER name:Number index:0 variance: superTypes:[kotlin.Any?] reified:false
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in foo.bar.Semigroup
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in foo.bar.Semigroup
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in foo.bar.Semigroup
+    PROPERTY FAKE_OVERRIDE name:numberPlusNumber visibility:public modality:ABSTRACT [fake_override,val]
+      annotations:
+        KoneContextHolderInclude
+      overridden:
+        public abstract numberPlusNumber: foo.bar.Plus<Number of foo.bar.Semigroup, Number of foo.bar.Semigroup, Number of foo.bar.Semigroup> declared in foo.bar.Semigroup
+      FUN FAKE_OVERRIDE name:<get-numberPlusNumber> visibility:public modality:ABSTRACT returnType:foo.bar.Plus<Number of foo.bar.Group, Number of foo.bar.Group, Number of foo.bar.Group> [fake_override]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Semigroup<Number of foo.bar.Group>
+        correspondingProperty: PROPERTY FAKE_OVERRIDE name:numberPlusNumber visibility:public modality:ABSTRACT [fake_override,val]
+        overridden:
+          public abstract fun <get-numberPlusNumber> (): foo.bar.Plus<Number of foo.bar.Semigroup, Number of foo.bar.Semigroup, Number of foo.bar.Semigroup> declared in foo.bar.Semigroup
+    PROPERTY name:numberMinusNumber visibility:public modality:ABSTRACT [val]
+      annotations:
+        KoneContextHolderInclude
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-numberMinusNumber> visibility:public modality:ABSTRACT returnType:foo.bar.Minus<Number of foo.bar.Group, Number of foo.bar.Group, Number of foo.bar.Group>
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Group<Number of foo.bar.Group>
+        correspondingProperty: PROPERTY name:numberMinusNumber visibility:public modality:ABSTRACT [val]
+  CLASS INTERFACE name:Minus modality:ABSTRACT visibility:public [fun] superTypes:[dev.lounres.kone.contexts.KoneContext]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Minus<Left of foo.bar.Minus, Right of foo.bar.Minus, Result of foo.bar.Minus>
+    TYPE_PARAMETER name:Left index:0 variance:in superTypes:[kotlin.Any?] reified:false
+    TYPE_PARAMETER name:Right index:1 variance:in superTypes:[kotlin.Any?] reified:false
+    TYPE_PARAMETER name:Result index:2 variance:out superTypes:[kotlin.Any?] reified:false
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in dev.lounres.kone.contexts.KoneContext
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in dev.lounres.kone.contexts.KoneContext
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in dev.lounres.kone.contexts.KoneContext
+    FUN name:minus visibility:public modality:ABSTRACT returnType:Result of foo.bar.Minus [operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Minus<Left of foo.bar.Minus, Right of foo.bar.Minus, Result of foo.bar.Minus>
+      VALUE_PARAMETER kind:ExtensionReceiver name:<this> index:1 type:Left of foo.bar.Minus
+      VALUE_PARAMETER kind:Regular name:other index:2 type:Right of foo.bar.Minus
+  CLASS INTERFACE name:Plus modality:ABSTRACT visibility:public [fun] superTypes:[dev.lounres.kone.contexts.KoneContext]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Plus<Left of foo.bar.Plus, Right of foo.bar.Plus, Result of foo.bar.Plus>
+    TYPE_PARAMETER name:Left index:0 variance:in superTypes:[kotlin.Any?] reified:false
+    TYPE_PARAMETER name:Right index:1 variance:in superTypes:[kotlin.Any?] reified:false
+    TYPE_PARAMETER name:Result index:2 variance:out superTypes:[kotlin.Any?] reified:false
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in dev.lounres.kone.contexts.KoneContext
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in dev.lounres.kone.contexts.KoneContext
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in dev.lounres.kone.contexts.KoneContext
+    FUN name:plus visibility:public modality:ABSTRACT returnType:Result of foo.bar.Plus [operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Plus<Left of foo.bar.Plus, Right of foo.bar.Plus, Result of foo.bar.Plus>
+      VALUE_PARAMETER kind:ExtensionReceiver name:<this> index:1 type:Left of foo.bar.Plus
+      VALUE_PARAMETER kind:Regular name:other index:2 type:Right of foo.bar.Plus
+  CLASS INTERFACE name:Ring modality:ABSTRACT visibility:public superTypes:[foo.bar.Semiring<Number of foo.bar.Ring>; foo.bar.Group<Number of foo.bar.Ring>]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Ring<Number of foo.bar.Ring>
+    TYPE_PARAMETER name:Number index:0 variance: superTypes:[kotlin.Any?] reified:false
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in foo.bar.Semiring
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in foo.bar.Group
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in foo.bar.Semiring
+        public open fun hashCode (): kotlin.Int declared in foo.bar.Group
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in foo.bar.Semiring
+        public open fun toString (): kotlin.String declared in foo.bar.Group
+    PROPERTY FAKE_OVERRIDE name:numberMinusNumber visibility:public modality:ABSTRACT [fake_override,val]
+      annotations:
+        KoneContextHolderInclude
+      overridden:
+        public abstract numberMinusNumber: foo.bar.Minus<Number of foo.bar.Group, Number of foo.bar.Group, Number of foo.bar.Group> declared in foo.bar.Group
+      FUN FAKE_OVERRIDE name:<get-numberMinusNumber> visibility:public modality:ABSTRACT returnType:foo.bar.Minus<Number of foo.bar.Ring, Number of foo.bar.Ring, Number of foo.bar.Ring> [fake_override]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Group<Number of foo.bar.Ring>
+        correspondingProperty: PROPERTY FAKE_OVERRIDE name:numberMinusNumber visibility:public modality:ABSTRACT [fake_override,val]
+        overridden:
+          public abstract fun <get-numberMinusNumber> (): foo.bar.Minus<Number of foo.bar.Group, Number of foo.bar.Group, Number of foo.bar.Group> declared in foo.bar.Group
+    PROPERTY FAKE_OVERRIDE name:numberPlusNumber visibility:public modality:ABSTRACT [fake_override,val]
+      annotations:
+        KoneContextHolderInclude
+      overridden:
+        public abstract numberPlusNumber: foo.bar.Plus<Number of foo.bar.Semiring, Number of foo.bar.Semiring, Number of foo.bar.Semiring> declared in foo.bar.Semiring
+        public abstract numberPlusNumber: foo.bar.Plus<Number of foo.bar.Group, Number of foo.bar.Group, Number of foo.bar.Group> declared in foo.bar.Group
+      FUN FAKE_OVERRIDE name:<get-numberPlusNumber> visibility:public modality:ABSTRACT returnType:foo.bar.Plus<Number of foo.bar.Ring, Number of foo.bar.Ring, Number of foo.bar.Ring> [fake_override]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Semigroup<Number of foo.bar.Ring>
+        correspondingProperty: PROPERTY FAKE_OVERRIDE name:numberPlusNumber visibility:public modality:ABSTRACT [fake_override,val]
+        overridden:
+          public abstract fun <get-numberPlusNumber> (): foo.bar.Plus<Number of foo.bar.Semiring, Number of foo.bar.Semiring, Number of foo.bar.Semiring> declared in foo.bar.Semiring
+          public abstract fun <get-numberPlusNumber> (): foo.bar.Plus<Number of foo.bar.Group, Number of foo.bar.Group, Number of foo.bar.Group> declared in foo.bar.Group
+    PROPERTY FAKE_OVERRIDE name:one visibility:public modality:ABSTRACT [fake_override,val]
+      overridden:
+        public abstract one: Number of foo.bar.Semiring declared in foo.bar.Semiring
+      FUN FAKE_OVERRIDE name:<get-one> visibility:public modality:ABSTRACT returnType:Number of foo.bar.Ring [fake_override]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Semiring<Number of foo.bar.Ring>
+        correspondingProperty: PROPERTY FAKE_OVERRIDE name:one visibility:public modality:ABSTRACT [fake_override,val]
+        overridden:
+          public abstract fun <get-one> (): Number of foo.bar.Semiring declared in foo.bar.Semiring
+    PROPERTY name:numberPlusLong visibility:public modality:ABSTRACT [val]
+      annotations:
+        KoneContextHolderInclude
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-numberPlusLong> visibility:public modality:ABSTRACT returnType:foo.bar.Plus<Number of foo.bar.Ring, kotlin.Long, Number of foo.bar.Ring>
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Ring<Number of foo.bar.Ring>
+        correspondingProperty: PROPERTY name:numberPlusLong visibility:public modality:ABSTRACT [val]
+  CLASS INTERFACE name:Semigroup modality:ABSTRACT visibility:public superTypes:[dev.lounres.kone.contexts.KoneContext]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Semigroup<Number of foo.bar.Semigroup>
+    TYPE_PARAMETER name:Number index:0 variance: superTypes:[kotlin.Any?] reified:false
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in dev.lounres.kone.contexts.KoneContext
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in dev.lounres.kone.contexts.KoneContext
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in dev.lounres.kone.contexts.KoneContext
+    PROPERTY name:numberPlusNumber visibility:public modality:ABSTRACT [val]
+      annotations:
+        KoneContextHolderInclude
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-numberPlusNumber> visibility:public modality:ABSTRACT returnType:foo.bar.Plus<Number of foo.bar.Semigroup, Number of foo.bar.Semigroup, Number of foo.bar.Semigroup>
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Semigroup<Number of foo.bar.Semigroup>
+        correspondingProperty: PROPERTY name:numberPlusNumber visibility:public modality:ABSTRACT [val]
+  CLASS INTERFACE name:Semiring modality:ABSTRACT visibility:public superTypes:[foo.bar.Semigroup<Number of foo.bar.Semiring>]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Semiring<Number of foo.bar.Semiring>
+    TYPE_PARAMETER name:Number index:0 variance: superTypes:[kotlin.Any?] reified:false
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in foo.bar.Semigroup
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in foo.bar.Semigroup
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in foo.bar.Semigroup
+    PROPERTY FAKE_OVERRIDE name:numberPlusNumber visibility:public modality:ABSTRACT [fake_override,val]
+      annotations:
+        KoneContextHolderInclude
+      overridden:
+        public abstract numberPlusNumber: foo.bar.Plus<Number of foo.bar.Semigroup, Number of foo.bar.Semigroup, Number of foo.bar.Semigroup> declared in foo.bar.Semigroup
+      FUN FAKE_OVERRIDE name:<get-numberPlusNumber> visibility:public modality:ABSTRACT returnType:foo.bar.Plus<Number of foo.bar.Semiring, Number of foo.bar.Semiring, Number of foo.bar.Semiring> [fake_override]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Semigroup<Number of foo.bar.Semiring>
+        correspondingProperty: PROPERTY FAKE_OVERRIDE name:numberPlusNumber visibility:public modality:ABSTRACT [fake_override,val]
+        overridden:
+          public abstract fun <get-numberPlusNumber> (): foo.bar.Plus<Number of foo.bar.Semigroup, Number of foo.bar.Semigroup, Number of foo.bar.Semigroup> declared in foo.bar.Semigroup
+    PROPERTY name:one visibility:public modality:ABSTRACT [val]
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-one> visibility:public modality:ABSTRACT returnType:Number of foo.bar.Semiring
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Semiring<Number of foo.bar.Semiring>
+        correspondingProperty: PROPERTY name:one visibility:public modality:ABSTRACT [val]
+  FUN name:doublingPlus visibility:public modality:FINAL returnType:Number of foo.bar.doublingPlus [infix]
+    TYPE_PARAMETER name:Number index:0 variance: superTypes:[kotlin.Any?] reified:false
+    VALUE_PARAMETER kind:Context name:ring index:0 type:foo.bar.Ring<Number of foo.bar.doublingPlus>
+    VALUE_PARAMETER kind:ExtensionReceiver name:<this> index:1 type:Number of foo.bar.doublingPlus
+    VALUE_PARAMETER kind:Regular name:other index:2 type:kotlin.Int
+    BLOCK_BODY
+      VAR IR_TEMPORARY_VARIABLE name:tmp_0 type:foo.bar.Ring<Number of foo.bar.doublingPlus> [val]
+        GET_VAR 'ring: foo.bar.Ring<Number of foo.bar.doublingPlus> declared in foo.bar.doublingPlus' type=foo.bar.Ring<Number of foo.bar.doublingPlus> origin=null
+      RETURN type=kotlin.Nothing from='public final fun doublingPlus <Number> (ring: foo.bar.Ring<Number of foo.bar.doublingPlus>, <this>: Number of foo.bar.doublingPlus, other: kotlin.Int): Number of foo.bar.doublingPlus declared in foo.bar'
+        CALL 'public final fun rightAddMultipliedByDoubling <Number> (base: Number of foo.bar.rightAddMultipliedByDoubling, arg: Number of foo.bar.rightAddMultipliedByDoubling, multiplier: kotlin.Int, additionOp: kotlin.Function2<Number of foo.bar.rightAddMultipliedByDoubling, Number of foo.bar.rightAddMultipliedByDoubling, Number of foo.bar.rightAddMultipliedByDoubling>, rightSubtractionOp: kotlin.Function2<Number of foo.bar.rightAddMultipliedByDoubling, Number of foo.bar.rightAddMultipliedByDoubling, Number of foo.bar.rightAddMultipliedByDoubling>): Number of foo.bar.rightAddMultipliedByDoubling declared in foo.bar' type=Number of foo.bar.doublingPlus origin=null
+          TYPE_ARG Number: Number of foo.bar.doublingPlus
+          ARG base: GET_VAR '<this>: Number of foo.bar.doublingPlus declared in foo.bar.doublingPlus' type=Number of foo.bar.doublingPlus origin=null
+          ARG arg: CALL 'public abstract fun <get-one> (): Number of foo.bar.Ring declared in foo.bar.Ring' type=Number of foo.bar.doublingPlus origin=GET_PROPERTY
+            ARG <this>: GET_VAR 'ring: foo.bar.Ring<Number of foo.bar.doublingPlus> declared in foo.bar.doublingPlus' type=foo.bar.Ring<Number of foo.bar.doublingPlus> origin=null
+          ARG multiplier: GET_VAR 'other: kotlin.Int declared in foo.bar.doublingPlus' type=kotlin.Int origin=null
+          ARG additionOp: FUN_EXPR type=kotlin.Function2<Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus> origin=LAMBDA
+            FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL returnType:Number of foo.bar.doublingPlus
+              VALUE_PARAMETER kind:Regular name:left index:0 type:Number of foo.bar.doublingPlus
+              VALUE_PARAMETER kind:Regular name:right index:1 type:Number of foo.bar.doublingPlus
+              BLOCK_BODY
+                RETURN type=kotlin.Nothing from='local final fun <anonymous> (left: Number of foo.bar.doublingPlus, right: Number of foo.bar.doublingPlus): Number of foo.bar.doublingPlus declared in foo.bar.doublingPlus'
+                  CALL 'public final fun plus <Left, Right, Result> (plus: foo.bar.Plus<Left of foo.bar.plus, Right of foo.bar.plus, Result of foo.bar.plus>, <this>: Left of foo.bar.plus, other: Right of foo.bar.plus): Result of foo.bar.plus declared in foo.bar' type=Number of foo.bar.doublingPlus origin=PLUS
+                    TYPE_ARG Left: Number of foo.bar.doublingPlus
+                    TYPE_ARG Right: Number of foo.bar.doublingPlus
+                    TYPE_ARG Result: Number of foo.bar.doublingPlus
+                    ARG plus: CALL 'public abstract fun <get-numberPlusNumber> (): foo.bar.Plus<Number of foo.bar.Ring, Number of foo.bar.Ring, Number of foo.bar.Ring> declared in foo.bar.Ring' type=foo.bar.Plus<Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus> origin=null
+                      ARG <this>: GET_VAR 'val tmp_0: foo.bar.Ring<Number of foo.bar.doublingPlus> declared in foo.bar.doublingPlus' type=foo.bar.Ring<Number of foo.bar.doublingPlus> origin=null
+                    ARG <this>: GET_VAR 'left: Number of foo.bar.doublingPlus declared in foo.bar.doublingPlus.<anonymous>' type=Number of foo.bar.doublingPlus origin=null
+                    ARG other: GET_VAR 'right: Number of foo.bar.doublingPlus declared in foo.bar.doublingPlus.<anonymous>' type=Number of foo.bar.doublingPlus origin=null
+          ARG rightSubtractionOp: FUN_EXPR type=kotlin.Function2<Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus> origin=LAMBDA
+            FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL returnType:Number of foo.bar.doublingPlus
+              VALUE_PARAMETER kind:Regular name:left index:0 type:Number of foo.bar.doublingPlus
+              VALUE_PARAMETER kind:Regular name:right index:1 type:Number of foo.bar.doublingPlus
+              BLOCK_BODY
+                RETURN type=kotlin.Nothing from='local final fun <anonymous> (left: Number of foo.bar.doublingPlus, right: Number of foo.bar.doublingPlus): Number of foo.bar.doublingPlus declared in foo.bar.doublingPlus'
+                  CALL 'public final fun minus <Left, Right, Result> (minus: foo.bar.Minus<Left of foo.bar.minus, Right of foo.bar.minus, Result of foo.bar.minus>, <this>: Left of foo.bar.minus, other: Right of foo.bar.minus): Result of foo.bar.minus declared in foo.bar' type=Number of foo.bar.doublingPlus origin=MINUS
+                    TYPE_ARG Left: Number of foo.bar.doublingPlus
+                    TYPE_ARG Right: Number of foo.bar.doublingPlus
+                    TYPE_ARG Result: Number of foo.bar.doublingPlus
+                    ARG minus: CALL 'public abstract fun <get-numberMinusNumber> (): foo.bar.Minus<Number of foo.bar.Ring, Number of foo.bar.Ring, Number of foo.bar.Ring> declared in foo.bar.Ring' type=foo.bar.Minus<Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus> origin=null
+                      ARG <this>: GET_VAR 'val tmp_0: foo.bar.Ring<Number of foo.bar.doublingPlus> declared in foo.bar.doublingPlus' type=foo.bar.Ring<Number of foo.bar.doublingPlus> origin=null
+                    ARG <this>: GET_VAR 'left: Number of foo.bar.doublingPlus declared in foo.bar.doublingPlus.<anonymous>' type=Number of foo.bar.doublingPlus origin=null
+                    ARG other: GET_VAR 'right: Number of foo.bar.doublingPlus declared in foo.bar.doublingPlus.<anonymous>' type=Number of foo.bar.doublingPlus origin=null
+  FUN name:minus visibility:public modality:FINAL returnType:Result of foo.bar.minus [operator]
+    TYPE_PARAMETER name:Left index:0 variance: superTypes:[kotlin.Any?] reified:false
+    TYPE_PARAMETER name:Right index:1 variance: superTypes:[kotlin.Any?] reified:false
+    TYPE_PARAMETER name:Result index:2 variance: superTypes:[kotlin.Any?] reified:false
+    VALUE_PARAMETER kind:Context name:minus index:0 type:foo.bar.Minus<Left of foo.bar.minus, Right of foo.bar.minus, Result of foo.bar.minus>
+    VALUE_PARAMETER kind:ExtensionReceiver name:<this> index:1 type:Left of foo.bar.minus
+    VALUE_PARAMETER kind:Regular name:other index:2 type:Right of foo.bar.minus
+    BLOCK_BODY
+      RETURN type=kotlin.Nothing from='public final fun minus <Left, Right, Result> (minus: foo.bar.Minus<Left of foo.bar.minus, Right of foo.bar.minus, Result of foo.bar.minus>, <this>: Left of foo.bar.minus, other: Right of foo.bar.minus): Result of foo.bar.minus declared in foo.bar'
+        CALL 'public final fun with <T, R> (receiver: T of kotlin.with, block: @[ExtensionFunctionType] kotlin.Function1<T of kotlin.with, R of kotlin.with>): R of kotlin.with declared in kotlin' type=Result of foo.bar.minus origin=null
+          TYPE_ARG T: foo.bar.Minus<Left of foo.bar.minus, Right of foo.bar.minus, Result of foo.bar.minus>
+          TYPE_ARG R: Result of foo.bar.minus
+          ARG receiver: GET_VAR 'minus: foo.bar.Minus<Left of foo.bar.minus, Right of foo.bar.minus, Result of foo.bar.minus> declared in foo.bar.minus' type=foo.bar.Minus<Left of foo.bar.minus, Right of foo.bar.minus, Result of foo.bar.minus> origin=null
+          ARG block: FUN_EXPR type=@[ExtensionFunctionType] kotlin.Function1<foo.bar.Minus<Left of foo.bar.minus, Right of foo.bar.minus, Result of foo.bar.minus>, Result of foo.bar.minus> origin=LAMBDA
+            FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL returnType:Result of foo.bar.minus
+              VALUE_PARAMETER kind:ExtensionReceiver name:$this$with index:0 type:foo.bar.Minus<Left of foo.bar.minus, Right of foo.bar.minus, Result of foo.bar.minus>
+              BLOCK_BODY
+                RETURN type=kotlin.Nothing from='local final fun <anonymous> ($this$with: foo.bar.Minus<Left of foo.bar.minus, Right of foo.bar.minus, Result of foo.bar.minus>): Result of foo.bar.minus declared in foo.bar.minus'
+                  CALL 'public abstract fun minus (<this>: Left of foo.bar.Minus, other: Right of foo.bar.Minus): Result of foo.bar.Minus declared in foo.bar.Minus' type=Result of foo.bar.minus origin=MINUS
+                    ARG <this>(index:0): GET_VAR '$this$with: foo.bar.Minus<Left of foo.bar.minus, Right of foo.bar.minus, Result of foo.bar.minus> declared in foo.bar.minus.<anonymous>' type=foo.bar.Minus<Left of foo.bar.minus, Right of foo.bar.minus, Result of foo.bar.minus> origin=IMPLICIT_ARGUMENT
+                    ARG <this>(index:1): GET_VAR '<this>: Left of foo.bar.minus declared in foo.bar.minus' type=Left of foo.bar.minus origin=null
+                    ARG other: GET_VAR 'other: Right of foo.bar.minus declared in foo.bar.minus' type=Right of foo.bar.minus origin=null
+  FUN name:plus visibility:public modality:FINAL returnType:Result of foo.bar.plus [operator]
+    TYPE_PARAMETER name:Left index:0 variance: superTypes:[kotlin.Any?] reified:false
+    TYPE_PARAMETER name:Right index:1 variance: superTypes:[kotlin.Any?] reified:false
+    TYPE_PARAMETER name:Result index:2 variance: superTypes:[kotlin.Any?] reified:false
+    VALUE_PARAMETER kind:Context name:plus index:0 type:foo.bar.Plus<Left of foo.bar.plus, Right of foo.bar.plus, Result of foo.bar.plus>
+    VALUE_PARAMETER kind:ExtensionReceiver name:<this> index:1 type:Left of foo.bar.plus
+    VALUE_PARAMETER kind:Regular name:other index:2 type:Right of foo.bar.plus
+    BLOCK_BODY
+      RETURN type=kotlin.Nothing from='public final fun plus <Left, Right, Result> (plus: foo.bar.Plus<Left of foo.bar.plus, Right of foo.bar.plus, Result of foo.bar.plus>, <this>: Left of foo.bar.plus, other: Right of foo.bar.plus): Result of foo.bar.plus declared in foo.bar'
+        CALL 'public final fun with <T, R> (receiver: T of kotlin.with, block: @[ExtensionFunctionType] kotlin.Function1<T of kotlin.with, R of kotlin.with>): R of kotlin.with declared in kotlin' type=Result of foo.bar.plus origin=null
+          TYPE_ARG T: foo.bar.Plus<Left of foo.bar.plus, Right of foo.bar.plus, Result of foo.bar.plus>
+          TYPE_ARG R: Result of foo.bar.plus
+          ARG receiver: GET_VAR 'plus: foo.bar.Plus<Left of foo.bar.plus, Right of foo.bar.plus, Result of foo.bar.plus> declared in foo.bar.plus' type=foo.bar.Plus<Left of foo.bar.plus, Right of foo.bar.plus, Result of foo.bar.plus> origin=null
+          ARG block: FUN_EXPR type=@[ExtensionFunctionType] kotlin.Function1<foo.bar.Plus<Left of foo.bar.plus, Right of foo.bar.plus, Result of foo.bar.plus>, Result of foo.bar.plus> origin=LAMBDA
+            FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL returnType:Result of foo.bar.plus
+              VALUE_PARAMETER kind:ExtensionReceiver name:$this$with index:0 type:foo.bar.Plus<Left of foo.bar.plus, Right of foo.bar.plus, Result of foo.bar.plus>
+              BLOCK_BODY
+                RETURN type=kotlin.Nothing from='local final fun <anonymous> ($this$with: foo.bar.Plus<Left of foo.bar.plus, Right of foo.bar.plus, Result of foo.bar.plus>): Result of foo.bar.plus declared in foo.bar.plus'
+                  CALL 'public abstract fun plus (<this>: Left of foo.bar.Plus, other: Right of foo.bar.Plus): Result of foo.bar.Plus declared in foo.bar.Plus' type=Result of foo.bar.plus origin=PLUS
+                    ARG <this>(index:0): GET_VAR '$this$with: foo.bar.Plus<Left of foo.bar.plus, Right of foo.bar.plus, Result of foo.bar.plus> declared in foo.bar.plus.<anonymous>' type=foo.bar.Plus<Left of foo.bar.plus, Right of foo.bar.plus, Result of foo.bar.plus> origin=IMPLICIT_ARGUMENT
+                    ARG <this>(index:1): GET_VAR '<this>: Left of foo.bar.plus declared in foo.bar.plus' type=Left of foo.bar.plus origin=null
+                    ARG other: GET_VAR 'other: Right of foo.bar.plus declared in foo.bar.plus' type=Right of foo.bar.plus origin=null
+  FUN name:rightAddMultipliedByDoubling visibility:public modality:FINAL returnType:Number of foo.bar.rightAddMultipliedByDoubling [inline]
+    TYPE_PARAMETER name:Number index:0 variance: superTypes:[kotlin.Any?] reified:false
+    VALUE_PARAMETER kind:Regular name:base index:0 type:Number of foo.bar.rightAddMultipliedByDoubling
+    VALUE_PARAMETER kind:Regular name:arg index:1 type:Number of foo.bar.rightAddMultipliedByDoubling
+    VALUE_PARAMETER kind:Regular name:multiplier index:2 type:kotlin.Int
+    VALUE_PARAMETER kind:Regular name:additionOp index:3 type:kotlin.Function2<Number of foo.bar.rightAddMultipliedByDoubling, Number of foo.bar.rightAddMultipliedByDoubling, Number of foo.bar.rightAddMultipliedByDoubling>
+    VALUE_PARAMETER kind:Regular name:rightSubtractionOp index:4 type:kotlin.Function2<Number of foo.bar.rightAddMultipliedByDoubling, Number of foo.bar.rightAddMultipliedByDoubling, Number of foo.bar.rightAddMultipliedByDoubling>
+    BLOCK_BODY
+      RETURN type=kotlin.Nothing from='public final fun rightAddMultipliedByDoubling <Number> (base: Number of foo.bar.rightAddMultipliedByDoubling, arg: Number of foo.bar.rightAddMultipliedByDoubling, multiplier: kotlin.Int, additionOp: kotlin.Function2<Number of foo.bar.rightAddMultipliedByDoubling, Number of foo.bar.rightAddMultipliedByDoubling, Number of foo.bar.rightAddMultipliedByDoubling>, rightSubtractionOp: kotlin.Function2<Number of foo.bar.rightAddMultipliedByDoubling, Number of foo.bar.rightAddMultipliedByDoubling, Number of foo.bar.rightAddMultipliedByDoubling>): Number of foo.bar.rightAddMultipliedByDoubling declared in foo.bar'
+        CALL 'public final fun TODO (): kotlin.Nothing declared in kotlin' type=kotlin.Nothing origin=null

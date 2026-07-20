@@ -1,4 +1,4 @@
-FILE: simpleKoneContextHolderUnwrapLocallyAsExtensionReceiversUsage9.kt
+FILE: simpleKoneContextUnwrapUsage9.kt
     package foo.bar
 
     public abstract fun interface Plus<in Left, in Right, out Result> : R|dev/lounres/kone/contexts/KoneContext| {

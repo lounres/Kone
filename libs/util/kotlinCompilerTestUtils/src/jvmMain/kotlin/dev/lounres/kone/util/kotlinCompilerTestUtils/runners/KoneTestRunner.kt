@@ -11,23 +11,19 @@ import org.jetbrains.kotlin.test.TargetBackend
 import org.jetbrains.kotlin.test.backend.BlackBoxCodegenSuppressor.SuppressionChecker
 import org.jetbrains.kotlin.test.backend.handlers.NoFirCompilationErrorsHandler
 import org.jetbrains.kotlin.test.backend.handlers.NoIrCompilationErrorsHandler
-import org.jetbrains.kotlin.test.backend.ir.BackendCliJvmFacade
 import org.jetbrains.kotlin.test.backend.ir.IrDiagnosticsHandler
 import org.jetbrains.kotlin.test.builders.TestConfigurationBuilder
 import org.jetbrains.kotlin.test.builders.configureFirHandlersStep
 import org.jetbrains.kotlin.test.builders.configureIrHandlersStep
 import org.jetbrains.kotlin.test.builders.configureJvmArtifactsHandlersStep
 import org.jetbrains.kotlin.test.configuration.commonBackendHandlersForCodegenTest
-import org.jetbrains.kotlin.test.configuration.commonConfigurationForJvmTest
 import org.jetbrains.kotlin.test.configuration.setupHandlersForDiagnosticTest
+import org.jetbrains.kotlin.test.configuration.setupJvmPipelineSteps
 import org.jetbrains.kotlin.test.directives.*
-import org.jetbrains.kotlin.test.frontend.fir.Fir2IrCliJvmFacade
-import org.jetbrains.kotlin.test.frontend.fir.FirCliJvmFacade
 import org.jetbrains.kotlin.test.frontend.fir.handlers.NonSourceErrorMessagesHandler
 import org.jetbrains.kotlin.test.frontend.fir.handlers.PsiLightTreeMetaInfoProcessor
 import org.jetbrains.kotlin.test.initIdeaConfiguration
 import org.jetbrains.kotlin.test.model.DependencyKind
-import org.jetbrains.kotlin.test.model.FrontendKinds
 import org.jetbrains.kotlin.test.runners.AbstractKotlinCompilerTest
 import org.jetbrains.kotlin.test.services.EnvironmentBasedStandardLibrariesPathProvider
 import org.jetbrains.kotlin.test.services.KotlinStandardLibrariesPathProvider
@@ -69,13 +65,7 @@ public fun TestConfigurationBuilder.commonTestRunnerConfiguration(
         +CodegenTestDirectives.IGNORE_DEXING
     }
     
-    commonConfigurationForJvmTest(
-        targetFrontend = FrontendKinds.FIR,
-        frontendFacade = ::FirCliJvmFacade,
-        frontendToBackendConverter = ::Fir2IrCliJvmFacade,
-        backendFacade = ::BackendCliJvmFacade
-    )
-    configureFirParser(FirParser.Psi)
+    setupJvmPipelineSteps(FirParser.Psi)
 //    configureCommonDiagnosticTestPaths()
     
     configureFirHandlersStep {
@@ -92,7 +82,8 @@ public fun TestConfigurationBuilder.commonTestRunnerConfiguration(
     }
     
     useMetaInfoProcessors(::PsiLightTreeMetaInfoProcessor)
-    useAfterAnalysisCheckers(::PhasedPipelineChecker, ::NonSourceErrorMessagesHandler)
+    useAfterAnalysisCheckers(::NonSourceErrorMessagesHandler)
+    useFailureSuppressors(::PhasedPipelineChecker)
     enableMetaInfoHandler()
     useAdditionalService<SuppressionChecker>(::SuppressionChecker.bind(null, null))
 }

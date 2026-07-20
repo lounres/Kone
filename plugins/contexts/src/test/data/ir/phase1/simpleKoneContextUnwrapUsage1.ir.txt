@@ -1,0 +1,56 @@
+FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage1.kt
+  CLASS CLASS name:Foo modality:FINAL visibility:public superTypes:[dev.lounres.kone.contexts.KoneContext]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Foo<X of foo.bar.Foo>
+    TYPE_PARAMETER name:X index:0 variance: superTypes:[kotlin.Any?] reified:false
+    CONSTRUCTOR visibility:public returnType:foo.bar.Foo<X of foo.bar.Foo> [primary]
+      BLOCK_BODY
+        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:Foo modality:FINAL visibility:public superTypes:[dev.lounres.kone.contexts.KoneContext]' type=kotlin.Unit
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in dev.lounres.kone.contexts.KoneContext
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in dev.lounres.kone.contexts.KoneContext
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in dev.lounres.kone.contexts.KoneContext
+    PROPERTY name:bar visibility:public modality:FINAL [val]
+      annotations:
+        KoneContextHolderInclude
+      FUN name:<get-bar> visibility:public modality:FINAL returnType:kotlin.collections.List<X of foo.bar.Foo>
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Foo<X of foo.bar.Foo>
+        correspondingProperty: PROPERTY name:bar visibility:public modality:FINAL [val]
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-bar> (): kotlin.collections.List<X of foo.bar.Foo> declared in foo.bar.Foo'
+            CALL 'public final fun emptyList <T> (): kotlin.collections.List<T of kotlin.collections.emptyList> declared in kotlin.collections' type=kotlin.collections.List<X of foo.bar.Foo> origin=null
+              TYPE_ARG T: X of foo.bar.Foo
+    PROPERTY name:baz visibility:public modality:FINAL [val]
+      FUN name:<get-baz> visibility:public modality:FINAL returnType:kotlin.collections.Set<X of foo.bar.Foo>
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Foo<X of foo.bar.Foo>
+        correspondingProperty: PROPERTY name:baz visibility:public modality:FINAL [val]
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-baz> (): kotlin.collections.Set<X of foo.bar.Foo> declared in foo.bar.Foo'
+            CALL 'public final fun emptySet <T> (): kotlin.collections.Set<T of kotlin.collections.emptySet> declared in kotlin.collections' type=kotlin.collections.Set<X of foo.bar.Foo> origin=null
+              TYPE_ARG T: X of foo.bar.Foo
+  FUN name:box visibility:public modality:FINAL returnType:kotlin.String
+    BLOCK_BODY
+      VAR IR_TEMPORARY_VARIABLE name:tmp_0 type:foo.bar.Foo<kotlin.Int> [val]
+        CONSTRUCTOR_CALL 'public constructor <init> () declared in foo.bar.Foo' type=foo.bar.Foo<kotlin.Int> origin=null
+          TYPE_ARG (of class) X: kotlin.Int
+      RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in foo.bar'
+        WHEN type=kotlin.String origin=IF
+          BRANCH
+            if: CALL 'public abstract fun isEmpty (): kotlin.Boolean declared in kotlin.collections.List' type=kotlin.Boolean origin=null
+              ARG <this>: CALL 'public final fun contextOf <A> (context: @[NoInfer] A of kotlin.contextOf): @[NoInfer] A of kotlin.contextOf declared in kotlin' type=@[NoInfer] kotlin.collections.List<kotlin.Int> origin=null
+                TYPE_ARG A: kotlin.collections.List<kotlin.Int>
+                ARG context: CALL 'public final fun <get-bar> (): kotlin.collections.List<X of foo.bar.Foo> declared in foo.bar.Foo' type=kotlin.collections.List<kotlin.Int> origin=null
+                  ARG <this>: GET_VAR 'val tmp_0: foo.bar.Foo<kotlin.Int> declared in foo.bar.box' type=foo.bar.Foo<kotlin.Int> origin=null
+            then: CONST String type=kotlin.String value="OK"
+          BRANCH
+            if: CONST Boolean type=kotlin.Boolean value=true
+            then: CONST String type=kotlin.String value="INCORRECT"

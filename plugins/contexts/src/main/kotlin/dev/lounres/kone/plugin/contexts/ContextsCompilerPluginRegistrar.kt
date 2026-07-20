@@ -23,9 +23,9 @@ class ContextsCompilerPluginRegistrar : CompilerPluginRegistrar() {
     override val supportsK2: Boolean get() = true
     
     override fun ExtensionStorage.registerExtensions(configuration: CompilerConfiguration) {
-        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
+//        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
         
         FirExtensionRegistrarAdapter.registerExtension(FirContextsExtensionRegistrar())
-        IrGenerationExtension.registerExtension(ContextsIrGenerationExtension(messageCollector))
+        IrGenerationExtension.registerExtension(ContextsIrGenerationExtension())
     }
 }

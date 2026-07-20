@@ -1,4 +1,4 @@
-FILE: simpleKoneContextHolderUnwrapLocallyAsExtensionReceiversUsage5.kt
+FILE: simpleKoneContextUnwrapUsage5.kt
     package foo.bar
 
     public abstract interface Bar : R|dev/lounres/kone/contexts/KoneContext| {
