@@ -12,7 +12,7 @@ import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
 
 
 class FiktionErasureIrGenerationExtension(
-    private val messageCollector: MessageCollector,
+//    private val messageCollector: MessageCollector,
 ) : IrGenerationExtension {
 //    typealias Phase = (
 //        moduleFragment: IrModuleFragment,

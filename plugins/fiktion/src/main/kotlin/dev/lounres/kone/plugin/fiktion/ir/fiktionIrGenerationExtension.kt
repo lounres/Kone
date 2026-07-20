@@ -12,8 +12,8 @@ import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 
 
 fun fiktionIrGenerationExtension(
-    messageCollector: MessageCollector,
+//    messageCollector: MessageCollector,
     eraseFiktion: Boolean,
 ): IrGenerationExtension =
-    if (eraseFiktion) FiktionErasureIrGenerationExtension(messageCollector)
-    else FiktionInterceptionIrGenerationExtension(messageCollector)
+    if (eraseFiktion) FiktionErasureIrGenerationExtension()
+    else FiktionInterceptionIrGenerationExtension()

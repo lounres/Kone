@@ -23,13 +23,13 @@ class FiktionCompilerPluginRegistrar : CompilerPluginRegistrar() {
     override val supportsK2: Boolean get() = true
     
     override fun ExtensionStorage.registerExtensions(configuration: CompilerConfiguration) {
-        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
+//        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
         val eraseFiktion = configuration.get(FiktionCommandLineProcessor.ERASE_FIKTION, true)
         
         FirExtensionRegistrarAdapter.registerExtension(FirFiktionExtensionRegistrar())
         IrGenerationExtension.registerExtension(
             fiktionIrGenerationExtension(
-                messageCollector = messageCollector,
+//                messageCollector = messageCollector,
                 eraseFiktion = eraseFiktion,
             )
         )
