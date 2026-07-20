@@ -54,7 +54,7 @@ plugins {
 
 buildscript {
     dependencies {
-        classpath("com.hierynomus:sshj:0.40.0")
+        classpath(versions.sshj)
     }
 }
 
@@ -65,14 +65,14 @@ val now: LocalDateTime = LocalDateTime.now(ZoneId.of("UTC"))
 val koneVersion = "0.0.0-experiment-${now.year}.${now.month.value}.${now.dayOfMonth}.${now.hour}"
 //val koneVersion = "0.0.0-experiment"
 val koneGroup = project.extra["koneGroup"] as String
-val koneUrl: String by project
-val koneBaseUrl: String by project
+val koneUrl = project.property("koneUrl") as String
+val koneBaseUrl = project.property("koneBaseUrl") as String
 
 allprojects {
     version = koneVersion
 }
 
-val docusaurusGenerateInputData by tasks.registering {
+val docusaurusGenerateInputData = tasks.register("docusaurusGenerateInputData") {
     group = "site"
     outputs.files("site/inputData.ts")
     doLast {
@@ -104,7 +104,7 @@ tasks.register("docusaurusGenerateDevInputData") {
     }
 }
 
-val buildSite by tasks.registering(Exec::class) {
+val buildSite = tasks.register<Exec>("buildSite") {
     group = "site"
     description = "Build docs site"
     
@@ -123,15 +123,15 @@ tasks.register("publishApiToProduction") {
     description = "Publish the API reference to production server"
     
     val docsProject = project(":docs")
-    val dokkaGeneratePublicationHtml by docsProject.tasks
+    val dokkaGeneratePublicationHtml = docsProject.tasks.getByName("dokkaGeneratePublicationHtml")
     
     dependsOn(dokkaGeneratePublicationHtml)
     
     doLast {
-        val hostname = project.properties["kone.publishing.hostname"] as String
-        val username = project.properties["kone.publishing.ssh.username"] as String
-        val password = project.properties["kone.publishing.ssh.password"] as String
-        val destination = project.properties["kone.publishing.destination.api"] as String
+        val hostname = project.property("kone.publishing.hostname") as String
+        val username = project.property("kone.publishing.ssh.username") as String
+        val password = project.property("kone.publishing.ssh.password") as String
+        val destination = project.property("kone.publishing.destination.api") as String
         
         val ssh = SSHClient()
         ssh.addHostKeyVerifier(PromiscuousVerifier())
@@ -162,10 +162,10 @@ tasks.register("publishSiteToProduction") {
     dependsOn(buildSite)
     
     doLast {
-        val hostname = project.properties["kone.publishing.hostname"] as String
-        val username = project.properties["kone.publishing.ssh.username"] as String
-        val password = project.properties["kone.publishing.ssh.password"] as String
-        val destination = project.properties["kone.publishing.destination.site"] as String
+        val hostname = project.property("kone.publishing.hostname") as String
+        val username = project.property("kone.publishing.ssh.username") as String
+        val password = project.property("kone.publishing.ssh.password") as String
+        val destination = project.property("kone.publishing.destination.api") as String
         
         val ssh = SSHClient()
         ssh.addHostKeyVerifier(PromiscuousVerifier())
@@ -201,7 +201,7 @@ allprojects {
 }
 
 
-val ignoreManualBugFixes = (properties["ignoreManualBugFixes"] as String) == "true"
+val ignoreManualBugFixes = (property("ignoreManualBugFixes") as String) == "true"
 
 val Project.versions: LibrariesForVersions get() = rootProject.extensions.getByName<LibrariesForVersions>("versions")
 //val Project.libs: LibrariesForLibs get() = rootProject.extensions.getByName<LibrariesForLibs>("libs")
@@ -261,8 +261,8 @@ stal {
             apply(plugin = "org.gradle.kotlin.kotlin-dsl")
             
             configure<GradlePluginDevelopmentExtension> {
-                website = rootProject.properties["koneGradlePluginsWebsite"] as String
-                vcsUrl = rootProject.properties["koneGradlePluginsVcsUrl"] as String
+                website = rootProject.property("koneGradlePluginsWebsite") as String
+                vcsUrl = rootProject.property("koneGradlePluginsVcsUrl") as String
             }
         }
         "kotlin jvm" {
@@ -511,7 +511,7 @@ stal {
                 }
             }
             
-            val compilerPluginRuntimeDependencies by configurations.creating {
+            val compilerPluginRuntimeDependencies = configurations.create("compilerPluginRuntimeDependencies") {
                 exclude(group = "org.jetbrains.kotlin")
             }
             
@@ -519,7 +519,7 @@ stal {
                 compilerPluginRuntimeDependencies(project.parent!!.childProjects["runtime"]!!)
             }
             
-            val writePaths by tasks.registering {
+            val writePaths = tasks.register("writePaths") {
                 dependsOn(compilerPluginRuntimeDependencies)
                 doFirst {
                     val testDataPath = project.parent!!.projectDir.resolve("src/test/data").absolutePath.replace("\\", "/")
@@ -534,7 +534,7 @@ stal {
                 }
             }
             
-            val compileKotlin by tasks.getting {
+            val compileKotlin = tasks.getByName("compileKotlin") {
                 dependsOn(writePaths)
             }
             
@@ -547,7 +547,7 @@ stal {
         "kotlin compiler plugin gradle wrapper" {
             val constsSourceDirectory = projectDir.resolve("build/generated/konePluginConsts/main")
             
-            val writePaths by tasks.registering {
+            val writePaths = tasks.register("writePaths") {
                 doFirst {
                     val parentProject = project.parent!!
                     val pluginDependency = "$koneGroup:${parentProject.extra["artifactId"] as String}:${project.version as String}"
@@ -600,7 +600,7 @@ stal {
                 configure<KotlinJvmProjectExtension> {
                     @Suppress("UNUSED_VARIABLE")
                     sourceSets {
-                        val test by getting {
+                        getByName("test") {
                             dependencies {
                                 implementation(versions.testBaloon.framework.core)
                             }
@@ -755,7 +755,7 @@ stal {
                         }
                     }
                     targets.filter { it.platformType != KotlinPlatformType.common }.withEach {
-                        val main by compilations.getting
+                        val main = compilations.getByName("main")
 
                         val benchmarksSourceSetName = main.defaultSourceSet.name
 
