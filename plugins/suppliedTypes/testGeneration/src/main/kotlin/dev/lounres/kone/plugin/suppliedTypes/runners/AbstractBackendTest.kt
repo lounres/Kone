@@ -39,7 +39,7 @@ abstract class AbstractBackendTest(
         
         useConfigurators(pluginConfigurator)
         
-        useAfterAnalysisCheckers(::BlackBoxCodegenSuppressor)
+        useFailureSuppressors(::BlackBoxCodegenSuppressor)
         
         if (runJvmBoxTest)
             configureJvmArtifactsHandlersStep {

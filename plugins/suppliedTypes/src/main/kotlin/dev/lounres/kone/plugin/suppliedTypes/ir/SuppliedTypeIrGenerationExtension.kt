@@ -12,7 +12,7 @@ import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
 
 
 class SuppliedTypeIrGenerationExtension(
-    private val messageCollector: MessageCollector,
+//    private val messageCollector: MessageCollector,
     private val lastPhase: UInt = UInt.MAX_VALUE,
 ) : IrGenerationExtension {
     override fun generate(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext) {
