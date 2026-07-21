@@ -6,7 +6,7 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.contexts.KoneContextHolderInclude
+import dev.lounres.kone.contexts.KoneContextInclude
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
@@ -18,61 +18,61 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 // The underlying ring is commutative
 public interface MatrixCategoryOverRing<Number, Matrix: MDList2<Number>> : KoneContext {
     // region Matrix-Int operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val matrixTimesInt: Times<Matrix, Int, Matrix>
     // endregion
     
     // region Matrix-UInt operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val matrixTimesUInt: Times<Matrix, UInt, Matrix>
     // endregion
     
     // region Matrix-Long operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val matrixTimesLong: Times<Matrix, Long, Matrix>
     // endregion
     
     // region Matrix-ULong operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val matrixTimesULong: Times<Matrix, ULong, Matrix>
     // endregion
     
     // region Matrix-Number operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val matrixTimesNumber: Times<Matrix, Number, Matrix>
     // endregion
     
     // region Int-Matrix operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val intTimesMatrix: Times<Int, Matrix, Matrix>
     // endregion
     
     // region UInt-Matrix operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val uIntTimesMatrix: Times<UInt, Matrix, Matrix>
     // endregion
     
     // region Long-Matrix operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val longTimesMatrix: Times<Long, Matrix, Matrix>
     // endregion
     
     // region ULong-Matrix operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val uLongTimesMatrix: Times<ULong, Matrix, Matrix>
     // endregion
     
     // region Number-Matrix operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberTimesMatrix: Times<Number, Matrix, Matrix>
     // endregion
     
     // region Matrix-Matrix operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val matrixUnaryMinus: UnaryMinus<Matrix, Matrix>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val matrixPlusMatrix: Plus<Matrix, Matrix, Matrix>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val matrixMinusMatrix: Minus<Matrix, Matrix, Matrix>
     // endregion
     
@@ -86,27 +86,27 @@ public interface MatrixCategoryOverRing<Number, Matrix: MDList2<Number>> : KoneC
 
 public interface MatrixCategoryOverField<Number, Matrix: MDList2<Number>> : MatrixCategoryOverRing<Number, Matrix> {
     // region Matrix-Int operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val matrixDivideInt: Divide<Matrix, Int, Matrix>
     // endregion
 
     // region Matrix-UInt operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val matrixDivideUInt: Divide<Matrix, UInt, Matrix>
     // endregion
 
     // region Matrix-Long operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val matrixDivideLong: Divide<Matrix, Long, Matrix>
     // endregion
 
     // region Matrix-ULong operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val matrixDivideULong: Divide<Matrix, ULong, Matrix>
     // endregion
 
     // region Matrix-Number operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val matrixDivideNumber: Divide<Matrix, Number, Matrix>
     // endregion
     

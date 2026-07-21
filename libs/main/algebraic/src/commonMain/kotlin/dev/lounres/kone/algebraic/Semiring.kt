@@ -7,7 +7,7 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.algebraic.util.doublingTimes
 import dev.lounres.kone.algebraic.util.squaringPower
-import dev.lounres.kone.contexts.KoneContextHolderInclude
+import dev.lounres.kone.contexts.KoneContextInclude
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.registry.ImpliedKeysRegistry
@@ -44,9 +44,9 @@ public interface Semiring<Number> : CommutativeMonoid<Number> {
     // endregion
     
     // region Equality
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public override val numberIsZero: IsZero<Number>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberIsOne: IsOne<Number>
     // endregion
     
@@ -66,41 +66,41 @@ public interface Semiring<Number> : CommutativeMonoid<Number> {
     // endregion
     
     // region Number-UInt operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberPlusUInt: Plus<Number, UInt, Number> get() = Plus { left, right -> numberPlusNumber { left + valueOf(right) } }
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public override val numberTimesUInt: Times<Number, UInt, Number> get() = Times { left, right -> numberTimesNumber { left * valueOf(right) } }
     // endregion
     
     // region Number-ULong operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberPlusULong: Plus<Number, ULong, Number> get() = Plus { left, right -> numberPlusNumber { left + valueOf(right) } }
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public override val numberTimesULong: Times<Number, ULong, Number> get() = Times { left, right -> numberTimesNumber { left * valueOf(right) } }
     // endregion
     
     // region UInt-Number operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val uIntPlusNumber: Plus<UInt, Number, Number> get() = Plus { left, right -> numberPlusNumber { valueOf(left) + right } }
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public override val uIntTimesNumber: Times<UInt, Number, Number> get() = Times { left, right -> numberTimesNumber { valueOf(left) * right } }
     // endregion
     
     // region ULong-Number operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val uLongPlusNumber: Plus<ULong, Number, Number> get() = Plus { left, right -> numberPlusNumber { valueOf(left) + right } }
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public override val uLongTimesNumber: Times<ULong, Number, Number> get() = Times { left, right -> numberTimesNumber { valueOf(left) * right } }
     // endregion
     
     // region Number-Number operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public override val numberPlusNumber: Plus<Number, Number, Number>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberTimesNumber: Times<Number, Number, Number>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val powerNumberUInt: Power<Number, UInt, Number> get() = Power { base, exponent -> base squaringPower exponent }
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val powerNumberULong: Power<Number, ULong, Number> get() = Power { base, exponent -> base squaringPower exponent }
     // endregion
     
@@ -166,27 +166,27 @@ public interface CommutativeSemiring<Number> : Semiring<Number> {
  */
 public interface ExtendedSemiring<Number> : Semiring<Number> {
     // region Number-UInt operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberMinusUInt: Minus<Number, UInt, Number> get() = Minus { left, right -> numberMinusNumber { left - valueOf(right) } }
     // endregion
     
     // region Number-ULong operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberMinusULong: Minus<Number, ULong, Number> get() = Minus { left, right -> numberMinusNumber { left - valueOf(right) } }
     // endregion
     
     // region UInt-Number operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val uIntMinusNumber: Minus<UInt, Number, Number> get() = Minus { left, right -> numberMinusNumber { valueOf(left) - right } }
     // endregion
     
     // region ULong-Number operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val uLongMinusNumber: Minus<ULong, Number, Number> get() = Minus { left, right -> numberMinusNumber { valueOf(left) - right } }
     // endregion
     
     // region Number-Number operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberMinusNumber: Minus<Number, Number, Number>
     // endregion
     

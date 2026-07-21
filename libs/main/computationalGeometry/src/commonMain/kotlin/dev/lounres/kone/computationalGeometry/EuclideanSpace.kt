@@ -7,7 +7,7 @@ package dev.lounres.kone.computationalGeometry
 
 import dev.lounres.kone.algebraic.minus
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
@@ -33,7 +33,7 @@ public interface EuclideanSpaceOverRing<Number, Vector, Point> : AffineSpaceOver
 
 context(euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>)
 public fun <Number, Vector, Point> distanceSquaredBetween(point1: Point, point2: Point): Number {
-    KoneContext.unwrap(euclideanSpace)
+    KoneContext.localUnwrap(euclideanSpace)
     return (point1 - point2).lengthSquared()
 }
 

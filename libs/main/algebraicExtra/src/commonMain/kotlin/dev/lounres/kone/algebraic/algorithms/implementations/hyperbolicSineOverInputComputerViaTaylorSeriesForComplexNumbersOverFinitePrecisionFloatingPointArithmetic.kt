@@ -10,7 +10,7 @@ import dev.lounres.kone.algebraic.algorithms.HyperbolicSineOverInputComputer
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
@@ -26,7 +26,7 @@ private class HyperbolicSineOverInputComputerViaTaylorSeriesForComplexNumbersOve
     private val complexNumbersField: Field<ComplexNumber<Number>>,
 ) : HyperbolicSineOverInputComputer<ComplexNumber<Number>> {
     override fun ComplexNumber<Number>.sinhOverThis(): ComplexNumber<Number> {
-        KoneContext.unwrap(complexNumbersEquality, complexNumbersField)
+        KoneContext.localUnwrap(complexNumbersEquality, complexNumbersField)
         var result = complexNumbersField.one
         var step = complexNumbersField.one
         var stepNumber = 1u

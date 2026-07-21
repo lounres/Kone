@@ -25,7 +25,7 @@ import dev.lounres.kone.computationalGeometry.default2.Vector2
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.buildWithProvider
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.misc.canvas.*
 import dev.lounres.kone.registry.*
 import dev.lounres.kone.scope
@@ -178,7 +178,7 @@ public fun KoneComposeMapCanvas(modifier: Modifier = Modifier, canvasController:
         modifier = Modifier
             .pointerInput(null) {
                 detectDragGestures { _, [x, y] ->
-                    KoneContext.unwrap(euclideanSpace)
+                    KoneContext.localUnwrap(euclideanSpace)
                     setOffset(getOffset() - Vector2(x.toDouble(), -y.toDouble()) / getZoom())
                 }
             }
@@ -190,7 +190,7 @@ public fun KoneComposeMapCanvas(modifier: Modifier = Modifier, canvasController:
                         it.pointerInput(clickController, clickConsumer) {
                             detectTapGestures { coordinates ->
                                 val _ = runCatching {
-                                    KoneContext.unwrap(euclideanSpace)
+                                    KoneContext.localUnwrap(euclideanSpace)
                                     val coordinates = Vector2(
                                         size.width.toDouble() / 2 - coordinates.x.toDouble(),
                                         coordinates.y.toDouble() - size.height.toDouble() / 2
@@ -207,7 +207,7 @@ public fun KoneComposeMapCanvas(modifier: Modifier = Modifier, canvasController:
             .pointerInput(canvasData) {
                 val coercionRange = canvasData.getOrNull(KoneCanvasZoomCoercionRange)
                 awaitPointerEventScope {
-                    KoneContext.unwrap(euclideanSpace)
+                    KoneContext.localUnwrap(euclideanSpace)
                     var isHovered = true
                     val change = currentEvent.changes.first()
                     val coordinates = Vector2(

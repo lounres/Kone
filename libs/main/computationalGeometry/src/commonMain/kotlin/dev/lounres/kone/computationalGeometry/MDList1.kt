@@ -11,7 +11,7 @@ import dev.lounres.kone.collections.utils.sumOf
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.multidimensionalCollections.MDList1
 import dev.lounres.kone.multidimensionalCollections.contentSize
 import dev.lounres.kone.multidimensionalCollections.generate
@@ -148,7 +148,7 @@ private class MDList1EuclideanSpaceOverRing<Number>(
     override val vectorDotVector: Dot<MDList1<Number>, MDList1<Number>, Number> = Dot { left, right ->
         require(left.contentSize == dimension) { TODO() }
         require(right.contentSize == dimension) { TODO() }
-        KoneContext.unwrap(ring)
+        KoneContext.localUnwrap(ring)
         (0u ..< dimension).toKoneList().sumOf { left[it] * right[it] }
     }
 }
@@ -311,7 +311,7 @@ private class MDList1EuclideanSpaceOverField<Number>(
     override val vectorDotVector: Dot<MDList1<Number>, MDList1<Number>, Number> = Dot { left, right ->
         require(left.contentSize == dimension) { TODO() }
         require(right.contentSize == dimension) { TODO() }
-        KoneContext.unwrap(field)
+        KoneContext.localUnwrap(field)
         (0u ..< dimension).toKoneList().sumOf { left[it] * right[it] }
     }
 }

@@ -33,7 +33,7 @@ import dev.lounres.kone.computationalGeometry.polytopes.verticesOrSelf
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
@@ -56,7 +56,7 @@ private fun <
     tangentGiftWrappingVector: Vector,
     otherPoints: KoneIterable<Polytope>,
 ): KoneList<Polytope> {
-    KoneContext.unwrap(ring, euclideanSpace)
+    KoneContext.localUnwrap(ring, euclideanSpace)
     data class TangentFraction(val numerator: Number, val denominator: Number)
     return otherPoints.minListWithBy(
         { left, right -> (left.numerator * right.denominator) compareWith (right.numerator * left.denominator) }
@@ -84,7 +84,7 @@ private fun <
     otherPoints: KoneIterable<Polytope>,
     computedFacesRegistry: KoneMutableMap<KoneSet<Polytope>, Polytope>,
 ): Polytope {
-    KoneContext.unwrap(ring, euclideanSpace)
+    KoneContext.localUnwrap(ring, euclideanSpace)
     require(subspaceDimension >= 1u) { "Can't define gift wrapping increment for subspace of dimension 0" }
     val allVertices = otherPoints.toKoneMutableReifiedSet(
         elementReification = Reification.defaultFor(),
@@ -219,7 +219,7 @@ private fun <
     normalVector: Vector,
     otherPoints: KoneIterable<Polytope>,
 ) {
-    KoneContext.unwrap(ring, euclideanSpace)
+    KoneContext.localUnwrap(ring, euclideanSpace)
     
     if (otherPoints.isEmpty()) return
     require(subspaceDimension >= 1u) { TODO("Error message is not specified") }
@@ -298,7 +298,7 @@ private fun <
     subspaceDimension: UInt,
     points: KoneIterable<Polytope>,
 ): WrappingResult<Number, Vector, Point> {
-    KoneContext.unwrap(ring, euclideanSpace)
+    KoneContext.localUnwrap(ring, euclideanSpace)
     
     require(points.isNotEmpty()) { TODO("Error message is not specified") }
     if (subspaceDimension == 0u) {
@@ -351,7 +351,7 @@ private class ConvexHullOverRingViaGiftWrappingComputer<Number, Vector, @Supply 
     ): Polytope {
         require(this.isNotEmpty()) { "Can't construct convex hull of an empty vertices collection." }
         val positionKey = Position<Point>()
-        KoneContext.unwrap(ring, order, euclideanSpaceOverRing)
+        KoneContext.localUnwrap(ring, order, euclideanSpaceOverRing)
         return giftWrappingFull(
             positionKey = positionKey,
             basis = basis,

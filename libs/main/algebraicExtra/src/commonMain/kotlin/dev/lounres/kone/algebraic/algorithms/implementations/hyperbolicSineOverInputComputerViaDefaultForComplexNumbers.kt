@@ -9,7 +9,7 @@ import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.algorithms.*
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
@@ -27,7 +27,7 @@ private class HyperbolicSineOverInputComputerViaDefaultForComplexNumbers<Number>
     private val hyperbolicSineComputer: HyperbolicSineComputer<Number>,
 ) : HyperbolicSineOverInputComputer<ComplexNumber<Number>> {
     override fun ComplexNumber<Number>.sinhOverThis(): ComplexNumber<Number> {
-        KoneContext.unwrap(
+        KoneContext.localUnwrap(
             field,
             complexNumbersFieldExtension,
             cosineComputer,

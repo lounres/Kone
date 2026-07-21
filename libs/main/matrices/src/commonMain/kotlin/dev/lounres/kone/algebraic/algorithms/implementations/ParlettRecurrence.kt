@@ -26,7 +26,7 @@ import dev.lounres.kone.collections.map.build
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.relations.equality
 import dev.lounres.kone.multidimensionalCollections.relations.hashing
@@ -73,7 +73,7 @@ public class ParlettRecurrenceAtomicBlockImageComputerViaTaylorSeriesForComplexN
         require(this.rowNumber == this.columnNumber) { TODO() }
         val size = this.rowNumber
         
-        KoneContext.unwrap(
+        KoneContext.localUnwrap(
             field,
             order,
             complexNumberField,
@@ -166,7 +166,7 @@ public class ParlettRecurrence<Number, Matrix : MDList2<ComplexNumber<Number>>>(
             val leftSize = leftSylvester.rowNumber
             val rightSize = rightSylvester.rowNumber
             
-            KoneContext.unwrap(matrixCategoryOverField)
+            KoneContext.localUnwrap(matrixCategoryOverField)
             
             val solution = SettableMDList2.generate<ComplexNumber<Number>?>(
                 rowNumber = leftSize,
@@ -227,7 +227,7 @@ public class ParlettRecurrence<Number, Matrix : MDList2<ComplexNumber<Number>>>(
     }
     
     private fun KoneList<ComplexNumber<Number>>.blockPattern(): BlockPattern {
-        KoneContext.unwrap(
+        KoneContext.localUnwrap(
             field,
             order,
             complexNumberField,
@@ -296,7 +296,7 @@ public class ParlettRecurrence<Number, Matrix : MDList2<ComplexNumber<Number>>>(
             matrixProductComputer,
             parlettRecurrenceAtomicBlockImageComputer,
         ) {
-            KoneContext.unwrap(matrixCategoryOverField)
+            KoneContext.localUnwrap(matrixCategoryOverField)
             
             val input = this
             val blocksOnDiagonalNumber = input.blocksOnDiagonalNumber

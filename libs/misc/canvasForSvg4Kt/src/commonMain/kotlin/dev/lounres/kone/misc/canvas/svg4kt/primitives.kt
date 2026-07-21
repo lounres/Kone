@@ -29,7 +29,7 @@ import dev.lounres.kone.computationalGeometry.default2.Vector2
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.localContexts
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.misc.canvas.*
 import dev.lounres.kone.misc.canvas.common.*
 import dev.lounres.kone.multidimensionalCollections.MDList2
@@ -125,7 +125,7 @@ public fun KoneCanvasSvg4ktContext.line(
     contextRegistry.getOrNull(KoneCanvasSvg4ktTagConsumerKey)?.apply {
         val euclideanSpace = controller.getOrNull(KoneContextRegistry.Key)?.getOrNull(EuclideanSpace2OverField.Key<Double>())
             ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
-        KoneContext.unwrap(euclideanSpace)
+        KoneContext.localUnwrap(euclideanSpace)
         val data = contextRegistry.getOrNull(KoneCanvasData.Key)
         val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
         val zoom = data?.getOrNull(KoneCanvasZoomKey) ?: 1.0
@@ -174,7 +174,7 @@ public fun KoneCanvasSvg4ktContext.rectangle(
         val providedKoneContextRegistry = controller.getOrNull(KoneContextRegistry.Key)
         val euclideanSpace = providedKoneContextRegistry?.getOrNull(EuclideanSpace2OverField.Key<Double>())
             ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
-        KoneContext.unwrap(euclideanSpace)
+        KoneContext.localUnwrap(euclideanSpace)
         localContexts(euclideanSpace.vectorDivideInt)
         localContexts(G)
         val data = contextRegistry.getOrNull(KoneCanvasData.Key)
@@ -237,7 +237,7 @@ public fun KoneCanvasSvg4ktContext.circle(
         val providedKoneContextRegistry = controller.getOrNull(KoneContextRegistry.Key)
         val euclideanSpace = providedKoneContextRegistry?.getOrNull(EuclideanSpace2OverField.Key<Double>())
             ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
-        KoneContext.unwrap(euclideanSpace)
+        KoneContext.localUnwrap(euclideanSpace)
         val data = contextRegistry.getOrNull(KoneCanvasData.Key)
         context(G) {
             val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
@@ -292,7 +292,7 @@ public fun KoneCanvasSvg4ktContext.ellipse(
         val providedKoneContextRegistry = controller.getOrNull(KoneContextRegistry.Key)
         val euclideanSpace = providedKoneContextRegistry?.getOrNull(EuclideanSpace2OverField.Key<Double>())
             ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
-        KoneContext.unwrap(euclideanSpace)
+        KoneContext.localUnwrap(euclideanSpace)
         context(G) {
             val data = contextRegistry.getOrNull(KoneCanvasData.Key)
             val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
@@ -353,7 +353,7 @@ public fun KoneCanvasSvg4ktContext.polygon(
         val providedKoneContextRegistry = controller.getOrNull(KoneContextRegistry.Key)
         val euclideanSpace = providedKoneContextRegistry?.getOrNull(EuclideanSpace2OverField.Key<Double>())
             ?: defaultKoneContextRegistry[EuclideanSpace2OverField.Key<Double>()]
-        KoneContext.unwrap(euclideanSpace)
+        KoneContext.localUnwrap(euclideanSpace)
         context(G) {
             val data = contextRegistry.getOrNull(KoneCanvasData.Key)
             val shift = data?.getOrNull(KoneCanvasOffsetKey) ?: Point2(0.0, 0.0)
@@ -398,53 +398,53 @@ internal class KoneCanvasSvg4ktPathContext(
     private val zoom: Double,
 ) : KoneCanvasPathContext {
     override fun moveTo(point: Point2<Double>) {
-        KoneContext.unwrap(euclideanSpace)
+        KoneContext.localUnwrap(euclideanSpace)
         val point = (point - shift) * zoom
         context.add("M ${point.x} ${point.y}")
     }
     override fun moveToRelative(vector: Vector2<Double>) {
-        KoneContext.unwrap(euclideanSpace)
+        KoneContext.localUnwrap(euclideanSpace)
         val vector = vector * zoom
         context.add("m ${vector.x} ${vector.y}")
     }
     override fun lineTo(point: Point2<Double>) {
-        KoneContext.unwrap(euclideanSpace)
+        KoneContext.localUnwrap(euclideanSpace)
         val point = (point - shift) * zoom
         context.add("L ${point.x} ${point.y}")
     }
     override fun lineToRelative(vector: Vector2<Double>) {
-        KoneContext.unwrap(euclideanSpace)
+        KoneContext.localUnwrap(euclideanSpace)
         val vector = vector * zoom
         context.add("l ${vector.x} ${vector.y}")
     }
     override fun quadraticBezierTo(point1: Point2<Double>, point2: Point2<Double>) {
-        KoneContext.unwrap(euclideanSpace)
+        KoneContext.localUnwrap(euclideanSpace)
         val point1 = (point1 - shift) * zoom
         val point2 = (point2 - shift) * zoom
         context.add("Q ${point1.x} ${point1.y} ${point2.x} ${point2.y}")
     }
     override fun quadraticBezierToRelative(vector1: Vector2<Double>, vector2: Vector2<Double>) {
-        KoneContext.unwrap(euclideanSpace)
+        KoneContext.localUnwrap(euclideanSpace)
         val vector1 = vector1 * zoom
         val vector2 = vector2 * zoom
         context.add("q ${vector1.x} ${vector1.y} ${vector2.x} ${vector2.y}")
     }
     override fun cubicBezierTo(point1: Point2<Double>, point2: Point2<Double>, point3: Point2<Double>) {
-        KoneContext.unwrap(euclideanSpace)
+        KoneContext.localUnwrap(euclideanSpace)
         val point1 = (point1 - shift) * zoom
         val point2 = (point2 - shift) * zoom
         val point3 = (point3 - shift) * zoom
         context.add("C ${point1.x} ${point1.y} ${point2.x} ${point2.y} ${point3.x} ${point3.y}")
     }
     override fun cubicBezierToRelative(vector1: Vector2<Double>, vector2: Vector2<Double>, vector3: Vector2<Double>) {
-        KoneContext.unwrap(euclideanSpace)
+        KoneContext.localUnwrap(euclideanSpace)
         val vector1 = vector1 * zoom
         val vector2 = vector2 * zoom
         val vector3 = vector3 * zoom
         context.add("c ${vector1.x} ${vector1.y} ${vector2.x} ${vector2.y} ${vector3.x} ${vector3.y}")
     }
     override fun arcRelative(size: Vector2<Double>, rotation: Angle, startAngle: Angle, sweepAngle: Angle) {
-        KoneContext.unwrap(euclideanSpace)
+        KoneContext.localUnwrap(euclideanSpace)
         val size = size * zoom
         val isMoreThanHalf = abs(sweepAngle.inRadians()) >= PI
         val isPositiveArc = sweepAngle.inRadians() > 0.0

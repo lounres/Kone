@@ -23,7 +23,7 @@ import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.combinatorics.enumerative.cartesianProduct
 import dev.lounres.kone.combinatorics.enumerative.permutationsWithoutRepetitions
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.OwnedProviderRegistry
 import dev.lounres.kone.registry.build
@@ -106,7 +106,7 @@ public fun simplexOn(vertices: KoneList<Polytope>): Polytope {
                             elementHashing = Hashing.defaultFor(),
                         )
                     }.apply {
-                        KoneContext.unwrap(UInt.monoid())
+                        KoneContext.localUnwrap(UInt.monoid())
                         for (subflags in cartesianProduct(flags.map { (0u .. it).toKoneList() }))
                             if (subflags.sum() in 1u .. dim)
                                 this[subflags.sum() - 1u].add(faces[subflags.sum() - 1u][subflags])

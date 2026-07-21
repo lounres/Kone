@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.contexts.KoneContextHolderInclude
+import dev.lounres.kone.contexts.KoneContextInclude
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.contexts.localContexts
@@ -22,34 +22,34 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
  * integer power. See docs of [Ring] for a full description and docs of the [Field] interface's operations.
  */
 public interface Field<Number> : CommutativeRing<Number> {
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberDivideNumber: Divide<Number, Number, Number>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberReciprocal: Reciprocal<Number, Number> get() = Reciprocal { numberDivideNumber { one / it } }
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberDivideInt: Divide<Number, Int, Number> get() = Divide { left, right -> numberDivideNumber { left / valueOf(right) } }
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberDivideUInt: Divide<Number, UInt, Number> get() = Divide { left, right -> numberDivideNumber { left / valueOf(right) } }
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberDivideLong: Divide<Number, Long, Number> get() = Divide { left, right -> numberDivideNumber { left / valueOf(right) } }
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberDivideULong: Divide<Number, ULong, Number> get() = Divide { left, right -> numberDivideNumber { left / valueOf(right) } }
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val intDivideNumber: Divide<Int, Number, Number> get() = Divide { left, right -> numberDivideNumber { valueOf(left) / right } }
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val uIntDivideNumber: Divide<UInt, Number, Number> get() = Divide { left, right -> numberDivideNumber { valueOf(left) / right } }
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val longDivideNumber: Divide<Long, Number, Number> get() = Divide { left, right -> numberDivideNumber { valueOf(left) / right } }
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val uLongDivideNumber: Divide<ULong, Number, Number> get() = Divide { left, right -> numberDivideNumber { valueOf(left) / right } }
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val powerNumberInt: Power<Number, Int, Number>
         get() = Power { base, exponent ->
             localContexts(powerNumberUInt, numberReciprocal)
             if (exponent >= 0) power(base, exponent.toUInt())
             else power(base, (-exponent).toUInt()).reciprocal()
         }
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val powerNumberLong: Power<Number, Long, Number>
         get() = Power { base, exponent ->
             localContexts(powerNumberULong, numberReciprocal)

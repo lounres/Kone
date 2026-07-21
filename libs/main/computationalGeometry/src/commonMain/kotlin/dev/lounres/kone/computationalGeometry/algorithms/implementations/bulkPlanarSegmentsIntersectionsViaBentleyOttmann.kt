@@ -30,7 +30,7 @@ import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.contexts.localContexts
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
@@ -112,7 +112,7 @@ private class BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann<
         basis: VectorSpaceBasis.Finite<Number, Vector>,
         intersectionComputer: SegmentBulkIntersectionOverFieldComputer<Number, Vector, Point>,
     ): KoneSequence<BulkPlanarSegmentsIntersectionsOverFieldComputer.IntersectionResult<Number, Vector, Point>> {
-        KoneContext.unwrap(numberOrder, numberField, euclideanSpace)
+        KoneContext.localUnwrap(numberOrder, numberField, euclideanSpace)
         localContexts(intersectionComputer)
         
         val pointOrder = Order<Point> { left, right ->
@@ -125,7 +125,7 @@ private class BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann<
                 }
             }
         }
-        KoneContext.unwrap(pointOrder)
+        KoneContext.localUnwrap(pointOrder)
         
         val segments = this@intersections
         

@@ -14,7 +14,7 @@ import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.localContexts
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
@@ -30,7 +30,7 @@ private class SquareRootsComputerViaDefaultForComplexNumbers<Number>(
     private val positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
 ) : SquareRootsComputer<ComplexNumber<Number>> {
     override fun ComplexNumber<Number>.squareRoots(): KoneList<ComplexNumber<Number>> {
-        KoneContext.unwrap(field, order, positiveSquareRootComputer)
+        KoneContext.localUnwrap(field, order, positiveSquareRootComputer)
         localContexts(field.numberDivideInt)
         val absoluteValue = this@squareRoots.absoluteValue()
         if (absoluteValue.isZero()) return KoneList.of(ComplexNumber(field.zero, field.zero))

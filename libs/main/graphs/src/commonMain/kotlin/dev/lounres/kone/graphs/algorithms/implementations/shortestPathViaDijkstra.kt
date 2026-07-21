@@ -23,7 +23,7 @@ import dev.lounres.kone.collections.map.of
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.graphs.*
 import dev.lounres.kone.graphs.algorithms.*
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
@@ -50,7 +50,7 @@ private class HypergraphShortestPathWithFixedEndsComputerByDijkstra<@Supply Weig
         end: HypergraphVertex
     ): HypergraphShortestPathWithFixedEndsProvider<Weight> {
         val lazyProvider by lazy {
-            KoneContext.unwrap(weightMonoid, weightsOrder)
+            KoneContext.localUnwrap(weightMonoid, weightsOrder)
             
             val verticesToCheck = KoneBinaryGCMinimumHeap<HypergraphVertex, Weight>(weightsOrder)
             val queueNodes = KoneMutableMap.of<HypergraphVertex, HeapNode<HypergraphVertex, Weight>>(Equality.absoluteFor())
@@ -156,7 +156,7 @@ private class HypergraphShortestPathWithFixedStartComputerByDijkstra<@Supply Wei
                 if (currentPath != null && weightsOrder { currentPath.weight lt currentProcessedWeight }) return currentPath
                 
                 synchronized(this) {
-                    KoneContext.unwrap(weightMonoid, weightsOrder)
+                    KoneContext.localUnwrap(weightMonoid, weightsOrder)
                     var optimalPathToTarget: Path<Weight>? = paths.getOrNull(end)
                     
                     while (verticesToCheck.isNotEmpty()) {

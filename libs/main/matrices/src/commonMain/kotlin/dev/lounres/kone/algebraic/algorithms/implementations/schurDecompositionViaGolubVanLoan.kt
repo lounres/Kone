@@ -16,7 +16,7 @@ import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.contexts.localContexts
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.relations.equality
 import dev.lounres.kone.multidimensionalCollections.relations.hashing
@@ -66,7 +66,7 @@ private class SchurDecompositionComputerViaGolubVanLoan<Number, Matrix : MDList2
                 matrixProductComputer,
                 transposeMatrixComputer,
             )
-            KoneContext.unwrap(numberField, matrixCategoryOverField)
+            KoneContext.localUnwrap(numberField, matrixCategoryOverField)
             
             var k = 0u
             

@@ -20,7 +20,7 @@ import dev.lounres.kone.computationalGeometry.EuclideanSpaceOverRing
 import dev.lounres.kone.computationalGeometry.dot
 import dev.lounres.kone.computationalGeometry.polytopes.Polytope
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.suppliedTypes.Suppliable
@@ -56,7 +56,7 @@ public fun <Number, Vector, Point> KoneIterable<Point>.convexHull(): Polytope = 
 // TODO: Move somewhere
 context(ring: Ring<Number>, euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>)
 internal fun <Number, Vector, Point> KoneIterable<Point>.pointsetBasis(): ModuleBasis.Finite<Number, Vector> {
-    KoneContext.unwrap(ring, euclideanSpace)
+    KoneContext.localUnwrap(ring, euclideanSpace)
     
     val verticesIterator = this.iterator()
     val start = verticesIterator.getAndMoveNext()

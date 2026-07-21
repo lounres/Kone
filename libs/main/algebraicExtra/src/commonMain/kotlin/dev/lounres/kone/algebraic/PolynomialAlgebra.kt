@@ -8,7 +8,7 @@ package dev.lounres.kone.algebraic
 import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.contexts.KoneContextHolderInclude
+import dev.lounres.kone.contexts.KoneContextInclude
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
@@ -17,102 +17,102 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 public interface PolynomialAlgebra<Number, Variable, Polynomial> : CommutativeAlgebra<Number, Polynomial> {
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variablePlusInt: Plus<Variable, Int, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variableMinusInt: Minus<Variable, Int, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variableTimesInt: Times<Variable, Int, Polynomial>
     
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variablePlusUInt: Plus<Variable, UInt, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variableMinusUInt: Minus<Variable, UInt, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variableTimesUInt: Times<Variable, UInt, Polynomial>
     
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variablePlusLong: Plus<Variable, Long, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variableMinusLong: Minus<Variable, Long, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variableTimesLong: Times<Variable, Long, Polynomial>
     
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variablePlusULong: Plus<Variable, ULong, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variableMinusULong: Minus<Variable, ULong, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variableTimesULong: Times<Variable, ULong, Polynomial>
     
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variablePlusNumber: Plus<Variable, Number, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variableMinusNumber: Minus<Variable, Number, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variableTimesNumber: Times<Variable, Number, Polynomial>
     
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val intPlusVariable: Plus<Int, Variable, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val intMinusVariable: Minus<Int, Variable, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val intTimesVariable: Times<Int, Variable, Polynomial>
     
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val uIntPlusVariable: Plus<UInt, Variable, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val uIntMinusVariable: Minus<UInt, Variable, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val uIntTimesVariable: Times<UInt, Variable, Polynomial>
     
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val longPlusVariable: Plus<Long, Variable, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val longMinusVariable: Minus<Long, Variable, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val longTimesVariable: Times<Long, Variable, Polynomial>
     
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val uLongPlusVariable: Plus<ULong, Variable, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val uLongMinusVariable: Minus<ULong, Variable, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val uLongTimesVariable: Times<ULong, Variable, Polynomial>
     
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberPlusVariable: Plus<Number, Variable, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberMinusVariable: Minus<Number, Variable, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberTimesVariable: Times<Number, Variable, Polynomial>
     
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variableUnaryPlus: UnaryPlus<Variable, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variableUnaryMinus: UnaryMinus<Variable, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variablePlusVariable: Plus<Variable, Variable, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variableMinusVariable: Minus<Variable, Variable, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variableTimesVariable: Times<Variable, Variable, Polynomial>
     
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variablePlusPolynomial: Plus<Variable, Polynomial, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variableMinusPolynomial: Minus<Variable, Polynomial, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variableTimesPolynomial: Times<Variable, Polynomial, Polynomial>
     
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val polynomialPlusVariable: Plus<Polynomial, Variable, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val polynomialMinusVariable: Minus<Polynomial, Variable, Polynomial>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val polynomialTimesVariable: Times<Polynomial, Variable, Polynomial>
     
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val variablesAndDegree: VariablesAndDegree<Variable, Polynomial>
     
     public interface VariablesAndDegree<Variable, Polynomial> : KoneContext {

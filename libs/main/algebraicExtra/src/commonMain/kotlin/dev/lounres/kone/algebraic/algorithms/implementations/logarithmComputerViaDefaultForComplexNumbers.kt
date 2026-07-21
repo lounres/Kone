@@ -15,7 +15,7 @@ import dev.lounres.kone.algebraic.algorithms.logarithm
 import dev.lounres.kone.algebraic.argument
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
@@ -31,7 +31,7 @@ private class LogarithmComputerViaDefaultForComplexNumbers<Number>(
     private val numberPlanarVectorArgumentComputer: PlanarVectorArgumentComputer<Number>,
 ) : LogarithmComputer<ComplexNumber<Number>> {
     override fun ComplexNumber<Number>.logarithm(): ComplexNumber<Number> {
-        KoneContext.unwrap(
+        KoneContext.localUnwrap(
             numberRing,
             numberPositiveSquareRootComputer,
             numberLogarithmComputer,

@@ -13,7 +13,7 @@ import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
@@ -31,7 +31,7 @@ private class MatrixProductComputerViaDefault<Number, Matrix : MDList2<Number>>(
     override fun Matrix.times(other: Matrix): Matrix {
         require(this.columnNumber == other.rowNumber) { "Cannot multiply two matrices with incompatible sizes: ${this.rowNumber}✖${this.columnNumber} and ${other.rowNumber}✖${other.columnNumber}" }
         
-        KoneContext.unwrap(ring)
+        KoneContext.localUnwrap(ring)
         
         return matrixFactory.generateMatrix(rowNumber = this.rowNumber, columnNumber = other.columnNumber) { row, column ->
             var sum = ring.zero

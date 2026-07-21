@@ -16,7 +16,7 @@ import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.contexts.localContexts
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
@@ -35,7 +35,7 @@ private class IsScalarMatrixCheckerViaDefault<Number, Matrix : MDList2<Number>>(
 ) : IsScalarMatrixChecker<Number, Matrix> {
     override fun Matrix.isScalar(): Boolean {
         localContexts(numberEquality)
-        KoneContext.unwrap(numberRing)
+        KoneContext.localUnwrap(numberRing)
         if (rowNumber != columnNumber) return false
         if (rowNumber == 0u) return true
         for (row in 1u ..< rowNumber) for (column in 0u ..< row) {

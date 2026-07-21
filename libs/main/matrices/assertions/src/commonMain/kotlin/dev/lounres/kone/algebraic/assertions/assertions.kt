@@ -13,7 +13,7 @@ import dev.lounres.kone.assertions.AssertionScope
 import dev.lounres.kone.assertions.Expect
 import dev.lounres.kone.assertions.fail
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.contentEquals
 import dev.lounres.kone.multidimensionalCollections.generate
@@ -31,7 +31,7 @@ context(_: AssertionScope, ring: CommutativeRing<Number>, _: Order<Number>)
 public fun <Number> Expect<MDList2<Number>>.toBeEqualToWithTolerance(other: MDList2<Number>, tolerance: Number) {
     val value = this.exposeValue()
     
-    KoneContext.unwrap(ring)
+    KoneContext.localUnwrap(ring)
     
     if (!(value.size contentEquals other.size)) {
         fail(
@@ -100,7 +100,7 @@ context(_: AssertionScope, ring: CommutativeRing<Number>, _: Order<Number>)
 public fun <Number> Expect<MDList2<Number>>.toBeEqualToWithLinearTolerance(other: MDList2<Number>, relativeTolerance: Number, absoluteTolerance: Number = ring.zero) {
     val value = this.exposeValue()
     
-    KoneContext.unwrap(ring)
+    KoneContext.localUnwrap(ring)
     
     if (!(value.size contentEquals other.size)) {
         fail(
@@ -169,7 +169,7 @@ context(_: AssertionScope, ring: CommutativeRing<Number>, _: PositiveSquareRootC
 public fun <Number> Expect<MDList2<ComplexNumber<Number>>>.toBeEqualToWithTolerance(other: MDList2<ComplexNumber<Number>>, tolerance: Number) {
     val value = this.exposeValue()
     
-    KoneContext.unwrap(ring, complexNumbersRing)
+    KoneContext.localUnwrap(ring, complexNumbersRing)
     
     if (!(value.size contentEquals other.size)) {
         fail(
@@ -240,7 +240,7 @@ context(_: AssertionScope, ring: CommutativeRing<Number>, _: PositiveSquareRootC
 public fun <Number> Expect<MDList2<ComplexNumber<Number>>>.toBeEqualToWithLinearTolerance(other: MDList2<ComplexNumber<Number>>, relativeTolerance: Number, absoluteTolerance: Number = ring.zero) {
     val value = this.exposeValue()
     
-    KoneContext.unwrap(ring, complexNumbersRing)
+    KoneContext.localUnwrap(ring, complexNumbersRing)
     
     if (!(value.size contentEquals other.size)) {
         fail(
@@ -311,7 +311,7 @@ context(_: AssertionScope, ring: CommutativeRing<Number>, _: Order<Number>)
 public fun <Number> Expect<MDList2<Number>>.toBeUnitMatrixWithTolerance(tolerance: Number) {
     val value = this.exposeValue()
     
-    KoneContext.unwrap(ring)
+    KoneContext.localUnwrap(ring)
     
     if (value.rowNumber != value.columnNumber) {
         fail(
@@ -378,7 +378,7 @@ context(_: AssertionScope, ring: CommutativeRing<Number>, _: PositiveSquareRootC
 public fun <Number> Expect<MDList2<ComplexNumber<Number>>>.toBeUnitMatrixWithTolerance(tolerance: Number) {
     val value = this.exposeValue()
     
-    KoneContext.unwrap(ring, complexNumbersRing)
+    KoneContext.localUnwrap(ring, complexNumbersRing)
     
     if (value.rowNumber != value.columnNumber) {
         fail(
@@ -445,7 +445,7 @@ context(_: AssertionScope, ring: CommutativeRing<Number>)
 public fun <Number> Expect<MDList2<Number>>.toBeUpperTriangularMatrix() {
     val value = this.exposeValue()
     
-    KoneContext.unwrap(ring)
+    KoneContext.localUnwrap(ring)
     
     if (value.rowNumber != value.columnNumber) {
         fail(
@@ -513,7 +513,7 @@ context(_: AssertionScope, ring: CommutativeRing<Number>)
 public fun <Number> Expect<MDList2<Number>>.toBeUpperHessenbergMatrix() {
     val value = this.exposeValue()
     
-    KoneContext.unwrap(ring)
+    KoneContext.localUnwrap(ring)
     
     if (value.rowNumber != value.columnNumber) {
         fail(
@@ -581,7 +581,7 @@ context(_: AssertionScope, ring: CommutativeRing<Number>)
 public fun <Number> Expect<MDList2<Number>>.toBeQuasiUpperTriangularMatrix() {
     val value = this.exposeValue()
     
-    KoneContext.unwrap(ring)
+    KoneContext.localUnwrap(ring)
     
     if (value.rowNumber != value.columnNumber) {
         fail(

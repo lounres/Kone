@@ -11,7 +11,7 @@ import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.SettableMDList2
 import dev.lounres.kone.multidimensionalCollections.generate
@@ -33,7 +33,7 @@ private class QRDecompositionComputerViaGramSchmidt<Number, Matrix : MDList2<Num
         require(rowNumber == columnNumber) { "Cannot compute QR decomposition for non-square matrix." }
         val n = this.rowNumber
         
-        KoneContext.unwrap(field)
+        KoneContext.localUnwrap(field)
         
         val qBuilder = SettableMDList2.generate(rowNumber = n, columnNumber = n) { row, column -> this[row, column] }
         

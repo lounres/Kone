@@ -17,7 +17,7 @@ import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.contexts.localContexts
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.relations.equality
 import dev.lounres.kone.multidimensionalCollections.relations.hashing
@@ -55,7 +55,7 @@ private class SchurDecompositionComputerViaGolubVanLoanForComplexNumbers<Number,
             rightUnitary = matrixFactory.generateMatrix(0u, 0u) { _, _ -> error("Matrix 0✖0 tried to allocate elements") },
         )
         
-        KoneContext.unwrap(
+        KoneContext.localUnwrap(
             numberField,
             complexNumberFieldExtension,
             numberOrder,

@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.contexts.KoneContextHolderInclude
+import dev.lounres.kone.contexts.KoneContextInclude
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.registry.ImpliedKeysRegistry
@@ -42,11 +42,11 @@ public /*value*/ data class EuclideanDivisionResult<Number>(public val quotient:
  * but no actual programming representation of the norm is not provided.
  */
 public interface EuclideanSemiring<Number> : CommutativeSemiring<Number> {
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberDivideRemainderNumber: DivideRemainder<Number, Number, EuclideanDivisionResult<Number>>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberDivideNumber: Divide<Number, Number, Number> get() = Divide { left, right -> numberDivideRemainderNumber { left divrem right }.quotient }
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberRemainderNumber: Remainder<Number, Number, Number> get() = Remainder { left, right -> numberDivideRemainderNumber { left divrem right }.remainder }
     
     public companion object;

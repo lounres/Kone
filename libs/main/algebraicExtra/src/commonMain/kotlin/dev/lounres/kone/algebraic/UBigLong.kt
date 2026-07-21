@@ -15,7 +15,7 @@ import dev.lounres.kone.collections.list.lastIndex
 import dev.lounres.kone.collections.utils.slice
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
@@ -159,7 +159,7 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
     }
     // TODO: Experiment with Karatsuba algorithm, Toom–Cook algorithm and FFT-based algorithms
     override val numberTimesNumber: Times<UBigLong, UBigLong, UBigLong> = Times { left, right ->
-        KoneContext.unwrap(this)
+        KoneContext.localUnwrap(this)
         
         if (left.isZero() || right.isZero()) return@Times this.zero
         if (left.isOne()) return@Times right
@@ -539,7 +539,7 @@ public fun String.toUBigLong(radix: UInt = 10u): UBigLong {
 
 public fun UBigLong.toString(radix: UInt): String {
     require(radix in 2u .. 36u) { "radix $radix was not in valid range 2..36" }
-    KoneContext.unwrap(UBigLong.context)
+    KoneContext.localUnwrap(UBigLong.context)
     
     if (this.isZero()) return "0"
     

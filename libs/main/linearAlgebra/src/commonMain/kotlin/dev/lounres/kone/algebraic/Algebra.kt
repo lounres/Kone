@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.contexts.KoneContextHolderInclude
+import dev.lounres.kone.contexts.KoneContextInclude
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
@@ -21,20 +21,20 @@ public interface Algebra<Number, Vector> : Module<Number, Vector>, Ring<Vector> 
     // endregion
     
     // region Vector-Number operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val vectorPlusNumber: Plus<Vector, Number, Vector> get() = Plus { left, right -> numberPlusNumber { left + valueOf(right) } }
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val vectorMinusNumber: Minus<Vector, Number, Vector> get() = Minus { left, right -> numberMinusNumber { left - valueOf(right) } }
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public override val vectorTimesNumber: Times<Vector, Number, Vector> get() = Times { left, right -> numberTimesNumber { left * valueOf(right) } }
     // endregion
     
     // region Number-Vector operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberPlusVector: Plus<Number, Vector, Vector> get() = Plus { left, right -> numberPlusNumber { valueOf(left) + right } }
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberMinusVector: Minus<Number, Vector, Vector> get() = Minus { left, right -> numberMinusNumber { valueOf(left) - right } }
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public override val numberTimesVector: Times<Number, Vector, Vector> get() = Times { left, right -> numberTimesNumber { valueOf(left) * right } }
     // endregion
     

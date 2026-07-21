@@ -11,7 +11,7 @@ import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
@@ -39,9 +39,9 @@ private class ScalarBasedMatrixFunctionApplierViaSchurParlettForComplexNumbers<N
     @OptIn(ParlettRecurrenceInternalApi::class)
     override fun Matrix.after(function: ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>): Matrix {
         require(this.rowNumber == this.columnNumber)
-        KoneContext.unwrap(matrixProductComputer, schurDecompositionComputer)
+        KoneContext.localUnwrap(matrixProductComputer, schurDecompositionComputer)
         val schurDecomposition = this.schurDecomposition()
-        KoneContext.unwrap(
+        KoneContext.localUnwrap(
             ParlettRecurrence(
                 matrixFactory = matrixFactory,
                 field = field,

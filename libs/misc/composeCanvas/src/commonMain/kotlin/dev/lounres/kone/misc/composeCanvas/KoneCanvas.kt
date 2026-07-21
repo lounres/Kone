@@ -31,7 +31,7 @@ import dev.lounres.kone.computationalGeometry.angles.plus
 import dev.lounres.kone.computationalGeometry.angles.sin
 import dev.lounres.kone.computationalGeometry.default2.Vector2
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.exp
 
@@ -188,7 +188,7 @@ public inline fun Modifier.defaultKoneCanvasPointerInput(
         }
         .pointerInput(Unit) {
             awaitPointerEventScope {
-                KoneContext.unwrap(koneCanvasEuclideanSpace)
+                KoneContext.localUnwrap(koneCanvasEuclideanSpace)
                 var currentPressPosition: Offset? = null
                 while (true) {
                     val event = awaitPointerEvent()

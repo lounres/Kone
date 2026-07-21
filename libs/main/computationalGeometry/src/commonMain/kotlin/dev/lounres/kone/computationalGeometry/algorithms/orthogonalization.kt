@@ -18,7 +18,7 @@ import dev.lounres.kone.computationalGeometry.EuclideanVectorSpaceOverRing
 import dev.lounres.kone.computationalGeometry.dot
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.localContexts
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.repeat
 
 
@@ -37,7 +37,7 @@ internal fun <Number, Vector> GramSchmidtOrthogonalizationIntermediateState<Numb
 
 context(ring: Ring<Number>, euclideanSpace: EuclideanVectorSpaceOverRing<Number, Vector>)
 internal fun <Number, Vector> GramSchmidtOrthogonalizationIntermediateState<Number, Vector>.gramSchmidtOrthogonalizationUsage(newVector: Vector): Vector {
-    KoneContext.unwrap(ring, euclideanSpace)
+    KoneContext.localUnwrap(ring, euclideanSpace)
     // FIXME: KT-67840
 //    (0u..<orthogonalizedBasis.size).fold(newVector * product) { acc, index ->
 //        val previousOrthogonalizedVector = orthogonalizedBasis[index]

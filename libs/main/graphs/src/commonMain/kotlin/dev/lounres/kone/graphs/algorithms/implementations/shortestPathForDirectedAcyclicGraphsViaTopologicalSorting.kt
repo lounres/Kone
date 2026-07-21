@@ -22,7 +22,7 @@ import dev.lounres.kone.collections.utils.withIndex
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.graphs.*
 import dev.lounres.kone.graphs.algorithms.*
 import dev.lounres.kone.registry.*
@@ -75,7 +75,7 @@ private class HypergraphDirectedShortestPathWithFixedEndsComputerForDirectedAcyc
                 edges = KoneList.empty(),
             )
             
-            KoneContext.unwrap(weightMonoid, weightsOrder)
+            KoneContext.localUnwrap(weightMonoid, weightsOrder)
             for (vIndex in startIndex .. endIndex) {
                 val vPath = paths[vIndex - startIndex] ?: continue
                 if (paths.last().let { it != null && it.weight lt vPath.weight }) continue
@@ -178,7 +178,7 @@ private class HypergraphDirectedShortestPathWithFixedStartComputerForDirectedAcy
                 if (endIndex - startIndex <= firstNotVisitedVertexIndexInPaths) return paths[endIndex - startIndex]
                 
                 synchronized(this) {
-                    KoneContext.unwrap(weightMonoid, weightsOrder)
+                    KoneContext.localUnwrap(weightMonoid, weightsOrder)
                     while (firstNotVisitedVertexIndexInPaths + startIndex < endIndex) {
                         val vIndex = firstNotVisitedVertexIndexInPaths + startIndex
                         val vPath = paths[vIndex - startIndex] ?: continue

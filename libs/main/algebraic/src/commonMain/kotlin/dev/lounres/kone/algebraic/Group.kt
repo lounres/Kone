@@ -6,7 +6,7 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.algebraic.util.doublingTimes
-import dev.lounres.kone.contexts.KoneContextHolderInclude
+import dev.lounres.kone.contexts.KoneContextInclude
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
@@ -16,29 +16,29 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 public interface Group<Number> : Monoid<Number> {
     // region Number-Int operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberTimesInt: Times<Number, Int, Number> get() = Times { left, right -> left doublingTimes right }
     // endregion
     
     // region Number-Long operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberTimesLong: Times<Number, Long, Number> get() = Times { left, right -> left doublingTimes right }
     // endregion
     
     // region Int-Number operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val intTimesNumber: Times<Int, Number, Number> get() = Times { left, right -> left doublingTimes right }
     // endregion
     
     // region Long-Number operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val longTimesNumber: Times<Long, Number, Number> get() = Times { left, right -> left doublingTimes right }
     // endregion
     
     // region Number-Number operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberUnaryMinus: UnaryMinus<Number, Number>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberMinusNumber: Minus<Number, Number, Number>
     // endregion
     

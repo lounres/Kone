@@ -19,7 +19,7 @@ import dev.lounres.kone.collections.utils.sumOf
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.multidimensionalCollections.MDIndex
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
@@ -62,7 +62,7 @@ private class HessenbergDecompositionComputerViaHouseholder<Number, Matrix : MDL
         )
         var r = this
         
-        KoneContext.unwrap(
+        KoneContext.localUnwrap(
             numberField,
             numberOrder,
             positiveSquareRootComputer,
@@ -72,7 +72,7 @@ private class HessenbergDecompositionComputerViaHouseholder<Number, Matrix : MDL
         )
         
         for (k in 0u ..< n - 2u) {
-            KoneContext.unwrap(numberField, matrixCategoryOverField)
+            KoneContext.localUnwrap(numberField, matrixCategoryOverField)
             
             val xElementNormsSquared = KoneList.generate(k + 1u ..< n) { index -> r[index, k].let { it * it } }
             val xNorm = xElementNormsSquared.sum().positiveSquareRoot()

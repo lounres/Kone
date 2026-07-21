@@ -13,7 +13,7 @@ import dev.lounres.kone.algebraic.algorithms.invert
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.SettableMDList2
 import dev.lounres.kone.multidimensionalCollections.generate
@@ -29,7 +29,7 @@ private class InverseMatrixComputerViaGaussianElimination<Number, Matrix : MDLis
     private val field: Field<Number>,
 ) : InverseMatrixComputer<Number, Matrix> {
     override fun Matrix.invert(): Matrix? {
-        KoneContext.unwrap(field)
+        KoneContext.localUnwrap(field)
         
         if (rowNumber != columnNumber) return null
         

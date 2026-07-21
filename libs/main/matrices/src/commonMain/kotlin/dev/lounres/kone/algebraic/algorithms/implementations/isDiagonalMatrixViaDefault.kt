@@ -15,7 +15,7 @@ import dev.lounres.kone.algebraic.isNotZero
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
@@ -30,7 +30,7 @@ private class IsDiagonalMatrixCheckerViaDefault<Number, Matrix : MDList2<Number>
     private val numberRing: CommutativeRing<Number>,
 ) : IsDiagonalMatrixChecker<Number, Matrix> {
     override fun Matrix.isDiagonal(): Boolean {
-        KoneContext.unwrap(numberRing)
+        KoneContext.localUnwrap(numberRing)
         if (rowNumber != columnNumber) return false
         for (row in 1u ..< rowNumber) for (column in 0u ..< row) {
             if (this[row, column].isNotZero()) return false

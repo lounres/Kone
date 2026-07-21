@@ -6,7 +6,7 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.algebraic.util.doublingTimes
-import dev.lounres.kone.contexts.KoneContextHolderInclude
+import dev.lounres.kone.contexts.KoneContextInclude
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
@@ -20,27 +20,27 @@ public interface Monoid<Number> : Semigroup<Number> {
     // endregion
     
     // region Equality
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberIsZero: IsZero<Number>
     // endregion
     
     // region Number-UInt operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberTimesUInt: Times<Number, UInt, Number> get() = Times { left, right -> left doublingTimes right }
     // endregion
     
     // region Number-ULong operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberTimesULong: Times<Number, ULong, Number> get() = Times { left, right -> left doublingTimes right }
     // endregion
     
     // region UInt-Number operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val uIntTimesNumber: Times<UInt, Number, Number> get() = Times { left, right -> left doublingTimes right }
     // endregion
     
     // region ULong-Number operations
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val uLongTimesNumber: Times<ULong, Number, Number> get() = Times { left, right -> left doublingTimes right }
     // endregion
     

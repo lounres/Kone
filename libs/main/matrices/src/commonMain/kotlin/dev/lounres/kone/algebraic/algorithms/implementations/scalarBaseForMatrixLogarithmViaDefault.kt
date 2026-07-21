@@ -21,7 +21,7 @@ import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.contexts.localContexts
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.registry.*
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.suppliedTypes.Suppliable
@@ -34,7 +34,7 @@ private class ScalarBaseForMatrixLogarithmViaDefault<Number>(
     private val logarithmComputer: LogarithmComputer<Number>,
 ) : ScalarBaseForMatrixFunction<Number> {
     override fun evaluate(derivativeOrder: UInt, value: Number): Number {
-        KoneContext.unwrap(numberField, logarithmComputer)
+        KoneContext.localUnwrap(numberField, logarithmComputer)
         return if (derivativeOrder == 0u) value.logarithm()
         else value.reciprocal().pow(derivativeOrder)
     }
@@ -99,7 +99,7 @@ private class ScalarBaseForMatrixLogarithmWithComplexNumberConvexHullBoundViaDef
     
     override fun bound(derivativeOrder: UInt, convexHullVertices: KoneIterable<ComplexNumber<Number>>): Number {
         localContexts(order, numberField, positiveSquareRootComputer, logarithmComputer, planarVectorArgumentComputer)
-        KoneContext.unwrap(numberField)
+        KoneContext.localUnwrap(numberField)
         
         return if (derivativeOrder == 0u) convexHullVertices.maxOf<_, Number> { ComplexNumber(it.absoluteValue().logarithm(), it.argument()).norm() }.positiveSquareRoot()
         else convexHullVertices.maxOf<_, Number> { it.norm() }.positiveSquareRoot().reciprocal().pow(derivativeOrder)

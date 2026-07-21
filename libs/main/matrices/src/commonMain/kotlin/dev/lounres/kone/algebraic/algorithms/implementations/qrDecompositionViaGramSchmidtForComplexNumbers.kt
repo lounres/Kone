@@ -11,7 +11,7 @@ import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.SettableMDList2
 import dev.lounres.kone.multidimensionalCollections.generate
@@ -36,7 +36,7 @@ private class QRDecompositionComputerViaGramSchmidtForComplexNumbers<Number, Mat
         
         val qBuilder = SettableMDList2.generate(rowNumber = n, columnNumber = n) { row, column -> this[row, column] }
         
-        KoneContext.unwrap(numberField, complexNumberFieldExtension)
+        KoneContext.localUnwrap(numberField, complexNumberFieldExtension)
         
         for (i in 0u ..< n) {
             for (j in 0u ..< i) {

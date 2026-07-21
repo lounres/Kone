@@ -18,7 +18,7 @@ import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.SettableMDList2
 import dev.lounres.kone.multidimensionalCollections.generate
@@ -38,7 +38,7 @@ private class DeterminantComputerViaGaussianElimination<Number, Matrix : MDList2
     override fun Matrix.determinant(): Number {
         require(rowNumber == columnNumber) { "Cannot compute determinant of matrix with non-equal numbers of rows and columns." }
         
-        KoneContext.unwrap(field)
+        KoneContext.localUnwrap(field)
         
         val n = rowNumber
         val source = SettableMDList2.generate(rowNumber = n, columnNumber = n) { row, column -> this[row, column] }

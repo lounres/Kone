@@ -16,7 +16,7 @@ import dev.lounres.kone.algebraic.isZero
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.utils.allIndexed
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
@@ -32,7 +32,7 @@ private class IsUnitMatrixCheckerViaDefault<Number, Matrix : MDList2<Number>>(
     private val numberRing: CommutativeRing<Number>,
 ) : IsUnitMatrixChecker<Number, Matrix> {
     override fun Matrix.isOne(): Boolean {
-        KoneContext.unwrap(numberRing)
+        KoneContext.localUnwrap(numberRing)
         return rowNumber == columnNumber && this.allIndexed { index, value -> if (index[0u] == index[1u]) value.isOne() else value.isZero() }
     }
 }

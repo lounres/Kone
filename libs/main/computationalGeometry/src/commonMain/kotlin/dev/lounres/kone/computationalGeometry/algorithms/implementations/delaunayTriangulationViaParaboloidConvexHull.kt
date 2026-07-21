@@ -30,7 +30,7 @@ import dev.lounres.kone.computationalGeometry.polytopes.*
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
@@ -205,7 +205,7 @@ private class ParaboloidEuclideanSpaceOverRing<Number, Vector, Point>(
     }
     
     override val vectorDotVector: Dot<ParaboloidVector<Number, Vector>, ParaboloidVector<Number, Vector>, Number> = Dot { left, right ->
-        KoneContext.unwrap(ring, initialEuclideanSpaceOverRing)
+        KoneContext.localUnwrap(ring, initialEuclideanSpaceOverRing)
         (left.vector dot right.vector) + left.extraCoordinate * right.extraCoordinate
     }
 }
@@ -232,7 +232,7 @@ private class DelaunayTriangulationOverRingComputerViaConvexHull<@Supply Number,
         basis: ModuleBasis.Finite<Number, Vector>
     ): PolytopicConstruction {
         require(this.isNotEmpty()) { "Can't construct Delaunay triangulation of an empty vertices collection." }
-        KoneContext.unwrap(ring, order, euclideanSpace, paraboloidEuclideanSpaceOverRing, paraboloidConvexHullOverRingComputer)
+        KoneContext.localUnwrap(ring, order, euclideanSpace, paraboloidEuclideanSpaceOverRing, paraboloidConvexHullOverRingComputer)
         
         val verticesDimension: UInt = basis.size
         

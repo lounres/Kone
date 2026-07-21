@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.algebraic
 
-import dev.lounres.kone.contexts.KoneContextHolderInclude
+import dev.lounres.kone.contexts.KoneContextInclude
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
@@ -14,15 +14,15 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 public interface VectorSpace<Number, Vector> : Module<Number, Vector> {
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val vectorDivideNumber: Divide<Vector, Number, Vector>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val vectorDivideInt: Divide<Vector, Int, Vector>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val vectorDivideUInt: Divide<Vector, UInt, Vector>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val vectorDivideLong: Divide<Vector, Long, Vector>
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val vectorDivideULong: Divide<Vector, ULong, Vector>
     
     public companion object;

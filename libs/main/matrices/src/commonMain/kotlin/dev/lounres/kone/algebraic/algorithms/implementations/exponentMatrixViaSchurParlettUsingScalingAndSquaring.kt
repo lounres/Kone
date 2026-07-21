@@ -15,7 +15,7 @@ import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.contexts.localContexts
-import dev.lounres.kone.contexts.unwrap
+import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.multidimensionalCollections.MDIndex
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
@@ -64,7 +64,7 @@ private class ExponentMatrixComputerViaSchurParlettUsingScalingAndSquaring<Matri
             isDiagonalMatrixChecker = isDiagonalMatrixChecker,
             parlettRecurrenceAtomicBlockImageComputer = object : ParlettRecurrenceAtomicBlockImageComputer<ComplexNumber<Double>, Matrix> {
                 override fun Matrix.atomicBlockImage(): Matrix {
-                    KoneContext.unwrap(
+                    KoneContext.localUnwrap(
                         field,
                         order,
                         complexNumberField,
