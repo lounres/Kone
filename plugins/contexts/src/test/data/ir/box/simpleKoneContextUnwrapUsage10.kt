@@ -1,0 +1,35 @@
+// SUPPRESS_WARNINGS: PRE_RELEASE_CLASS
+
+package foo.bar
+
+import dev.lounres.kone.contexts.*
+
+
+class Work(private val n: Int) {
+    fun work(): Int = n
+}
+
+context(work: Work)
+fun work(): Int = work.work()
+
+class Foo(n: Int) : KoneContext {
+    @KoneContextHolderInclude
+    val foo: Work = Work(n)
+}
+
+interface Bar : KoneContext {
+    @KoneContextHolderInclude
+    val baz: Foo get() = Foo(179)
+}
+
+class Baz : Bar {
+    @KoneContextHolderInclude
+    val bar = Foo(57)
+    @KoneContextHolderExclude
+    override val baz: Foo get() = super.baz
+}
+
+fun box(): String {
+    KoneContext.unwrap(Baz())
+    return if (work() == 57) "OK" else "INCORRECT"
+}

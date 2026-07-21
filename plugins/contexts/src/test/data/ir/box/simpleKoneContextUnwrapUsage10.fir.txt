@@ -1,0 +1,62 @@
+FILE: simpleKoneContextUnwrapUsage10.kt
+    package foo.bar
+
+    public final class Work : R|kotlin/Any| {
+        public constructor(n: R|kotlin/Int|): R|foo/bar/Work| {
+            super<R|kotlin/Any|>()
+        }
+
+        private final val n: R|kotlin/Int| = R|<local>/n|
+            private get(): R|kotlin/Int|
+
+        public final fun work(): R|kotlin/Int| {
+            ^work this@R|foo/bar/Work|.R|foo/bar/Work.n|
+        }
+
+    }
+    context(work: R|foo/bar/Work|)
+    public final fun work(): R|kotlin/Int| {
+        ^work R|<local>/work|.R|foo/bar/Work.work|()
+    }
+    public final class Foo : R|dev/lounres/kone/contexts/KoneContext| {
+        public constructor(n: R|kotlin/Int|): R|foo/bar/Foo| {
+            super<R|kotlin/Any|>()
+        }
+
+        @R|dev/lounres/kone/contexts/KoneContextHolderInclude|() public final val foo: R|foo/bar/Work| = R|foo/bar/Work.Work|(R|<local>/n|)
+            public get(): R|foo/bar/Work|
+
+    }
+    public abstract interface Bar : R|dev/lounres/kone/contexts/KoneContext| {
+        @R|dev/lounres/kone/contexts/KoneContextHolderInclude|() public open val baz: R|foo/bar/Foo|
+            public get(): R|foo/bar/Foo| {
+                ^ R|foo/bar/Foo.Foo|(Int(179))
+            }
+
+    }
+    public final class Baz : R|foo/bar/Bar| {
+        public constructor(): R|foo/bar/Baz| {
+            super<R|kotlin/Any|>()
+        }
+
+        @R|dev/lounres/kone/contexts/KoneContextHolderInclude|() public final val bar: R|foo/bar/Foo| = R|foo/bar/Foo.Foo|(Int(57))
+            public get(): R|foo/bar/Foo|
+
+        @R|dev/lounres/kone/contexts/KoneContextHolderExclude|() public open override val baz: R|foo/bar/Foo|
+            public get(): R|foo/bar/Foo| {
+                ^ this@R|foo/bar/Baz|.super<R|foo/bar/Bar|>.R|foo/bar/Bar.baz|
+            }
+
+    }
+    public final fun box(): R|kotlin/String| {
+        Q|dev/lounres/kone/contexts/KoneContext|.R|dev/lounres/kone/contexts/unwrap|(vararg(R|foo/bar/Baz.Baz|()))
+        ^box when () {
+            ==(context(this@R|<local>/<Kone contexts unwrap context holder>|) R|foo/bar/work|(), Int(57)) ->  {
+                String(OK)
+            }
+            else ->  {
+                String(INCORRECT)
+            }
+        }
+
+    }

@@ -42,14 +42,16 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage1.kt
       VAR IR_TEMPORARY_VARIABLE name:tmp_0 type:foo.bar.Foo<kotlin.Int> [val]
         CONSTRUCTOR_CALL 'public constructor <init> () declared in foo.bar.Foo' type=foo.bar.Foo<kotlin.Int> origin=null
           TYPE_ARG (of class) X: kotlin.Int
+      VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:kotlin.collections.List<kotlin.Int> [val]
+        CALL 'public final fun <get-bar> (): kotlin.collections.List<X of foo.bar.Foo> declared in foo.bar.Foo' type=kotlin.collections.List<kotlin.Int> origin=null
+          ARG <this>: GET_VAR 'val tmp_0: foo.bar.Foo<kotlin.Int> declared in foo.bar.box' type=foo.bar.Foo<kotlin.Int> origin=null
       RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in foo.bar'
         WHEN type=kotlin.String origin=IF
           BRANCH
             if: CALL 'public abstract fun isEmpty (): kotlin.Boolean declared in kotlin.collections.List' type=kotlin.Boolean origin=null
               ARG <this>: CALL 'public final fun contextOf <A> (context: @[NoInfer] A of kotlin.contextOf): @[NoInfer] A of kotlin.contextOf declared in kotlin' type=@[NoInfer] kotlin.collections.List<kotlin.Int> origin=null
                 TYPE_ARG A: kotlin.collections.List<kotlin.Int>
-                ARG context: CALL 'public final fun <get-bar> (): kotlin.collections.List<X of foo.bar.Foo> declared in foo.bar.Foo' type=kotlin.collections.List<kotlin.Int> origin=null
-                  ARG <this>: GET_VAR 'val tmp_0: foo.bar.Foo<kotlin.Int> declared in foo.bar.box' type=foo.bar.Foo<kotlin.Int> origin=null
+                ARG context: GET_VAR 'val tmp_1: kotlin.collections.List<kotlin.Int> declared in foo.bar.box' type=kotlin.collections.List<kotlin.Int> origin=null
             then: CONST String type=kotlin.String value="OK"
           BRANCH
             if: CONST Boolean type=kotlin.Boolean value=true

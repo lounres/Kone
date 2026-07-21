@@ -190,6 +190,15 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage9.kt
     BLOCK_BODY
       VAR IR_TEMPORARY_VARIABLE name:tmp_0 type:foo.bar.Ring<Number of foo.bar.doublingPlus> [val]
         GET_VAR 'ring: foo.bar.Ring<Number of foo.bar.doublingPlus> declared in foo.bar.doublingPlus' type=foo.bar.Ring<Number of foo.bar.doublingPlus> origin=null
+      VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:foo.bar.Plus<Number of foo.bar.doublingPlus, kotlin.Long, Number of foo.bar.doublingPlus> [val]
+        CALL 'public abstract fun <get-numberPlusLong> (): foo.bar.Plus<Number of foo.bar.Ring, kotlin.Long, Number of foo.bar.Ring> declared in foo.bar.Ring' type=foo.bar.Plus<Number of foo.bar.doublingPlus, kotlin.Long, Number of foo.bar.doublingPlus> origin=null
+          ARG <this>: GET_VAR 'val tmp_0: foo.bar.Ring<Number of foo.bar.doublingPlus> declared in foo.bar.doublingPlus' type=foo.bar.Ring<Number of foo.bar.doublingPlus> origin=null
+      VAR IR_TEMPORARY_VARIABLE name:tmp_2 type:foo.bar.Plus<Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus> [val]
+        CALL 'public abstract fun <get-numberPlusNumber> (): foo.bar.Plus<Number of foo.bar.Ring, Number of foo.bar.Ring, Number of foo.bar.Ring> declared in foo.bar.Ring' type=foo.bar.Plus<Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus> origin=null
+          ARG <this>: GET_VAR 'val tmp_0: foo.bar.Ring<Number of foo.bar.doublingPlus> declared in foo.bar.doublingPlus' type=foo.bar.Ring<Number of foo.bar.doublingPlus> origin=null
+      VAR IR_TEMPORARY_VARIABLE name:tmp_3 type:foo.bar.Minus<Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus> [val]
+        CALL 'public abstract fun <get-numberMinusNumber> (): foo.bar.Minus<Number of foo.bar.Ring, Number of foo.bar.Ring, Number of foo.bar.Ring> declared in foo.bar.Ring' type=foo.bar.Minus<Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus> origin=null
+          ARG <this>: GET_VAR 'val tmp_0: foo.bar.Ring<Number of foo.bar.doublingPlus> declared in foo.bar.doublingPlus' type=foo.bar.Ring<Number of foo.bar.doublingPlus> origin=null
       RETURN type=kotlin.Nothing from='public final fun doublingPlus <Number> (ring: foo.bar.Ring<Number of foo.bar.doublingPlus>, <this>: Number of foo.bar.doublingPlus, other: kotlin.Int): Number of foo.bar.doublingPlus declared in foo.bar'
         CALL 'public final fun rightAddMultipliedByDoubling <Number> (base: Number of foo.bar.rightAddMultipliedByDoubling, arg: Number of foo.bar.rightAddMultipliedByDoubling, multiplier: kotlin.Int, additionOp: kotlin.Function2<Number of foo.bar.rightAddMultipliedByDoubling, Number of foo.bar.rightAddMultipliedByDoubling, Number of foo.bar.rightAddMultipliedByDoubling>, rightSubtractionOp: kotlin.Function2<Number of foo.bar.rightAddMultipliedByDoubling, Number of foo.bar.rightAddMultipliedByDoubling, Number of foo.bar.rightAddMultipliedByDoubling>): Number of foo.bar.rightAddMultipliedByDoubling declared in foo.bar' type=Number of foo.bar.doublingPlus origin=null
           TYPE_ARG Number: Number of foo.bar.doublingPlus
@@ -207,8 +216,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage9.kt
                     TYPE_ARG Left: Number of foo.bar.doublingPlus
                     TYPE_ARG Right: Number of foo.bar.doublingPlus
                     TYPE_ARG Result: Number of foo.bar.doublingPlus
-                    ARG plus: CALL 'public abstract fun <get-numberPlusNumber> (): foo.bar.Plus<Number of foo.bar.Ring, Number of foo.bar.Ring, Number of foo.bar.Ring> declared in foo.bar.Ring' type=foo.bar.Plus<Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus> origin=null
-                      ARG <this>: GET_VAR 'val tmp_0: foo.bar.Ring<Number of foo.bar.doublingPlus> declared in foo.bar.doublingPlus' type=foo.bar.Ring<Number of foo.bar.doublingPlus> origin=null
+                    ARG plus: GET_VAR 'val tmp_2: foo.bar.Plus<Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus> declared in foo.bar.doublingPlus' type=foo.bar.Plus<Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus> origin=null
                     ARG <this>: GET_VAR 'left: Number of foo.bar.doublingPlus declared in foo.bar.doublingPlus.<anonymous>' type=Number of foo.bar.doublingPlus origin=null
                     ARG other: GET_VAR 'right: Number of foo.bar.doublingPlus declared in foo.bar.doublingPlus.<anonymous>' type=Number of foo.bar.doublingPlus origin=null
           ARG rightSubtractionOp: FUN_EXPR type=kotlin.Function2<Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus> origin=LAMBDA
@@ -221,8 +229,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage9.kt
                     TYPE_ARG Left: Number of foo.bar.doublingPlus
                     TYPE_ARG Right: Number of foo.bar.doublingPlus
                     TYPE_ARG Result: Number of foo.bar.doublingPlus
-                    ARG minus: CALL 'public abstract fun <get-numberMinusNumber> (): foo.bar.Minus<Number of foo.bar.Ring, Number of foo.bar.Ring, Number of foo.bar.Ring> declared in foo.bar.Ring' type=foo.bar.Minus<Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus> origin=null
-                      ARG <this>: GET_VAR 'val tmp_0: foo.bar.Ring<Number of foo.bar.doublingPlus> declared in foo.bar.doublingPlus' type=foo.bar.Ring<Number of foo.bar.doublingPlus> origin=null
+                    ARG minus: GET_VAR 'val tmp_3: foo.bar.Minus<Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus> declared in foo.bar.doublingPlus' type=foo.bar.Minus<Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus> origin=null
                     ARG <this>: GET_VAR 'left: Number of foo.bar.doublingPlus declared in foo.bar.doublingPlus.<anonymous>' type=Number of foo.bar.doublingPlus origin=null
                     ARG other: GET_VAR 'right: Number of foo.bar.doublingPlus declared in foo.bar.doublingPlus.<anonymous>' type=Number of foo.bar.doublingPlus origin=null
   FUN name:minus visibility:public modality:FINAL returnType:Result of foo.bar.minus [operator]

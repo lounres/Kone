@@ -26,11 +26,9 @@ class ContextsFakeValueParametersReplacementTransformer(
     private val pluginContext: IrPluginContext,
     private val irRuntimeReferences: IrRuntimeReferences,
 ) : IrElementTransformerVoid() {
+    private val irExpressionsToUnwrapProvider = IrExpressionsToUnwrapProvider()
+    
     private val declarationSymbolsStack = mutableListOf<IrSymbol>()
-    data class UsedOrUnwrappedExpression(
-        val type: IrType,
-        val producer: () -> IrExpression,
-    )
     private val usedAndUnwrappedExpressionsStack = mutableListOf<MutableList<UsedOrUnwrappedExpression>>()
     
     private inline fun <T> withinScope(declaration: IrSymbolOwner, block: () -> T): T {
@@ -183,9 +181,7 @@ class ContextsFakeValueParametersReplacementTransformer(
                         val contextVariable = Scope(declarationSymbolsStack.last()).createTemporaryVariable(context)
                         iterator.add(contextVariable)
                         expressions.add(
-                            UsedOrUnwrappedExpression(contextVariable.type) {
-                                IrGetValueImpl(UNDEFINED_OFFSET, UNDEFINED_OFFSET, contextVariable.symbol)
-                            }
+                            UsedOrUnwrappedExpression(contextVariable.type, contextVariable)
                         )
                     }
                 }
@@ -195,52 +191,10 @@ class ContextsFakeValueParametersReplacementTransformer(
                     val vararg = newStatement.arguments[1] as IrVararg
                     for (holder in vararg.elements) {
                         if (holder !is IrExpression) continue
-                        val holderVariable = Scope(declarationSymbolsStack.last()).createTemporaryVariable(holder)
-                        iterator.add(holderVariable)
                         
-                        when(val type = holder.type) {
-                            is IrDynamicType -> {}
-                            is IrErrorType -> {}
-                            is IrSimpleType -> run {
-                                val classesProperties = type.allProperties()
-                                val possiblePropertiesToUnwrap = classesProperties.values.flatMap { it.values }
-                                val decidingProperties = buildSet<IrPropertySymbol> {
-                                    val markedProperties = possiblePropertiesToUnwrap.filter { it.propertySymbol.isInclude() || it.propertySymbol.isExclude() }
-                                    markedProperties.forEach { add(it.propertySymbol) }
-                                    markedProperties.forEach { it.overridden.forEach { override -> remove(override) } }
-                                }
-                                val topPossiblePropertiesToUnwrap = buildMap<IrPropertySymbol, PropertyOverriddenClassSuperClassesAndType> {
-                                    possiblePropertiesToUnwrap.forEach { put(it.propertySymbol, it) }
-                                    possiblePropertiesToUnwrap.forEach { it.overridden.forEach { override -> remove(override) } }
-                                }
-                                val propertiesToUnwrap = topPossiblePropertiesToUnwrap.values
-                                    .groupBy { it.propertySymbol.owner.name }
-                                    .filter { it.value.size == 1 }
-                                    .values
-                                    .map { it.single() }
-                                    .filter { (it.overridden + it.propertySymbol).any { it in decidingProperties && it.isInclude() } }
-                                
-                                propertiesToUnwrap.mapNotNullTo(expressions) { (propertySymbol, classSuperClassesAndTypeRealisation) ->
-                                    val (classSymbol, type) = classSuperClassesAndTypeRealisation
-                                    val getter = propertySymbol.owner.getter ?: return@mapNotNullTo null
-                                    val propertyReturnType = getter.returnType.substitute(classSymbol.owner.typeParameters, type.arguments.map { it.typeOrNull ?: contextsIrPluginException() })
-                                    UsedOrUnwrappedExpression(propertyReturnType) {
-                                        IrCallImpl.fromSymbolOwner(
-                                            startOffset = UNDEFINED_OFFSET,
-                                            endOffset = UNDEFINED_OFFSET,
-                                            type = propertyReturnType,
-                                            symbol = getter.symbol,
-                                        ).apply {
-                                            arguments[0] = IrGetValueImpl(
-                                                UNDEFINED_OFFSET,
-                                                UNDEFINED_OFFSET,
-                                                holderVariable.symbol
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        val newContextVariables = irExpressionsToUnwrapProvider[declarationSymbolsStack.last(), holder]
+                        for (variable in newContextVariables) iterator.add(variable.variable)
+                        expressions.addAll(newContextVariables)
                     }
                 }
             }
@@ -258,7 +212,9 @@ class ContextsFakeValueParametersReplacementTransformer(
         return usedAndUnwrappedExpressionsStack
             .asReversed()
             .firstNotNullOfOrNull { variables -> variables.lastOrNull { it.type == expression.type } }
-            ?.producer?.invoke()
+            ?.let {
+                IrGetValueImpl(UNDEFINED_OFFSET, UNDEFINED_OFFSET, it.variable.symbol)
+            }
             ?: super.visitErrorCallExpression(expression)
     }
 }
