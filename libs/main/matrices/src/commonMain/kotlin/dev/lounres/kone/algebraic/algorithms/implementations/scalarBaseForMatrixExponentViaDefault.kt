@@ -15,8 +15,10 @@ import dev.lounres.kone.algebraic.algorithms.exponent
 import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.utils.maxOf
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
@@ -80,8 +82,10 @@ private class ScalarBaseForMatrixExponentWithComplexNumberConvexHullBoundViaDefa
     override fun evaluate(derivativeOrder: UInt, value: ComplexNumber<Number>): ComplexNumber<Number> =
         complexNumberExponentComputer { value.exponent() }
 
-    override fun bound(derivativeOrder: UInt, convexHullVertices: KoneIterable<ComplexNumber<Number>>): Number =
-        context(order, exponentComputer) { convexHullVertices.maxOf<_, Number> { it.realPart }.exponent() }
+    override fun bound(derivativeOrder: UInt, convexHullVertices: KoneIterable<ComplexNumber<Number>>): Number {
+        KoneContext.unwrap(order, exponentComputer)
+        return convexHullVertices.maxOf<_, Number> { it.realPart }.exponent()
+    }
 }
 
 public fun <Number> ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.Companion.exponentViaDefault(

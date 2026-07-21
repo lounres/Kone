@@ -7,7 +7,9 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.collections.interop.toKoneList
 import dev.lounres.kone.collections.utils.sumOf
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.generate
 import dev.lounres.kone.multidimensionalCollections.utils.all
@@ -133,11 +135,13 @@ private class MDList2Algebra<Number>(
     }
     override val intMinusNumber: Minus<Int, MDList2<Number>, MDList2<Number>> = Minus { left, right ->
         require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
-        right.mapIndexed { rowIndex, columnIndex, number -> context(ring.intMinusNumber, ring.numberUnaryMinus) { if (rowIndex == columnIndex) left - number else -number } }
+        KoneContext.unwrap(ring)
+        right.mapIndexed { rowIndex, columnIndex, number -> if (rowIndex == columnIndex) left - number else -number }
     }
     override val intTimesNumber: Times<Int, MDList2<Number>, MDList2<Number>> = Times { left, right ->
         require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
-        right.map { ring.intTimesNumber { left * it } }
+        KoneContext.unwrap(ring)
+        right.map { left * it }
     }
     // endregion
     
@@ -163,11 +167,13 @@ private class MDList2Algebra<Number>(
     }
     override val longMinusNumber: Minus<Long, MDList2<Number>, MDList2<Number>> = Minus { left, right ->
         require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
-        right.mapIndexed { rowIndex, columnIndex, number -> context(ring.longMinusNumber, ring.numberUnaryMinus) { if (rowIndex == columnIndex) left - number else -number } }
+        KoneContext.unwrap(ring)
+        right.mapIndexed { rowIndex, columnIndex, number -> if (rowIndex == columnIndex) left - number else -number }
     }
     override val longTimesNumber: Times<Long, MDList2<Number>, MDList2<Number>> = Times { left, right ->
         require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
-        right.map { ring.longTimesNumber { left * it } }
+        KoneContext.unwrap(ring)
+        right.map { left * it }
     }
     // endregion
     
@@ -193,11 +199,13 @@ private class MDList2Algebra<Number>(
     }
     override val numberMinusVector: Minus<Number, MDList2<Number>, MDList2<Number>> = Minus { left, right ->
         require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
-        right.mapIndexed { rowIndex, columnIndex, number -> context(ring.numberMinusNumber, ring.numberUnaryMinus) { if (rowIndex == columnIndex) left - number else -number } }
+        KoneContext.unwrap(ring)
+        right.mapIndexed { rowIndex, columnIndex, number -> if (rowIndex == columnIndex) left - number else -number }
     }
     override val numberTimesVector: Times<Number, MDList2<Number>, MDList2<Number>> = Times { left, right ->
         require(right.rowNumber == dimension && right.columnNumber == dimension) { TODO() }
-        right.map { ring.numberTimesNumber { left * it } }
+        KoneContext.unwrap(ring)
+        right.map { left * it }
     }
     // endregion
     

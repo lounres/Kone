@@ -62,14 +62,16 @@ private class HessenbergDecompositionComputerViaHouseholder<Number, Matrix : MDL
         )
         var r = this
         
-        for (k in 0u ..< n - 2u) context(
+        KoneContext.unwrap(
             numberField,
             numberOrder,
             positiveSquareRootComputer,
             matrixCategoryOverField,
             matrixProductComputer,
             transposeMatrixComputer,
-        ) {
+        )
+        
+        for (k in 0u ..< n - 2u) {
             KoneContext.unwrap(numberField, matrixCategoryOverField)
             
             val xElementNormsSquared = KoneList.generate(k + 1u ..< n) { index -> r[index, k].let { it * it } }
@@ -102,7 +104,7 @@ private class HessenbergDecompositionComputerViaHouseholder<Number, Matrix : MDL
             middleUpperHessenberg = matrixFactory.generateMatrix(r.rowNumber, r.columnNumber) { row, column ->
                 if (row > column + 1u) numberField.zero else r[row, column]
             },
-            rightUnitary = transposeMatrixComputer { q.transpose() },
+            rightUnitary = q.transpose(),
         )
     }
 }

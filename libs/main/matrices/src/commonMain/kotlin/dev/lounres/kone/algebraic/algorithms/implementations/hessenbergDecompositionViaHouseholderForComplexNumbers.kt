@@ -64,7 +64,7 @@ private class HessenbergDecompositionComputerViaHouseholderForComplexNumbers<Num
         )
         var r = this
         
-        for (k in 0u ..< n - 2u) context(
+        KoneContext.unwrap(
             numberField,
             complexNumberFieldExtension,
             numberOrder,
@@ -72,13 +72,9 @@ private class HessenbergDecompositionComputerViaHouseholderForComplexNumbers<Num
             matrixCategoryOverField,
             matrixProductComputer,
             conjugateTransposeMatrixComputer,
-        ) {
-            KoneContext.unwrap(
-                numberField,
-                complexNumberFieldExtension,
-                matrixCategoryOverField,
-            )
-            
+        )
+        
+        for (k in 0u ..< n - 2u) {
             val xElementNormsSquared = KoneList.generate(k + 1u ..< n) { index -> r[index, k].norm() }
             val xNorm = xElementNormsSquared.sum().positiveSquareRoot()
             if (xElementNormsSquared.max().isZero()) continue
@@ -109,7 +105,7 @@ private class HessenbergDecompositionComputerViaHouseholderForComplexNumbers<Num
             middleUpperHessenberg = matrixFactory.generateMatrix(r.rowNumber, r.columnNumber) { row, column ->
                 if (row > column + 1u) complexNumberFieldExtension.zero else r[row, column]
             },
-            rightUnitary = conjugateTransposeMatrixComputer { q.conjugateTranspose() },
+            rightUnitary = q.conjugateTranspose(),
         )
     }
 }

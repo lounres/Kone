@@ -55,31 +55,27 @@ private class SchurDecompositionComputerViaGolubVanLoanForComplexNumbers<Number,
             rightUnitary = matrixFactory.generateMatrix(0u, 0u) { _, _ -> error("Matrix 0✖0 tried to allocate elements") },
         )
         
-        (val q0 = leftUnitary, val h0 = middleUpperHessenberg) = hessenbergDecompositionComputer { this.hessenbergDecomposition() }
+        KoneContext.unwrap(
+            numberField,
+            complexNumberFieldExtension,
+            numberOrder,
+            positiveSquareRootComputer,
+            complexNumberSquareRootComputer,
+            matrixCategoryOverField,
+            matrixProductComputer,
+            conjugateTransposeMatrixComputer,
+            hessenbergDecompositionComputer,
+        )
+        localContexts(
+            complexNumberFieldExtension.numberDivideInt
+        )
+        
+        val (q0 = leftUnitary, h0 = middleUpperHessenberg) = this.hessenbergDecomposition()
         
         val q = SettableMDList2.generate(n, n) { row, column -> q0[row, column] }
         val h = SettableMDList2.generate(n, n) { row, column -> h0[row, column] }
         
         scope {
-            localContexts(
-                numberField,
-                complexNumberFieldExtension,
-                numberOrder,
-                positiveSquareRootComputer,
-                complexNumberSquareRootComputer,
-                matrixCategoryOverField,
-                matrixProductComputer,
-                conjugateTransposeMatrixComputer,
-            )
-            KoneContext.unwrap(
-                numberField,
-                complexNumberFieldExtension,
-                matrixCategoryOverField,
-            )
-            localContexts(
-                complexNumberFieldExtension.numberDivideInt
-            )
-            
             var k = 0u
             
             while (true) {
@@ -178,7 +174,7 @@ private class SchurDecompositionComputerViaGolubVanLoanForComplexNumbers<Number,
                         rowNumber = 3u,
                         columnNumber = 1u,
                         numbers = KoneMap.build(keyEquality = MDIndex.equality(), keyHashing = MDIndex.hashing()) {
-                            this[MDIndex.of(0u, 0u)] = context(complexNumberFieldExtension) { x + norm * x / x.absoluteValue() }
+                            this[MDIndex.of(0u, 0u)] = x + norm * x / x.absoluteValue()
                             this[MDIndex.of(1u, 0u)] = y
                             this[MDIndex.of(2u, 0u)] = z
                         },
@@ -321,7 +317,7 @@ private class SchurDecompositionComputerViaGolubVanLoanForComplexNumbers<Number,
         return SchurDecomposition(
             leftUnitary = qResult,
             middleUpperTriangular = hResult,
-            rightUnitary = conjugateTransposeMatrixComputer { qResult.conjugateTranspose() },
+            rightUnitary = qResult.conjugateTranspose(),
         )
     }
 }

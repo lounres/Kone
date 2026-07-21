@@ -725,8 +725,8 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
             override fun bound(derivativeOrder: UInt, convexHullVertices: KoneIterable<ComplexNumber<Number>>): Number =
                 context(numberField, positiveSquareRootComputer) {
                     when (derivativeOrder) {
-                        0u -> convexHullVertices.maxOf<_, Number> { it.norm() }
-                        1u -> 2 * convexHullVertices.maxOf<_, Number> { it.norm() }.positiveSquareRoot()
+                        0u -> convexHullVertices.maxOf { it.norm() }
+                        1u -> 2 * convexHullVertices.maxOf { it.norm() }.positiveSquareRoot()
                         else -> numberField.zero
                     }
                 }

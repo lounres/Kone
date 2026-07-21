@@ -69,76 +69,75 @@ public class ParlettRecurrenceAtomicBlockImageComputerViaTaylorSeriesForComplexN
         }
     }
     
-    override fun Matrix.atomicBlockImage(): Matrix =
-        context(
+    override fun Matrix.atomicBlockImage(): Matrix {
+        require(this.rowNumber == this.columnNumber) { TODO() }
+        val size = this.rowNumber
+        
+        KoneContext.unwrap(
             field,
             order,
             complexNumberField,
             matrixCategoryOverField,
             matrixProductComputer,
-        ) {
-            require(this.rowNumber == this.columnNumber) { TODO() }
-            val size = this.rowNumber
-            
-            KoneContext.unwrap(field, complexNumberField, matrixCategoryOverField)
-            
-            val spectre = KoneList.generate(size) { this[it, it] }
-            val sigma = spectre.sum() / size
-            val m = this - matrixFactory.mapMatrix(
+        )
+        
+        val spectre = KoneList.generate(size) { this[it, it] }
+        val sigma = spectre.sum() / size
+        val m = this - matrixFactory.mapMatrix(
+            columnNumber = size,
+            rowNumber = size,
+            numbers = KoneMap.build(
+                keyEquality = MDIndex.equality(),
+                keyHashing = MDIndex.hashing(),
+            ) {
+                for (i in 0u ..< size) set(MDIndex.of(i, i), sigma)
+            }
+        )
+        val mu: Number = scope {
+            val y = KoneArrayFixedCapacityList<ComplexNumber<Number>>(size)
+            for (i in 0u ..< size) {
+                y.add(
+                    (0u ..< i)
+                        .asKoneSequence()
+                        .fold(complexNumberField.one) { accumulator, j -> accumulator + y[j] * this[size - 1u - i, size - 1u - j] }
+                )
+            }
+            y.maxOf<_, Number> { it.norm() }
+        }
+        val muSquared = mu * mu
+        
+        var s = 0u
+        var f = function.evaluate(0u, sigma).let {
+            matrixFactory.mapMatrix(
                 columnNumber = size,
                 rowNumber = size,
                 numbers = KoneMap.build(
                     keyEquality = MDIndex.equality(),
                     keyHashing = MDIndex.hashing(),
                 ) {
-                    for (i in 0u ..< size) set(MDIndex.of(i, i), sigma)
+                    for (i in 0u ..< size) set(MDIndex.of(i, i), it)
                 }
             )
-            val mu: Number = scope {
-                val y = KoneArrayFixedCapacityList<ComplexNumber<Number>>(size)
-                for (i in 0u ..< size) {
-                    y.add(
-                        (0u ..< i)
-                            .asKoneSequence()
-                            .fold(complexNumberField.one) { accumulator, j -> accumulator + y[j] * this[size - 1u - i, size - 1u - j] }
-                    )
-                }
-                y.maxOf<_, Number> { it.norm() }
-            }
-            val muSquared = mu * mu
-            
-            var s = 0u
-            var f = function.evaluate(0u, sigma).let {
-                matrixFactory.mapMatrix(
-                    columnNumber = size,
-                    rowNumber = size,
-                    numbers = KoneMap.build(
-                        keyEquality = MDIndex.equality(),
-                        keyHashing = MDIndex.hashing(),
-                    ) {
-                        for (i in 0u ..< size) set(MDIndex.of(i, i), it)
-                    }
-                )
-            }
-            var p = m
-            while (true) {
-                s++
-                val fNextSummand = function.evaluate(s, sigma) * p
-                f += fNextSummand
-                p *= m / (s + 1u)
-                
-                val fNormSquared = f.sumOf<_, Number> { it.norm().let { it * it } }
-                val fNextSummandNormSquared = fNextSummand.sumOf<_, Number> { it.norm().let { it * it } }
-                if (fNextSummandNormSquared leq atomicBlockImageComputationToleranceSquared * fNormSquared) {
-                    val factorials = KoneList.induce(size, field.one) { index, previous -> previous * index }
-                    val delta = (0u ..< size).asKoneSequence().maxOf<_, Number> { function.bound(it + s, spectre) / factorials[it] }
-                    val pNormSquared = p.sumOf<_, Number> { it.norm().let { it * it } }
-                    if (muSquared * delta * delta * pNormSquared leq atomicBlockImageComputationToleranceSquared * fNormSquared) break
-                }
-            }
-            
-            f
         }
+        var p = m
+        while (true) {
+            s++
+            val fNextSummand = function.evaluate(s, sigma) * p
+            f += fNextSummand
+            p *= m / (s + 1u)
+            
+            val fNormSquared = f.sumOf<_, Number> { it.norm().let { it * it } }
+            val fNextSummandNormSquared = fNextSummand.sumOf<_, Number> { it.norm().let { it * it } }
+            if (fNextSummandNormSquared leq atomicBlockImageComputationToleranceSquared * fNormSquared) {
+                val factorials = KoneList.induce(size, field.one) { index, previous -> previous * index }
+                val delta = (0u ..< size).asKoneSequence().maxOf<_, Number> { function.bound(it + s, spectre) / factorials[it] }
+                val pNormSquared = p.sumOf<_, Number> { it.norm().let { it * it } }
+                if (muSquared * delta * delta * pNormSquared leq atomicBlockImageComputationToleranceSquared * fNormSquared) break
+            }
+        }
+        
+        return f
+    }
 }
 
 @ParlettRecurrenceInternalApi
@@ -227,39 +226,39 @@ public class ParlettRecurrence<Number, Matrix : MDList2<ComplexNumber<Number>>>(
         }
     }
     
-    private fun KoneList<ComplexNumber<Number>>.blockPattern(): BlockPattern =
-        context(
+    private fun KoneList<ComplexNumber<Number>>.blockPattern(): BlockPattern {
+        KoneContext.unwrap(
             field,
             order,
             complexNumberField,
-        ) {
-            KoneContext.unwrap(complexNumberField)
-            val blockIndices = KoneMutableUIntArray.fill(this.size, UInt.MAX_VALUE)
-            var setsNumber = 0u
-            for (i in 0u ..< this.size) {
-                if (blockIndices[i] == UInt.MAX_VALUE) {
-                    blockIndices[i] = setsNumber.also { setsNumber++ }
-                }
-                for (j in i + 1u ..< this.size) {
-                    if (blockIndices[j] != blockIndices[i] && (this[j] - this[i]).norm() leq blockingParameterSquared) {
-                        if (blockIndices[j] == UInt.MAX_VALUE) {
-                            blockIndices[j] = blockIndices[i]
-                        } else {
-                            val maxIndex = maxOf(blockIndices[i], blockIndices[j])
-                            val minIndex = minOf(blockIndices[i], blockIndices[j])
-                            for (t in 0u ..< this.size)
-                                when {
-                                    blockIndices[t] == UInt.MAX_VALUE -> {}
-                                    blockIndices[t] > maxIndex -> blockIndices[t]--
-                                    blockIndices[t] == maxIndex -> blockIndices[t] = minIndex
-                                }
-                            setsNumber--
-                        }
+        )
+    
+        val blockIndices = KoneMutableUIntArray.fill(this.size, UInt.MAX_VALUE)
+        var setsNumber = 0u
+        for (i in 0u ..< this.size) {
+            if (blockIndices[i] == UInt.MAX_VALUE) {
+                blockIndices[i] = setsNumber.also { setsNumber++ }
+            }
+            for (j in i + 1u ..< this.size) {
+                if (blockIndices[j] != blockIndices[i] && (this[j] - this[i]).norm() leq blockingParameterSquared) {
+                    if (blockIndices[j] == UInt.MAX_VALUE) {
+                        blockIndices[j] = blockIndices[i]
+                    } else {
+                        val maxIndex = maxOf(blockIndices[i], blockIndices[j])
+                        val minIndex = minOf(blockIndices[i], blockIndices[j])
+                        for (t in 0u ..< this.size)
+                            when {
+                                blockIndices[t] == UInt.MAX_VALUE -> {}
+                                blockIndices[t] > maxIndex -> blockIndices[t]--
+                                blockIndices[t] == maxIndex -> blockIndices[t] = minIndex
+                            }
+                        setsNumber--
                     }
                 }
             }
-            BlockPattern(blockIndices.asKoneUIntArray())
         }
+        return BlockPattern(blockIndices.asKoneUIntArray())
+    }
     
     private fun BlockPattern.blockSizes(): KoneUIntArray {
         val result = KoneMutableUIntArray.fill(this.blockIndices.size)

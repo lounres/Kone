@@ -33,9 +33,11 @@ private class ScalarBaseForMatrixLogarithmViaDefault<Number>(
     private val numberField: Field<Number>,
     private val logarithmComputer: LogarithmComputer<Number>,
 ) : ScalarBaseForMatrixFunction<Number> {
-    override fun evaluate(derivativeOrder: UInt, value: Number): Number =
-        if (derivativeOrder == 0u) logarithmComputer { value.logarithm() }
-        else context(numberField.numberReciprocal, numberField.powerNumberUInt) { value.reciprocal().pow(derivativeOrder) }
+    override fun evaluate(derivativeOrder: UInt, value: Number): Number {
+        KoneContext.unwrap(numberField, logarithmComputer)
+        return if (derivativeOrder == 0u) value.logarithm()
+        else value.reciprocal().pow(derivativeOrder)
+    }
 }
 
 public fun <Number> ScalarBaseForMatrixFunction.Companion.logarithmViaDefault(

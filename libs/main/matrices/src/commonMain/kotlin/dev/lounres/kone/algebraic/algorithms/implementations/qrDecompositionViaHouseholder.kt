@@ -61,16 +61,16 @@ private class QRDecompositionComputerViaHouseholder<Number, Matrix : MDList2<Num
         )
         var r = this
         
-        for (k in 0u ..< n - 1u) context(
+        KoneContext.unwrap(
             numberField,
             numberOrder,
             positiveSquareRootComputer,
             matrixCategoryOverField,
             matrixProductComputer,
             transposeMatrixComputer,
-        ) {
-            KoneContext.unwrap(numberField, matrixCategoryOverField)
-            
+        )
+        
+        for (k in 0u ..< n - 1u) {
             val xElementNormsSquared = KoneList.generate(k ..< n) { index -> r[index, k].let { it * it } }
             val xNorm = xElementNormsSquared.sum().positiveSquareRoot()
             val maxXElementIndex = xElementNormsSquared.maxIndex().also { if (xElementNormsSquared[it].isZero()) continue } + k

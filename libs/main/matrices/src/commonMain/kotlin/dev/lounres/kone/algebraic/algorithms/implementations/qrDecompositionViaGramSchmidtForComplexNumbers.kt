@@ -36,37 +36,35 @@ private class QRDecompositionComputerViaGramSchmidtForComplexNumbers<Number, Mat
         
         val qBuilder = SettableMDList2.generate(rowNumber = n, columnNumber = n) { row, column -> this[row, column] }
         
-        context(numberField, complexNumberFieldExtension) {
-            KoneContext.unwrap(numberField, complexNumberFieldExtension)
-            
-            for (i in 0u ..< n) {
-                for (j in 0u ..< i) {
-                    var scalarProduct = complexNumberFieldExtension.zero
-                    for (t in 0u ..< n) {
-                        scalarProduct += qBuilder[t, j].conjugate() * qBuilder[t, i]
-                    }
-                    for (t in 0u ..< n) qBuilder[t, i] -= scalarProduct * qBuilder[t, j]
-                }
-                
-                var normSquared = numberField.zero
-                for (t in 0u ..< n) normSquared += qBuilder[t, i].norm()
-                val norm = positiveSquareRootComputer { normSquared.positiveSquareRoot() }
-                for (t in 0u ..< n) qBuilder[t, i] /= norm
-            }
-            
-            val q = matrixFactory.generateMatrix(rowNumber = n, columnNumber = n) { row, column -> qBuilder[row, column] }
-            val r = matrixFactory.generateMatrix(rowNumber = n, columnNumber = n) { row, column ->
-                if (row > column) return@generateMatrix complexNumberFieldExtension.zero
+        KoneContext.unwrap(numberField, complexNumberFieldExtension)
+        
+        for (i in 0u ..< n) {
+            for (j in 0u ..< i) {
                 var scalarProduct = complexNumberFieldExtension.zero
-                for (t in 0u ..< n) scalarProduct += qBuilder[t, row].conjugate() * this[t, column]
-                scalarProduct
+                for (t in 0u ..< n) {
+                    scalarProduct += qBuilder[t, j].conjugate() * qBuilder[t, i]
+                }
+                for (t in 0u ..< n) qBuilder[t, i] -= scalarProduct * qBuilder[t, j]
             }
             
-            return QRDecomposition(
-                leftUnitary = q,
-                rightUpperTriangular = r,
-            )
+            var normSquared = numberField.zero
+            for (t in 0u ..< n) normSquared += qBuilder[t, i].norm()
+            val norm = positiveSquareRootComputer { normSquared.positiveSquareRoot() }
+            for (t in 0u ..< n) qBuilder[t, i] /= norm
         }
+        
+        val q = matrixFactory.generateMatrix(rowNumber = n, columnNumber = n) { row, column -> qBuilder[row, column] }
+        val r = matrixFactory.generateMatrix(rowNumber = n, columnNumber = n) { row, column ->
+            if (row > column) return@generateMatrix complexNumberFieldExtension.zero
+            var scalarProduct = complexNumberFieldExtension.zero
+            for (t in 0u ..< n) scalarProduct += qBuilder[t, row].conjugate() * this[t, column]
+            scalarProduct
+        }
+        
+        return QRDecomposition(
+            leftUnitary = q,
+            rightUpperTriangular = r,
+        )
     }
 }
 

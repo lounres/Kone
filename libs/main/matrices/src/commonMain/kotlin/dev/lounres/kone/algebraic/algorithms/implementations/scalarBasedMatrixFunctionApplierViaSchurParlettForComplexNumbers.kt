@@ -8,8 +8,10 @@ package dev.lounres.kone.algebraic.algorithms.implementations
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.algorithms.*
 import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
@@ -34,11 +36,12 @@ private class ScalarBasedMatrixFunctionApplierViaSchurParlettForComplexNumbers<N
     private val atomicBlockImageComputationTolerance: Number,
     private val blockingParameter: Number,
 ) : ScalarBasedMatrixFunctionApplier<ComplexNumber<Number>, Matrix, ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>> {
+    @OptIn(ParlettRecurrenceInternalApi::class)
     override fun Matrix.after(function: ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>): Matrix {
         require(this.rowNumber == this.columnNumber)
-        val schurDecomposition = schurDecompositionComputer { this.schurDecomposition() }
-        @OptIn(ParlettRecurrenceInternalApi::class)
-        val image = context(
+        KoneContext.unwrap(matrixProductComputer, schurDecompositionComputer)
+        val schurDecomposition = this.schurDecomposition()
+        KoneContext.unwrap(
             ParlettRecurrence(
                 matrixFactory = matrixFactory,
                 field = field,
@@ -60,8 +63,9 @@ private class ScalarBasedMatrixFunctionApplierViaSchurParlettForComplexNumbers<N
                 ),
                 blockingParameter = blockingParameter,
             )
-        ) { schurDecomposition.middleUpperTriangular.image() }
-        return matrixProductComputer { schurDecomposition.leftUnitary * image * schurDecomposition.rightUnitary }
+        )
+        val image = schurDecomposition.middleUpperTriangular.image()
+        return schurDecomposition.leftUnitary * image * schurDecomposition.rightUnitary
     }
 }
 
