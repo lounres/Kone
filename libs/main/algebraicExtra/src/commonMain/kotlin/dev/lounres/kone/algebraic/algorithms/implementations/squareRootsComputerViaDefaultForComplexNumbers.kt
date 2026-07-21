@@ -29,32 +29,27 @@ private class SquareRootsComputerViaDefaultForComplexNumbers<Number>(
     private val order: Order<Number>,
     private val positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
 ) : SquareRootsComputer<ComplexNumber<Number>> {
-    override fun ComplexNumber<Number>.squareRoots(): KoneList<ComplexNumber<Number>> =
-        context(
-            field,
-            order,
-            positiveSquareRootComputer,
-        ) {
-            KoneContext.unwrap(field)
-            localContexts(field.numberDivideInt)
-            val absoluteValue = this@squareRoots.absoluteValue()
-            if (absoluteValue.isZero()) return KoneList.of(ComplexNumber(field.zero, field.zero))
-            val cosWhole = this@squareRoots.realPart
-            val sinWhole = this@squareRoots.imaginaryPart
-            val cosHalf: Number
-            val sinHalf: Number
-            if (cosWhole.isNonNegative()) {
-                cosHalf = ((absoluteValue + cosWhole) / 2).positiveSquareRoot()
-                sinHalf = sinWhole / 2 / cosHalf
-            } else {
-                sinHalf = ((absoluteValue - cosWhole) / 2).positiveSquareRoot()
-                cosHalf = sinWhole / 2 / sinHalf
-            }
-            KoneList.of(
-                ComplexNumber(cosHalf, sinHalf),
-                ComplexNumber(-cosHalf, -sinHalf)
-            )
+    override fun ComplexNumber<Number>.squareRoots(): KoneList<ComplexNumber<Number>> {
+        KoneContext.unwrap(field, order, positiveSquareRootComputer)
+        localContexts(field.numberDivideInt)
+        val absoluteValue = this@squareRoots.absoluteValue()
+        if (absoluteValue.isZero()) return KoneList.of(ComplexNumber(field.zero, field.zero))
+        val cosWhole = this@squareRoots.realPart
+        val sinWhole = this@squareRoots.imaginaryPart
+        val cosHalf: Number
+        val sinHalf: Number
+        if (cosWhole.isNonNegative()) {
+            cosHalf = ((absoluteValue + cosWhole) / 2).positiveSquareRoot()
+            sinHalf = sinWhole / 2 / cosHalf
+        } else {
+            sinHalf = ((absoluteValue - cosWhole) / 2).positiveSquareRoot()
+            cosHalf = sinWhole / 2 / sinHalf
         }
+        return KoneList.of(
+            ComplexNumber(cosHalf, sinHalf),
+            ComplexNumber(-cosHalf, -sinHalf)
+        )
+    }
 }
 
 public fun <Number> SquareRootsComputer.Companion.viaDefaultForComplexNumbers(

@@ -12,6 +12,7 @@ import dev.lounres.kone.algebraic.algorithms.positiveSquareRoot
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.localContexts
 import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
@@ -81,10 +82,12 @@ private class ComplexNumberFieldExtension<Number>(
     
     // region Equality
     override val numberIsZero: IsZero<ComplexNumber<Number>> = IsZero {
-        context(numberField.numberIsZero) { it.realPart.isZero() && it.imaginaryPart.isZero() }
+        localContexts(numberField.numberIsZero)
+        it.realPart.isZero() && it.imaginaryPart.isZero()
     }
     override val numberIsOne: IsOne<ComplexNumber<Number>> = IsOne {
-        context(numberField.numberIsOne, numberField.numberIsZero) { it.realPart.isOne() && it.imaginaryPart.isZero() }
+        localContexts(numberField.numberIsOne, numberField.numberIsZero)
+        it.realPart.isOne() && it.imaginaryPart.isZero()
     }
     // endregion
     

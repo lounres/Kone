@@ -35,33 +35,33 @@ private class LogarithmOnePlusInputOverInputComputerViaTaylorSeriesForComplexNum
     private val complexNumberLogarithmComputer: LogarithmComputer<ComplexNumber<Number>>,
     private val threshold: Number,
 ) : LogarithmOnePlusInputOverInputComputer<ComplexNumber<Number>> {
-    override fun ComplexNumber<Number>.logarithmOnePlusThisOverThis(): ComplexNumber<Number> =
-        context(
+    override fun ComplexNumber<Number>.logarithmOnePlusThisOverThis(): ComplexNumber<Number> {
+        KoneContext.unwrap(
             numberOrder,
             numberRing,
             complexNumberEquality,
+            complexNumberField,
             numberPositiveSquareRootComputer,
             complexNumberLogarithmComputer,
-        ) {
-            KoneContext.unwrap(numberRing, complexNumberField)
-            localContexts(complexNumberField.numberPlusInt)
-            if (this.absoluteValue() leq threshold) {
-                var result = complexNumberField.one
-                var stepNumerator = complexNumberField.one
-                var stepDenominator = 1u
-                while (true) {
-                    stepDenominator++
-                    stepNumerator *= -this
-                    val step = stepNumerator / stepDenominator
-                    if (step.isZero()) break
-                    
-                    val oldResult = result
-                    result += step
-                    if (oldResult eq result) break
-                }
-                result
-            } else (this + 1).logarithm() / this
-        }
+        )
+        localContexts(complexNumberField.numberPlusInt)
+        return if (this.absoluteValue() leq threshold) {
+            var result = complexNumberField.one
+            var stepNumerator = complexNumberField.one
+            var stepDenominator = 1u
+            while (true) {
+                stepDenominator++
+                stepNumerator *= -this
+                val step = stepNumerator / stepDenominator
+                if (step.isZero()) break
+                
+                val oldResult = result
+                result += step
+                if (oldResult eq result) break
+            }
+            result
+        } else (this + 1).logarithm() / this
+    }
 }
 
 public fun <Number> LogarithmComputer.Companion.viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(

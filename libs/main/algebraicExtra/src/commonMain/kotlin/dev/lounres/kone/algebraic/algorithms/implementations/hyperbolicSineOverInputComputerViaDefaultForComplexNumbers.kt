@@ -7,8 +7,9 @@ package dev.lounres.kone.algebraic.algorithms.implementations
 
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.algorithms.*
-import dev.lounres.kone.context
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
@@ -25,24 +26,23 @@ private class HyperbolicSineOverInputComputerViaDefaultForComplexNumbers<Number>
     private val hyperbolicCosineComputer: HyperbolicCosineComputer<Number>,
     private val hyperbolicSineComputer: HyperbolicSineComputer<Number>,
 ) : HyperbolicSineOverInputComputer<ComplexNumber<Number>> {
-    override fun ComplexNumber<Number>.sinhOverThis(): ComplexNumber<Number> =
-        context(
-            field.numberTimesNumber,
-            complexNumbersFieldExtension.numberIsZero,
-            complexNumbersFieldExtension.numberDivideNumber,
+    override fun ComplexNumber<Number>.sinhOverThis(): ComplexNumber<Number> {
+        KoneContext.unwrap(
+            field,
+            complexNumbersFieldExtension,
             cosineComputer,
             sineComputer,
             hyperbolicCosineComputer,
             hyperbolicSineComputer,
-        ) {
-            if (this.isNotZero())
-                ComplexNumber(
-                    realPart.sinh() * imaginaryPart.cos(),
-                    realPart.cosh() * imaginaryPart.sin(),
-                ) / this
-            else
-                complexNumbersFieldExtension.one
-        }
+        )
+        return if (this.isNotZero())
+            ComplexNumber(
+                realPart.sinh() * imaginaryPart.cos(),
+                realPart.cosh() * imaginaryPart.sin(),
+            ) / this
+        else
+            complexNumbersFieldExtension.one
+    }
 }
 
 public fun <Number> HyperbolicSineOverInputComputer.Companion.viaDefaultForComplexNumbers(

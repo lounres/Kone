@@ -161,7 +161,7 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
     override val numberTimesNumber: Times<UBigLong, UBigLong, UBigLong> = Times { left, right ->
         KoneContext.unwrap(this)
         
-        if (left.isZero() || right.isZero()) return@Times zero
+        if (left.isZero() || right.isZero()) return@Times this.zero
         if (left.isOne()) return@Times right
         if (right.isOne()) return@Times left
         

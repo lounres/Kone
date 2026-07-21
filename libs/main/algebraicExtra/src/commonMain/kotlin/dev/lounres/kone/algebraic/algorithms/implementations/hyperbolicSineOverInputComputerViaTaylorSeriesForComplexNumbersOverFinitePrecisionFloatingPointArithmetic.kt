@@ -26,7 +26,7 @@ private class HyperbolicSineOverInputComputerViaTaylorSeriesForComplexNumbersOve
     private val complexNumbersField: Field<ComplexNumber<Number>>,
 ) : HyperbolicSineOverInputComputer<ComplexNumber<Number>> {
     override fun ComplexNumber<Number>.sinhOverThis(): ComplexNumber<Number> {
-        KoneContext.unwrap(complexNumbersField)
+        KoneContext.unwrap(complexNumbersEquality, complexNumbersField)
         var result = complexNumbersField.one
         var step = complexNumbersField.one
         var stepNumber = 1u
@@ -39,7 +39,7 @@ private class HyperbolicSineOverInputComputerViaTaylorSeriesForComplexNumbersOve
             
             val oldResult = result
             result += step
-            if (complexNumbersEquality { oldResult eq result }) break
+            if (oldResult eq result) break
         }
         return result
     }
