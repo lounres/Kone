@@ -8,6 +8,7 @@ package dev.lounres.kone.algebraic
 import dev.lounres.kone.contexts.KoneContextHolderInclude
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.localContexts
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
@@ -44,18 +45,16 @@ public interface Field<Number> : CommutativeRing<Number> {
     @KoneContextHolderInclude
     public val powerNumberInt: Power<Number, Int, Number>
         get() = Power { base, exponent ->
-            context(powerNumberUInt, numberReciprocal) {
-                if (exponent >= 0) power(base, exponent.toUInt())
-                else power(base, (-exponent).toUInt()).reciprocal()
-            }
+            localContexts(powerNumberUInt, numberReciprocal)
+            if (exponent >= 0) power(base, exponent.toUInt())
+            else power(base, (-exponent).toUInt()).reciprocal()
         }
     @KoneContextHolderInclude
     public val powerNumberLong: Power<Number, Long, Number>
         get() = Power { base, exponent ->
-            context(powerNumberULong, numberReciprocal) {
-                if (exponent >= 0) power(base, exponent.toULong())
-                else power(base, (-exponent).toULong()).reciprocal()
-            }
+            localContexts(powerNumberULong, numberReciprocal)
+            if (exponent >= 0) power(base, exponent.toULong())
+            else power(base, (-exponent).toULong()).reciprocal()
         }
     
     public companion object;
