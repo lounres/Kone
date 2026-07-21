@@ -232,7 +232,7 @@ class IrExpressionsToUnwrapProvider {
         val initialFirClassSymbols = initialFirClassSymbolsWithTheirTypes.keys
         
         val visitedFirClassSymbols = mutableSetOf<IrClassSymbol>()
-        val firClassSymbolsToVisit = initialFirClassSymbols.toMutableSet()
+        val firClassSymbolsToVisit = initialFirClassSymbols.filterTo(mutableSetOf()) { it !in computedDescriptions }
         
         while (firClassSymbolsToVisit.isNotEmpty()) {
             val firClassSymbol = firClassSymbolsToVisit.first()
@@ -258,7 +258,11 @@ class IrExpressionsToUnwrapProvider {
         val visitedFirClassSymbolsGroups = visitedFirClassSymbolsList.mapTo(mutableSetOf()) {
             Group(
                 mutableSetOf(it),
-                computedDescriptions[it]!!.possiblePropertiesToUnwrap.values.flatMapTo(mutableSetOf()) { it.referredClasses.keys },
+                mutableSetOf<IrClassSymbol>().apply {
+                    computedDescriptions[it]!!.possiblePropertiesToUnwrap.values.forEach {
+                        it.referredClasses.keys.filterTo(this) { it in visitedFirClassSymbols }
+                    }
+                },
             )
         }
         val visitedFirClassSymbolsToGroups = mutableMapOf<IrClassSymbol, Group>().apply {

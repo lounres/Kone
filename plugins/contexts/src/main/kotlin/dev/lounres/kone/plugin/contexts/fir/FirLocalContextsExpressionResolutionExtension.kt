@@ -50,10 +50,10 @@ class FirLocalContextsExpressionResolutionExtension(session: FirSession) : FirEx
         sessionHolder: SessionAndScopeSessionHolder,
         containingCallableSymbol: FirBasedSymbol<*>,
     ): List<ImplicitExtensionReceiverValue> {
-        if (sessionHolder !is FirAbstractBodyResolveTransformer.BodyResolveTransformerComponents) return listOf()
+        if (sessionHolder !is FirAbstractBodyResolveTransformer.BodyResolveTransformerComponents) return emptyList()
         if (functionCall.calleeReference.resolved?.resolvedSymbol != localContextsFirFunctionSymbol) return emptyList()
-        check(functionCall.arguments.size <= 1)
-        val varargArgument = (functionCall.arguments.getOrNull(0) ?: return emptyList()) as FirVarargArgumentsExpression
+        if (functionCall.arguments.size != 1) return emptyList()
+        val varargArgument = functionCall.arguments[0] as FirVarargArgumentsExpression
         val contextsToUse = varargArgument.arguments.map { it.resolvedType }
         val fakeValueParameter = buildValueParameter {
             resolvePhase = FirResolvePhase.BODY_RESOLVE
