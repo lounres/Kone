@@ -13,12 +13,12 @@ context(coolContext: CoolContext<X>)
 fun <X> makeItCool(): X = coolContext.makeItCool()
 
 object Foo : KoneContext {
-    @KoneContextHolderInclude
+    @KoneContextInclude
     val bar = CoolContext { 57 }
     val baz = CoolContext { 179 }
 }
 
 fun box(): String {
-    KoneContext.unwrap(Foo)
+    KoneContext.localUnwrap(Foo)
     return if (makeItCool() == 57) "OK" else "INCORRECT"
 }

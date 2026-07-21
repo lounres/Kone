@@ -3,7 +3,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage8.kt
     thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Baz
     PROPERTY name:bar visibility:public modality:FINAL [val]
       annotations:
-        KoneContextHolderInclude
+        KoneContextInclude
       FIELD PROPERTY_BACKING_FIELD name:bar type:foo.bar.Work visibility:private [final]
         EXPRESSION_BODY
           CONSTRUCTOR_CALL 'public constructor <init> (n: kotlin.Int) declared in foo.bar.Work' type=foo.bar.Work origin=null
@@ -34,7 +34,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage8.kt
         public open fun toString (): kotlin.String declared in foo.bar.Bar
     PROPERTY name:baz visibility:public modality:OPEN [val]
       annotations:
-        KoneContextHolderExclude
+        KoneContextExclude
       overridden:
         public open baz: foo.bar.Work declared in foo.bar.Bar
       FUN name:<get-baz> visibility:public modality:OPEN returnType:foo.bar.Work
@@ -100,7 +100,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage8.kt
         public open fun toString (): kotlin.String declared in dev.lounres.kone.contexts.KoneContext
     PROPERTY name:baz visibility:public modality:OPEN [val]
       annotations:
-        KoneContextHolderInclude
+        KoneContextInclude
       FUN name:<get-baz> visibility:public modality:OPEN returnType:foo.bar.Work
         VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Bar
         correspondingProperty: PROPERTY name:baz visibility:public modality:OPEN [val]

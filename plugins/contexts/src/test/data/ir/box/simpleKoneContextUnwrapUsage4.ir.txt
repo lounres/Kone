@@ -31,7 +31,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage4.kt
         public open fun toString (): kotlin.String declared in foo.bar.Bar
     PROPERTY name:bar visibility:public modality:OPEN [val]
       annotations:
-        KoneContextHolderInclude
+        KoneContextInclude
       overridden:
         public open bar: kotlin.Int declared in foo.bar.Bar
       FUN name:<get-bar> visibility:public modality:OPEN returnType:kotlin.Int
@@ -60,7 +60,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage4.kt
         public open fun toString (): kotlin.String declared in dev.lounres.kone.contexts.KoneContext
     PROPERTY name:bar visibility:public modality:OPEN [val]
       annotations:
-        KoneContextHolderInclude
+        KoneContextInclude
       FUN name:<get-bar> visibility:public modality:OPEN returnType:kotlin.Int
         VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Bar
         correspondingProperty: PROPERTY name:bar visibility:public modality:OPEN [val]

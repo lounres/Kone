@@ -11,9 +11,7 @@ import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
 import org.jetbrains.kotlin.ir.builders.Scope
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.expressions.*
-import org.jetbrains.kotlin.ir.expressions.impl.IrCallImpl
 import org.jetbrains.kotlin.ir.expressions.impl.IrGetValueImpl
-import org.jetbrains.kotlin.ir.expressions.impl.fromSymbolOwner
 import org.jetbrains.kotlin.ir.symbols.*
 import org.jetbrains.kotlin.ir.types.*
 import org.jetbrains.kotlin.ir.util.properties
@@ -185,7 +183,7 @@ class ContextsFakeValueParametersReplacementTransformer(
                         )
                     }
                 }
-                irRuntimeReferences.unwrapIrSimpleFunctionSymbol -> {
+                irRuntimeReferences.localUnwrapIrSimpleFunctionSymbol -> {
                     iterator.remove()
                     check(newStatement.arguments.size == 2)
                     val vararg = newStatement.arguments[1] as IrVararg

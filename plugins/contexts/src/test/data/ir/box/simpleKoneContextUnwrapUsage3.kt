@@ -6,7 +6,7 @@ import dev.lounres.kone.contexts.*
 
 
 interface Bar : KoneContext {
-    @KoneContextHolderInclude
+    @KoneContextInclude
     val bar: Int get() = 57
 }
 
@@ -15,6 +15,6 @@ class Baz : Bar {
 }
 
 fun box(): String {
-    KoneContext.unwrap(Baz())
+    KoneContext.localUnwrap(Baz())
     return if (contextOf<Int>() == 57) "OK" else "INCORRECT"
 }

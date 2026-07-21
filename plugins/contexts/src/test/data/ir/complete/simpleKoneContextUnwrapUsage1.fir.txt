@@ -6,7 +6,7 @@ FILE: simpleKoneContextUnwrapUsage1.kt
             super<R|kotlin/Any|>()
         }
 
-        @R|dev/lounres/kone/contexts/KoneContextHolderInclude|() public final val bar: R|kotlin/collections/List<X>|
+        @R|dev/lounres/kone/contexts/KoneContextInclude|() public final val bar: R|kotlin/collections/List<X>|
             public get(): R|kotlin/collections/List<X>| {
                 ^ R|kotlin/collections/emptyList|<R|X|>()
             }
@@ -18,9 +18,9 @@ FILE: simpleKoneContextUnwrapUsage1.kt
 
     }
     public final fun box(): R|kotlin/String| {
-        Q|dev/lounres/kone/contexts/KoneContext|.R|dev/lounres/kone/contexts/unwrap|(vararg(R|foo/bar/Foo.Foo|<R|kotlin/Int|>()))
+        Q|dev/lounres/kone/contexts/KoneContext|.R|dev/lounres/kone/contexts/localUnwrap|(vararg(R|foo/bar/Foo.Foo|<R|kotlin/Int|>()))
         ^box when () {
-            context(this@R|<local>/<Kone contexts unwrap context holder>|) R|kotlin/contextOf|<R|kotlin/collections/List<kotlin/Int>|>().R|SubstitutionOverride<kotlin/collections/List.isEmpty: R|kotlin/Boolean|>|() ->  {
+            context(this@R|<local>/<Kone contexts localUnwrap context holder>|) R|kotlin/contextOf|<R|kotlin/collections/List<kotlin/Int>|>().R|SubstitutionOverride<kotlin/collections/List.isEmpty: R|kotlin/Boolean|>|() ->  {
                 String(OK)
             }
             else ->  {

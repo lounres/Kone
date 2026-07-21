@@ -12,7 +12,7 @@ class DeclarationExtensionRegistrar : FirExtensionRegistrar() {
     override fun ExtensionRegistrarContext.configurePlugin() {
         +::FirLocalReceiversExpressionResolutionExtension
         +::FirLocalContextsExpressionResolutionExtension
-        +::FirUnwrapExpressionResolutionExtension
+        +::FirLocalUnwrapExpressionResolutionExtension
         +::FirContextArgumentCleaner
     }
 }

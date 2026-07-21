@@ -13,23 +13,23 @@ context(work: Work)
 fun work(): Int = work.work()
 
 class Foo(n: Int) : KoneContext {
-    @KoneContextHolderInclude
+    @KoneContextInclude
     val foo: Work = Work(n)
 }
 
 interface Bar : KoneContext {
-    @KoneContextHolderInclude
+    @KoneContextInclude
     val baz: Foo get() = Foo(179)
 }
 
 class Baz : Bar {
-    @KoneContextHolderInclude
+    @KoneContextInclude
     val bar = Foo(57)
-    @KoneContextHolderExclude
+    @KoneContextExclude
     override val baz: Foo get() = super.baz
 }
 
 fun box(): String {
-    KoneContext.unwrap(Baz())
+    KoneContext.localUnwrap(Baz())
     return if (work() == 57) "OK" else "INCORRECT"
 }

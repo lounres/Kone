@@ -17,7 +17,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage12.kt
         public open fun toString (): kotlin.String declared in foo.bar.Semigroup
     PROPERTY FAKE_OVERRIDE name:numberPlusNumber visibility:public modality:ABSTRACT [fake_override,val]
       annotations:
-        KoneContextHolderInclude
+        KoneContextInclude
       overridden:
         public abstract numberPlusNumber: foo.bar.Plus<Number of foo.bar.Semigroup, Number of foo.bar.Semigroup, Number of foo.bar.Semigroup> declared in foo.bar.Semigroup
       FUN FAKE_OVERRIDE name:<get-numberPlusNumber> visibility:public modality:ABSTRACT returnType:foo.bar.Plus<Number of foo.bar.Group, Number of foo.bar.Group, Number of foo.bar.Group> [fake_override]
@@ -27,7 +27,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage12.kt
           public abstract fun <get-numberPlusNumber> (): foo.bar.Plus<Number of foo.bar.Semigroup, Number of foo.bar.Semigroup, Number of foo.bar.Semigroup> declared in foo.bar.Semigroup
     PROPERTY name:numberMinusNumber visibility:public modality:ABSTRACT [val]
       annotations:
-        KoneContextHolderInclude
+        KoneContextInclude
       FUN DEFAULT_PROPERTY_ACCESSOR name:<get-numberMinusNumber> visibility:public modality:ABSTRACT returnType:foo.bar.Minus<Number of foo.bar.Group, Number of foo.bar.Group, Number of foo.bar.Group>
         VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Group<Number of foo.bar.Group>
         correspondingProperty: PROPERTY name:numberMinusNumber visibility:public modality:ABSTRACT [val]
@@ -96,7 +96,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage12.kt
         public open fun toString (): kotlin.String declared in foo.bar.Group
     PROPERTY FAKE_OVERRIDE name:numberMinusNumber visibility:public modality:ABSTRACT [fake_override,val]
       annotations:
-        KoneContextHolderInclude
+        KoneContextInclude
       overridden:
         public abstract numberMinusNumber: foo.bar.Minus<Number of foo.bar.Group, Number of foo.bar.Group, Number of foo.bar.Group> declared in foo.bar.Group
       FUN FAKE_OVERRIDE name:<get-numberMinusNumber> visibility:public modality:ABSTRACT returnType:foo.bar.Minus<Number of foo.bar.Ring, Number of foo.bar.Ring, Number of foo.bar.Ring> [fake_override]
@@ -106,7 +106,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage12.kt
           public abstract fun <get-numberMinusNumber> (): foo.bar.Minus<Number of foo.bar.Group, Number of foo.bar.Group, Number of foo.bar.Group> declared in foo.bar.Group
     PROPERTY FAKE_OVERRIDE name:numberPlusNumber visibility:public modality:ABSTRACT [fake_override,val]
       annotations:
-        KoneContextHolderInclude
+        KoneContextInclude
       overridden:
         public abstract numberPlusNumber: foo.bar.Plus<Number of foo.bar.Semiring, Number of foo.bar.Semiring, Number of foo.bar.Semiring> declared in foo.bar.Semiring
         public abstract numberPlusNumber: foo.bar.Plus<Number of foo.bar.Group, Number of foo.bar.Group, Number of foo.bar.Group> declared in foo.bar.Group
@@ -126,7 +126,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage12.kt
           public abstract fun <get-one> (): Number of foo.bar.Semiring declared in foo.bar.Semiring
     PROPERTY name:numberPlusLong visibility:public modality:ABSTRACT [val]
       annotations:
-        KoneContextHolderInclude
+        KoneContextInclude
       FUN DEFAULT_PROPERTY_ACCESSOR name:<get-numberPlusLong> visibility:public modality:ABSTRACT returnType:foo.bar.Plus<Number of foo.bar.Ring, kotlin.Long, Number of foo.bar.Ring>
         VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Ring<Number of foo.bar.Ring>
         correspondingProperty: PROPERTY name:numberPlusLong visibility:public modality:ABSTRACT [val]
@@ -148,7 +148,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage12.kt
         public open fun toString (): kotlin.String declared in dev.lounres.kone.contexts.KoneContext
     PROPERTY name:numberPlusNumber visibility:public modality:ABSTRACT [val]
       annotations:
-        KoneContextHolderInclude
+        KoneContextInclude
       FUN DEFAULT_PROPERTY_ACCESSOR name:<get-numberPlusNumber> visibility:public modality:ABSTRACT returnType:foo.bar.Plus<Number of foo.bar.Semigroup, Number of foo.bar.Semigroup, Number of foo.bar.Semigroup>
         VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Semigroup<Number of foo.bar.Semigroup>
         correspondingProperty: PROPERTY name:numberPlusNumber visibility:public modality:ABSTRACT [val]
@@ -170,7 +170,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage12.kt
         public open fun toString (): kotlin.String declared in foo.bar.Semigroup
     PROPERTY FAKE_OVERRIDE name:numberPlusNumber visibility:public modality:ABSTRACT [fake_override,val]
       annotations:
-        KoneContextHolderInclude
+        KoneContextInclude
       overridden:
         public abstract numberPlusNumber: foo.bar.Plus<Number of foo.bar.Semigroup, Number of foo.bar.Semigroup, Number of foo.bar.Semigroup> declared in foo.bar.Semigroup
       FUN FAKE_OVERRIDE name:<get-numberPlusNumber> visibility:public modality:ABSTRACT returnType:foo.bar.Plus<Number of foo.bar.Semiring, Number of foo.bar.Semiring, Number of foo.bar.Semiring> [fake_override]
@@ -187,7 +187,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage12.kt
     VALUE_PARAMETER kind:Context name:ring index:0 type:foo.bar.Ring<Number of foo.bar.double>
     VALUE_PARAMETER kind:ExtensionReceiver name:<this> index:1 type:Number of foo.bar.double
     BLOCK_BODY
-      CALL 'public final fun unwrap (<this>: dev.lounres.kone.contexts.KoneContext.Companion, vararg koneContexts: dev.lounres.kone.contexts.KoneContext): kotlin.Unit declared in dev.lounres.kone.contexts' type=kotlin.Unit origin=null
+      CALL 'public final fun localUnwrap (<this>: dev.lounres.kone.contexts.KoneContext.Companion, vararg koneContexts: dev.lounres.kone.contexts.KoneContext): kotlin.Unit declared in dev.lounres.kone.contexts' type=kotlin.Unit origin=null
         ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.contexts.KoneContext.Companion
         ARG koneContexts: VARARG type=kotlin.Array<out dev.lounres.kone.contexts.KoneContext> varargElementType=dev.lounres.kone.contexts.KoneContext
           GET_VAR 'ring: foo.bar.Ring<Number of foo.bar.double> declared in foo.bar.double' type=foo.bar.Ring<Number of foo.bar.double> origin=null
@@ -196,7 +196,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage12.kt
           TYPE_ARG Left: Number of foo.bar.double
           TYPE_ARG Right: Number of foo.bar.double
           TYPE_ARG Result: Number of foo.bar.double
-          ARG plus: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts unwrap context holder>|' type=foo.bar.Plus<Number of foo.bar.double, Number of foo.bar.double, Number of foo.bar.double>
+          ARG plus: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts localUnwrap context holder>|' type=foo.bar.Plus<Number of foo.bar.double, Number of foo.bar.double, Number of foo.bar.double>
           ARG <this>: GET_VAR '<this>: Number of foo.bar.double declared in foo.bar.double' type=Number of foo.bar.double origin=null
           ARG other: GET_VAR '<this>: Number of foo.bar.double declared in foo.bar.double' type=Number of foo.bar.double origin=null
   FUN name:minus visibility:public modality:FINAL returnType:Result of foo.bar.minus [operator]
@@ -258,12 +258,12 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage12.kt
     VALUE_PARAMETER kind:Context name:ring index:0 type:foo.bar.Ring<Number of foo.bar.test>
     VALUE_PARAMETER kind:Regular name:arg index:1 type:Number of foo.bar.test
     BLOCK_BODY
-      CALL 'public final fun unwrap (<this>: dev.lounres.kone.contexts.KoneContext.Companion, vararg koneContexts: dev.lounres.kone.contexts.KoneContext): kotlin.Unit declared in dev.lounres.kone.contexts' type=kotlin.Unit origin=null
+      CALL 'public final fun localUnwrap (<this>: dev.lounres.kone.contexts.KoneContext.Companion, vararg koneContexts: dev.lounres.kone.contexts.KoneContext): kotlin.Unit declared in dev.lounres.kone.contexts' type=kotlin.Unit origin=null
         ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.contexts.KoneContext.Companion
         ARG koneContexts: VARARG type=kotlin.Array<out dev.lounres.kone.contexts.KoneContext> varargElementType=dev.lounres.kone.contexts.KoneContext
           GET_VAR 'ring: foo.bar.Ring<Number of foo.bar.test> declared in foo.bar.test' type=foo.bar.Ring<Number of foo.bar.test> origin=null
       TYPE_OP type=kotlin.Unit origin=IMPLICIT_COERCION_TO_UNIT typeOperand=kotlin.Unit
         CALL 'public final fun double <Number> (ring: foo.bar.Ring<Number of foo.bar.double>, <this>: Number of foo.bar.double): Number of foo.bar.double declared in foo.bar' type=Number of foo.bar.test origin=null
           TYPE_ARG Number: Number of foo.bar.test
-          ARG ring: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts unwrap context holder>|' type=foo.bar.Ring<Number of foo.bar.test>
+          ARG ring: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts localUnwrap context holder>|' type=foo.bar.Ring<Number of foo.bar.test>
           ARG <this>: GET_VAR 'arg: Number of foo.bar.test declared in foo.bar.test' type=Number of foo.bar.test origin=null

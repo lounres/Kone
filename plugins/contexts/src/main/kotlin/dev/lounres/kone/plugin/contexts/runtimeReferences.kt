@@ -14,25 +14,23 @@ import org.jetbrains.kotlin.name.Name
 const val koneContextsPackageFQNameString = "dev.lounres.kone.contexts"
 // Library
 const val koneContextClassShortNameString = "KoneContext"
-const val koneContextHolderClassShortNameString = "KoneContextHolder"
 // Public runtime
-const val koneContextHolderIncludeAnnotationShortNameString = "KoneContextHolderInclude"
-const val koneContextHolderExcludeAnnotationShortNameString = "KoneContextHolderExclude"
+const val koneContextIncludeAnnotationShortNameString = "KoneContextInclude"
+const val koneContextExcludeAnnotationShortNameString = "KoneContextExclude"
 const val localReceiversFunctionShortNameString = "localReceivers"
 const val localContextsFunctionShortNameString = "localContexts"
-const val unwrapFunctionShortNameString = "unwrap"
+const val localUnwrapFunctionShortNameString = "localUnwrap"
 // Private runtime
 
 val koneContextsPackageFQName = FqName(koneContextsPackageFQNameString)
 // Library
 val koneContextClassShortName = FqName(koneContextClassShortNameString)
-val koneContextHolderClassShortName = FqName(koneContextHolderClassShortNameString)
 // Public runtime
-val koneContextHolderIncludeAnnotationShortName = FqName(koneContextHolderIncludeAnnotationShortNameString)
-val koneContextHolderExcludeAnnotationShortName = FqName(koneContextHolderExcludeAnnotationShortNameString)
+val koneContextIncludeAnnotationShortName = FqName(koneContextIncludeAnnotationShortNameString)
+val koneContextExcludeAnnotationShortName = FqName(koneContextExcludeAnnotationShortNameString)
 val localReceiversFunctionShortName = Name.identifier(localReceiversFunctionShortNameString)
 val localContextsFunctionShortName = Name.identifier(localContextsFunctionShortNameString)
-val unwrapFunctionShortName = Name.identifier(unwrapFunctionShortNameString)
+val localUnwrapFunctionShortName = Name.identifier(localUnwrapFunctionShortNameString)
 // Private runtime
 
 // Library
@@ -41,20 +39,15 @@ val koneContextClassId = ClassId(
     relativeClassName = koneContextClassShortName,
     isLocal = false
 )
-val koneContextHolderClassId = ClassId(
-    packageFqName = koneContextsPackageFQName,
-    relativeClassName = koneContextHolderClassShortName,
-    isLocal = false
-)
 // Public runtime
-val koneContextHolderIncludeAnnotationClassId = ClassId(
+val koneContextIncludeAnnotationClassId = ClassId(
     packageFqName = koneContextsPackageFQName,
-    relativeClassName = koneContextHolderIncludeAnnotationShortName,
+    relativeClassName = koneContextIncludeAnnotationShortName,
     isLocal = false,
 )
-val koneContextHolderExcludeAnnotationClassId = ClassId(
+val koneContextExcludeAnnotationClassId = ClassId(
     packageFqName = koneContextsPackageFQName,
-    relativeClassName = koneContextHolderExcludeAnnotationShortName,
+    relativeClassName = koneContextExcludeAnnotationShortName,
     isLocal = false,
 )
 val localReceiversFunctionCallableId = CallableId(
@@ -67,9 +60,9 @@ val localContextsFunctionCallableId = CallableId(
     className = null,
     callableName = localContextsFunctionShortName,
 )
-val unwrapFunctionCallableId = CallableId(
+val localUnwrapFunctionCallableId = CallableId(
     packageName = koneContextsPackageFQName,
     className = null,
-    callableName = unwrapFunctionShortName,
+    callableName = localUnwrapFunctionShortName,
 )
 // Private runtime

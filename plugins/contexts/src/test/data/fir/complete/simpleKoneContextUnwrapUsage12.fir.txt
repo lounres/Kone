@@ -24,12 +24,12 @@ FILE: simpleKoneContextUnwrapUsage12.kt
         )
     }
     public abstract interface Semigroup<Number> : R|dev/lounres/kone/contexts/KoneContext| {
-        @R|dev/lounres/kone/contexts/KoneContextHolderInclude|() public abstract val numberPlusNumber: R|foo/bar/Plus<Number, Number, Number>|
+        @R|dev/lounres/kone/contexts/KoneContextInclude|() public abstract val numberPlusNumber: R|foo/bar/Plus<Number, Number, Number>|
             public get(): R|foo/bar/Plus<Number, Number, Number>|
 
     }
     public abstract interface Group<Number> : R|foo/bar/Semigroup<Number>| {
-        @R|dev/lounres/kone/contexts/KoneContextHolderInclude|() public abstract val numberMinusNumber: R|foo/bar/Minus<Number, Number, Number>|
+        @R|dev/lounres/kone/contexts/KoneContextInclude|() public abstract val numberMinusNumber: R|foo/bar/Minus<Number, Number, Number>|
             public get(): R|foo/bar/Minus<Number, Number, Number>|
 
     }
@@ -39,7 +39,7 @@ FILE: simpleKoneContextUnwrapUsage12.kt
 
     }
     public abstract interface Ring<Number> : R|foo/bar/Semiring<Number>|, R|foo/bar/Group<Number>| {
-        @R|dev/lounres/kone/contexts/KoneContextHolderInclude|() public abstract val numberPlusLong: R|foo/bar/Plus<Number, kotlin/Long, Number>|
+        @R|dev/lounres/kone/contexts/KoneContextInclude|() public abstract val numberPlusLong: R|foo/bar/Plus<Number, kotlin/Long, Number>|
             public get(): R|foo/bar/Plus<Number, kotlin/Long, Number>|
 
     }
@@ -48,11 +48,11 @@ FILE: simpleKoneContextUnwrapUsage12.kt
     }
     context(ring: R|foo/bar/Ring<Number>|)
     public final fun <Number> R|Number|.double(): R|Number| {
-        Q|dev/lounres/kone/contexts/KoneContext|.R|dev/lounres/kone/contexts/unwrap|(vararg(R|<local>/ring|))
-        ^double context(this@R|<local>/<Kone contexts unwrap context holder>|) this@R|foo/bar/double|.R|foo/bar/plus|<R|Number|, R|Number|, R|Number|>(this@R|foo/bar/double|)
+        Q|dev/lounres/kone/contexts/KoneContext|.R|dev/lounres/kone/contexts/localUnwrap|(vararg(R|<local>/ring|))
+        ^double context(this@R|<local>/<Kone contexts localUnwrap context holder>|) this@R|foo/bar/double|.R|foo/bar/plus|<R|Number|, R|Number|, R|Number|>(this@R|foo/bar/double|)
     }
     context(ring: R|foo/bar/Ring<Number>|)
     public final fun <Number> test(arg: R|Number|): R|kotlin/Unit| {
-        Q|dev/lounres/kone/contexts/KoneContext|.R|dev/lounres/kone/contexts/unwrap|(vararg(R|<local>/ring|))
-        context(this@R|<local>/<Kone contexts unwrap context holder>|) R|<local>/arg|.R|foo/bar/double|<R|Number|>()
+        Q|dev/lounres/kone/contexts/KoneContext|.R|dev/lounres/kone/contexts/localUnwrap|(vararg(R|<local>/ring|))
+        context(this@R|<local>/<Kone contexts localUnwrap context holder>|) R|<local>/arg|.R|foo/bar/double|<R|Number|>()
     }

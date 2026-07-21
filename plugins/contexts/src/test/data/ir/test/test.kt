@@ -14,12 +14,12 @@ fun interface Minus<in Left, in Right, out Result> : KoneContext {
 }
 
 interface Semigroup<Number> : KoneContext {
-    @KoneContextHolderInclude
+    @KoneContextInclude
     val numberPlusNumber: Plus<Number, Number, Number>
 }
 
 interface Group<Number> : Semigroup<Number> {
-    @KoneContextHolderInclude
+    @KoneContextInclude
     val numberMinusNumber: Minus<Number, Number, Number>
 }
 
@@ -28,7 +28,7 @@ interface Semiring<Number> : Semigroup<Number> {
 }
 
 interface Ring<Number> : Semiring<Number>, Group<Number> {
-    @KoneContextHolderInclude
+    @KoneContextInclude
     public val numberPlusLong: Plus<Number, Long, Number>
 }
 
@@ -36,7 +36,7 @@ public inline fun <Number> rightAddMultipliedByDoubling(base: Number, arg: Numbe
 
 context(ring: Ring<Number>)
 public infix fun <Number> Number.doublingPlus(other: Int): Number {
-    KoneContext.unwrap(ring)
+    KoneContext.localUnwrap(ring)
     return rightAddMultipliedByDoubling<Number>(this@doublingPlus, ring.one, other, { left, right -> left + right }, { left, right -> left - right })
 }
 

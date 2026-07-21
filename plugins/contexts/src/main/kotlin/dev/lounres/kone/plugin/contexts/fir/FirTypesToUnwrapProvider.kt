@@ -5,8 +5,8 @@
 
 package dev.lounres.kone.plugin.contexts.fir
 
-import dev.lounres.kone.plugin.contexts.koneContextHolderExcludeAnnotationClassId
-import dev.lounres.kone.plugin.contexts.koneContextHolderIncludeAnnotationClassId
+import dev.lounres.kone.plugin.contexts.koneContextExcludeAnnotationClassId
+import dev.lounres.kone.plugin.contexts.koneContextIncludeAnnotationClassId
 import dev.lounres.kone.scope
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.declarations.declaredProperties
@@ -76,8 +76,8 @@ class FirTypesToUnwrapProvider(private val session: FirSession) {
     
     private val computedDescriptions = mutableMapOf<FirClassSymbol<*>, FirClassDescription>()
     
-    private fun FirPropertySymbol.isInclude() = hasAnnotation(koneContextHolderIncludeAnnotationClassId, session)
-    private fun FirPropertySymbol.isExclude() = hasAnnotation(koneContextHolderExcludeAnnotationClassId, session)
+    private fun FirPropertySymbol.isInclude() = hasAnnotation(koneContextIncludeAnnotationClassId, session)
+    private fun FirPropertySymbol.isExclude() = hasAnnotation(koneContextExcludeAnnotationClassId, session)
     
     private fun FirClassSymbol<*>.initializeReferencesAndTypesToUnwrap() {
         class ClassWithProperty(

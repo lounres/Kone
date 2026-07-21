@@ -3,7 +3,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage11.kt
     thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Baz
     PROPERTY name:baz visibility:public modality:FINAL [val]
       annotations:
-        KoneContextHolderInclude
+        KoneContextInclude
       FIELD PROPERTY_BACKING_FIELD name:baz type:foo.bar.Foo visibility:private [final]
         EXPRESSION_BODY
           CONSTRUCTOR_CALL 'public constructor <init> (n: kotlin.Int) declared in foo.bar.Foo' type=foo.bar.Foo origin=null
@@ -34,7 +34,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage11.kt
         public open fun toString (): kotlin.String declared in foo.bar.Bar
     PROPERTY name:bar visibility:public modality:OPEN [val]
       annotations:
-        KoneContextHolderExclude
+        KoneContextExclude
       overridden:
         public open bar: foo.bar.Foo declared in foo.bar.Bar
       FUN name:<get-bar> visibility:public modality:OPEN returnType:foo.bar.Foo
@@ -50,7 +50,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage11.kt
     thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Foo
     PROPERTY name:foo visibility:public modality:FINAL [val]
       annotations:
-        KoneContextHolderInclude
+        KoneContextInclude
       FIELD PROPERTY_BACKING_FIELD name:foo type:foo.bar.Work visibility:private [final]
         EXPRESSION_BODY
           CONSTRUCTOR_CALL 'public constructor <init> (n: kotlin.Int) declared in foo.bar.Work' type=foo.bar.Work origin=null
@@ -134,7 +134,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage11.kt
         public open fun toString (): kotlin.String declared in dev.lounres.kone.contexts.KoneContext
     PROPERTY name:bar visibility:public modality:OPEN [val]
       annotations:
-        KoneContextHolderInclude
+        KoneContextInclude
       FUN name:<get-bar> visibility:public modality:OPEN returnType:foo.bar.Foo
         VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Bar
         correspondingProperty: PROPERTY name:bar visibility:public modality:OPEN [val]
@@ -144,7 +144,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage11.kt
               ARG n: CONST Int type=kotlin.Int value=179
   FUN name:box visibility:public modality:FINAL returnType:kotlin.String
     BLOCK_BODY
-      CALL 'public final fun unwrap (<this>: dev.lounres.kone.contexts.KoneContext.Companion, vararg koneContexts: dev.lounres.kone.contexts.KoneContext): kotlin.Unit declared in dev.lounres.kone.contexts' type=kotlin.Unit origin=null
+      CALL 'public final fun localUnwrap (<this>: dev.lounres.kone.contexts.KoneContext.Companion, vararg koneContexts: dev.lounres.kone.contexts.KoneContext): kotlin.Unit declared in dev.lounres.kone.contexts' type=kotlin.Unit origin=null
         ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.contexts.KoneContext.Companion
         ARG koneContexts: VARARG type=kotlin.Array<out dev.lounres.kone.contexts.KoneContext> varargElementType=dev.lounres.kone.contexts.KoneContext
           CONSTRUCTOR_CALL 'public constructor <init> () declared in foo.bar.Baz' type=foo.bar.Baz origin=null
@@ -154,28 +154,28 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage11.kt
             if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
               ARG <this>: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
                 ARG arg0: CALL 'public final fun work (work: foo.bar.Work): kotlin.Int declared in foo.bar' type=kotlin.Int origin=null
-                  ARG work: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts unwrap context holder>|' type=foo.bar.Work
+                  ARG work: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts localUnwrap context holder>|' type=foo.bar.Work
                 ARG arg1: CONST Int type=kotlin.Int value=57
             then: CONST String type=kotlin.String value="INCORRECT 1"
           BRANCH
             if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
               ARG <this>: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
                 ARG arg0: CALL 'public final fun makeItFoo (foo: foo.bar.Foo): kotlin.Int declared in foo.bar' type=kotlin.Int origin=null
-                  ARG foo: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts unwrap context holder>|' type=foo.bar.Foo
+                  ARG foo: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts localUnwrap context holder>|' type=foo.bar.Foo
                 ARG arg1: CONST Int type=kotlin.Int value=57
             then: CONST String type=kotlin.String value="INCORRECT 2"
           BRANCH
             if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
               ARG <this>: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
                 ARG arg0: CALL 'public final fun makeItBar (bar: foo.bar.Bar): kotlin.Int declared in foo.bar' type=kotlin.Int origin=null
-                  ARG bar: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts unwrap context holder>|' type=foo.bar.Baz
+                  ARG bar: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts localUnwrap context holder>|' type=foo.bar.Baz
                 ARG arg1: CONST Int type=kotlin.Int value=179
             then: CONST String type=kotlin.String value="INCORRECT 3"
           BRANCH
             if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
               ARG <this>: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
                 ARG arg0: CALL 'public final fun makeItBaz (baz: foo.bar.Baz): kotlin.Int declared in foo.bar' type=kotlin.Int origin=null
-                  ARG baz: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts unwrap context holder>|' type=foo.bar.Baz
+                  ARG baz: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts localUnwrap context holder>|' type=foo.bar.Baz
                 ARG arg1: CONST Int type=kotlin.Int value=57
             then: CONST String type=kotlin.String value="INCORRECT 4"
           BRANCH

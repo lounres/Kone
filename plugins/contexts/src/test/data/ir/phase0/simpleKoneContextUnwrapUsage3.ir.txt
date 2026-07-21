@@ -31,7 +31,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage3.kt
         public open fun toString (): kotlin.String declared in foo.bar.Bar
     PROPERTY FAKE_OVERRIDE name:bar visibility:public modality:OPEN [fake_override,val]
       annotations:
-        KoneContextHolderInclude
+        KoneContextInclude
       overridden:
         public open bar: kotlin.Int declared in foo.bar.Bar
       FUN FAKE_OVERRIDE name:<get-bar> visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
@@ -56,7 +56,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage3.kt
         public open fun toString (): kotlin.String declared in dev.lounres.kone.contexts.KoneContext
     PROPERTY name:bar visibility:public modality:OPEN [val]
       annotations:
-        KoneContextHolderInclude
+        KoneContextInclude
       FUN name:<get-bar> visibility:public modality:OPEN returnType:kotlin.Int
         VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Bar
         correspondingProperty: PROPERTY name:bar visibility:public modality:OPEN [val]
@@ -65,7 +65,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage3.kt
             CONST Int type=kotlin.Int value=57
   FUN name:box visibility:public modality:FINAL returnType:kotlin.String
     BLOCK_BODY
-      CALL 'public final fun unwrap (<this>: dev.lounres.kone.contexts.KoneContext.Companion, vararg koneContexts: dev.lounres.kone.contexts.KoneContext): kotlin.Unit declared in dev.lounres.kone.contexts' type=kotlin.Unit origin=null
+      CALL 'public final fun localUnwrap (<this>: dev.lounres.kone.contexts.KoneContext.Companion, vararg koneContexts: dev.lounres.kone.contexts.KoneContext): kotlin.Unit declared in dev.lounres.kone.contexts' type=kotlin.Unit origin=null
         ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.contexts.KoneContext.Companion
         ARG koneContexts: VARARG type=kotlin.Array<out dev.lounres.kone.contexts.KoneContext> varargElementType=dev.lounres.kone.contexts.KoneContext
           CONSTRUCTOR_CALL 'public constructor <init> () declared in foo.bar.Baz' type=foo.bar.Baz origin=null
@@ -75,7 +75,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage3.kt
             if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
               ARG arg0: CALL 'public final fun contextOf <A> (context: @[NoInfer] A of kotlin.contextOf): @[NoInfer] A of kotlin.contextOf declared in kotlin' type=@[NoInfer] kotlin.Int origin=null
                 TYPE_ARG A: kotlin.Int
-                ARG context: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts unwrap context holder>|' type=kotlin.Int
+                ARG context: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts localUnwrap context holder>|' type=kotlin.Int
               ARG arg1: CONST Int type=kotlin.Int value=57
             then: CONST String type=kotlin.String value="OK"
           BRANCH

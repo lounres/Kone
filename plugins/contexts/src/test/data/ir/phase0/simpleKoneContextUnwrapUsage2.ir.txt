@@ -21,7 +21,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage2.kt
     thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Foo
     PROPERTY name:bar visibility:public modality:FINAL [val]
       annotations:
-        KoneContextHolderInclude
+        KoneContextInclude
       FIELD PROPERTY_BACKING_FIELD name:bar type:foo.bar.CoolContext<kotlin.Int> visibility:private [final]
         EXPRESSION_BODY
           TYPE_OP type=foo.bar.CoolContext<kotlin.Int> origin=SAM_CONVERSION typeOperand=foo.bar.CoolContext<kotlin.Int>
@@ -72,7 +72,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage2.kt
         public open fun toString (): kotlin.String declared in dev.lounres.kone.contexts.KoneContext
   FUN name:box visibility:public modality:FINAL returnType:kotlin.String
     BLOCK_BODY
-      CALL 'public final fun unwrap (<this>: dev.lounres.kone.contexts.KoneContext.Companion, vararg koneContexts: dev.lounres.kone.contexts.KoneContext): kotlin.Unit declared in dev.lounres.kone.contexts' type=kotlin.Unit origin=null
+      CALL 'public final fun localUnwrap (<this>: dev.lounres.kone.contexts.KoneContext.Companion, vararg koneContexts: dev.lounres.kone.contexts.KoneContext): kotlin.Unit declared in dev.lounres.kone.contexts' type=kotlin.Unit origin=null
         ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.contexts.KoneContext.Companion
         ARG koneContexts: VARARG type=kotlin.Array<out dev.lounres.kone.contexts.KoneContext> varargElementType=dev.lounres.kone.contexts.KoneContext
           GET_OBJECT 'CLASS OBJECT name:Foo modality:FINAL visibility:public superTypes:[dev.lounres.kone.contexts.KoneContext]' type=foo.bar.Foo
@@ -82,7 +82,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage2.kt
             if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
               ARG arg0: CALL 'public final fun makeItCool <X> (coolContext: foo.bar.CoolContext<X of foo.bar.makeItCool>): X of foo.bar.makeItCool declared in foo.bar' type=kotlin.Int origin=null
                 TYPE_ARG X: kotlin.Int
-                ARG coolContext: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts unwrap context holder>|' type=foo.bar.CoolContext<kotlin.Int>
+                ARG coolContext: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts localUnwrap context holder>|' type=foo.bar.CoolContext<kotlin.Int>
               ARG arg1: CONST Int type=kotlin.Int value=57
             then: CONST String type=kotlin.String value="OK"
           BRANCH

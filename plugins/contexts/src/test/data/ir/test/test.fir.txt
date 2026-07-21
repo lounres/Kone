@@ -10,12 +10,12 @@ FILE: test.kt
 
     }
     public abstract interface Semigroup<Number> : R|dev/lounres/kone/contexts/KoneContext| {
-        @R|dev/lounres/kone/contexts/KoneContextHolderInclude|() public abstract val numberPlusNumber: R|foo/bar/Plus<Number, Number, Number>|
+        @R|dev/lounres/kone/contexts/KoneContextInclude|() public abstract val numberPlusNumber: R|foo/bar/Plus<Number, Number, Number>|
             public get(): R|foo/bar/Plus<Number, Number, Number>|
 
     }
     public abstract interface Group<Number> : R|foo/bar/Semigroup<Number>| {
-        @R|dev/lounres/kone/contexts/KoneContextHolderInclude|() public abstract val numberMinusNumber: R|foo/bar/Minus<Number, Number, Number>|
+        @R|dev/lounres/kone/contexts/KoneContextInclude|() public abstract val numberMinusNumber: R|foo/bar/Minus<Number, Number, Number>|
             public get(): R|foo/bar/Minus<Number, Number, Number>|
 
     }
@@ -25,7 +25,7 @@ FILE: test.kt
 
     }
     public abstract interface Ring<Number> : R|foo/bar/Semiring<Number>|, R|foo/bar/Group<Number>| {
-        @R|dev/lounres/kone/contexts/KoneContextHolderInclude|() public abstract val numberPlusLong: R|foo/bar/Plus<Number, kotlin/Long, Number>|
+        @R|dev/lounres/kone/contexts/KoneContextInclude|() public abstract val numberPlusLong: R|foo/bar/Plus<Number, kotlin/Long, Number>|
             public get(): R|foo/bar/Plus<Number, kotlin/Long, Number>|
 
     }
@@ -34,7 +34,7 @@ FILE: test.kt
     }
     context(ring: R|foo/bar/Ring<Number>|)
     public final infix fun <Number> R|Number|.doublingPlus(other: R|kotlin/Int|): R|Number| {
-        Q|dev/lounres/kone/contexts/KoneContext|.R|dev/lounres/kone/contexts/unwrap|(vararg(R|<local>/ring|))
+        Q|dev/lounres/kone/contexts/KoneContext|.R|dev/lounres/kone/contexts/localUnwrap|(vararg(R|<local>/ring|))
         ^doublingPlus R|foo/bar/rightAddMultipliedByDoubling|<R|Number|>(this@R|foo/bar/doublingPlus|, R|<local>/ring|.R|SubstitutionOverride<foo/bar/Ring.one: R|Number|>|, R|<local>/other|, rightAddMultipliedByDoubling@fun <anonymous>(left: R|Number|, right: R|Number|): R|Number| <inline=Inline, kind=UNKNOWN>  {
             ^ R|<local>/left|.<Ambiguity: plus, [kotlin/plus, kotlin/plus, kotlin/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/collections/plus, kotlin/sequences/plus, kotlin/sequences/plus, kotlin/sequences/plus, kotlin/sequences/plus, kotlin/text/plus]>#(R|<local>/right|)
         }

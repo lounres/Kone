@@ -49,7 +49,7 @@ class FirContextArgumentCleaner(session: FirSession) : FirAdditionalCheckersExte
         
         private val contextProvidingGeneratedDeclarationKeys = listOf(
             FirLocalContextsExpressionResolutionExtension.GeneratedReceiverFromLocalContextsFunctionKey,
-            FirUnwrapExpressionResolutionExtension.GeneratedReceiverFromUnwrapFunctionKey,
+            FirLocalUnwrapExpressionResolutionExtension.GeneratedReceiverFromUnwrapFunctionKey,
         )
         
         override fun transformPropertyAccessExpression(

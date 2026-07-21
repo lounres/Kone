@@ -21,7 +21,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage1.kt
         public open fun toString (): kotlin.String declared in dev.lounres.kone.contexts.KoneContext
     PROPERTY name:bar visibility:public modality:FINAL [val]
       annotations:
-        KoneContextHolderInclude
+        KoneContextInclude
       FUN name:<get-bar> visibility:public modality:FINAL returnType:kotlin.collections.List<X of foo.bar.Foo>
         VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Foo<X of foo.bar.Foo>
         correspondingProperty: PROPERTY name:bar visibility:public modality:FINAL [val]

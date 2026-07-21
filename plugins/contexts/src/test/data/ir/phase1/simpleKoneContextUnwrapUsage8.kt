@@ -13,18 +13,18 @@ context(work: Work)
 fun work(): Int = work.work()
 
 interface Bar : KoneContext {
-    @KoneContextHolderInclude
+    @KoneContextInclude
     val baz: Work get() = Work(179)
 }
 
 class Baz : Bar {
-    @KoneContextHolderInclude
+    @KoneContextInclude
     val bar = Work(57)
-    @KoneContextHolderExclude
+    @KoneContextExclude
     override val baz: Work get() = super.baz
 }
 
 fun box(): String {
-    KoneContext.unwrap(Baz())
+    KoneContext.localUnwrap(Baz())
     return if (work() == 57) "OK" else "INCORRECT"
 }

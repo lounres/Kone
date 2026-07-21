@@ -23,12 +23,12 @@ FILE: simpleKoneContextUnwrapUsage10.kt
             super<R|kotlin/Any|>()
         }
 
-        @R|dev/lounres/kone/contexts/KoneContextHolderInclude|() public final val foo: R|foo/bar/Work| = R|foo/bar/Work.Work|(R|<local>/n|)
+        @R|dev/lounres/kone/contexts/KoneContextInclude|() public final val foo: R|foo/bar/Work| = R|foo/bar/Work.Work|(R|<local>/n|)
             public get(): R|foo/bar/Work|
 
     }
     public abstract interface Bar : R|dev/lounres/kone/contexts/KoneContext| {
-        @R|dev/lounres/kone/contexts/KoneContextHolderInclude|() public open val baz: R|foo/bar/Foo|
+        @R|dev/lounres/kone/contexts/KoneContextInclude|() public open val baz: R|foo/bar/Foo|
             public get(): R|foo/bar/Foo| {
                 ^ R|foo/bar/Foo.Foo|(Int(179))
             }
@@ -39,19 +39,19 @@ FILE: simpleKoneContextUnwrapUsage10.kt
             super<R|kotlin/Any|>()
         }
 
-        @R|dev/lounres/kone/contexts/KoneContextHolderInclude|() public final val bar: R|foo/bar/Foo| = R|foo/bar/Foo.Foo|(Int(57))
+        @R|dev/lounres/kone/contexts/KoneContextInclude|() public final val bar: R|foo/bar/Foo| = R|foo/bar/Foo.Foo|(Int(57))
             public get(): R|foo/bar/Foo|
 
-        @R|dev/lounres/kone/contexts/KoneContextHolderExclude|() public open override val baz: R|foo/bar/Foo|
+        @R|dev/lounres/kone/contexts/KoneContextExclude|() public open override val baz: R|foo/bar/Foo|
             public get(): R|foo/bar/Foo| {
                 ^ this@R|foo/bar/Baz|.super<R|foo/bar/Bar|>.R|foo/bar/Bar.baz|
             }
 
     }
     public final fun box(): R|kotlin/String| {
-        Q|dev/lounres/kone/contexts/KoneContext|.R|dev/lounres/kone/contexts/unwrap|(vararg(R|foo/bar/Baz.Baz|()))
+        Q|dev/lounres/kone/contexts/KoneContext|.R|dev/lounres/kone/contexts/localUnwrap|(vararg(R|foo/bar/Baz.Baz|()))
         ^box when () {
-            ==(context(this@R|<local>/<Kone contexts unwrap context holder>|) R|foo/bar/work|(), Int(57)) ->  {
+            ==(context(this@R|<local>/<Kone contexts localUnwrap context holder>|) R|foo/bar/work|(), Int(57)) ->  {
                 String(OK)
             }
             else ->  {

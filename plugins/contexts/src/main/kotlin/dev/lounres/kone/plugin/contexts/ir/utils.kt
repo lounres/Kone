@@ -50,8 +50,8 @@ inline fun IrClassSymbol.referencePropertyThatOrFail(name: String, predicate: (I
 
 val fakeValueParametersErrorCallsDescriptions = fakeValueParametersNameStrings.map { "Unresolved reference: this@R|<local>/$it|" }
 
-fun IrProperty.isInclude() = hasAnnotation(koneContextHolderIncludeAnnotationClassId)
-fun IrProperty.isExclude() = hasAnnotation(koneContextHolderExcludeAnnotationClassId)
+fun IrProperty.isInclude() = hasAnnotation(koneContextIncludeAnnotationClassId)
+fun IrProperty.isExclude() = hasAnnotation(koneContextExcludeAnnotationClassId)
 fun IrPropertySymbol.isInclude() = owner.isInclude()
 fun IrPropertySymbol.isExclude() = owner.isExclude()
 
@@ -91,14 +91,13 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
     
     //  Library
     val koneContextIrClassSymbol: IrClassSymbol by lazy { finder.referenceClassOrFail(koneContextClassId) }
-    val koneContextHolderIrClassSymbol: IrClassSymbol by lazy { finder.referenceClassOrFail(koneContextHolderClassId) }
     
     // Public runtime
-    val koneContextHolderIncludeAnnotationIrClassSymbol: IrClassSymbol by lazy { finder.referenceClassOrFail(koneContextHolderIncludeAnnotationClassId) }
-    val koneContextHolderExcludeAnnotationIrClassSymbol: IrClassSymbol by lazy { finder.referenceClassOrFail(koneContextHolderExcludeAnnotationClassId) }
+    val koneContextIncludeAnnotationIrClassSymbol: IrClassSymbol by lazy { finder.referenceClassOrFail(koneContextIncludeAnnotationClassId) }
+    val koneContextExcludeAnnotationIrClassSymbol: IrClassSymbol by lazy { finder.referenceClassOrFail(koneContextExcludeAnnotationClassId) }
     val localReceiversIrSimpleFunctionSymbol: IrSimpleFunctionSymbol by lazy { finder.referenceFunctionThatOrFail(localReceiversFunctionCallableId) }
     val localContextsIrSimpleFunctionSymbol: IrSimpleFunctionSymbol by lazy { finder.referenceFunctionThatOrFail(localContextsFunctionCallableId) }
-    val unwrapIrSimpleFunctionSymbol: IrSimpleFunctionSymbol by lazy { finder.referenceFunctionThatOrFail(unwrapFunctionCallableId) }
+    val localUnwrapIrSimpleFunctionSymbol: IrSimpleFunctionSymbol by lazy { finder.referenceFunctionThatOrFail(localUnwrapFunctionCallableId) }
     
     // Private runtime
 }

@@ -13,7 +13,7 @@ context(work: Work)
 fun work(): Int = work.work()
 
 class Foo(n: Int) : KoneContext {
-    @KoneContextHolderInclude
+    @KoneContextInclude
     val foo: Work = Work(n)
 }
 
@@ -21,7 +21,7 @@ context(foo: Foo)
 fun makeItFoo(): Int = foo.foo.work()
 
 interface Bar : KoneContext {
-    @KoneContextHolderInclude
+    @KoneContextInclude
     val bar: Foo get() = Foo(179)
 }
 
@@ -29,9 +29,9 @@ context(bar: Bar)
 fun makeItBar(): Int = bar.bar.foo.work()
 
 class Baz : Bar {
-    @KoneContextHolderInclude
+    @KoneContextInclude
     val baz = Foo(57)
-    @KoneContextHolderExclude
+    @KoneContextExclude
     override val bar: Foo get() = super.bar
 }
 
@@ -39,7 +39,7 @@ context(baz: Baz)
 fun makeItBaz(): Int = baz.baz.foo.work()
 
 fun box(): String {
-    KoneContext.unwrap(Baz())
+    KoneContext.localUnwrap(Baz())
     return when {
         work() != 57 -> "INCORRECT 1"
         makeItFoo() != 57 -> "INCORRECT 2"

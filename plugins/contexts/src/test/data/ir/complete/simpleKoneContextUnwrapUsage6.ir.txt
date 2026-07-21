@@ -3,7 +3,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage6.kt
     thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Baz
     PROPERTY name:baz visibility:public modality:FINAL [val]
       annotations:
-        KoneContextHolderInclude
+        KoneContextInclude
       FIELD PROPERTY_BACKING_FIELD name:baz type:kotlin.Int visibility:private [final]
         EXPRESSION_BODY
           CONST Int type=kotlin.Int value=57
@@ -33,7 +33,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage6.kt
         public open fun toString (): kotlin.String declared in foo.bar.Bar
     PROPERTY name:bar visibility:public modality:OPEN [val]
       annotations:
-        KoneContextHolderExclude
+        KoneContextExclude
       overridden:
         public open bar: kotlin.Int declared in foo.bar.Bar
       FUN name:<get-bar> visibility:public modality:OPEN returnType:kotlin.Int
@@ -62,7 +62,7 @@ FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage6.kt
         public open fun toString (): kotlin.String declared in dev.lounres.kone.contexts.KoneContext
     PROPERTY name:bar visibility:public modality:OPEN [val]
       annotations:
-        KoneContextHolderInclude
+        KoneContextInclude
       FUN name:<get-bar> visibility:public modality:OPEN returnType:kotlin.Int
         VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Bar
         correspondingProperty: PROPERTY name:bar visibility:public modality:OPEN [val]
