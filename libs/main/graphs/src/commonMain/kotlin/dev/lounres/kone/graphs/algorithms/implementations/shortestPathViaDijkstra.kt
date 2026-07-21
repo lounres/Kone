@@ -20,8 +20,10 @@ import dev.lounres.kone.collections.map.KoneMutableMap
 import dev.lounres.kone.collections.map.get
 import dev.lounres.kone.collections.map.getOrNull
 import dev.lounres.kone.collections.map.of
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.graphs.*
 import dev.lounres.kone.graphs.algorithms.*
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
@@ -47,57 +49,57 @@ private class HypergraphShortestPathWithFixedEndsComputerByDijkstra<@Supply Weig
         start: HypergraphVertex,
         end: HypergraphVertex
     ): HypergraphShortestPathWithFixedEndsProvider<Weight> {
-        val lazyProvider = lazy {
-            context(weightMonoid.numberPlusNumber, weightsOrder) {
-                val verticesToCheck = KoneBinaryGCMinimumHeap<HypergraphVertex, Weight>(weightsOrder)
-                val queueNodes = KoneMutableMap.of<HypergraphVertex, HeapNode<HypergraphVertex, Weight>>(Equality.absoluteFor())
-                val paths = KoneMutableMap.of<HypergraphVertex, Path<Weight>>(Equality.absoluteFor())
-                var optimalPathToTarget: Path<Weight>? = null
+        val lazyProvider by lazy {
+            KoneContext.unwrap(weightMonoid, weightsOrder)
+            
+            val verticesToCheck = KoneBinaryGCMinimumHeap<HypergraphVertex, Weight>(weightsOrder)
+            val queueNodes = KoneMutableMap.of<HypergraphVertex, HeapNode<HypergraphVertex, Weight>>(Equality.absoluteFor())
+            val paths = KoneMutableMap.of<HypergraphVertex, Path<Weight>>(Equality.absoluteFor())
+            var optimalPathToTarget: Path<Weight>? = null
+            
+            queueNodes[start] = verticesToCheck.add(start, weightMonoid.zero)
+            paths[start] = Path(
+                weight = weightMonoid.zero,
+                vertices = KoneList.of(start),
+                edges = KoneList.empty(),
+            )
+            
+            while (verticesToCheck.isNotEmpty()) {
+                val currentVertexNode = verticesToCheck.takeMinimum()
+                if (optimalPathToTarget != null && currentVertexNode.priority geq optimalPathToTarget.weight) break
+                currentVertexNode.remove()
                 
-                queueNodes[start] = verticesToCheck.add(start, weightMonoid.zero)
-                paths[start] = Path(
-                    weight = weightMonoid.zero,
-                    vertices = KoneList.of(start),
-                    edges = KoneList.empty(),
-                )
-                
-                while (verticesToCheck.isNotEmpty()) {
-                    val currentVertexNode = verticesToCheck.takeMinimum()
-                    if (optimalPathToTarget != null && currentVertexNode.priority geq optimalPathToTarget.weight) break
-                    currentVertexNode.remove()
-                    
-                    val currentVertex = currentVertexNode.element
-                    val currentPath = paths[currentVertex]
-                    val currentWeight = currentPath.weight
-                    for (edge in incidentEdgesOf(currentVertex)) {
-                        val neighbor = edge.ends - currentVertex
-                        val currentPathToNeighbor = paths.getOrNull(neighbor)
-                        val alternativeWeight = currentWeight + edge.weightOfType()
-                        val alternativePath = Path(
-                            weight = alternativeWeight,
-                            vertices = KoneList.generate(currentPath.vertices.size + 1u) { if (it < currentPath.vertices.size) currentPath.vertices[it] else neighbor },
-                            edges = KoneList.generate(currentPath.edges.size + 1u) { if (it < currentPath.edges.size) currentPath.edges[it] else edge },
-                        )
-                        when {
-                            currentPathToNeighbor == null -> {
-                                paths[neighbor] = alternativePath
-                                if (neighbor === end) optimalPathToTarget = alternativePath
-                                queueNodes[neighbor] = verticesToCheck.add(neighbor, alternativeWeight)
-                            }
-                            alternativeWeight lt currentPathToNeighbor.weight -> {
-                                paths[neighbor] = alternativePath
-                                if (neighbor === end) optimalPathToTarget = alternativePath
-                                queueNodes[neighbor].priority = alternativeWeight
-                            }
+                val currentVertex = currentVertexNode.element
+                val currentPath = paths[currentVertex]
+                val currentWeight = currentPath.weight
+                for (edge in incidentEdgesOf(currentVertex)) {
+                    val neighbor = edge.ends - currentVertex
+                    val currentPathToNeighbor = paths.getOrNull(neighbor)
+                    val alternativeWeight = currentWeight + edge.weightOfType()
+                    val alternativePath = Path(
+                        weight = alternativeWeight,
+                        vertices = KoneList.generate(currentPath.vertices.size + 1u) { if (it < currentPath.vertices.size) currentPath.vertices[it] else neighbor },
+                        edges = KoneList.generate(currentPath.edges.size + 1u) { if (it < currentPath.edges.size) currentPath.edges[it] else edge },
+                    )
+                    when {
+                        currentPathToNeighbor == null -> {
+                            paths[neighbor] = alternativePath
+                            if (neighbor === end) optimalPathToTarget = alternativePath
+                            queueNodes[neighbor] = verticesToCheck.add(neighbor, alternativeWeight)
+                        }
+                        alternativeWeight lt currentPathToNeighbor.weight -> {
+                            paths[neighbor] = alternativePath
+                            if (neighbor === end) optimalPathToTarget = alternativePath
+                            queueNodes[neighbor].priority = alternativeWeight
                         }
                     }
                 }
-                
-                optimalPathToTarget
             }
+            
+            optimalPathToTarget
         }
         
-        return HypergraphShortestPathWithFixedEndsProvider { lazyProvider.value }
+        return HypergraphShortestPathWithFixedEndsProvider { lazyProvider }
     }
 }
 
@@ -154,44 +156,43 @@ private class HypergraphShortestPathWithFixedStartComputerByDijkstra<@Supply Wei
                 if (currentPath != null && weightsOrder { currentPath.weight lt currentProcessedWeight }) return currentPath
                 
                 synchronized(this) {
-                    context(weightMonoid.numberPlusNumber, weightsOrder) {
-                        var optimalPathToTarget: Path<Weight>? = paths.getOrNull(end)
+                    KoneContext.unwrap(weightMonoid, weightsOrder)
+                    var optimalPathToTarget: Path<Weight>? = paths.getOrNull(end)
+                    
+                    while (verticesToCheck.isNotEmpty()) {
+                        val currentVertexNode = verticesToCheck.takeMinimum()
+                        if (optimalPathToTarget != null && currentVertexNode.priority geq optimalPathToTarget.weight) break
+                        currentVertexNode.remove()
                         
-                        while (verticesToCheck.isNotEmpty()) {
-                            val currentVertexNode = verticesToCheck.takeMinimum()
-                            if (optimalPathToTarget != null && currentVertexNode.priority geq optimalPathToTarget.weight) break
-                            currentVertexNode.remove()
-                            
-                            val currentVertex = currentVertexNode.element
-                            val currentPath = paths[currentVertex]
-                            val currentWeight = currentPath.weight
-                            for (edge in incidentEdgesOf(currentVertex)) {
-                                val neighbor = edge.ends - currentVertex
-                                val currentPathToNeighbor = paths.getOrNull(neighbor)
-                                val alternativeWeight = currentWeight + edge.weightOfType()
-                                val alternativePath = Path(
-                                    weight = alternativeWeight,
-                                    vertices = KoneList.generate(currentPath.vertices.size + 1u) { if (it < currentPath.vertices.size) currentPath.vertices[it] else neighbor },
-                                    edges = KoneList.generate(currentPath.edges.size + 1u) { if (it < currentPath.edges.size) currentPath.edges[it] else edge },
-                                )
-                                when {
-                                    currentPathToNeighbor == null -> {
-                                        paths[neighbor] = alternativePath
-                                        if (neighbor === end) optimalPathToTarget = alternativePath
-                                        queueNodes[neighbor] = verticesToCheck.add(neighbor, alternativeWeight)
-                                    }
-                                    
-                                    alternativeWeight lt currentPathToNeighbor.weight -> {
-                                        paths[neighbor] = alternativePath
-                                        if (neighbor === end) optimalPathToTarget = alternativePath
-                                        queueNodes[neighbor].priority = alternativeWeight
-                                    }
+                        val currentVertex = currentVertexNode.element
+                        val currentPath = paths[currentVertex]
+                        val currentWeight = currentPath.weight
+                        for (edge in incidentEdgesOf(currentVertex)) {
+                            val neighbor = edge.ends - currentVertex
+                            val currentPathToNeighbor = paths.getOrNull(neighbor)
+                            val alternativeWeight = currentWeight + edge.weightOfType()
+                            val alternativePath = Path(
+                                weight = alternativeWeight,
+                                vertices = KoneList.generate(currentPath.vertices.size + 1u) { if (it < currentPath.vertices.size) currentPath.vertices[it] else neighbor },
+                                edges = KoneList.generate(currentPath.edges.size + 1u) { if (it < currentPath.edges.size) currentPath.edges[it] else edge },
+                            )
+                            when {
+                                currentPathToNeighbor == null -> {
+                                    paths[neighbor] = alternativePath
+                                    if (neighbor === end) optimalPathToTarget = alternativePath
+                                    queueNodes[neighbor] = verticesToCheck.add(neighbor, alternativeWeight)
+                                }
+                                
+                                alternativeWeight lt currentPathToNeighbor.weight -> {
+                                    paths[neighbor] = alternativePath
+                                    if (neighbor === end) optimalPathToTarget = alternativePath
+                                    queueNodes[neighbor].priority = alternativeWeight
                                 }
                             }
                         }
-                        
-                        return optimalPathToTarget
                     }
+                    
+                    return optimalPathToTarget
                 }
             }
         }

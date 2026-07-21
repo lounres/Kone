@@ -19,8 +19,10 @@ import dev.lounres.kone.collections.map.get
 import dev.lounres.kone.collections.map.mapsTo
 import dev.lounres.kone.collections.utils.last
 import dev.lounres.kone.collections.utils.withIndex
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.graphs.*
 import dev.lounres.kone.graphs.algorithms.*
 import dev.lounres.kone.registry.*
@@ -44,7 +46,7 @@ private class HypergraphDirectedShortestPathWithFixedEndsComputerForDirectedAcyc
         start: HypergraphVertex,
         end: HypergraphVertex
     ): HypergraphDirectedShortestPathWithFixedEndsProvider<Weight> {
-        val lazyProvider = lazy {
+        val lazyProvider by lazy {
             if (start === end)
                 return@lazy Path(
                     weight = weightMonoid.zero,
@@ -73,33 +75,32 @@ private class HypergraphDirectedShortestPathWithFixedEndsComputerForDirectedAcyc
                 edges = KoneList.empty(),
             )
             
-            context(weightMonoid.numberPlusNumber, weightsOrder) {
-                for (vIndex in startIndex .. endIndex) {
-                    val vPath = paths[vIndex - startIndex] ?: continue
-                    if (paths.last().let { it != null && it.weight lt vPath.weight }) continue
-                    val v = verticesList[vIndex]
-                    for (e in outgoingIncidentEdgesOf(v)) {
-                        val newWeight = vPath.weight + e.weightOfType<Weight>()
-                        if (paths.last().let { it != null && it.weight lt newWeight }) continue
-                        val u = e.end
-                        val uIndex = vertexIndex[u]
-                        check(uIndex >= vIndex) { "For some reason topological sorting returned incorrect result." }
-                        if (uIndex !in vIndex + 1u .. endIndex) continue
-                        val uPath = paths[uIndex - startIndex]
-                        if (uPath == null || uPath.weight gt newWeight)
-                            paths[uIndex - startIndex] = Path(
-                                weight = newWeight,
-                                vertices = KoneList.generate(vPath.vertices.size + 1u) { if (it < vPath.vertices.size) vPath.vertices[it] else u },
-                                edges = KoneList.generate(vPath.edges.size + 1u) { if (it < vPath.edges.size) vPath.edges[it] else e },
-                            )
-                    }
+            KoneContext.unwrap(weightMonoid, weightsOrder)
+            for (vIndex in startIndex .. endIndex) {
+                val vPath = paths[vIndex - startIndex] ?: continue
+                if (paths.last().let { it != null && it.weight lt vPath.weight }) continue
+                val v = verticesList[vIndex]
+                for (e in outgoingIncidentEdgesOf(v)) {
+                    val newWeight = vPath.weight + e.weightOfType<Weight>()
+                    if (paths.last().let { it != null && it.weight lt newWeight }) continue
+                    val u = e.end
+                    val uIndex = vertexIndex[u]
+                    check(uIndex >= vIndex) { "For some reason topological sorting returned incorrect result." }
+                    if (uIndex !in vIndex + 1u .. endIndex) continue
+                    val uPath = paths[uIndex - startIndex]
+                    if (uPath == null || uPath.weight gt newWeight)
+                        paths[uIndex - startIndex] = Path(
+                            weight = newWeight,
+                            vertices = KoneList.generate(vPath.vertices.size + 1u) { if (it < vPath.vertices.size) vPath.vertices[it] else u },
+                            edges = KoneList.generate(vPath.edges.size + 1u) { if (it < vPath.edges.size) vPath.edges[it] else e },
+                        )
                 }
             }
             
             paths.last()
         }
         
-        return HypergraphDirectedShortestPathWithFixedEndsProvider { lazyProvider.value }
+        return HypergraphDirectedShortestPathWithFixedEndsProvider { lazyProvider }
     }
 }
 
@@ -177,26 +178,25 @@ private class HypergraphDirectedShortestPathWithFixedStartComputerForDirectedAcy
                 if (endIndex - startIndex <= firstNotVisitedVertexIndexInPaths) return paths[endIndex - startIndex]
                 
                 synchronized(this) {
-                    context(weightMonoid.numberPlusNumber, weightsOrder) {
-                        while (firstNotVisitedVertexIndexInPaths + startIndex < endIndex) {
-                            val vIndex = firstNotVisitedVertexIndexInPaths + startIndex
-                            val vPath = paths[vIndex - startIndex] ?: continue
-                            val v = verticesList[vIndex]
-                            for (e in outgoingIncidentEdgesOf(v)) {
-                                val newWeight = vPath.weight + e.weightOfType<Weight>()
-                                val u = e.end
-                                val uIndex = vertexIndex[u]
-                                check(uIndex >= vIndex) { "For some reason topological sorting returned incorrect result." }
-                                val uPath = paths[uIndex - startIndex]
-                                if (uPath == null || uPath.weight gt newWeight)
-                                    paths[uIndex - startIndex] = Path(
-                                        weight = newWeight,
-                                        vertices = KoneList.generate(vPath.vertices.size + 1u) { if (it < vPath.vertices.size) vPath.vertices[it] else u },
-                                        edges = KoneList.generate(vPath.edges.size + 1u) { if (it < vPath.edges.size) vPath.edges[it] else e },
-                                    )
-                            }
-                            firstNotVisitedVertexIndexInPaths++
+                    KoneContext.unwrap(weightMonoid, weightsOrder)
+                    while (firstNotVisitedVertexIndexInPaths + startIndex < endIndex) {
+                        val vIndex = firstNotVisitedVertexIndexInPaths + startIndex
+                        val vPath = paths[vIndex - startIndex] ?: continue
+                        val v = verticesList[vIndex]
+                        for (e in outgoingIncidentEdgesOf(v)) {
+                            val newWeight = vPath.weight + e.weightOfType<Weight>()
+                            val u = e.end
+                            val uIndex = vertexIndex[u]
+                            check(uIndex >= vIndex) { "For some reason topological sorting returned incorrect result." }
+                            val uPath = paths[uIndex - startIndex]
+                            if (uPath == null || uPath.weight gt newWeight)
+                                paths[uIndex - startIndex] = Path(
+                                    weight = newWeight,
+                                    vertices = KoneList.generate(vPath.vertices.size + 1u) { if (it < vPath.vertices.size) vPath.vertices[it] else u },
+                                    edges = KoneList.generate(vPath.edges.size + 1u) { if (it < vPath.edges.size) vPath.edges[it] else e },
+                                )
                         }
+                        firstNotVisitedVertexIndexInPaths++
                     }
                     
                     return paths[endIndex - startIndex]
