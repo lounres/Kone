@@ -14,8 +14,10 @@ import dev.lounres.kone.collections.utils.sumOf
 import dev.lounres.kone.computationalGeometry.Dot
 import dev.lounres.kone.computationalGeometry.EuclideanSpaceOverField
 import dev.lounres.kone.computationalGeometry.EuclideanSpaceOverRing
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.utils.all
 import dev.lounres.kone.multidimensionalCollections.utils.map
@@ -168,7 +170,8 @@ public class EuclideanSpace2OverRing<Number>(
     }
     
     override val vectorDotVector: Dot<Vector2<Number>, Vector2<Number>, Number> = Dot { left, right ->
-        context(ring, ring.numberTimesNumber) { (0u ..< 2u).toKoneList().sumOf { left.content[it] * right.content[it] } }
+        KoneContext.unwrap(ring)
+        (0u ..< 2u).toKoneList().sumOf { left.content[it] * right.content[it] }
     }
     
     public companion object;

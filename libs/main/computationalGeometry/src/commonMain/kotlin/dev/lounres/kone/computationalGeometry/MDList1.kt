@@ -5,35 +5,19 @@
 
 package dev.lounres.kone.computationalGeometry
 
-import dev.lounres.kone.algebraic.Divide
-import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.IsZero
-import dev.lounres.kone.algebraic.Minus
-import dev.lounres.kone.algebraic.Plus
-import dev.lounres.kone.algebraic.Ring
-import dev.lounres.kone.algebraic.Times
-import dev.lounres.kone.algebraic.UnaryMinus
-import dev.lounres.kone.algebraic.div
-import dev.lounres.kone.algebraic.isZero
-import dev.lounres.kone.algebraic.minus
-import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.algebraic.unaryMinus
+import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.collections.interop.toKoneList
 import dev.lounres.kone.collections.utils.sumOf
+import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.multidimensionalCollections.MDList1
 import dev.lounres.kone.multidimensionalCollections.contentSize
 import dev.lounres.kone.multidimensionalCollections.generate
 import dev.lounres.kone.multidimensionalCollections.utils.all
 import dev.lounres.kone.multidimensionalCollections.utils.map
-import dev.lounres.kone.registry.MutableOwnedProviderRegistry
-import dev.lounres.kone.registry.RegisteredValueProvider
-import dev.lounres.kone.registry.cached
-import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.withImpliedUsingFirst
-import dev.lounres.kone.relations.eq
+import dev.lounres.kone.registry.*
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
 
@@ -164,7 +148,8 @@ private class MDList1EuclideanSpaceOverRing<Number>(
     override val vectorDotVector: Dot<MDList1<Number>, MDList1<Number>, Number> = Dot { left, right ->
         require(left.contentSize == dimension) { TODO() }
         require(right.contentSize == dimension) { TODO() }
-        context(ring, ring.numberTimesNumber) { (0u ..< dimension).toKoneList().sumOf { left[it] * right[it] } }
+        KoneContext.unwrap(ring)
+        (0u ..< dimension).toKoneList().sumOf { left[it] * right[it] }
     }
 }
 
@@ -326,7 +311,8 @@ private class MDList1EuclideanSpaceOverField<Number>(
     override val vectorDotVector: Dot<MDList1<Number>, MDList1<Number>, Number> = Dot { left, right ->
         require(left.contentSize == dimension) { TODO() }
         require(right.contentSize == dimension) { TODO() }
-        context(field, field.numberTimesNumber) { (0u ..< dimension).toKoneList().sumOf { left[it] * right[it] } }
+        KoneContext.unwrap(field)
+        (0u ..< dimension).toKoneList().sumOf { left[it] * right[it] }
     }
 }
 

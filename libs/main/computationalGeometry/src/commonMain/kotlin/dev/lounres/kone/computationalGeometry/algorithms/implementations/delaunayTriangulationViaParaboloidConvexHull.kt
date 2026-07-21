@@ -205,9 +205,8 @@ private class ParaboloidEuclideanSpaceOverRing<Number, Vector, Point>(
     }
     
     override val vectorDotVector: Dot<ParaboloidVector<Number, Vector>, ParaboloidVector<Number, Vector>, Number> = Dot { left, right ->
-        context(ring.numberPlusNumber, ring.numberTimesNumber) {
-            initialEuclideanSpaceOverRing.vectorDotVector { left.vector dot right.vector } + left.extraCoordinate * right.extraCoordinate
-        }
+        KoneContext.unwrap(ring, initialEuclideanSpaceOverRing)
+        (left.vector dot right.vector) + left.extraCoordinate * right.extraCoordinate
     }
 }
 
@@ -231,9 +230,9 @@ private class DelaunayTriangulationOverRingComputerViaConvexHull<@Supply Number,
     
     override fun KoneIterable<Point>.delaunayTriangulation(
         basis: ModuleBasis.Finite<Number, Vector>
-    ): PolytopicConstruction = context(ring, order, euclideanSpace, paraboloidEuclideanSpaceOverRing, paraboloidConvexHullOverRingComputer) {
+    ): PolytopicConstruction {
         require(this.isNotEmpty()) { "Can't construct Delaunay triangulation of an empty vertices collection." }
-        KoneContext.unwrap(ring, euclideanSpace, paraboloidEuclideanSpaceOverRing)
+        KoneContext.unwrap(ring, order, euclideanSpace, paraboloidEuclideanSpaceOverRing, paraboloidConvexHullOverRingComputer)
         
         val verticesDimension: UInt = basis.size
         
@@ -263,7 +262,7 @@ private class DelaunayTriangulationOverRingComputerViaConvexHull<@Supply Number,
             keyHashing = Hashing.defaultFor(),
         )
         
-        if (convexHull.dimension == verticesDimension)
+        return if (convexHull.dimension == verticesDimension)
             PolytopicConstruction.build {
                 for (dim in 0u ..< convexHull.dimension) for (face in convexHull.faces[dim]) {
                     val newFace = Polytope(

@@ -16,35 +16,18 @@ import dev.lounres.kone.collections.list.generate
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.collections.list.relations.equality
 import dev.lounres.kone.collections.list.relations.hashing
-import dev.lounres.kone.collections.map.KoneMap
-import dev.lounres.kone.collections.map.associate
-import dev.lounres.kone.collections.map.associateWith
-import dev.lounres.kone.collections.map.build
-import dev.lounres.kone.collections.map.get
-import dev.lounres.kone.collections.map.mapsTo
+import dev.lounres.kone.collections.map.*
 import dev.lounres.kone.collections.set.KoneMutableReifiedSet
 import dev.lounres.kone.collections.set.of
-import dev.lounres.kone.collections.utils.all
-import dev.lounres.kone.collections.utils.copyTo
-import dev.lounres.kone.collections.utils.map
-import dev.lounres.kone.collections.utils.mapIndexed
-import dev.lounres.kone.collections.utils.mapTo
-import dev.lounres.kone.collections.utils.plusAssign
-import dev.lounres.kone.collections.utils.single
-import dev.lounres.kone.collections.utils.sum
-import dev.lounres.kone.collections.utils.withIndex
+import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.combinatorics.enumerative.cartesianProduct
 import dev.lounres.kone.combinatorics.enumerative.permutationsWithoutRepetitions
-import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.contexts.unwrap
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.OwnedProviderRegistry
 import dev.lounres.kone.registry.build
-import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.Hashing
-import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.absoluteFor
-import dev.lounres.kone.relations.defaultFor
-import kotlin.apply
+import dev.lounres.kone.relations.*
 
 
 public fun Polytope.validate(): Boolean {
@@ -123,8 +106,10 @@ public fun simplexOn(vertices: KoneList<Polytope>): Polytope {
                             elementHashing = Hashing.defaultFor(),
                         )
                     }.apply {
-                        for (subflags in cartesianProduct(flags.map { (0u .. it).toKoneList() })) if (context(UInt.monoid()) { subflags.sum() } in 1u .. dim)
-                            this[context(UInt.monoid()) { subflags.sum() } - 1u].add(faces[context(UInt.monoid()) { subflags.sum() } - 1u][subflags])
+                        KoneContext.unwrap(UInt.monoid())
+                        for (subflags in cartesianProduct(flags.map { (0u .. it).toKoneList() }))
+                            if (subflags.sum() in 1u .. dim)
+                                this[subflags.sum() - 1u].add(faces[subflags.sum() - 1u][subflags])
                     }
                 )
         }

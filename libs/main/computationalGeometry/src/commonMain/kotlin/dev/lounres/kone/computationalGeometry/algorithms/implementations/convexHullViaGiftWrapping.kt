@@ -351,21 +351,20 @@ private class ConvexHullOverRingViaGiftWrappingComputer<Number, Vector, @Supply 
     ): Polytope {
         require(this.isNotEmpty()) { "Can't construct convex hull of an empty vertices collection." }
         val positionKey = Position<Point>()
-        return context(ring, order, euclideanSpaceOverRing) {
-            giftWrappingFull(
-                positionKey = positionKey,
-                basis = basis,
-                subspaceDimension = basis.size,
-                points = this.map {
-                    Polytope(
-                        dimension = 0u,
-                        faces = KoneList.empty(),
-                    ) {
-                        positionKey correspondsTo it
-                    }
-                },
-            ).polytope
-        }
+        KoneContext.unwrap(ring, order, euclideanSpaceOverRing)
+        return giftWrappingFull(
+            positionKey = positionKey,
+            basis = basis,
+            subspaceDimension = basis.size,
+            points = this.map {
+                Polytope(
+                    dimension = 0u,
+                    faces = KoneList.empty(),
+                ) {
+                    positionKey correspondsTo it
+                }
+            },
+        ).polytope
     }
 }
 
