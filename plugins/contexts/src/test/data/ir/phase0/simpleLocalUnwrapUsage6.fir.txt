@@ -1,4 +1,4 @@
-FILE: simpleKoneContextUnwrapUsage6.kt
+FILE: simpleLocalUnwrapUsage6.kt
     package foo.bar
 
     public abstract interface Bar : R|dev/lounres/kone/contexts/KoneContext| {

@@ -1,4 +1,4 @@
-FILE fqName:foo.bar fileName:/simplelocalReceiversUsage1.kt
+FILE fqName:foo.bar fileName:/simpleLocalReceiversUsage1.kt
   CLASS CLASS name:Baz modality:FINAL visibility:public superTypes:[dev.lounres.kone.contexts.KoneContext]
     thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Baz
     PROPERTY name:gee visibility:public modality:FINAL [val]

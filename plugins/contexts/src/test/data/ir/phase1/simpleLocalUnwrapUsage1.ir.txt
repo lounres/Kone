@@ -1,4 +1,4 @@
-FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage1.kt
+FILE fqName:foo.bar fileName:/simpleLocalUnwrapUsage1.kt
   CLASS CLASS name:Foo modality:FINAL visibility:public superTypes:[dev.lounres.kone.contexts.KoneContext]
     thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Foo<X of foo.bar.Foo>
     TYPE_PARAMETER name:X index:0 variance: superTypes:[kotlin.Any?] reified:false

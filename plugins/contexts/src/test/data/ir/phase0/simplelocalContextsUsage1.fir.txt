@@ -1,4 +1,4 @@
-FILE: simplelocalContextsUsage1.kt
+FILE: simpleLocalContextsUsage1.kt
     package foo.bar
 
     public final class Foo : R|dev/lounres/kone/contexts/KoneContext| {

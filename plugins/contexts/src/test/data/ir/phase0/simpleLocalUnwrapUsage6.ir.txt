@@ -1,4 +1,4 @@
-FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage6.kt
+FILE fqName:foo.bar fileName:/simpleLocalUnwrapUsage6.kt
   CLASS CLASS name:Baz modality:FINAL visibility:public superTypes:[foo.bar.Bar]
     thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Baz
     PROPERTY name:baz visibility:public modality:FINAL [val]

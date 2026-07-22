@@ -1,4 +1,4 @@
-FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage2.kt
+FILE fqName:foo.bar fileName:/simpleLocalUnwrapUsage2.kt
   CLASS INTERFACE name:CoolContext modality:ABSTRACT visibility:public [fun] superTypes:[kotlin.Any]
     thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.CoolContext<X of foo.bar.CoolContext>
     TYPE_PARAMETER name:X index:0 variance: superTypes:[kotlin.Any?] reified:false

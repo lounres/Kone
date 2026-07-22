@@ -1,4 +1,4 @@
-FILE fqName:foo.bar fileName:/simpleKoneContextUnwrapUsage9.kt
+FILE fqName:foo.bar fileName:/simpleLocalUnwrapUsage9.kt
   CLASS INTERFACE name:Group modality:ABSTRACT visibility:public superTypes:[foo.bar.Semigroup<Number of foo.bar.Group>]
     thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Group<Number of foo.bar.Group>
     TYPE_PARAMETER name:Number index:0 variance: superTypes:[kotlin.Any?] reified:false
