@@ -16,6 +16,7 @@ class FirContextsExtensionRegistrar : FirExtensionRegistrar() {
         +::FirLocalReceiversExpressionResolutionExtension
         +::FirLocalContextsExpressionResolutionExtension
         +::FirLocalUnwrapExpressionResolutionExtension
+        +::FirKoneLocalUnwrapExpressionResolutionExtension
         +::FirContextArgumentCleaner
         
 //        registerDiagnosticContainers(SuppliedTypeCheckersExtension.Errors)

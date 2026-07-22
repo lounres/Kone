@@ -13,6 +13,7 @@ class DeclarationExtensionRegistrar : FirExtensionRegistrar() {
         +::FirLocalReceiversExpressionResolutionExtension
         +::FirLocalContextsExpressionResolutionExtension
         +::FirLocalUnwrapExpressionResolutionExtension
+        +::FirKoneLocalUnwrapExpressionResolutionExtension
         +::FirContextArgumentCleaner
     }
 }

@@ -11,7 +11,9 @@ import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
 import org.jetbrains.kotlin.ir.builders.Scope
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.expressions.*
+import org.jetbrains.kotlin.ir.expressions.impl.IrCallImpl
 import org.jetbrains.kotlin.ir.expressions.impl.IrGetValueImpl
+import org.jetbrains.kotlin.ir.expressions.impl.fromSymbolOwner
 import org.jetbrains.kotlin.ir.symbols.*
 import org.jetbrains.kotlin.ir.types.*
 import org.jetbrains.kotlin.ir.util.properties
@@ -191,6 +193,33 @@ class ContextsFakeValueParametersReplacementTransformer(
                         if (holder !is IrExpression) continue
                         
                         val newContextVariables = irExpressionsToUnwrapProvider[declarationSymbolsStack.last(), holder]
+                        for (variable in newContextVariables) iterator.add(variable.variable)
+                        expressions.addAll(newContextVariables)
+                    }
+                }
+                irRuntimeReferences.koneLocalUnwrapIrSimpleFunctionSymbol -> {
+                    iterator.remove()
+                    check(newStatement.arguments.size == 2)
+                    val koneContextRegistryExpression = newStatement.arguments[0]!!
+                    val vararg = newStatement.arguments[1] as IrVararg
+                    val declarationSymbol = declarationSymbolsStack.last()
+                    val koneContextRegistryVariable = Scope(declarationSymbol).createTemporaryVariable(koneContextRegistryExpression)
+                    iterator.add(koneContextRegistryVariable)
+                    for (holder in vararg.elements) {
+                        if (holder !is IrExpression) continue
+                        val holderRegistryKeyTypeArgument = holder.type.registryKeyTypeArgument() ?: continue
+                        val koneContext = IrCallImpl.fromSymbolOwner(
+                            startOffset = UNDEFINED_OFFSET,
+                            endOffset = UNDEFINED_OFFSET,
+                            type = holderRegistryKeyTypeArgument,
+                            symbol = irRuntimeReferences.registryGetIrSimpleFunctionSymbol,
+                        ).apply {
+                            typeArguments[0] = holderRegistryKeyTypeArgument
+                            arguments[0] = IrGetValueImpl(UNDEFINED_OFFSET, UNDEFINED_OFFSET, koneContextRegistryVariable.symbol)
+                            arguments[1] = holder
+                        }
+                        
+                        val newContextVariables = irExpressionsToUnwrapProvider[declarationSymbol, koneContext]
                         for (variable in newContextVariables) iterator.add(variable.variable)
                         expressions.addAll(newContextVariables)
                     }

@@ -12,26 +12,34 @@ import org.jetbrains.kotlin.name.Name
 
 
 const val koneContextsPackageFQNameString = "dev.lounres.kone.contexts"
+const val koneRegistryPackageFQNameString = "dev.lounres.kone.registry"
 // Library
 const val koneContextClassShortNameString = "KoneContext"
+const val registryClassShortNameString = "Registry"
+const val registryKeyClassShortNameString = "RegistryKey"
 // Public runtime
 const val koneContextIncludeAnnotationShortNameString = "KoneContextInclude"
 const val koneContextExcludeAnnotationShortNameString = "KoneContextExclude"
 const val localReceiversFunctionShortNameString = "localReceivers"
 const val localContextsFunctionShortNameString = "localContexts"
 const val localUnwrapFunctionShortNameString = "localUnwrap"
+const val koneLocalUnwrapFunctionShortNameString = "koneLocalUnwrap"
 //const val contextsFunctionShortNameString = "contexts"
 // Private runtime
 
 val koneContextsPackageFQName = FqName(koneContextsPackageFQNameString)
+val koneRegistryPackageFQName = FqName(koneRegistryPackageFQNameString)
 // Library
 val koneContextClassShortName = FqName(koneContextClassShortNameString)
+val registryClassShortName = FqName(registryClassShortNameString)
+val registryKeyClassShortName = FqName(registryKeyClassShortNameString)
 // Public runtime
 val koneContextIncludeAnnotationShortName = FqName(koneContextIncludeAnnotationShortNameString)
 val koneContextExcludeAnnotationShortName = FqName(koneContextExcludeAnnotationShortNameString)
 val localReceiversFunctionShortName = Name.identifier(localReceiversFunctionShortNameString)
 val localContextsFunctionShortName = Name.identifier(localContextsFunctionShortNameString)
 val localUnwrapFunctionShortName = Name.identifier(localUnwrapFunctionShortNameString)
+val koneLocalUnwrapFunctionShortName = Name.identifier(koneLocalUnwrapFunctionShortNameString)
 //val contextsFunctionShortName = Name.identifier(contextsFunctionShortNameString)
 // Private runtime
 
@@ -39,6 +47,16 @@ val localUnwrapFunctionShortName = Name.identifier(localUnwrapFunctionShortNameS
 val koneContextClassId = ClassId(
     packageFqName = koneContextsPackageFQName,
     relativeClassName = koneContextClassShortName,
+    isLocal = false
+)
+val registryClassId = ClassId(
+    packageFqName = koneRegistryPackageFQName,
+    relativeClassName = registryClassShortName,
+    isLocal = false
+)
+val registryKeyClassId = ClassId(
+    packageFqName = koneRegistryPackageFQName,
+    relativeClassName = registryKeyClassShortName,
     isLocal = false
 )
 // Public runtime
@@ -66,6 +84,11 @@ val localUnwrapFunctionCallableId = CallableId(
     packageName = koneContextsPackageFQName,
     className = null,
     callableName = localUnwrapFunctionShortName,
+)
+val koneLocalUnwrapFunctionCallableId = CallableId(
+    packageName = koneContextsPackageFQName,
+    className = null,
+    callableName = koneLocalUnwrapFunctionShortName,
 )
 //val contextsFunctionCallableId = CallableId(
 //    packageName = koneContextsPackageFQName,

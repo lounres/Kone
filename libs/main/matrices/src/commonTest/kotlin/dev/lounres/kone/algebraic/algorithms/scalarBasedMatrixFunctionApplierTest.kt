@@ -21,7 +21,7 @@ import dev.lounres.kone.collections.utils.withIndex
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.buildWithProvider
-import dev.lounres.kone.contexts.koneContext
+import dev.lounres.kone.contexts.koneLocalUnwrap
 import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
@@ -733,67 +733,66 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
         }
         
         for (algorithm in algorithms) testSuite(algorithm.name) {
-            algorithm.koneContextRegistry.koneContext(
+            algorithm.koneContextRegistry.koneLocalUnwrap(
                 Field.Key<Number>(),
                 Order.Key<Number>(),
                 PositiveSquareRootComputer.Key<Number>(),
                 FieldExtension.Key<Number, ComplexNumber<Number>>(),
                 SchurDecompositionComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(),
                 ScalarBasedMatrixFunctionApplier.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>, ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>>(),
-            ) {
-                for ((val index, val input = value) in inputs.withIndex()) testSuite("input #$index") {
-                    (val input, val exponentOutput, val squareOutput) = input
-                    test("exponent") {
-                        AssertionScope.withClue(
-                            {
-                                buildString {
-                                    appendLine("Input:")
-                                    appendLine(input.toMatrixString())
-                                }
+            )
+            for ((val index, val input = value) in inputs.withIndex()) testSuite("input #$index") {
+                (val input, val exponentOutput, val squareOutput) = input
+                test("exponent") {
+                    AssertionScope.withClue(
+                        {
+                            buildString {
+                                appendLine("Input:")
+                                appendLine(input.toMatrixString())
                             }
-                        ) {
-                            Expect.notToThrow({ exponentFunction(input) }) {
-                                val result = exposeValue()
-                                withClue(
-                                    {
-                                        buildString {
-                                            appendLine("Expected exponent output:")
-                                            appendLine(exponentOutput.toMatrixString())
-                                            appendLine()
-                                            appendLine("Actual exponent output:")
-                                            appendLine(result.toMatrixString())
-                                        }
+                        }
+                    ) {
+                        Expect.notToThrow({ exponentFunction(input) }) {
+                            val result = exposeValue()
+                            withClue(
+                                {
+                                    buildString {
+                                        appendLine("Expected exponent output:")
+                                        appendLine(exponentOutput.toMatrixString())
+                                        appendLine()
+                                        appendLine("Actual exponent output:")
+                                        appendLine(result.toMatrixString())
                                     }
-                                ) {
-                                    Expect.of(result).toBeEqualToWithLinearTolerance(exponentOutput, 1E-10, 1E-15)
                                 }
+                            ) {
+                                Expect.of(result).toBeEqualToWithLinearTolerance(exponentOutput, 1E-10, 1E-15)
                             }
                         }
                     }
-                    test("square") {
-                        AssertionScope.withClue(
-                            {
-                                buildString {
-                                    appendLine("Input:")
-                                    appendLine(input.toMatrixString())
-                                }
+                }
+                test("square") {
+                    AssertionScope.withClue(
+                        {
+                            buildString {
+                                appendLine("Input:")
+                                appendLine(input.toMatrixString())
                             }
-                        ) {
-                            Expect.notToThrow({ squareFunction(input) }) {
-                                val result = exposeValue()
-                                withClue(
-                                    {
-                                        buildString {
-                                            appendLine("Expected output:")
-                                            appendLine(squareOutput.toMatrixString())
-                                            appendLine()
-                                            appendLine("Actual output:")
-                                            appendLine(result.toMatrixString())
-                                        }
+                        }
+                    ) {
+                        Expect.notToThrow({ squareFunction(input) }) {
+                            val result = exposeValue()
+                            withClue(
+                                {
+                                    buildString {
+                                        appendLine("Expected output:")
+                                        appendLine(squareOutput.toMatrixString())
+                                        appendLine()
+                                        appendLine("Actual output:")
+                                        appendLine(result.toMatrixString())
                                     }
-                                ) {
-                                    Expect.of(result).toBeEqualToWithLinearTolerance(squareOutput, 1E-10, 1E-15)
                                 }
+                            ) {
+                                Expect.of(result).toBeEqualToWithLinearTolerance(squareOutput, 1E-10, 1E-15)
                             }
                         }
                     }

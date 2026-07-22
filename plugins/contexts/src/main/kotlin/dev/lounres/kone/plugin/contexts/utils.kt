@@ -27,5 +27,6 @@ val koneLocalUnwrapActualValueParameterName = Name.special(koneLocalUnwrapActual
 val fakeValueParametersNameStrings = setOf<String>(
     localReceiversFakeValueParameterNameString,
     localContextsFakeValueParameterNameString,
-    localUnwrapFakeValueParameterNameString
+    localUnwrapFakeValueParameterNameString,
+    koneLocalUnwrapFakeValueParameterNameString,
 )

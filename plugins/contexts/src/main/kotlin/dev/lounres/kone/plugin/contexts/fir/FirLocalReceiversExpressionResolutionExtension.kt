@@ -47,8 +47,8 @@ class FirLocalReceiversExpressionResolutionExtension(session: FirSession) : FirE
         containingCallableSymbol: FirBasedSymbol<*>,
     ): List<ImplicitExtensionReceiverValue> {
         if (functionCall.calleeReference.resolved?.resolvedSymbol != localReceiversFirFunctionSymbol) return emptyList()
-        check(functionCall.arguments.size <= 1)
-        val varargArgument = (functionCall.arguments.getOrNull(0) ?: return emptyList()) as FirVarargArgumentsExpression
+        if (functionCall.arguments.size != 1) return emptyList()
+        val varargArgument = functionCall.arguments[0] as FirVarargArgumentsExpression
         val contextsToUse = varargArgument.arguments.map { it.resolvedType }
         val fakeValueParameter = buildValueParameter {
             resolvePhase = FirResolvePhase.BODY_RESOLVE

@@ -18,7 +18,7 @@ import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.utils.withIndex
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.buildWithProvider
-import dev.lounres.kone.contexts.koneContext
+import dev.lounres.kone.contexts.koneLocalUnwrap
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
 import dev.lounres.kone.registry.RegisteredValueProvider
@@ -621,38 +621,37 @@ val ExponentMatrixTests by testSuite {
         )
         
         for (algorithm in algorithms) testSuite(algorithm.name) {
-            algorithm.koneContextRegistry.koneContext(
+            algorithm.koneContextRegistry.koneLocalUnwrap(
                 Field.Key<Number>(),
                 Order.Key<Number>(),
                 PositiveSquareRootComputer.Key<Number>(),
                 FieldExtension.Key<Number, ComplexNumber<Number>>(),
                 ExponentComputer.Key<MDList2<ComplexNumber<Number>>>(),
-            ) {
-                for ((val index, val input = value) in inputs.withIndex()) test("input #$index") {
-                    (val input, val exponentOutput) = input
-                    AssertionScope.withClue(
-                        {
-                            buildString {
-                                appendLine("Input:")
-                                appendLine(input.toMatrixString())
-                            }
+            )
+            for ((index, input = value) in inputs.withIndex()) test("input #$index") {
+                val (input, exponentOutput) = input
+                AssertionScope.withClue(
+                    {
+                        buildString {
+                            appendLine("Input:")
+                            appendLine(input.toMatrixString())
                         }
-                    ) {
-                        Expect.notToThrow({ input.exponent() }) {
-                            val result = exposeValue()
-                            withClue(
-                                {
-                                    buildString {
-                                        appendLine("Expected exponent output:")
-                                        appendLine(exponentOutput.toMatrixString())
-                                        appendLine()
-                                        appendLine("Actual exponent output:")
-                                        appendLine(result.toMatrixString())
-                                    }
+                    }
+                ) {
+                    Expect.notToThrow({ input.exponent() }) {
+                        val result = exposeValue()
+                        withClue(
+                            {
+                                buildString {
+                                    appendLine("Expected exponent output:")
+                                    appendLine(exponentOutput.toMatrixString())
+                                    appendLine()
+                                    appendLine("Actual exponent output:")
+                                    appendLine(result.toMatrixString())
                                 }
-                            ) {
-                                Expect.of(result).toBeEqualToWithLinearTolerance(exponentOutput, 1E-10, 1E-15)
                             }
+                        ) {
+                            Expect.of(result).toBeEqualToWithLinearTolerance(exponentOutput, 1E-10, 1E-15)
                         }
                     }
                 }

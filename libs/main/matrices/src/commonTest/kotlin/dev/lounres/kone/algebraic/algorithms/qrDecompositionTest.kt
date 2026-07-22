@@ -24,7 +24,7 @@ import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.utils.withIndex
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.buildWithProvider
-import dev.lounres.kone.contexts.koneContext
+import dev.lounres.kone.contexts.koneLocalUnwrap
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
 import dev.lounres.kone.registry.RegisteredValueProvider
@@ -243,7 +243,7 @@ val QRDecompositionImplementationsTests by testSuite {
         )
         
         for (algorithm in algorithms) testSuite(algorithm.name) {
-            algorithm.koneContextRegistry.koneContext(
+            algorithm.koneContextRegistry.koneLocalUnwrap(
                 Field.Key<Number>(),
                 Order.Key<Number>(),
                 MatrixCategoryOverField.Key<Number, MDList2<Number>>(),
@@ -251,42 +251,41 @@ val QRDecompositionImplementationsTests by testSuite {
                 TransposeMatrixComputer.Key<Number, MDList2<Number>>(),
                 InverseMatrixComputer.Key<Number, MDList2<Number>>(),
                 QRDecompositionComputer.Key<Number, MDList2<Number>>(),
-            ) {
-                for ((val index, val input = value) in inputs.withIndex()) test("input #$index") {
-                    AssertionScope.withClue(
-                        {
-                            buildString {
-                                appendLine("Received the following matrix to decompose.")
-                                appendLine()
-                                appendLine("Input:")
-                                appendLine(input.toMatrixString())
-                            }
+            )
+            for ((val index, val input = value) in inputs.withIndex()) test("input #$index") {
+                AssertionScope.withClue(
+                    {
+                        buildString {
+                            appendLine("Received the following matrix to decompose.")
+                            appendLine()
+                            appendLine("Input:")
+                            appendLine(input.toMatrixString())
                         }
-                    ) {
-                        Expect.notToThrow({ input.qrDecomposition() }) {
-                            (val q = leftUnitary, val r = rightUpperTriangular) = exposeValue()
-                            withClue(
-                                {
-                                    buildString {
-                                        appendLine("Received the following matrices to check.")
-                                        appendLine()
-                                        appendLine("Q:")
-                                        appendLine(q.toMatrixString())
-                                        appendLine("R:")
-                                        appendLine(r.toMatrixString())
-                                    }
+                    }
+                ) {
+                    Expect.notToThrow({ input.qrDecomposition() }) {
+                        (val q = leftUnitary, val r = rightUpperTriangular) = exposeValue()
+                        withClue(
+                            {
+                                buildString {
+                                    appendLine("Received the following matrices to check.")
+                                    appendLine()
+                                    appendLine("Q:")
+                                    appendLine(q.toMatrixString())
+                                    appendLine("R:")
+                                    appendLine(r.toMatrixString())
                                 }
-                            ) {
-                                softly {
-                                    withClue("Input differs from QR.") {
-                                        Expect.of(q * r).toBeEqualToWithTolerance(input, 1E-10)
-                                    }
-                                    withClue("R is not upper-triangular.") {
-                                        Expect.of(r).toBeUpperTriangularMatrix()
-                                    }
-                                    withClue("Q is not unitary.") {
-                                        Expect.of(q.transpose()).toBeEqualToWithTolerance(q.invert()!!, 1E-10)
-                                    }
+                            }
+                        ) {
+                            softly {
+                                withClue("Input differs from QR.") {
+                                    Expect.of(q * r).toBeEqualToWithTolerance(input, 1E-10)
+                                }
+                                withClue("R is not upper-triangular.") {
+                                    Expect.of(r).toBeUpperTriangularMatrix()
+                                }
+                                withClue("Q is not unitary.") {
+                                    Expect.of(q.transpose()).toBeEqualToWithTolerance(q.invert()!!, 1E-10)
                                 }
                             }
                         }
@@ -567,7 +566,7 @@ val QRDecompositionImplementationsTests by testSuite {
         )
         
         for (algorithm in algorithms) testSuite(algorithm.name) {
-            algorithm.koneContextRegistry.koneContext(
+            algorithm.koneContextRegistry.koneLocalUnwrap(
                 Field.Key<Number>(),
                 Order.Key<Number>(),
                 PositiveSquareRootComputer.Key<Number>(),
@@ -577,42 +576,41 @@ val QRDecompositionImplementationsTests by testSuite {
                 ConjugateTransposeMatrixComputer.Key<Number, MDList2<ComplexNumber<Number>>>(),
                 InverseMatrixComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(),
                 QRDecompositionComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(),
-            ) {
-                for ((val index, val input = value) in inputs.withIndex()) test("input #$index") {
-                    AssertionScope.withClue(
-                        {
-                            buildString {
-                                appendLine("Received the following matrix to decompose.")
-                                appendLine()
-                                appendLine("Input:")
-                                appendLine(input.toMatrixString())
-                            }
+            )
+            for ((val index, val input = value) in inputs.withIndex()) test("input #$index") {
+                AssertionScope.withClue(
+                    {
+                        buildString {
+                            appendLine("Received the following matrix to decompose.")
+                            appendLine()
+                            appendLine("Input:")
+                            appendLine(input.toMatrixString())
                         }
-                    ) {
-                        Expect.notToThrow({ input.qrDecomposition() }) {
-                            (val q = leftUnitary, val r = rightUpperTriangular) = exposeValue()
-                            withClue(
-                                {
-                                    buildString {
-                                        appendLine("Received the following matrices to check.")
-                                        appendLine()
-                                        appendLine("Q:")
-                                        appendLine(q.toMatrixString())
-                                        appendLine("R:")
-                                        appendLine(r.toMatrixString())
-                                    }
+                    }
+                ) {
+                    Expect.notToThrow({ input.qrDecomposition() }) {
+                        (val q = leftUnitary, val r = rightUpperTriangular) = exposeValue()
+                        withClue(
+                            {
+                                buildString {
+                                    appendLine("Received the following matrices to check.")
+                                    appendLine()
+                                    appendLine("Q:")
+                                    appendLine(q.toMatrixString())
+                                    appendLine("R:")
+                                    appendLine(r.toMatrixString())
                                 }
-                            ) {
-                                softly {
-                                    withClue("Input differs from QR.") {
-                                        Expect.of(q * r).toBeEqualToWithTolerance(input, 1E-10)
-                                    }
-                                    withClue("R is not upper-triangular.") {
-                                        Expect.of(r).toBeUpperTriangularMatrix()
-                                    }
-                                    withClue("Q is not unitary.") {
-                                        Expect.of(q.conjugateTranspose()).toBeEqualToWithTolerance(q.invert()!!, 1E-10)
-                                    }
+                            }
+                        ) {
+                            softly {
+                                withClue("Input differs from QR.") {
+                                    Expect.of(q * r).toBeEqualToWithTolerance(input, 1E-10)
+                                }
+                                withClue("R is not upper-triangular.") {
+                                    Expect.of(r).toBeUpperTriangularMatrix()
+                                }
+                                withClue("Q is not unitary.") {
+                                    Expect.of(q.conjugateTranspose()).toBeEqualToWithTolerance(q.invert()!!, 1E-10)
                                 }
                             }
                         }
