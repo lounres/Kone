@@ -15,7 +15,6 @@ import dev.lounres.kone.collections.utils.sumOf
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.localContexts
 import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.relations.equality
@@ -58,7 +57,7 @@ private class SchurDecompositionComputerViaGolubVanLoan<Number, Matrix : MDList2
         val h = SettableMDList2.generate(n, n) { row, column -> h0[row, column] }
         
         scope {
-            localContexts(
+            KoneContext.localUnwrap(
                 numberField,
                 numberOrder,
                 positiveSquareRootComputer,
@@ -66,7 +65,6 @@ private class SchurDecompositionComputerViaGolubVanLoan<Number, Matrix : MDList2
                 matrixProductComputer,
                 transposeMatrixComputer,
             )
-            KoneContext.localUnwrap(numberField, matrixCategoryOverField)
             
             var k = 0u
             

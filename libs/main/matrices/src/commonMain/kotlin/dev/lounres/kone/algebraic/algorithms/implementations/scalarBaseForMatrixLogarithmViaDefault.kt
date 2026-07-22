@@ -5,22 +5,14 @@
 
 package dev.lounres.kone.algebraic.algorithms.implementations
 
-import dev.lounres.kone.algebraic.ComplexNumber
-import dev.lounres.kone.algebraic.Field
-import dev.lounres.kone.algebraic.FieldExtension
-import dev.lounres.kone.algebraic.absoluteValue
+import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.algorithms.*
 import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
-import dev.lounres.kone.algebraic.argument
-import dev.lounres.kone.algebraic.norm
-import dev.lounres.kone.algebraic.pow
-import dev.lounres.kone.algebraic.reciprocal
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.utils.maxOf
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.contexts.localContexts
 import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.registry.*
 import dev.lounres.kone.relations.Order
@@ -100,8 +92,7 @@ public object ScalarBaseForMatrixFunctionLogarithmViaDefaultSuppliableTopLevelFu
             else context(complexNumberFieldExtension.numberReciprocal, complexNumberFieldExtension.powerNumberUInt) { value.reciprocal().pow(derivativeOrder) }
         
         override fun bound(derivativeOrder: UInt, convexHullVertices: KoneIterable<ComplexNumber<Number>>): Number {
-            localContexts(order, numberField, positiveSquareRootComputer, logarithmComputer, planarVectorArgumentComputer)
-            KoneContext.localUnwrap(numberField)
+            KoneContext.localUnwrap(order, numberField, positiveSquareRootComputer, logarithmComputer, planarVectorArgumentComputer)
             
             return if (derivativeOrder == 0u) convexHullVertices.maxOf<_, Number> { ComplexNumber(it.absoluteValue().logarithm(), it.argument()).norm() }.positiveSquareRoot()
             else convexHullVertices.maxOf<_, Number> { it.norm() }.positiveSquareRoot().reciprocal().pow(derivativeOrder)

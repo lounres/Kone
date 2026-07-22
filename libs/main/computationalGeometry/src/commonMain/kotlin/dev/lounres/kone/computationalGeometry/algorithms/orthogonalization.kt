@@ -17,7 +17,6 @@ import dev.lounres.kone.collections.list.implementations.generate
 import dev.lounres.kone.computationalGeometry.EuclideanVectorSpaceOverRing
 import dev.lounres.kone.computationalGeometry.dot
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.contexts.localContexts
 import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.repeat
 
@@ -55,7 +54,7 @@ internal fun <Number, Vector> GramSchmidtOrthogonalizationIntermediateState<Numb
 
 context(ring: Ring<Number>, euclideanSpace: EuclideanVectorSpaceOverRing<Number, Vector>)
 internal fun <Number, Vector> GramSchmidtOrthogonalizationIntermediateState<Number, Vector>.gramSchmidtOrthogonalizationExtension(newOrthogonalizedVector: Vector) {
-    localContexts(ring.numberTimesNumber, euclideanSpace.vectorDotVector)
+    KoneContext.localUnwrap(ring, euclideanSpace)
     val newIndex = orthogonalizedBasis.size
     orthogonalizedBasis.add(newOrthogonalizedVector)
     val currentNorm = newOrthogonalizedVector dot newOrthogonalizedVector
@@ -66,7 +65,7 @@ internal fun <Number, Vector> GramSchmidtOrthogonalizationIntermediateState<Numb
 
 context(_: Ring<Number>, euclideanSpace: EuclideanVectorSpaceOverRing<Number, Vector>)
 internal fun <Number, Vector> GramSchmidtOrthogonalizationIntermediateState<Number, Vector>.gramSchmidtOrthogonalizationStep(newVector: Vector) {
-    localContexts(euclideanSpace.numberIsZero)
+    KoneContext.localUnwrap(euclideanSpace)
     val orthogonalizedVector = gramSchmidtOrthogonalizationUsage(newVector)
     if (orthogonalizedVector.isNotZero()) gramSchmidtOrthogonalizationExtension(orthogonalizedVector)
 }
