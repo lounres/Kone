@@ -95,88 +95,91 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>, Function : ScalarBa
     blockingParameter = blockingParameter,
 )
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>, @Supply Function : ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>> ScalarBasedMatrixFunctionApplier.Companion.viaSchurParlettForComplexNumbers(
-    atomicBlockImageComputationTolerance: Number,
-    blockingParameter: Number,
-): ScalarBasedMatrixFunctionApplier<ComplexNumber<Number>, Matrix, Function> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return viaSchurParlettForComplexNumbers(
-        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, Matrix>()) {
-            "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
-        },
-        field = koneContextRegistry.requestFor(Field.Key<Number>()) {
-            "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
-        },
-        order = koneContextRegistry.requestFor(Order.Key<Number>()) {
-            "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
-        },
-        complexNumberField = koneContextRegistry.requestFor(Field.Key<ComplexNumber<Number>>()) {
-            "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
-        },
-        matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<ComplexNumber<Number>, Matrix>()) {
-            "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
-        },
-        matrixProductComputer = koneContextRegistry.requestFor(MatrixProductComputer.Key<ComplexNumber<Number>, Matrix>()) {
-            "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
-        },
-        inverseMatrixComputer = koneContextRegistry.requestFor(InverseMatrixComputer.Key<ComplexNumber<Number>, Matrix>()) {
-            "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
-        },
-        schurDecompositionComputer = koneContextRegistry.requestFor(SchurDecompositionComputer.Key<ComplexNumber<Number>, Matrix>()) {
-            "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
-        },
-        isDiagonalMatrixChecker = koneContextRegistry.requestFor(IsDiagonalMatrixChecker.Key<ComplexNumber<Number>, Matrix>()) {
-            "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
-        },
-        atomicBlockImageComputationTolerance = atomicBlockImageComputationTolerance,
-        blockingParameter = blockingParameter,
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>, @Supply Function : ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>> ScalarBasedMatrixFunctionApplier.Companion.setViaSchurParlettForComplexNumbers(
-    matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
-    field: Field<Number>,
-    order: Order<Number>,
-    complexNumberField: Field<ComplexNumber<Number>>,
-    matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, Matrix>,
-    matrixProductComputer: MatrixProductComputer<ComplexNumber<Number>, Matrix>,
-    inverseMatrixComputer: InverseMatrixComputer<ComplexNumber<Number>, Matrix>,
-    schurDecompositionComputer: SchurDecompositionComputer<ComplexNumber<Number>, Matrix>,
-    isDiagonalMatrixChecker: IsDiagonalMatrixChecker<ComplexNumber<Number>, Matrix>,
-    atomicBlockImageComputationTolerance: Number,
-    blockingParameter: Number,
-) {
-    ScalarBasedMatrixFunctionApplier.Key<ComplexNumber<Number>, Matrix, Function>() correspondsTo RegisteredValueProvider.cached {
-        viaSchurParlettForComplexNumbers<Number, Matrix, Function>(
-            matrixFactory = matrixFactory,
-            field = field,
-            order = order,
-            complexNumberField = complexNumberField,
-            matrixCategoryOverField = matrixCategoryOverField,
-            matrixProductComputer = matrixProductComputer,
-            inverseMatrixComputer = inverseMatrixComputer,
-            schurDecompositionComputer = schurDecompositionComputer,
-            isDiagonalMatrixChecker = isDiagonalMatrixChecker,
+// TODO: Remove the checker when KT-73135 will be fixed
+public object ScalarBasedMatrixFunctionApplierSchurParlettForComplexNumbersSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>, @Supply Function : ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>> ScalarBasedMatrixFunctionApplier.Companion.viaSchurParlettForComplexNumbers(
+        atomicBlockImageComputationTolerance: Number,
+        blockingParameter: Number,
+    ): ScalarBasedMatrixFunctionApplier<ComplexNumber<Number>, Matrix, Function> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return viaSchurParlettForComplexNumbers(
+            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, Matrix>()) {
+                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
+            },
+            field = koneContextRegistry.requestFor(Field.Key<Number>()) {
+                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
+            },
+            order = koneContextRegistry.requestFor(Order.Key<Number>()) {
+                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
+            },
+            complexNumberField = koneContextRegistry.requestFor(Field.Key<ComplexNumber<Number>>()) {
+                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
+            },
+            matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<ComplexNumber<Number>, Matrix>()) {
+                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
+            },
+            matrixProductComputer = koneContextRegistry.requestFor(MatrixProductComputer.Key<ComplexNumber<Number>, Matrix>()) {
+                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
+            },
+            inverseMatrixComputer = koneContextRegistry.requestFor(InverseMatrixComputer.Key<ComplexNumber<Number>, Matrix>()) {
+                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
+            },
+            schurDecompositionComputer = koneContextRegistry.requestFor(SchurDecompositionComputer.Key<ComplexNumber<Number>, Matrix>()) {
+                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
+            },
+            isDiagonalMatrixChecker = koneContextRegistry.requestFor(IsDiagonalMatrixChecker.Key<ComplexNumber<Number>, Matrix>()) {
+                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
+            },
             atomicBlockImageComputationTolerance = atomicBlockImageComputationTolerance,
             blockingParameter = blockingParameter,
         )
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>, @Supply Function : ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>> ScalarBasedMatrixFunctionApplier.Companion.setViaSchurParlettForComplexNumbers(
-    atomicBlockImageComputationTolerance: Number,
-    blockingParameter: Number,
-) {
-    ScalarBasedMatrixFunctionApplier.Key<ComplexNumber<Number>, Matrix, Function>() correspondsTo RegisteredValueProvider.cached {
-        viaSchurParlettForComplexNumbers<Number, Matrix, Function>(
-            atomicBlockImageComputationTolerance = atomicBlockImageComputationTolerance,
-            blockingParameter = blockingParameter,
-        )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>, @Supply Function : ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>> ScalarBasedMatrixFunctionApplier.Companion.setViaSchurParlettForComplexNumbers(
+        matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
+        field: Field<Number>,
+        order: Order<Number>,
+        complexNumberField: Field<ComplexNumber<Number>>,
+        matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, Matrix>,
+        matrixProductComputer: MatrixProductComputer<ComplexNumber<Number>, Matrix>,
+        inverseMatrixComputer: InverseMatrixComputer<ComplexNumber<Number>, Matrix>,
+        schurDecompositionComputer: SchurDecompositionComputer<ComplexNumber<Number>, Matrix>,
+        isDiagonalMatrixChecker: IsDiagonalMatrixChecker<ComplexNumber<Number>, Matrix>,
+        atomicBlockImageComputationTolerance: Number,
+        blockingParameter: Number,
+    ) {
+        ScalarBasedMatrixFunctionApplier.Key<ComplexNumber<Number>, Matrix, Function>() correspondsTo RegisteredValueProvider.cached {
+            viaSchurParlettForComplexNumbers<Number, Matrix, Function>(
+                matrixFactory = matrixFactory,
+                field = field,
+                order = order,
+                complexNumberField = complexNumberField,
+                matrixCategoryOverField = matrixCategoryOverField,
+                matrixProductComputer = matrixProductComputer,
+                inverseMatrixComputer = inverseMatrixComputer,
+                schurDecompositionComputer = schurDecompositionComputer,
+                isDiagonalMatrixChecker = isDiagonalMatrixChecker,
+                atomicBlockImageComputationTolerance = atomicBlockImageComputationTolerance,
+                blockingParameter = blockingParameter,
+            )
+        }
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>, @Supply Function : ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number>> ScalarBasedMatrixFunctionApplier.Companion.setViaSchurParlettForComplexNumbers(
+        atomicBlockImageComputationTolerance: Number,
+        blockingParameter: Number,
+    ) {
+        ScalarBasedMatrixFunctionApplier.Key<ComplexNumber<Number>, Matrix, Function>() correspondsTo RegisteredValueProvider.cached {
+            viaSchurParlettForComplexNumbers<Number, Matrix, Function>(
+                atomicBlockImageComputationTolerance = atomicBlockImageComputationTolerance,
+                blockingParameter = blockingParameter,
+            )
+        }
     }
 }

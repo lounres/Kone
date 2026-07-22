@@ -466,20 +466,23 @@ private class ComplexNumberFieldExtension<Number>(
 public fun <Number> ComplexNumber.Companion.fieldExtensionOver(numberField: Field<Number>): FieldExtension<Number, ComplexNumber<Number>> =
     ComplexNumberFieldExtension(numberField)
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number> ComplexNumber.Companion.fieldExtensionOver(): FieldExtension<Number, ComplexNumber<Number>> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return fieldExtensionOver(
-        numberField = koneContextRegistry[Field.Key<Number>()],
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number> ComplexNumber.Companion.setFieldExtensionOver() {
-    FieldExtension.Key<Number, ComplexNumber<Number>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
-        fieldExtensionOver()
+// TODO: Remove the checker when KT-73135 will be fixed
+public object ComplexNumberFieldExtensionOverSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number> ComplexNumber.Companion.fieldExtensionOver(): FieldExtension<Number, ComplexNumber<Number>> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return fieldExtensionOver(
+            numberField = koneContextRegistry[Field.Key<Number>()],
+        )
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number> ComplexNumber.Companion.setFieldExtensionOver() {
+        FieldExtension.Key<Number, ComplexNumber<Number>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
+            fieldExtensionOver()
+        }
     }
 }
 

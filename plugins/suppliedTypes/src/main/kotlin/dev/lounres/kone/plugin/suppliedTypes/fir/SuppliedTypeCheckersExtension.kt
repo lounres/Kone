@@ -24,6 +24,7 @@ import org.jetbrains.kotlin.fir.analysis.checkers.MppCheckerKind
 import org.jetbrains.kotlin.fir.analysis.checkers.context.CheckerContext
 import org.jetbrains.kotlin.fir.analysis.checkers.declaration.DeclarationCheckers
 import org.jetbrains.kotlin.fir.analysis.checkers.declaration.FirClassChecker
+import org.jetbrains.kotlin.fir.analysis.checkers.declaration.FirNamedFunctionChecker
 import org.jetbrains.kotlin.fir.analysis.checkers.declaration.FirTypeParameterChecker
 import org.jetbrains.kotlin.fir.analysis.checkers.expression.ExpressionCheckers
 import org.jetbrains.kotlin.fir.analysis.checkers.expression.FirFunctionCallChecker
@@ -91,6 +92,9 @@ class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckers
         override val typeParameterCheckers: Set<FirTypeParameterChecker> = setOf(
             ClassSuppliedTypeParametersChecker,
             UselessSuppliedTypeParametersChecker,
+        )
+        override val namedFunctionCheckers: Set<FirNamedFunctionChecker> = setOf(
+            SuppliableTopLevelFunctionProhibitingChecker,
         )
     }
     
@@ -295,6 +299,19 @@ class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckers
             }
         }
     }
+
+    // TODO: Remove the checker when KT-73135 will be fixed
+    object SuppliableTopLevelFunctionProhibitingChecker : FirNamedFunctionChecker(MppCheckerKind.Common) {
+        context(context: CheckerContext, reporter: DiagnosticReporter)
+        override fun check(declaration: FirNamedFunction) {
+            if (declaration.symbol.isSuppliable && declaration.symbol.callableId.classId == null)
+                reporter.reportOn(
+                    source = declaration.source,
+                    factory = Errors.PROHIBITED_SUPPLIABLE_TOP_LEVEL_FUNCTION,
+                    a = declaration.symbol,
+                )
+        }
+    }
     
     object Errors : KtDiagnosticsContainer() {
         val SUPPLIABLE_INHERITED_BY_NON_SUPPLIABLE by KtDiagnosticFactory2Delegate<FirClassSymbol<*>, List<FirClassLikeSymbol<*>>>(
@@ -316,6 +333,11 @@ class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckers
         val NON_SUPPLIABLE_TYPE_IN_SUPPLY_ARGUMENT by KtDiagnosticFactory2Delegate<FirTypeParameterSymbol, ConeKotlinType>(
             severity = ERROR,
             defaultPositioningStrategy = SourceElementPositioningStrategies.DEFAULT,
+        )
+        // TODO: Remove the diagnostic when KT-73135 will be fixed
+        val PROHIBITED_SUPPLIABLE_TOP_LEVEL_FUNCTION by KtDiagnosticFactory1Delegate<FirNamedFunctionSymbol>(
+            severity = ERROR,
+            defaultPositioningStrategy = SourceElementPositioningStrategies.DECLARATION_NAME_ONLY,
         )
         
         override fun getRendererFactory(): BaseDiagnosticRendererFactory = DefaultMessages
@@ -349,6 +371,11 @@ class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckers
                     "Non-suppliable type {1} is used in supplied type argument {0} of suppliable function call.",
                     FirDiagnosticRenderers.DECLARATION_NAME,
                     Renderer<ConeKotlinType> { it.renderReadable() }
+                )
+                map.put(
+                    PROHIBITED_SUPPLIABLE_TOP_LEVEL_FUNCTION,
+                    "Suppliable top level functions are prohibited until KT-73135 will be fixed.",
+                    FirDiagnosticRenderers.DECLARATION_NAME,
                 )
             }
         }

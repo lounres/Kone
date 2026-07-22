@@ -44,54 +44,57 @@ public fun <Number, Matrix : MDList2<Number>> IsSymmetricMatrixChecker.Companion
     numberEquality = numberEquality,
 )
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, Matrix : MDList2<Number>> IsSymmetricMatrixChecker.Companion.viaDefault(): IsSymmetricMatrixChecker<Number, Matrix> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return viaDefault<Number, Matrix>(
-        numberEquality = koneContextRegistry.requestFor(Equality.Key<Number>()) {
-            "IsSymmetricMatrixChecker.viaDefault<${suppliedTypeOf<Number>()}, ?>"
-        },
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsSymmetricMatrixChecker.Companion.setViaDefault(
-    numberEquality: Equality<Number>,
-) {
-    IsSymmetricMatrixChecker.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaDefault<Number, Matrix>(
-            numberEquality = numberEquality,
+// TODO: Remove the checker when KT-73135 will be fixed
+public object IsSymmetricMatrixCheckerDefaultSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, Matrix : MDList2<Number>> IsSymmetricMatrixChecker.Companion.viaDefault(): IsSymmetricMatrixChecker<Number, Matrix> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return viaDefault<Number, Matrix>(
+            numberEquality = koneContextRegistry.requestFor(Equality.Key<Number>()) {
+                "IsSymmetricMatrixChecker.viaDefault<${suppliedTypeOf<Number>()}, ?>"
+            },
         )
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsSymmetricMatrixChecker.Companion.setViaDefault() {
-    IsSymmetricMatrixChecker.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaDefault<Number, Matrix>()
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsSymmetricMatrixChecker.Companion.setViaDefault(
+        numberEquality: Equality<Number>,
+    ) {
+        IsSymmetricMatrixChecker.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaDefault<Number, Matrix>(
+                numberEquality = numberEquality,
+            )
+        }
     }
-}
-
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
-public fun <Number, Matrix : MDList2<Number>> IsSymmetricMatrixChecker.Companion.useViaDefault(
-    numberEquality: Equality<Number>,
-) {
-    IsSymmetricMatrixKey correspondsTo RegisteredValueProvider.cached {
-        val isSymmetricMatrixChecker = viaDefault<Number, MatrixWithProperties<Number, Matrix>>(
-            numberEquality = numberEquality,
-        )
-        isSymmetricMatrixChecker { matrix.get().isSymmetric() }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsSymmetricMatrixChecker.Companion.setViaDefault() {
+        IsSymmetricMatrixChecker.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaDefault<Number, Matrix>()
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, _: KoneContextRegistry.Provider)
-public fun <@Supply Number, Matrix : MDList2<Number>> IsSymmetricMatrixChecker.Companion.useViaDefault() {
-    IsSymmetricMatrixKey correspondsTo RegisteredValueProvider.cached {
-        val isSymmetricMatrixChecker = viaDefault<Number, MatrixWithProperties<Number, Matrix>>()
-        isSymmetricMatrixChecker { matrix.get().isSymmetric() }
+    
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
+    public fun <Number, Matrix : MDList2<Number>> IsSymmetricMatrixChecker.Companion.useViaDefault(
+        numberEquality: Equality<Number>,
+    ) {
+        IsSymmetricMatrixKey correspondsTo RegisteredValueProvider.cached {
+            val isSymmetricMatrixChecker = viaDefault<Number, MatrixWithProperties<Number, Matrix>>(
+                numberEquality = numberEquality,
+            )
+            isSymmetricMatrixChecker { matrix.get().isSymmetric() }
+        }
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, _: KoneContextRegistry.Provider)
+    public fun <@Supply Number, Matrix : MDList2<Number>> IsSymmetricMatrixChecker.Companion.useViaDefault() {
+        IsSymmetricMatrixKey correspondsTo RegisteredValueProvider.cached {
+            val isSymmetricMatrixChecker = viaDefault<Number, MatrixWithProperties<Number, Matrix>>()
+            isSymmetricMatrixChecker { matrix.get().isSymmetric() }
+        }
     }
 }

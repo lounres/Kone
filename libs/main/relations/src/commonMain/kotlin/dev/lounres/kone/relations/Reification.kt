@@ -63,49 +63,6 @@ public interface Reification<out Element> : KoneContext {
 }
 
 /**
- * Shortcut for getting [Reification] context for the given [suppliedElementType].
- * Throws if there is no such context in the registry.
- */
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry)
-public fun <@Supply Element> Reification.Companion.getFor(): Reification<Element> =
-    koneContextRegistry[Reification.Key()]
-/**
- * Shortcut for getting [Reification] context for the given [suppliedElementType]
- * or `null` if there is no such context in the registry.
- */
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry)
-public fun <@Supply Element> Reification.Companion.getForOrNull(): Reification<Element>? =
-    koneContextRegistry.getOrNull(Reification.Key())
-/**
- * Shortcut for getting [Reification] context for the given [suppliedElementType]
- * or [default] context if there is no such context in the registry.
- */
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry)
-public fun <@Supply Element> Reification.Companion.getForOrDefault(default: Reification<Element>): Reification<Element> =
-    koneContextRegistry.getOrDefault(Reification.Key(), default)
-/**
- * Shortcut for getting [Reification] context for the given [suppliedElementType]
- * or compute [block] to get such context if there is no such context in the registry.
- */
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry)
-public inline fun <@Supply Element> Reification.Companion.getForOrElse(block: () -> Reification<Element>): Reification<Element> =
-    koneContextRegistry.getOrElse(Reification.Key(), block)
-
-/**
- * Sets [Reification] context for the given [suppliedElementType] into context registry builder.
- * The set reification just only checks that the element is of type [Element].
- */
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public inline fun <@Supply reified Element> Reification.Companion.setDefaultFor() {
-    Reification.Key<Element>() correspondsTo RegisteredValueProvider.cached { Reification.defaultFor<Element>() }
-}
-
-/**
  * Describes that element was forcefully (via [Reification.reify]) checked on lying in the domain,
  * and the check was unsuccessful.
  */
@@ -170,3 +127,15 @@ public inline fun <reified Element> Reification.Companion.defaultFor(): Reificat
         override fun reifyOrNull(element: Any?): Element? = element as? Element
         override fun reify(element: Any?): Element = if (element is Element) element else reificationException()
     }
+// TODO: Remove the checker when KT-73135 will be fixed
+public object ReificationSuppliableTopLevelFunctions {
+    /**
+     * Sets [Reification] context for the given [suppliedElementType] into context registry builder.
+     * The set reification just only checks that the element is of type [Element].
+     */
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public inline fun <@Supply reified Element> Reification.Companion.setDefaultFor() {
+        Reification.Key<Element>() correspondsTo RegisteredValueProvider.cached { Reification.defaultFor<Element>() }
+    }
+}

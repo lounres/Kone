@@ -100,25 +100,28 @@ public fun <Number, Matrix : MDList2<Number>> MatrixCategoryOverRing.Companion.v
     ring = ring,
 )
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> MatrixCategoryOverRing.Companion.viaDefault(): MatrixCategoryOverRing<Number, Matrix> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return viaDefault(
-        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
-            "MatrixCategoryOverField.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-        ring = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) {
-            "MatrixCategoryOverField.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> MatrixCategoryOverRing.Companion.setViaDefault() {
-    MatrixCategoryOverRing.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaDefault<Number, Matrix>()
+// TODO: Remove the top-level functions wrapper when KT-73135 will be fixed
+public object MatrixCategoryOverRingViaDefaultSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> MatrixCategoryOverRing.Companion.viaDefault(): MatrixCategoryOverRing<Number, Matrix> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return viaDefault(
+            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
+                "MatrixCategoryOverField.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            ring = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) {
+                "MatrixCategoryOverField.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+        )
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> MatrixCategoryOverRing.Companion.setViaDefault() {
+        MatrixCategoryOverRing.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaDefault<Number, Matrix>()
+        }
     }
 }
 
@@ -222,24 +225,27 @@ public fun <Number, Matrix : MDList2<Number>> MatrixCategoryOverField.Companion.
     field = field,
 )
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> MatrixCategoryOverField.Companion.viaDefault(): MatrixCategoryOverField<Number, Matrix> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return viaDefault(
-        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
-            "MatrixCategoryOverField.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-        field = koneContextRegistry.requestFor(Field.Key<Number>()) {
-            "MatrixCategoryOverField.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> MatrixCategoryOverField.Companion.setViaDefault() {
-    MatrixCategoryOverField.Key<Number, Matrix>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
-        viaDefault<Number, Matrix>()
+// TODO: Remove the top-level functions wrapper when KT-73135 will be fixed
+public object MatrixCategoryOverFieldViaDefaultSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> MatrixCategoryOverField.Companion.viaDefault(): MatrixCategoryOverField<Number, Matrix> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return viaDefault(
+            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
+                "MatrixCategoryOverField.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            field = koneContextRegistry.requestFor(Field.Key<Number>()) {
+                "MatrixCategoryOverField.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+        )
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> MatrixCategoryOverField.Companion.setViaDefault() {
+        MatrixCategoryOverField.Key<Number, Matrix>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
+            viaDefault<Number, Matrix>()
+        }
     }
 }

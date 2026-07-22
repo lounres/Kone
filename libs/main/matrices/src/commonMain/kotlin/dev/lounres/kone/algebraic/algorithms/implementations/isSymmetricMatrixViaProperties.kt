@@ -40,26 +40,29 @@ public fun <Number, Matrix : MDList2<Number>> IsSymmetricMatrixChecker.Companion
     fallbackIsSymmetricMatrixChecker = block(),
 )
 
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsSymmetricMatrixChecker.Companion.setViaProperties(
-    fallbackIsSymmetricMatrixChecker: IsSymmetricMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    IsSymmetricMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackIsSymmetricMatrixChecker = fallbackIsSymmetricMatrixChecker,
-        )
+// TODO: Remove the checker when KT-73135 will be fixed
+public object IsSymmetricMatrixCheckerPropertiesSuppliableTopLevelFunctions {
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsSymmetricMatrixChecker.Companion.setViaProperties(
+        fallbackIsSymmetricMatrixChecker: IsSymmetricMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        IsSymmetricMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackIsSymmetricMatrixChecker = fallbackIsSymmetricMatrixChecker,
+            )
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsSymmetricMatrixChecker.Companion.setViaProperties(
-    block: IsSymmetricMatrixChecker.Companion.() -> IsSymmetricMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    IsSymmetricMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackIsSymmetricMatrixChecker = block(),
-        )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsSymmetricMatrixChecker.Companion.setViaProperties(
+        block: IsSymmetricMatrixChecker.Companion.() -> IsSymmetricMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        IsSymmetricMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackIsSymmetricMatrixChecker = block(),
+            )
+        }
     }
 }

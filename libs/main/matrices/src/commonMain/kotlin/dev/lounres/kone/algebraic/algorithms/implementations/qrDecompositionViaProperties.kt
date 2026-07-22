@@ -27,40 +27,43 @@ private class QRDecompositionComputerViaProperties<@Supply Number, @Supply Matri
         }
 }
 
-@Suppliable
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.viaProperties(
-    fallbackQRDecompositionComputer: QRDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>>,
-): QRDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>> = QRDecompositionComputerViaProperties(
-    fallbackQRDecompositionComputer = fallbackQRDecompositionComputer,
-)
-
-@Suppliable
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.viaProperties(
-    block: QRDecompositionComputer.Companion.() -> QRDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>>,
-): QRDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>> = QRDecompositionComputerViaProperties(
-    fallbackQRDecompositionComputer = block(),
-)
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.setViaProperties(
-    fallbackQRDecompositionComputer: QRDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    QRDecompositionComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackQRDecompositionComputer = fallbackQRDecompositionComputer,
-        )
+// TODO: Remove the checker when KT-73135 will be fixed
+public object QRDecompositionComputerPropertiesSuppliableTopLevelFunctions {
+    @Suppliable
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.viaProperties(
+        fallbackQRDecompositionComputer: QRDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    ): QRDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>> = QRDecompositionComputerViaProperties(
+        fallbackQRDecompositionComputer = fallbackQRDecompositionComputer,
+    )
+    
+    @Suppliable
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.viaProperties(
+        block: QRDecompositionComputer.Companion.() -> QRDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    ): QRDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>> = QRDecompositionComputerViaProperties(
+        fallbackQRDecompositionComputer = block(),
+    )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.setViaProperties(
+        fallbackQRDecompositionComputer: QRDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        QRDecompositionComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackQRDecompositionComputer = fallbackQRDecompositionComputer,
+            )
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.setViaProperties(
-    block: QRDecompositionComputer.Companion.() -> QRDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    QRDecompositionComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackQRDecompositionComputer = block(),
-        )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.setViaProperties(
+        block: QRDecompositionComputer.Companion.() -> QRDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        QRDecompositionComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackQRDecompositionComputer = block(),
+            )
+        }
     }
 }

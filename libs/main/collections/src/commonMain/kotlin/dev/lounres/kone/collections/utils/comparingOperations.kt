@@ -3150,7 +3150,7 @@ public fun <E> KoneIterator<E>.hasDuplicates(
     return false
 }
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(_: KoneContextRegistry)
 //public fun <@Supply E> KoneIterable<E>.hasDuplicatesContextual(): Boolean {

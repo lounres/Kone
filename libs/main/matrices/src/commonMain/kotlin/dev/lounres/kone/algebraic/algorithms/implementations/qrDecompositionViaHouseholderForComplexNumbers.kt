@@ -143,104 +143,107 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComp
     conjugateTransposeMatrixComputer = conjugateTransposeMatrixComputer,
 )
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComputer.Companion.viaHouseholderForComplexNumbers(): QRDecompositionComputer<ComplexNumber<Number>, Matrix> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return viaHouseholderForComplexNumbers(
-        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, Matrix>()) {
-            "QRDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-        numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
-            "QRDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-        complexNumberFieldExtension = koneContextRegistry.requestFor(FieldExtension.Key<Number, ComplexNumber<Number>>()) {
-            "QRDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-        numberOrder = koneContextRegistry.requestFor(Order.Key<Number>()) {
-            "QRDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-        positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
-            "QRDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-        matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<ComplexNumber<Number>, Matrix>()) {
-            "QRDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-        matrixProductComputer = koneContextRegistry.requestFor(MatrixProductComputer.Key<ComplexNumber<Number>, Matrix>()) {
-            "QRDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-        conjugateTransposeMatrixComputer = koneContextRegistry.requestFor(ConjugateTransposeMatrixComputer.Key<Number, Matrix>()) {
-            "QRDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComputer.Companion.setViaHouseholderForComplexNumbers(
-    matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
-    numberField: Field<Number>,
-    complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
-    numberOrder: Order<Number>,
-    positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
-    matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, Matrix>,
-    matrixProductComputer: MatrixProductComputer<ComplexNumber<Number>, Matrix>,
-    conjugateTransposeMatrixComputer: ConjugateTransposeMatrixComputer<Number, Matrix>,
-) {
-    QRDecompositionComputer.Key<ComplexNumber<Number>, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaHouseholderForComplexNumbers<Number, Matrix>(
-            matrixFactory = matrixFactory,
-            numberField = numberField,
-            complexNumberFieldExtension = complexNumberFieldExtension,
-            numberOrder = numberOrder,
-            positiveSquareRootComputer = positiveSquareRootComputer,
-            matrixCategoryOverField = matrixCategoryOverField,
-            matrixProductComputer = matrixProductComputer,
-            conjugateTransposeMatrixComputer = conjugateTransposeMatrixComputer,
+// TODO: Remove the checker when KT-73135 will be fixed
+public object QRDecompositionComputerHouseholderForComplexNumbersSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComputer.Companion.viaHouseholderForComplexNumbers(): QRDecompositionComputer<ComplexNumber<Number>, Matrix> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return viaHouseholderForComplexNumbers(
+            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, Matrix>()) {
+                "QRDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
+                "QRDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            complexNumberFieldExtension = koneContextRegistry.requestFor(FieldExtension.Key<Number, ComplexNumber<Number>>()) {
+                "QRDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            numberOrder = koneContextRegistry.requestFor(Order.Key<Number>()) {
+                "QRDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
+                "QRDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<ComplexNumber<Number>, Matrix>()) {
+                "QRDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            matrixProductComputer = koneContextRegistry.requestFor(MatrixProductComputer.Key<ComplexNumber<Number>, Matrix>()) {
+                "QRDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            conjugateTransposeMatrixComputer = koneContextRegistry.requestFor(ConjugateTransposeMatrixComputer.Key<Number, Matrix>()) {
+                "QRDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
         )
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComputer.Companion.setViaHouseholderForComplexNumbers() {
-    QRDecompositionComputer.Key<ComplexNumber<Number>, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaHouseholderForComplexNumbers<Number, Matrix>()
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComputer.Companion.setViaHouseholderForComplexNumbers(
+        matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
+        numberField: Field<Number>,
+        complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
+        numberOrder: Order<Number>,
+        positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
+        matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, Matrix>,
+        matrixProductComputer: MatrixProductComputer<ComplexNumber<Number>, Matrix>,
+        conjugateTransposeMatrixComputer: ConjugateTransposeMatrixComputer<Number, Matrix>,
+    ) {
+        QRDecompositionComputer.Key<ComplexNumber<Number>, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaHouseholderForComplexNumbers<Number, Matrix>(
+                matrixFactory = matrixFactory,
+                numberField = numberField,
+                complexNumberFieldExtension = complexNumberFieldExtension,
+                numberOrder = numberOrder,
+                positiveSquareRootComputer = positiveSquareRootComputer,
+                matrixCategoryOverField = matrixCategoryOverField,
+                matrixProductComputer = matrixProductComputer,
+                conjugateTransposeMatrixComputer = conjugateTransposeMatrixComputer,
+            )
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<ComplexNumber<Number>, Matrix>>, matrix: MatrixWithProperties.Provider<ComplexNumber<Number>, Matrix>)
-public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComputer.Companion.useViaHouseholderForComplexNumbers(
-    matrixFactory: MatrixFactory<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
-    numberField: Field<Number>,
-    complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
-    numberOrder: Order<Number>,
-    positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
-    matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
-    matrixProductComputer: MatrixProductComputer<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
-    conjugateTransposeMatrixComputer: ConjugateTransposeMatrixComputer<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
-) {
-    QRDecomposition.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        val qrDecompositionComputer = viaHouseholderForComplexNumbers(
-            matrixFactory = matrixFactory,
-            numberField = numberField,
-            complexNumberFieldExtension = complexNumberFieldExtension,
-            numberOrder = numberOrder,
-            positiveSquareRootComputer = positiveSquareRootComputer,
-            matrixCategoryOverField = matrixCategoryOverField,
-            matrixProductComputer = matrixProductComputer,
-            conjugateTransposeMatrixComputer = conjugateTransposeMatrixComputer,
-        )
-        qrDecompositionComputer { matrix.get().qrDecomposition() }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComputer.Companion.setViaHouseholderForComplexNumbers() {
+        QRDecompositionComputer.Key<ComplexNumber<Number>, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaHouseholderForComplexNumbers<Number, Matrix>()
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<ComplexNumber<Number>, Matrix>>, matrix: MatrixWithProperties.Provider<ComplexNumber<Number>, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComputer.Companion.useViaHouseholderForComplexNumbers() {
-    QRDecomposition.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        val qrDecompositionComputer = viaHouseholderForComplexNumbers<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>()
-        qrDecompositionComputer { matrix.get().qrDecomposition() }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<ComplexNumber<Number>, Matrix>>, matrix: MatrixWithProperties.Provider<ComplexNumber<Number>, Matrix>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComputer.Companion.useViaHouseholderForComplexNumbers(
+        matrixFactory: MatrixFactory<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
+        numberField: Field<Number>,
+        complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
+        numberOrder: Order<Number>,
+        positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
+        matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
+        matrixProductComputer: MatrixProductComputer<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
+        conjugateTransposeMatrixComputer: ConjugateTransposeMatrixComputer<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
+    ) {
+        QRDecomposition.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            val qrDecompositionComputer = viaHouseholderForComplexNumbers(
+                matrixFactory = matrixFactory,
+                numberField = numberField,
+                complexNumberFieldExtension = complexNumberFieldExtension,
+                numberOrder = numberOrder,
+                positiveSquareRootComputer = positiveSquareRootComputer,
+                matrixCategoryOverField = matrixCategoryOverField,
+                matrixProductComputer = matrixProductComputer,
+                conjugateTransposeMatrixComputer = conjugateTransposeMatrixComputer,
+            )
+            qrDecompositionComputer { matrix.get().qrDecomposition() }
+        }
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<ComplexNumber<Number>, Matrix>>, matrix: MatrixWithProperties.Provider<ComplexNumber<Number>, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComputer.Companion.useViaHouseholderForComplexNumbers() {
+        QRDecomposition.Key<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            val qrDecompositionComputer = viaHouseholderForComplexNumbers<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>()
+            qrDecompositionComputer { matrix.get().qrDecomposition() }
+        }
     }
 }

@@ -45,40 +45,43 @@ private class LogarithmSoftComputerViaProperties<@Supply Number, @Supply Matrix 
         }
 }
 
-@Suppliable
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.viaProperties(
-    fallbackLogarithmMatrixComputer: LogarithmSoftComputer<MatrixWithProperties<Number, Matrix>>,
-): LogarithmSoftComputer<MatrixWithProperties<Number, Matrix>> = LogarithmSoftComputerViaProperties(
-    fallbackLogarithmMatrixComputer = fallbackLogarithmMatrixComputer,
-)
-
-@Suppliable
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.viaProperties(
-    block: LogarithmSoftComputer.Companion.() -> LogarithmSoftComputer<MatrixWithProperties<Number, Matrix>>,
-): LogarithmSoftComputer<MatrixWithProperties<Number, Matrix>> = viaProperties(
-    fallbackLogarithmMatrixComputer = block(),
-)
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.setViaProperties(
-    fallbackLogarithmMatrixComputer: LogarithmSoftComputer<MatrixWithProperties<Number, Matrix>>,
-) {
-    LogarithmSoftComputer.Key<MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackLogarithmMatrixComputer = fallbackLogarithmMatrixComputer,
-        )
+// TODO: Remove the checker when KT-73135 will be fixed
+public object LogarithmSoftComputerPropertiesSuppliableTopLevelFunctions {
+    @Suppliable
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.viaProperties(
+        fallbackLogarithmMatrixComputer: LogarithmSoftComputer<MatrixWithProperties<Number, Matrix>>,
+    ): LogarithmSoftComputer<MatrixWithProperties<Number, Matrix>> = LogarithmSoftComputerViaProperties(
+        fallbackLogarithmMatrixComputer = fallbackLogarithmMatrixComputer,
+    )
+    
+    @Suppliable
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.viaProperties(
+        block: LogarithmSoftComputer.Companion.() -> LogarithmSoftComputer<MatrixWithProperties<Number, Matrix>>,
+    ): LogarithmSoftComputer<MatrixWithProperties<Number, Matrix>> = viaProperties(
+        fallbackLogarithmMatrixComputer = block(),
+    )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.setViaProperties(
+        fallbackLogarithmMatrixComputer: LogarithmSoftComputer<MatrixWithProperties<Number, Matrix>>,
+    ) {
+        LogarithmSoftComputer.Key<MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackLogarithmMatrixComputer = fallbackLogarithmMatrixComputer,
+            )
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.setViaProperties(
-    block: LogarithmSoftComputer.Companion.() -> LogarithmSoftComputer<MatrixWithProperties<Number, Matrix>>,
-) {
-    LogarithmSoftComputer.Key<MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackLogarithmMatrixComputer = block(),
-        )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> LogarithmSoftComputer.Companion.setViaProperties(
+        block: LogarithmSoftComputer.Companion.() -> LogarithmSoftComputer<MatrixWithProperties<Number, Matrix>>,
+    ) {
+        LogarithmSoftComputer.Key<MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackLogarithmMatrixComputer = block(),
+            )
+        }
     }
 }

@@ -25,40 +25,43 @@ private class TransposeMatrixComputerViaProperties<@Supply Number, @Supply Matri
         }
 }
 
-@Suppliable
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.viaProperties(
-    fallbackTransposeMatrixComputer: TransposeMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
-): TransposeMatrixComputer<Number, MatrixWithProperties<Number, Matrix>> = TransposeMatrixComputerViaProperties(
-    fallbackTransposeMatrixComputer = fallbackTransposeMatrixComputer,
-)
-
-@Suppliable
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.viaProperties(
-    block: TransposeMatrixComputer.Companion.() -> TransposeMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
-): TransposeMatrixComputer<Number, MatrixWithProperties<Number, Matrix>> = viaProperties(
-    fallbackTransposeMatrixComputer = block()
-)
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.setViaProperties(
-    fallbackTransposeMatrixComputer: TransposeMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    TransposeMatrixComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackTransposeMatrixComputer = fallbackTransposeMatrixComputer,
-        )
+// TODO: Remove the checker when KT-73135 will be fixed
+public object TransposeMatrixComputerPropertiesSuppliableTopLevelFunctions {
+    @Suppliable
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.viaProperties(
+        fallbackTransposeMatrixComputer: TransposeMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    ): TransposeMatrixComputer<Number, MatrixWithProperties<Number, Matrix>> = TransposeMatrixComputerViaProperties(
+        fallbackTransposeMatrixComputer = fallbackTransposeMatrixComputer,
+    )
+    
+    @Suppliable
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.viaProperties(
+        block: TransposeMatrixComputer.Companion.() -> TransposeMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    ): TransposeMatrixComputer<Number, MatrixWithProperties<Number, Matrix>> = viaProperties(
+        fallbackTransposeMatrixComputer = block()
+    )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.setViaProperties(
+        fallbackTransposeMatrixComputer: TransposeMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        TransposeMatrixComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackTransposeMatrixComputer = fallbackTransposeMatrixComputer,
+            )
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.setViaProperties(
-    block: TransposeMatrixComputer.Companion.() -> TransposeMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    TransposeMatrixComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackTransposeMatrixComputer = block(),
-        )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> TransposeMatrixComputer.Companion.setViaProperties(
+        block: TransposeMatrixComputer.Companion.() -> TransposeMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        TransposeMatrixComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackTransposeMatrixComputer = block(),
+            )
+        }
     }
 }

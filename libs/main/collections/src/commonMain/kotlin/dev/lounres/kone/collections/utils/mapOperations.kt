@@ -60,7 +60,7 @@ public inline fun <K, V> KoneMap<K, V>.withChanged(
         change(key, transform)
     }
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(_: KoneContextRegistry)
 //public inline fun <@Supply K, V> KoneMap<K, V>.withChangedContextual(
@@ -101,7 +101,7 @@ public inline fun <reified K, V> KoneMap<K, V>.withChangedReified(
         transform = transform,
     )
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(_: KoneContextRegistry)
 //public inline fun <@Supply K, V> KoneMap<K, V>.withChangedContextualReified(

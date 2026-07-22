@@ -43,54 +43,57 @@ public fun <Number, Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.viaD
     numberRing = numberRing,
 )
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.viaDefault(): IsUnitMatrixChecker<Number, Matrix> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return viaDefault(
-        numberRing = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) {
-            "IsUnitMatrixChecker.viaDefault<${suppliedTypeOf<Number>()}, ?>"
-        },
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.setViaDefault(
-    numberRing: CommutativeRing<Number>,
-) {
-    IsUnitMatrixChecker.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaDefault<Number, Matrix>(
-            numberRing = numberRing,
+// TODO: Remove the checker when KT-73135 will be fixed
+public object IsUnitMatrixCheckerDefaultSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.viaDefault(): IsUnitMatrixChecker<Number, Matrix> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return viaDefault(
+            numberRing = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) {
+                "IsUnitMatrixChecker.viaDefault<${suppliedTypeOf<Number>()}, ?>"
+            },
         )
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.setViaDefault() {
-    IsUnitMatrixChecker.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaDefault<Number, Matrix>()
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.setViaDefault(
+        numberRing: CommutativeRing<Number>,
+    ) {
+        IsUnitMatrixChecker.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaDefault<Number, Matrix>(
+                numberRing = numberRing,
+            )
+        }
     }
-}
-
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
-public fun <Number, Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.useViaDefault(
-    numberRing: CommutativeRing<Number>,
-) {
-    IsUnitMatrixKey correspondsTo RegisteredValueProvider.cached {
-        val isUnitMatrixChecker = viaDefault<Number, MatrixWithProperties<Number, Matrix>>(
-            numberRing = numberRing,
-        )
-        isUnitMatrixChecker { matrix.get().isOne() }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.setViaDefault() {
+        IsUnitMatrixChecker.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaDefault<Number, Matrix>()
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, _: KoneContextRegistry.Provider)
-public fun <@Supply Number, Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.useViaDefault() {
-    IsUnitMatrixKey correspondsTo RegisteredValueProvider.cached {
-        val isUnitMatrixChecker = viaDefault<Number, MatrixWithProperties<Number, Matrix>>()
-        isUnitMatrixChecker { matrix.get().isOne() }
+    
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
+    public fun <Number, Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.useViaDefault(
+        numberRing: CommutativeRing<Number>,
+    ) {
+        IsUnitMatrixKey correspondsTo RegisteredValueProvider.cached {
+            val isUnitMatrixChecker = viaDefault<Number, MatrixWithProperties<Number, Matrix>>(
+                numberRing = numberRing,
+            )
+            isUnitMatrixChecker { matrix.get().isOne() }
+        }
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, _: KoneContextRegistry.Provider)
+    public fun <@Supply Number, Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.useViaDefault() {
+        IsUnitMatrixKey correspondsTo RegisteredValueProvider.cached {
+            val isUnitMatrixChecker = viaDefault<Number, MatrixWithProperties<Number, Matrix>>()
+            isUnitMatrixChecker { matrix.get().isOne() }
+        }
     }
 }

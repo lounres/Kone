@@ -13,9 +13,6 @@ import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.getOrDefault
-import dev.lounres.kone.registry.getOrElse
-import dev.lounres.kone.registry.getOrNull
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
 import dev.lounres.kone.suppliedTypes.suppliedTypeOf
@@ -47,56 +44,6 @@ public interface Equality<in Element> : KoneContext {
     public class Key<@Supply Element> : SuppliedTypeRegistryKey<Equality<Element>>() {
         override fun toString(): String = "dev.lounres.kone.relations.Equality.Key<${suppliedTypeOf<Element>()}>"
     }
-}
-
-/**
- * Shortcut for getting [Equality] context for the given [suppliedElementType].
- * Throws if there is no such context in the registry.
- */
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry)
-public fun <@Supply Element> Equality.Companion.getFor(): Equality<Element> =
-    koneContextRegistry[Equality.Key()]
-/**
- * Shortcut for getting [Equality] context for the given [suppliedElementType]
- * or `null` if there is no such context in the registry.
- */
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry)
-public fun <@Supply Element> Equality.Companion.getForOrNull(): Equality<Element>? =
-    koneContextRegistry.getOrNull(Equality.Key())
-/**
- * Shortcut for getting [Equality] context for the given [suppliedElementType]
- * or [default] context if there is no such context in the registry.
- */
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry)
-public fun <@Supply Element> Equality.Companion.getForOrDefault(default: Equality<Element>): Equality<Element> =
-    koneContextRegistry.getOrDefault(Equality.Key(), default)
-/**
- * Shortcut for getting [Equality] context for the given [suppliedElementType]
- * or compute [block] to get such context if there is no such context in the registry.
- */
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry)
-public inline fun <@Supply Element> Equality.Companion.getForOrElse(block: () -> Equality<Element>): Equality<Element> =
-    koneContextRegistry.getOrElse(Equality.Key(), block)
-
-/**
- * Sets default [Equality] context for the given [suppliedElementType] into context registry builder.
- */
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Element> Equality.Companion.setDefaultFor() {
-    Equality.Key<Element>() correspondsTo Equality.defaultFor<Element>()
-}
-/**
- * Sets absolute [Equality] context for the given [suppliedElementType] into context registry builder.
- */
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Element> Equality.Companion.setAbsoluteFor() {
-    Equality.Key<Element>() correspondsTo Equality.absoluteFor<Element>()
 }
 
 /**
@@ -175,8 +122,27 @@ public fun <Element> Equality.Companion.defaultFor(): Equality<Element> = Defaul
  * Returns [Equality] instance which [Equality.equalsTo] operator just uses absolute equality `===` operator's result as a return value.
  */
 public fun <Element> Equality.Companion.absoluteFor(): Equality<Element> = AbsoluteEquality
-public fun <Element> Equality.Companion.allwaysAcceptingFor(): Equality<Element> = AllwaysAcceptingEquality
-public fun <Element> Equality.Companion.allwaysDenyingFor(): Equality<Element> = AllwaysDenyingEquality
+// TODO: Remove the checker when KT-73135 will be fixed
+public object EqualitySuppliableTopLevelFunctions {
+    /**
+     * Sets default [Equality] context for the given [suppliedElementType] into context registry builder.
+     */
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Element> Equality.Companion.setDefaultFor() {
+        Equality.Key<Element>() correspondsTo Equality.defaultFor<Element>()
+    }
+    /**
+     * Sets absolute [Equality] context for the given [suppliedElementType] into context registry builder.
+     */
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Element> Equality.Companion.setAbsoluteFor() {
+        Equality.Key<Element>() correspondsTo Equality.absoluteFor<Element>()
+    }
+}
+public fun <Element> Equality.Companion.alwaysAcceptingFor(): Equality<Element> = AllwaysAcceptingEquality
+public fun <Element> Equality.Companion.alwaysDenyingFor(): Equality<Element> = AllwaysDenyingEquality
 
 public val <Element: Any> Equality<Element>.nullable: Equality<Element?> get() = Equality { left, right ->
     when {

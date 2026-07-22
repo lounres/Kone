@@ -42,66 +42,69 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeM
     matrixFactory = matrixFactory,
 )
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeMatrixComputer.Companion.viaDefault(): ConjugateTransposeMatrixComputer<Number, Matrix> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return viaDefault(
-        numberCommutativeRing = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) {
-            "ConjugateTransposeMatrixComputer.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, Matrix>()) {
-            "ConjugateTransposeMatrixComputer.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeMatrixComputer.Companion.setViaDefault(
-    numberCommutativeRing: CommutativeRing<Number>,
-    matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
-) {
-    ConjugateTransposeMatrixComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaDefault<Number, Matrix>(
-            numberCommutativeRing = numberCommutativeRing,
-            matrixFactory = matrixFactory,
+// TODO: Remove the checker when KT-73135 will be fixed
+public object ConjugateTransposeMatrixComputerDefaultSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeMatrixComputer.Companion.viaDefault(): ConjugateTransposeMatrixComputer<Number, Matrix> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return viaDefault(
+            numberCommutativeRing = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) {
+                "ConjugateTransposeMatrixComputer.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, Matrix>()) {
+                "ConjugateTransposeMatrixComputer.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
         )
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeMatrixComputer.Companion.setViaDefault() {
-    ConjugateTransposeMatrixComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaDefault<Number, Matrix>()
-    }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<ComplexNumber<Number>, Matrix>>, matrix: MatrixWithProperties.Provider<ComplexNumber<Number>, Matrix>)
-public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeMatrixComputer.Companion.useViaDefault(
-    numberCommutativeRing: CommutativeRing<Number>,
-    matrixFactory: MatrixFactory<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
-) {
-    ConjugateTransposeMatrixKey<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        val conjugateTransposeMatrixComputer = viaDefault(
-            numberCommutativeRing = numberCommutativeRing,
-            matrixFactory = matrixFactory,
-        )
-        conjugateTransposeMatrixComputer {
-            matrix.get().conjugateTranspose()
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeMatrixComputer.Companion.setViaDefault(
+        numberCommutativeRing: CommutativeRing<Number>,
+        matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
+    ) {
+        ConjugateTransposeMatrixComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaDefault<Number, Matrix>(
+                numberCommutativeRing = numberCommutativeRing,
+                matrixFactory = matrixFactory,
+            )
         }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<ComplexNumber<Number>, Matrix>>, matrix: MatrixWithProperties.Provider<ComplexNumber<Number>, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeMatrixComputer.Companion.useViaDefault() {
-    ConjugateTransposeMatrixKey<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        val conjugateTransposeMatrixComputer = viaDefault<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>()
-        conjugateTransposeMatrixComputer {
-            matrix.get().conjugateTranspose()
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeMatrixComputer.Companion.setViaDefault() {
+        ConjugateTransposeMatrixComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaDefault<Number, Matrix>()
+        }
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<ComplexNumber<Number>, Matrix>>, matrix: MatrixWithProperties.Provider<ComplexNumber<Number>, Matrix>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeMatrixComputer.Companion.useViaDefault(
+        numberCommutativeRing: CommutativeRing<Number>,
+        matrixFactory: MatrixFactory<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
+    ) {
+        ConjugateTransposeMatrixKey<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            val conjugateTransposeMatrixComputer = viaDefault(
+                numberCommutativeRing = numberCommutativeRing,
+                matrixFactory = matrixFactory,
+            )
+            conjugateTransposeMatrixComputer {
+                matrix.get().conjugateTranspose()
+            }
+        }
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<ComplexNumber<Number>, Matrix>>, matrix: MatrixWithProperties.Provider<ComplexNumber<Number>, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<ComplexNumber<Number>>> ConjugateTransposeMatrixComputer.Companion.useViaDefault() {
+        ConjugateTransposeMatrixKey<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            val conjugateTransposeMatrixComputer = viaDefault<Number, MatrixWithProperties<ComplexNumber<Number>, Matrix>>()
+            conjugateTransposeMatrixComputer {
+                matrix.get().conjugateTranspose()
+            }
         }
     }
 }

@@ -123,12 +123,15 @@ private class MDList1Module<Number>(
 public fun <Number> Module.Companion.mdList1(ring: CommutativeRing<Number>, dimension: UInt): Module<Number, MDList1<Number>> =
     MDList1Module(ring = ring, dimension = dimension)
 
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number> Module.Companion.setMDList1For(dimension: UInt) {
-    Module.Key<Number, MDList1<Number>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
-        val koneContextRegistry = koneContextRegistry.get()
-        mdList1(koneContextRegistry[CommutativeRing.Key<Number>()], dimension)
+// TODO: Remove the checker when KT-73135 will be fixed
+public object ModuleMDList1SuppliableTopLevelFunctions {
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number> Module.Companion.setMDList1For(dimension: UInt) {
+        Module.Key<Number, MDList1<Number>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
+            val koneContextRegistry = koneContextRegistry.get()
+            mdList1(koneContextRegistry[CommutativeRing.Key<Number>()], dimension)
+        }
     }
 }
 
@@ -258,11 +261,14 @@ private class MDList1VectorSpace<Number>(
 public fun <Number> VectorSpace.Companion.mdList1(field: Field<Number>, dimension: UInt): VectorSpace<Number, MDList1<Number>> =
     MDList1VectorSpace(field = field, dimension = dimension)
 
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number> VectorSpace.Companion.setMDList1For(dimension: UInt) {
-    VectorSpace.Key<Number, MDList1<Number>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
-        val koneContextRegistry = koneContextRegistry.get()
-        mdList1(koneContextRegistry[Field.Key<Number>()], dimension)
+// TODO: Remove the checker when KT-73135 will be fixed
+public object VectorSpaceMDList1SuppliableTopLevelFunctions {
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number> VectorSpace.Companion.setMDList1For(dimension: UInt) {
+        VectorSpace.Key<Number, MDList1<Number>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
+            val koneContextRegistry = koneContextRegistry.get()
+            mdList1(koneContextRegistry[Field.Key<Number>()], dimension)
+        }
     }
 }

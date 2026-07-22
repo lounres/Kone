@@ -26,6 +26,7 @@ import dev.lounres.kone.computationalGeometry.algorithms.ConvexHullOverRingCompu
 import dev.lounres.kone.computationalGeometry.algorithms.DelaunayTriangulationOverRingComputer
 import dev.lounres.kone.computationalGeometry.algorithms.convexHull
 import dev.lounres.kone.computationalGeometry.algorithms.gramSchmidtOrthogonalization
+import dev.lounres.kone.computationalGeometry.algorithms.implementations.ConvexHullOverRingComputerGiftWrappingSuppliableTopLevelFunctions.giftWrapping
 import dev.lounres.kone.computationalGeometry.polytopes.*
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
@@ -350,27 +351,30 @@ private class DelaunayTriangulationOverRingComputerViaConvexHull<@Supply Number,
     }
 }
 
-@Suppliable
-public fun <@Supply Number, Vector, @Supply Point> DelaunayTriangulationOverRingComputer.Companion.convexHull(
-    ring: Ring<Number>,
-    order: Order<Number>,
-    euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>,
-): DelaunayTriangulationOverRingComputer<Number, Vector, Point> =
-    DelaunayTriangulationOverRingComputerViaConvexHull(
-        ring = ring,
-        order = order,
-        euclideanSpace = euclideanSpace,
-    )
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Vector, @Supply Point> DelaunayTriangulationOverRingComputer.Companion.setConvexHull() {
-    DelaunayTriangulationOverRingComputer.Key<Number, Vector, Point>() correspondsTo RegisteredValueProvider.cached {
-        val koneContextRegistry = koneContextRegistry.get()
-        convexHull(
-            ring = koneContextRegistry[Ring.Key<Number>()],
-            order = koneContextRegistry[Order.Key<Number>()],
-            euclideanSpace = koneContextRegistry[EuclideanSpaceOverRing.Key<Number, Vector, Point>()],
+// TODO: Remove the checker when KT-73135 will be fixed
+public object DelaunayTriangulationOverRingComputerConvexHullSuppliableTopLevelFunctions {
+    @Suppliable
+    public fun <@Supply Number, Vector, @Supply Point> DelaunayTriangulationOverRingComputer.Companion.convexHull(
+        ring: Ring<Number>,
+        order: Order<Number>,
+        euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>,
+    ): DelaunayTriangulationOverRingComputer<Number, Vector, Point> =
+        DelaunayTriangulationOverRingComputerViaConvexHull(
+            ring = ring,
+            order = order,
+            euclideanSpace = euclideanSpace,
         )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Vector, @Supply Point> DelaunayTriangulationOverRingComputer.Companion.setConvexHull() {
+        DelaunayTriangulationOverRingComputer.Key<Number, Vector, Point>() correspondsTo RegisteredValueProvider.cached {
+            val koneContextRegistry = koneContextRegistry.get()
+            convexHull(
+                ring = koneContextRegistry[Ring.Key<Number>()],
+                order = koneContextRegistry[Order.Key<Number>()],
+                euclideanSpace = koneContextRegistry[EuclideanSpaceOverRing.Key<Number, Vector, Point>()],
+            )
+        }
     }
 }

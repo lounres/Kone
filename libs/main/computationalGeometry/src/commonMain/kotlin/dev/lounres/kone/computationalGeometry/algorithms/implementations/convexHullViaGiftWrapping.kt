@@ -368,27 +368,30 @@ private class ConvexHullOverRingViaGiftWrappingComputer<Number, Vector, @Supply 
     }
 }
 
-@Suppliable
-public fun <Number, Vector, @Supply Point> ConvexHullOverRingComputer.Companion.giftWrapping(
-    ring: Ring<Number>,
-    order: Order<Number>,
-    euclideanSpaceOverRing: EuclideanSpaceOverRing<Number, Vector, Point>,
-) : ConvexHullOverRingComputer<Number, Vector, Point> =
-    ConvexHullOverRingViaGiftWrappingComputer(
-        ring = ring,
-        order = order,
-        euclideanSpaceOverRing = euclideanSpaceOverRing,
-    )
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Vector, @Supply Point> ConvexHullOverRingComputer.Companion.setGiftWrapping() {
-    ConvexHullOverRingComputer.Key<Number, Vector, Point>() correspondsTo RegisteredValueProvider.cached {
-        val koneContextRegistry = koneContextRegistry.get()
-        giftWrapping(
-            ring = koneContextRegistry[Ring.Key<Number>()],
-            order = koneContextRegistry[Order.Key<Number>()],
-            euclideanSpaceOverRing = koneContextRegistry[EuclideanSpaceOverRing.Key<Number, Vector, Point>()],
+// TODO: Remove the checker when KT-73135 will be fixed
+public object ConvexHullOverRingComputerGiftWrappingSuppliableTopLevelFunctions {
+    @Suppliable
+    public fun <Number, Vector, @Supply Point> ConvexHullOverRingComputer.Companion.giftWrapping(
+        ring: Ring<Number>,
+        order: Order<Number>,
+        euclideanSpaceOverRing: EuclideanSpaceOverRing<Number, Vector, Point>,
+    ) : ConvexHullOverRingComputer<Number, Vector, Point> =
+        ConvexHullOverRingViaGiftWrappingComputer(
+            ring = ring,
+            order = order,
+            euclideanSpaceOverRing = euclideanSpaceOverRing,
         )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Vector, @Supply Point> ConvexHullOverRingComputer.Companion.setGiftWrapping() {
+        ConvexHullOverRingComputer.Key<Number, Vector, Point>() correspondsTo RegisteredValueProvider.cached {
+            val koneContextRegistry = koneContextRegistry.get()
+            giftWrapping(
+                ring = koneContextRegistry[Ring.Key<Number>()],
+                order = koneContextRegistry[Order.Key<Number>()],
+                euclideanSpaceOverRing = koneContextRegistry[EuclideanSpaceOverRing.Key<Number, Vector, Point>()],
+            )
+        }
     }
 }

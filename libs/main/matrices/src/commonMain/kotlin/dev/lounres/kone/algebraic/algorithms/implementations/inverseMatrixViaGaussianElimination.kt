@@ -94,63 +94,66 @@ public fun <Number, Matrix : MDList2<Number>> InverseMatrixComputer.Companion.vi
     field = field,
 )
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.viaGaussianElimination(): InverseMatrixComputer<Number, Matrix> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return viaGaussianElimination(
-        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
-            "InverseMatrixComputer.viaGaussianElimination<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-        field = koneContextRegistry.requestFor(Field.Key<Number>()) {
-            "InverseMatrixComputer.viaGaussianElimination<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.setViaGaussianElimination(
-    matrixFactory: MatrixFactory<Number, Matrix>,
-    field: Field<Number>,
-) {
-    InverseMatrixComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaGaussianElimination<Number, Matrix>(
-            matrixFactory = matrixFactory,
-            field = field,
+// TODO: Remove the checker when KT-73135 will be fixed
+public object InverseMatrixComputerGaussianEliminationSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.viaGaussianElimination(): InverseMatrixComputer<Number, Matrix> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return viaGaussianElimination(
+            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
+                "InverseMatrixComputer.viaGaussianElimination<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            field = koneContextRegistry.requestFor(Field.Key<Number>()) {
+                "InverseMatrixComputer.viaGaussianElimination<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
         )
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.setViaGaussianElimination() {
-    InverseMatrixComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaGaussianElimination<Number, Matrix>()
-    }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.useViaGaussianElimination(
-    matrixFactory: MatrixFactory<Number, MatrixWithProperties<Number, Matrix>>,
-    field: Field<Number>,
-) {
-    InverseMatrixKey<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        val inverseMatrixComputer = viaGaussianElimination(matrixFactory = matrixFactory, field = field)
-        inverseMatrixComputer {
-            matrix.get().invert()
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.setViaGaussianElimination(
+        matrixFactory: MatrixFactory<Number, Matrix>,
+        field: Field<Number>,
+    ) {
+        InverseMatrixComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaGaussianElimination<Number, Matrix>(
+                matrixFactory = matrixFactory,
+                field = field,
+            )
         }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.useViaGaussianElimination() {
-    InverseMatrixKey<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        val inverseMatrixComputer = viaGaussianElimination<Number, MatrixWithProperties<Number, Matrix>>()
-        inverseMatrixComputer {
-            matrix.get().invert()
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.setViaGaussianElimination() {
+        InverseMatrixComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaGaussianElimination<Number, Matrix>()
+        }
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.useViaGaussianElimination(
+        matrixFactory: MatrixFactory<Number, MatrixWithProperties<Number, Matrix>>,
+        field: Field<Number>,
+    ) {
+        InverseMatrixKey<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            val inverseMatrixComputer = viaGaussianElimination(matrixFactory = matrixFactory, field = field)
+            inverseMatrixComputer {
+                matrix.get().invert()
+            }
+        }
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.useViaGaussianElimination() {
+        InverseMatrixKey<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            val inverseMatrixComputer = viaGaussianElimination<Number, MatrixWithProperties<Number, Matrix>>()
+            inverseMatrixComputer {
+                matrix.get().invert()
+            }
         }
     }
 }

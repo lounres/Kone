@@ -78,11 +78,14 @@ private class AffineSpaceOverFieldViaVectorSpace<Number, Vector>(
 public fun <Number, Vector> AffineSpaceOverField.Companion.viaVectorSpace(vectorSpace: VectorSpace<Number, Vector>): AffineSpaceOverField<Number, Vector, PointWrapper<Vector>> =
     AffineSpaceOverFieldViaVectorSpace(vectorSpace)
 
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Vector> AffineSpaceOverField.Companion.setViaVectorSpaceFor() {
-    AffineSpaceOverField.Key<Number, Vector, PointWrapper<Vector>>() correspondsTo RegisteredValueProvider.cached {
-        val koneContextRegistry = koneContextRegistry.get()
-        viaVectorSpace(koneContextRegistry[VectorSpace.Key<Number, Vector>()])
+// TODO: Remove the checker when KT-73135 will be fixed
+public object AffineSpaceOverFieldSetViaVectorSpaceForSuppliableTopLevelFunctions {
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Vector> AffineSpaceOverField.Companion.setViaVectorSpaceFor() {
+        AffineSpaceOverField.Key<Number, Vector, PointWrapper<Vector>>() correspondsTo RegisteredValueProvider.cached {
+            val koneContextRegistry = koneContextRegistry.get()
+            viaVectorSpace(koneContextRegistry[VectorSpace.Key<Number, Vector>()])
+        }
     }
 }

@@ -25,40 +25,43 @@ private class InverseMatrixComputerViaProperties<@Supply Number, @Supply Matrix 
         }
 }
 
-@Suppliable
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.viaProperties(
-    fallbackInverseMatrixComputer: InverseMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
-): InverseMatrixComputer<Number, MatrixWithProperties<Number, Matrix>> = InverseMatrixComputerViaProperties(
-    fallbackInverseMatrixComputer = fallbackInverseMatrixComputer,
-)
-
-@Suppliable
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.viaProperties(
-    block: InverseMatrixComputer.Companion.() -> InverseMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
-): InverseMatrixComputer<Number, MatrixWithProperties<Number, Matrix>> = viaProperties(
-    fallbackInverseMatrixComputer = block(),
-)
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.setViaProperties(
-    fallbackInverseMatrixComputer: InverseMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    InverseMatrixComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackInverseMatrixComputer = fallbackInverseMatrixComputer,
-        )
+// TODO: Remove the checker when KT-73135 will be fixed
+public object InverseMatrixComputerPropertiesSuppliableTopLevelFunctions {
+    @Suppliable
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.viaProperties(
+        fallbackInverseMatrixComputer: InverseMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    ): InverseMatrixComputer<Number, MatrixWithProperties<Number, Matrix>> = InverseMatrixComputerViaProperties(
+        fallbackInverseMatrixComputer = fallbackInverseMatrixComputer,
+    )
+    
+    @Suppliable
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.viaProperties(
+        block: InverseMatrixComputer.Companion.() -> InverseMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    ): InverseMatrixComputer<Number, MatrixWithProperties<Number, Matrix>> = viaProperties(
+        fallbackInverseMatrixComputer = block(),
+    )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.setViaProperties(
+        fallbackInverseMatrixComputer: InverseMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        InverseMatrixComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackInverseMatrixComputer = fallbackInverseMatrixComputer,
+            )
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.setViaProperties(
-    block: InverseMatrixComputer.Companion.() -> InverseMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    InverseMatrixComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackInverseMatrixComputer = block(),
-        )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.setViaProperties(
+        block: InverseMatrixComputer.Companion.() -> InverseMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        InverseMatrixComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackInverseMatrixComputer = block(),
+            )
+        }
     }
 }

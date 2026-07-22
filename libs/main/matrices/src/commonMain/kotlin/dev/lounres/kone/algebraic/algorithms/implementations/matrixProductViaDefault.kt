@@ -51,38 +51,41 @@ public fun <Number, Matrix : MDList2<Number>> MatrixProductComputer.Companion.vi
     ring = ring,
 )
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> MatrixProductComputer.Companion.viaDefault(): MatrixProductComputer<Number, Matrix> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return viaDefault(
-        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
-            "MatrixProductComputer.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-        ring = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) {
-            "MatrixProductComputer.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> MatrixProductComputer.Companion.setViaDefault(
-    matrixFactory: MatrixFactory<Number, Matrix>,
-    ring: CommutativeRing<Number>,
-) {
-    MatrixProductComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaDefault(
-            matrixFactory = matrixFactory,
-            ring = ring,
+// TODO: Remove the top-level functions wrapper when KT-73135 will be fixed
+public object MatrixProductComputerViaDefaultSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> MatrixProductComputer.Companion.viaDefault(): MatrixProductComputer<Number, Matrix> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return viaDefault(
+            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
+                "MatrixProductComputer.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            ring = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) {
+                "MatrixProductComputer.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
         )
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> MatrixProductComputer.Companion.setViaDefault() {
-    MatrixProductComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaDefault()
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> MatrixProductComputer.Companion.setViaDefault(
+        matrixFactory: MatrixFactory<Number, Matrix>,
+        ring: CommutativeRing<Number>,
+    ) {
+        MatrixProductComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaDefault(
+                matrixFactory = matrixFactory,
+                ring = ring,
+            )
+        }
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> MatrixProductComputer.Companion.setViaDefault() {
+        MatrixProductComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaDefault()
+        }
     }
 }

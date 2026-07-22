@@ -61,46 +61,49 @@ public fun <Number> HyperbolicSineOverInputComputer.Companion.viaDefaultForCompl
     hyperbolicSineComputer = hyperbolicSineComputer,
 )
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number> HyperbolicSineOverInputComputer.Companion.viaDefaultForComplexNumbers(): HyperbolicSineOverInputComputer<ComplexNumber<Number>> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return viaDefaultForComplexNumbers<Number>(
-        field = koneContextRegistry[Field.Key<Number>()],
-        complexNumbersFieldExtension = koneContextRegistry[FieldExtension.Key<Number, ComplexNumber<Number>>()],
-        cosineComputer = koneContextRegistry[CosineComputer.Key<Number>()],
-        sineComputer = koneContextRegistry[SineComputer.Key<Number>()],
-        hyperbolicCosineComputer = koneContextRegistry[HyperbolicCosineComputer.Key<Number>()],
-        hyperbolicSineComputer = koneContextRegistry[HyperbolicSineComputer.Key<Number>()],
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number> HyperbolicSineOverInputComputer.Companion.setViaDefaultForComplexNumbers(
-    field: Field<Number>,
-    complexNumbersFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
-    cosineComputer: CosineComputer<Number>,
-    sineComputer: SineComputer<Number>,
-    hyperbolicCosineComputer: HyperbolicCosineComputer<Number>,
-    hyperbolicSineComputer: HyperbolicSineComputer<Number>,
-) {
-    HyperbolicSineOverInputComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
-        viaDefaultForComplexNumbers<Number>(
-            field = field,
-            complexNumbersFieldExtension = complexNumbersFieldExtension,
-            cosineComputer = cosineComputer,
-            sineComputer = sineComputer,
-            hyperbolicCosineComputer = hyperbolicCosineComputer,
-            hyperbolicSineComputer = hyperbolicSineComputer,
+// TODO: Remove the checker when KT-73135 will be fixed
+public object HyperbolicSineOverInputComputerDefaultForComplexNumbersSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number> HyperbolicSineOverInputComputer.Companion.viaDefaultForComplexNumbers(): HyperbolicSineOverInputComputer<ComplexNumber<Number>> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return viaDefaultForComplexNumbers<Number>(
+            field = koneContextRegistry[Field.Key<Number>()],
+            complexNumbersFieldExtension = koneContextRegistry[FieldExtension.Key<Number, ComplexNumber<Number>>()],
+            cosineComputer = koneContextRegistry[CosineComputer.Key<Number>()],
+            sineComputer = koneContextRegistry[SineComputer.Key<Number>()],
+            hyperbolicCosineComputer = koneContextRegistry[HyperbolicCosineComputer.Key<Number>()],
+            hyperbolicSineComputer = koneContextRegistry[HyperbolicSineComputer.Key<Number>()],
         )
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
-public fun <@Supply Number> HyperbolicSineOverInputComputer.Companion.setViaDefaultForComplexNumbers() {
-    HyperbolicSineOverInputComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
-        viaDefaultForComplexNumbers<Number>()
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number> HyperbolicSineOverInputComputer.Companion.setViaDefaultForComplexNumbers(
+        field: Field<Number>,
+        complexNumbersFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
+        cosineComputer: CosineComputer<Number>,
+        sineComputer: SineComputer<Number>,
+        hyperbolicCosineComputer: HyperbolicCosineComputer<Number>,
+        hyperbolicSineComputer: HyperbolicSineComputer<Number>,
+    ) {
+        HyperbolicSineOverInputComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
+            viaDefaultForComplexNumbers<Number>(
+                field = field,
+                complexNumbersFieldExtension = complexNumbersFieldExtension,
+                cosineComputer = cosineComputer,
+                sineComputer = sineComputer,
+                hyperbolicCosineComputer = hyperbolicCosineComputer,
+                hyperbolicSineComputer = hyperbolicSineComputer,
+            )
+        }
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
+    public fun <@Supply Number> HyperbolicSineOverInputComputer.Companion.setViaDefaultForComplexNumbers() {
+        HyperbolicSineOverInputComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
+            viaDefaultForComplexNumbers<Number>()
+        }
     }
 }

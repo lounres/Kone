@@ -25,6 +25,7 @@ import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.graphs.*
+import dev.lounres.kone.graphs.HypergraphEdgeWeightOfTypeSuppliableTopLevelFunctions.weightOfType
 import dev.lounres.kone.graphs.algorithms.*
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
@@ -103,24 +104,27 @@ private class HypergraphShortestPathWithFixedEndsComputerByDijkstra<@Supply Weig
     }
 }
 
-@Suppliable
-public fun <@Supply Weight> HypergraphShortestPathWithFixedEndsComputer.Companion.dijkstra(
-    weightMonoid: CommutativeMonoid<Weight>,
-    weightsOrder: Order<Weight>,
-): HypergraphShortestPathWithFixedEndsComputer<Weight> = HypergraphShortestPathWithFixedEndsComputerByDijkstra(
-    weightMonoid = weightMonoid,
-    weightsOrder = weightsOrder,
-)
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Weight> HypergraphShortestPathWithFixedEndsComputer.Companion.setDijkstra() {
-    HypergraphShortestPathWithFixedEndsComputer.Key<Weight>() correspondsTo RegisteredValueProvider.cached {
-        val koneContextRegistry = koneContextRegistry.get()
-        dijkstra(
-            weightMonoid = koneContextRegistry[CommutativeMonoid.Key<Weight>()],
-            weightsOrder = koneContextRegistry[Order.Key<Weight>()],
-        )
+// TODO: Remove the checker when KT-73135 will be fixed
+public object HypergraphShortestPathWithFixedEndsComputerDijkstraSuppliableTopLevelFunctions {
+    @Suppliable
+    public fun <@Supply Weight> HypergraphShortestPathWithFixedEndsComputer.Companion.dijkstra(
+        weightMonoid: CommutativeMonoid<Weight>,
+        weightsOrder: Order<Weight>,
+    ): HypergraphShortestPathWithFixedEndsComputer<Weight> = HypergraphShortestPathWithFixedEndsComputerByDijkstra(
+        weightMonoid = weightMonoid,
+        weightsOrder = weightsOrder,
+    )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Weight> HypergraphShortestPathWithFixedEndsComputer.Companion.setDijkstra() {
+        HypergraphShortestPathWithFixedEndsComputer.Key<Weight>() correspondsTo RegisteredValueProvider.cached {
+            val koneContextRegistry = koneContextRegistry.get()
+            dijkstra(
+                weightMonoid = koneContextRegistry[CommutativeMonoid.Key<Weight>()],
+                weightsOrder = koneContextRegistry[Order.Key<Weight>()],
+            )
+        }
     }
 }
 
@@ -198,23 +202,26 @@ private class HypergraphShortestPathWithFixedStartComputerByDijkstra<@Supply Wei
         }
 }
 
-@Suppliable
-public fun <@Supply Weight> HypergraphShortestPathWithFixedStartComputer.Companion.dijkstra(
-    weightMonoid: CommutativeMonoid<Weight>,
-    weightsOrder: Order<Weight>,
-): HypergraphShortestPathWithFixedStartComputer<Weight> = HypergraphShortestPathWithFixedStartComputerByDijkstra(
-    weightMonoid = weightMonoid,
-    weightsOrder = weightsOrder,
-)
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Weight> HypergraphShortestPathWithFixedStartComputer.Companion.setDijkstra() {
-    HypergraphShortestPathWithFixedStartComputer.Key<Weight>() correspondsTo RegisteredValueProvider.cached {
-        val koneContextRegistry = koneContextRegistry.get()
-        dijkstra(
-            weightMonoid = koneContextRegistry[CommutativeMonoid.Key<Weight>()],
-            weightsOrder = koneContextRegistry[Order.Key<Weight>()],
-        )
+// TODO: Remove the checker when KT-73135 will be fixed
+public object HypergraphShortestPathWithFixedStartComputerDijkstraSuppliableTopLevelFunctions {
+    @Suppliable
+    public fun <@Supply Weight> HypergraphShortestPathWithFixedStartComputer.Companion.dijkstra(
+        weightMonoid: CommutativeMonoid<Weight>,
+        weightsOrder: Order<Weight>,
+    ): HypergraphShortestPathWithFixedStartComputer<Weight> = HypergraphShortestPathWithFixedStartComputerByDijkstra(
+        weightMonoid = weightMonoid,
+        weightsOrder = weightsOrder,
+    )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Weight> HypergraphShortestPathWithFixedStartComputer.Companion.setDijkstra() {
+        HypergraphShortestPathWithFixedStartComputer.Key<Weight>() correspondsTo RegisteredValueProvider.cached {
+            val koneContextRegistry = koneContextRegistry.get()
+            dijkstra(
+                weightMonoid = koneContextRegistry[CommutativeMonoid.Key<Weight>()],
+                weightsOrder = koneContextRegistry[Order.Key<Weight>()],
+            )
+        }
     }
 }

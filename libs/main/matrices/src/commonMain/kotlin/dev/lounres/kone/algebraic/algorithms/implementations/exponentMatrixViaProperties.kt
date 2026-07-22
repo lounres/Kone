@@ -26,40 +26,43 @@ private class ExponentComputerViaProperties<@Supply Number, @Supply Matrix : MDL
     }
 }
 
-@Suppliable
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> ExponentComputer.Companion.viaProperties(
-    fallbackExponentMatrixComputer: ExponentComputer<MatrixWithProperties<Number, Matrix>>,
-): ExponentComputer<MatrixWithProperties<Number, Matrix>> = ExponentComputerViaProperties(
-    fallbackExponentMatrixComputer = fallbackExponentMatrixComputer,
-)
-
-@Suppliable
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> ExponentComputer.Companion.viaProperties(
-    block: ExponentComputer.Companion.() -> ExponentComputer<MatrixWithProperties<Number, Matrix>>,
-): ExponentComputer<MatrixWithProperties<Number, Matrix>> = viaProperties(
-    fallbackExponentMatrixComputer = block(),
-)
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> ExponentComputer.Companion.setViaProperties(
-    fallbackExponentMatrixComputer: ExponentComputer<MatrixWithProperties<Number, Matrix>>,
-) {
-    ExponentComputer.Key<MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackExponentMatrixComputer = fallbackExponentMatrixComputer,
-        )
+// TODO: Remove the checker when KT-73135 will be fixed
+public object ExponentComputerPropertiesSuppliableTopLevelFunctions {
+    @Suppliable
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> ExponentComputer.Companion.viaProperties(
+        fallbackExponentMatrixComputer: ExponentComputer<MatrixWithProperties<Number, Matrix>>,
+    ): ExponentComputer<MatrixWithProperties<Number, Matrix>> = ExponentComputerViaProperties(
+        fallbackExponentMatrixComputer = fallbackExponentMatrixComputer,
+    )
+    
+    @Suppliable
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> ExponentComputer.Companion.viaProperties(
+        block: ExponentComputer.Companion.() -> ExponentComputer<MatrixWithProperties<Number, Matrix>>,
+    ): ExponentComputer<MatrixWithProperties<Number, Matrix>> = viaProperties(
+        fallbackExponentMatrixComputer = block(),
+    )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> ExponentComputer.Companion.setViaProperties(
+        fallbackExponentMatrixComputer: ExponentComputer<MatrixWithProperties<Number, Matrix>>,
+    ) {
+        ExponentComputer.Key<MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackExponentMatrixComputer = fallbackExponentMatrixComputer,
+            )
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> ExponentComputer.Companion.setViaProperties(
-    block: ExponentComputer.Companion.() -> ExponentComputer<MatrixWithProperties<Number, Matrix>>,
-) {
-    ExponentComputer.Key<MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackExponentMatrixComputer = block(),
-        )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> ExponentComputer.Companion.setViaProperties(
+        block: ExponentComputer.Companion.() -> ExponentComputer<MatrixWithProperties<Number, Matrix>>,
+    ) {
+        ExponentComputer.Key<MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackExponentMatrixComputer = block(),
+            )
+        }
     }
 }

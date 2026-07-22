@@ -40,26 +40,29 @@ public fun <Number, Matrix : MDList2<Number>> IsScalarMatrixChecker.Companion.vi
     fallbackIsScalarMatrixChecker = block(),
 )
 
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsScalarMatrixChecker.Companion.setViaProperties(
-    fallbackIsScalarMatrixChecker: IsScalarMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    IsScalarMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackIsScalarMatrixChecker = fallbackIsScalarMatrixChecker,
-        )
+// TODO: Remove the checker when KT-73135 will be fixed
+public object IsScalarMatrixCheckerPropertiesSuppliableTopLevelFunctions {
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsScalarMatrixChecker.Companion.setViaProperties(
+        fallbackIsScalarMatrixChecker: IsScalarMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        IsScalarMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackIsScalarMatrixChecker = fallbackIsScalarMatrixChecker,
+            )
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsScalarMatrixChecker.Companion.setViaProperties(
-    block: IsScalarMatrixChecker.Companion.() -> IsScalarMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    IsScalarMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackIsScalarMatrixChecker = block(),
-        )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsScalarMatrixChecker.Companion.setViaProperties(
+        block: IsScalarMatrixChecker.Companion.() -> IsScalarMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        IsScalarMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackIsScalarMatrixChecker = block(),
+            )
+        }
     }
 }

@@ -1678,31 +1678,34 @@ public fun <Number> LabeledPolynomial.Companion.polynomialAlgebra(
     ring = ring
 )
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number> LabeledPolynomial.Companion.polynomialAlgebra(): PolynomialAlgebra<Number, LabeledPolynomial.Variable, LabeledPolynomial<Number>> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return polynomialAlgebra(
-        ring = koneContextRegistry[CommutativeRing.Key<Number>()],
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number> LabeledPolynomial.Companion.setPolynomialAlgebra(
-    ring: CommutativeRing<Number>,
-) {
-    PolynomialAlgebra.Key<Number, LabeledPolynomial.Variable, LabeledPolynomial<Number>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
-        polynomialAlgebra(
-            ring = ring,
+// TODO: Remove the top-level functions wrapper when KT-73135 will be fixed
+public object LabeledPolynomialSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number> LabeledPolynomial.Companion.polynomialAlgebra(): PolynomialAlgebra<Number, LabeledPolynomial.Variable, LabeledPolynomial<Number>> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return polynomialAlgebra(
+            ring = koneContextRegistry[CommutativeRing.Key<Number>()],
         )
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number> LabeledPolynomial.Companion.setPolynomialAlgebra() {
-    PolynomialAlgebra.Key<Number, LabeledPolynomial.Variable, LabeledPolynomial<Number>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
-        polynomialAlgebra<Number>()
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number> LabeledPolynomial.Companion.setPolynomialAlgebra(
+        ring: CommutativeRing<Number>,
+    ) {
+        PolynomialAlgebra.Key<Number, LabeledPolynomial.Variable, LabeledPolynomial<Number>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
+            polynomialAlgebra(
+                ring = ring,
+            )
+        }
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number> LabeledPolynomial.Companion.setPolynomialAlgebra() {
+        PolynomialAlgebra.Key<Number, LabeledPolynomial.Variable, LabeledPolynomial<Number>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
+            polynomialAlgebra<Number>()
+        }
     }
 }

@@ -27,40 +27,43 @@ private class HessenbergDecompositionComputerViaProperties<@Supply Number, @Supp
         }
 }
 
-@Suppliable
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> HessenbergDecompositionComputer.Companion.viaProperties(
-    fallbackHessenbergDecompositionComputer: HessenbergDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>>,
-): HessenbergDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>> = HessenbergDecompositionComputerViaProperties(
-    fallbackHessenbergDecompositionComputer = fallbackHessenbergDecompositionComputer,
-)
-
-@Suppliable
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> HessenbergDecompositionComputer.Companion.viaProperties(
-    block: HessenbergDecompositionComputer.Companion.() -> HessenbergDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>>,
-): HessenbergDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>> = HessenbergDecompositionComputerViaProperties(
-    fallbackHessenbergDecompositionComputer = block(),
-)
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> HessenbergDecompositionComputer.Companion.setViaProperties(
-    fallbackHessenbergDecompositionComputer: HessenbergDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    HessenbergDecompositionComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackHessenbergDecompositionComputer = fallbackHessenbergDecompositionComputer,
-        )
+// TODO: Remove the checker when KT-73135 will be fixed
+public object HessenbergDecompositionComputerPropertiesSuppliableTopLevelFunctions {
+    @Suppliable
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> HessenbergDecompositionComputer.Companion.viaProperties(
+        fallbackHessenbergDecompositionComputer: HessenbergDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    ): HessenbergDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>> = HessenbergDecompositionComputerViaProperties(
+        fallbackHessenbergDecompositionComputer = fallbackHessenbergDecompositionComputer,
+    )
+    
+    @Suppliable
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> HessenbergDecompositionComputer.Companion.viaProperties(
+        block: HessenbergDecompositionComputer.Companion.() -> HessenbergDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    ): HessenbergDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>> = HessenbergDecompositionComputerViaProperties(
+        fallbackHessenbergDecompositionComputer = block(),
+    )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> HessenbergDecompositionComputer.Companion.setViaProperties(
+        fallbackHessenbergDecompositionComputer: HessenbergDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        HessenbergDecompositionComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackHessenbergDecompositionComputer = fallbackHessenbergDecompositionComputer,
+            )
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> HessenbergDecompositionComputer.Companion.setViaProperties(
-    block: HessenbergDecompositionComputer.Companion.() -> HessenbergDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    HessenbergDecompositionComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackHessenbergDecompositionComputer = block(),
-        )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> HessenbergDecompositionComputer.Companion.setViaProperties(
+        block: HessenbergDecompositionComputer.Companion.() -> HessenbergDecompositionComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        HessenbergDecompositionComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackHessenbergDecompositionComputer = block(),
+            )
+        }
     }
 }

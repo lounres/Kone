@@ -56,40 +56,43 @@ public fun <Number> LogarithmComputer.Companion.viaDefaultForComplexNumbers(
     numberPlanarVectorArgumentComputer = numberPlanarVectorArgumentComputer,
 )
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number> LogarithmComputer.Companion.viaDefaultForComplexNumbers(): LogarithmComputer<ComplexNumber<Number>> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return viaDefaultForComplexNumbers(
-        numberRing = koneContextRegistry[CommutativeRing.Key<Number>()],
-        numberPositiveSquareRootComputer = koneContextRegistry[PositiveSquareRootComputer.Key<Number>()],
-        numberLogarithmComputer = koneContextRegistry[LogarithmComputer.Key<Number>()],
-        numberPlanarVectorArgumentComputer = koneContextRegistry[PlanarVectorArgumentComputer.Key<Number>()],
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number> LogarithmComputer.Companion.setViaDefaultForComplexNumbers(
-    numberRing: CommutativeRing<Number>,
-    numberPositiveSquareRootComputer: PositiveSquareRootComputer<Number>,
-    numberLogarithmComputer: LogarithmComputer<Number>,
-    numberPlanarVectorArgumentComputer: PlanarVectorArgumentComputer<Number>,
-) {
-    LogarithmComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
-        viaDefaultForComplexNumbers<Number>(
-            numberRing = numberRing,
-            numberPositiveSquareRootComputer = numberPositiveSquareRootComputer,
-            numberLogarithmComputer = numberLogarithmComputer,
-            numberPlanarVectorArgumentComputer = numberPlanarVectorArgumentComputer,
+// TODO: Remove the checker when KT-73135 will be fixed
+public object LogarithmComputerDefaultForComplexNumbersSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number> LogarithmComputer.Companion.viaDefaultForComplexNumbers(): LogarithmComputer<ComplexNumber<Number>> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return viaDefaultForComplexNumbers(
+            numberRing = koneContextRegistry[CommutativeRing.Key<Number>()],
+            numberPositiveSquareRootComputer = koneContextRegistry[PositiveSquareRootComputer.Key<Number>()],
+            numberLogarithmComputer = koneContextRegistry[LogarithmComputer.Key<Number>()],
+            numberPlanarVectorArgumentComputer = koneContextRegistry[PlanarVectorArgumentComputer.Key<Number>()],
         )
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
-public fun <@Supply Number> LogarithmComputer.Companion.setViaDefaultForComplexNumbers() {
-    LogarithmComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
-        viaDefaultForComplexNumbers<Number>()
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number> LogarithmComputer.Companion.setViaDefaultForComplexNumbers(
+        numberRing: CommutativeRing<Number>,
+        numberPositiveSquareRootComputer: PositiveSquareRootComputer<Number>,
+        numberLogarithmComputer: LogarithmComputer<Number>,
+        numberPlanarVectorArgumentComputer: PlanarVectorArgumentComputer<Number>,
+    ) {
+        LogarithmComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
+            viaDefaultForComplexNumbers<Number>(
+                numberRing = numberRing,
+                numberPositiveSquareRootComputer = numberPositiveSquareRootComputer,
+                numberLogarithmComputer = numberLogarithmComputer,
+                numberPlanarVectorArgumentComputer = numberPlanarVectorArgumentComputer,
+            )
+        }
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
+    public fun <@Supply Number> LogarithmComputer.Companion.setViaDefaultForComplexNumbers() {
+        LogarithmComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
+            viaDefaultForComplexNumbers<Number>()
+        }
     }
 }

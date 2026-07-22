@@ -37,54 +37,57 @@ public fun <Number, Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.viaD
     numberRing = numberRing,
 )
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.viaDefault(): IsZeroMatrixChecker<Number, Matrix> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return viaDefault(
-        numberRing = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) {
-            "IsZeroMatrixChecker.viaDefault<${suppliedTypeOf<Number>()}, ?>"
-        },
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.setViaDefault(
-    numberRing: CommutativeRing<Number>,
-) {
-    IsZeroMatrixChecker.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaDefault<Number, Matrix>(
-            numberRing = numberRing,
+// TODO: Remove the checker when KT-73135 will be fixed
+public object IsZeroMatrixCheckerDefaultSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.viaDefault(): IsZeroMatrixChecker<Number, Matrix> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return viaDefault(
+            numberRing = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) {
+                "IsZeroMatrixChecker.viaDefault<${suppliedTypeOf<Number>()}, ?>"
+            },
         )
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.setViaDefault() {
-    IsZeroMatrixChecker.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaDefault<Number, Matrix>()
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.setViaDefault(
+        numberRing: CommutativeRing<Number>,
+    ) {
+        IsZeroMatrixChecker.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaDefault<Number, Matrix>(
+                numberRing = numberRing,
+            )
+        }
     }
-}
-
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
-public fun <Number, Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.useViaDefault(
-    numberRing: CommutativeRing<Number>,
-) {
-    IsZeroMatrixKey correspondsTo RegisteredValueProvider.cached {
-        val isZeroMatrixChecker = viaDefault<Number, MatrixWithProperties<Number, Matrix>>(
-            numberRing = numberRing,
-        )
-        isZeroMatrixChecker { matrix.get().isZero() }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.setViaDefault() {
+        IsZeroMatrixChecker.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaDefault<Number, Matrix>()
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, _: KoneContextRegistry.Provider)
-public fun <@Supply Number, Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.useViaDefault() {
-    IsZeroMatrixKey correspondsTo RegisteredValueProvider.cached {
-        val isZeroMatrixChecker = viaDefault<Number, MatrixWithProperties<Number, Matrix>>()
-        isZeroMatrixChecker { matrix.get().isZero() }
+    
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
+    public fun <Number, Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.useViaDefault(
+        numberRing: CommutativeRing<Number>,
+    ) {
+        IsZeroMatrixKey correspondsTo RegisteredValueProvider.cached {
+            val isZeroMatrixChecker = viaDefault<Number, MatrixWithProperties<Number, Matrix>>(
+                numberRing = numberRing,
+            )
+            isZeroMatrixChecker { matrix.get().isZero() }
+        }
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, _: KoneContextRegistry.Provider)
+    public fun <@Supply Number, Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.useViaDefault() {
+        IsZeroMatrixKey correspondsTo RegisteredValueProvider.cached {
+            val isZeroMatrixChecker = viaDefault<Number, MatrixWithProperties<Number, Matrix>>()
+            isZeroMatrixChecker { matrix.get().isZero() }
+        }
     }
 }

@@ -127,97 +127,100 @@ public fun <Number, Matrix : MDList2<Number>> HessenbergDecompositionComputer.Co
     transposeMatrixComputer = transposeMatrixComputer,
 )
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> HessenbergDecompositionComputer.Companion.viaHouseholder(): HessenbergDecompositionComputer<Number, Matrix> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return viaHouseholder(
-        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
-            "HessenbergDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-        numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
-            "HessenbergDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-        numberOrder = koneContextRegistry.requestFor(Order.Key<Number>()) {
-            "HessenbergDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-        positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
-            "HessenbergDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-        matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<Number, Matrix>()) {
-            "HessenbergDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-        matrixProductComputer = koneContextRegistry.requestFor(MatrixProductComputer.Key<Number, Matrix>()) {
-            "HessenbergDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-        transposeMatrixComputer = koneContextRegistry.requestFor(TransposeMatrixComputer.Key<Number, Matrix>()) {
-            "HessenbergDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> HessenbergDecompositionComputer.Companion.setViaHouseholder(
-    matrixFactory: MatrixFactory<Number, Matrix>,
-    numberField: Field<Number>,
-    numberOrder: Order<Number>,
-    positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
-    matrixCategoryOverField: MatrixCategoryOverField<Number, Matrix>,
-    matrixProductComputer: MatrixProductComputer<Number, Matrix>,
-    transposeMatrixComputer: TransposeMatrixComputer<Number, Matrix>,
-) {
-    HessenbergDecompositionComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaHouseholder(
-            matrixFactory = matrixFactory,
-            numberField = numberField,
-            numberOrder = numberOrder,
-            positiveSquareRootComputer = positiveSquareRootComputer,
-            matrixCategoryOverField = matrixCategoryOverField,
-            matrixProductComputer = matrixProductComputer,
-            transposeMatrixComputer = transposeMatrixComputer,
+// TODO: Remove the checker when KT-73135 will be fixed
+public object HessenbergDecompositionComputerouseholderSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> HessenbergDecompositionComputer.Companion.viaHouseholder(): HessenbergDecompositionComputer<Number, Matrix> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return viaHouseholder(
+            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
+                "HessenbergDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
+                "HessenbergDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            numberOrder = koneContextRegistry.requestFor(Order.Key<Number>()) {
+                "HessenbergDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
+                "HessenbergDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<Number, Matrix>()) {
+                "HessenbergDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            matrixProductComputer = koneContextRegistry.requestFor(MatrixProductComputer.Key<Number, Matrix>()) {
+                "HessenbergDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            transposeMatrixComputer = koneContextRegistry.requestFor(TransposeMatrixComputer.Key<Number, Matrix>()) {
+                "HessenbergDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
         )
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> HessenbergDecompositionComputer.Companion.setViaHouseholder() {
-    HessenbergDecompositionComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaHouseholder<Number, Matrix>()
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> HessenbergDecompositionComputer.Companion.setViaHouseholder(
+        matrixFactory: MatrixFactory<Number, Matrix>,
+        numberField: Field<Number>,
+        numberOrder: Order<Number>,
+        positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
+        matrixCategoryOverField: MatrixCategoryOverField<Number, Matrix>,
+        matrixProductComputer: MatrixProductComputer<Number, Matrix>,
+        transposeMatrixComputer: TransposeMatrixComputer<Number, Matrix>,
+    ) {
+        HessenbergDecompositionComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaHouseholder(
+                matrixFactory = matrixFactory,
+                numberField = numberField,
+                numberOrder = numberOrder,
+                positiveSquareRootComputer = positiveSquareRootComputer,
+                matrixCategoryOverField = matrixCategoryOverField,
+                matrixProductComputer = matrixProductComputer,
+                transposeMatrixComputer = transposeMatrixComputer,
+            )
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> HessenbergDecompositionComputer.Companion.useViaHouseholder(
-    matrixFactory: MatrixFactory<Number, MatrixWithProperties<Number, Matrix>>,
-    numberField: Field<Number>,
-    numberOrder: Order<Number>,
-    positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
-    matrixCategoryOverField: MatrixCategoryOverField<Number, MatrixWithProperties<Number, Matrix>>,
-    matrixProductComputer: MatrixProductComputer<Number, MatrixWithProperties<Number, Matrix>>,
-    transposeMatrixComputer: TransposeMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    HessenbergDecomposition.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        val hessenbergDecompositionComputer = viaHouseholder(
-            matrixFactory = matrixFactory,
-            numberField = numberField,
-            numberOrder = numberOrder,
-            positiveSquareRootComputer = positiveSquareRootComputer,
-            matrixCategoryOverField = matrixCategoryOverField,
-            matrixProductComputer = matrixProductComputer,
-            transposeMatrixComputer = transposeMatrixComputer,
-        )
-        hessenbergDecompositionComputer { matrix.get().hessenbergDecomposition() }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> HessenbergDecompositionComputer.Companion.setViaHouseholder() {
+        HessenbergDecompositionComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaHouseholder<Number, Matrix>()
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> HessenbergDecompositionComputer.Companion.useViaHouseholder() {
-    HessenbergDecomposition.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        val hessenbergDecompositionComputer = viaHouseholder<Number, MatrixWithProperties<Number, Matrix>>()
-        hessenbergDecompositionComputer { matrix.get().hessenbergDecomposition() }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> HessenbergDecompositionComputer.Companion.useViaHouseholder(
+        matrixFactory: MatrixFactory<Number, MatrixWithProperties<Number, Matrix>>,
+        numberField: Field<Number>,
+        numberOrder: Order<Number>,
+        positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
+        matrixCategoryOverField: MatrixCategoryOverField<Number, MatrixWithProperties<Number, Matrix>>,
+        matrixProductComputer: MatrixProductComputer<Number, MatrixWithProperties<Number, Matrix>>,
+        transposeMatrixComputer: TransposeMatrixComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        HessenbergDecomposition.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            val hessenbergDecompositionComputer = viaHouseholder(
+                matrixFactory = matrixFactory,
+                numberField = numberField,
+                numberOrder = numberOrder,
+                positiveSquareRootComputer = positiveSquareRootComputer,
+                matrixCategoryOverField = matrixCategoryOverField,
+                matrixProductComputer = matrixProductComputer,
+                transposeMatrixComputer = transposeMatrixComputer,
+            )
+            hessenbergDecompositionComputer { matrix.get().hessenbergDecomposition() }
+        }
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> HessenbergDecompositionComputer.Companion.useViaHouseholder() {
+        HessenbergDecomposition.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            val hessenbergDecompositionComputer = viaHouseholder<Number, MatrixWithProperties<Number, Matrix>>()
+            hessenbergDecompositionComputer { matrix.get().hessenbergDecomposition() }
+        }
     }
 }

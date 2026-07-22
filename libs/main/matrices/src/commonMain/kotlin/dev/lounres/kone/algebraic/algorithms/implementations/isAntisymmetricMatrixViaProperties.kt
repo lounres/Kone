@@ -40,26 +40,29 @@ public fun <Number, Matrix : MDList2<Number>> IsAntisymmetricMatrixChecker.Compa
     fallbackIsAntisymmetricMatrixChecker = block(),
 )
 
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsAntisymmetricMatrixChecker.Companion.setViaProperties(
-    fallbackIsAntisymmetricMatrixChecker: IsAntisymmetricMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    IsAntisymmetricMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackIsAntisymmetricMatrixChecker = fallbackIsAntisymmetricMatrixChecker,
-        )
+// TODO: Remove the checker when KT-73135 will be fixed
+public object IsAntisymmetricMatrixCheckerPropertiesSuppliableTopLevelFunctions {
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsAntisymmetricMatrixChecker.Companion.setViaProperties(
+        fallbackIsAntisymmetricMatrixChecker: IsAntisymmetricMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        IsAntisymmetricMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackIsAntisymmetricMatrixChecker = fallbackIsAntisymmetricMatrixChecker,
+            )
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsAntisymmetricMatrixChecker.Companion.setViaProperties(
-    block: IsAntisymmetricMatrixChecker.Companion.() -> IsAntisymmetricMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    IsAntisymmetricMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackIsAntisymmetricMatrixChecker = block(),
-        )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsAntisymmetricMatrixChecker.Companion.setViaProperties(
+        block: IsAntisymmetricMatrixChecker.Companion.() -> IsAntisymmetricMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        IsAntisymmetricMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackIsAntisymmetricMatrixChecker = block(),
+            )
+        }
     }
 }

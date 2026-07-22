@@ -77,69 +77,72 @@ public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.
     positiveSquareRootComputer = positiveSquareRootComputer,
 )
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.viaGramSchmidt(): QRDecompositionComputer<Number, Matrix> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return viaGramSchmidt(
-        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
-            "QRDecompositionComputer.viaGramSchmidt<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-        field = koneContextRegistry.requestFor(Field.Key<Number>()) {
-            "QRDecompositionComputer.viaGramSchmidt<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-        positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
-            "QRDecompositionComputer.viaGramSchmidt<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.setViaGramSchmidt(
-    matrixFactory: MatrixFactory<Number, Matrix>,
-    field: Field<Number>,
-    positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
-) {
-    QRDecompositionComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaGramSchmidt(
-            matrixFactory = matrixFactory,
-            field = field,
-            positiveSquareRootComputer = positiveSquareRootComputer,
+// TODO: Remove the checker when KT-73135 will be fixed
+public object QRDecompositionComputerGramSchmidtSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.viaGramSchmidt(): QRDecompositionComputer<Number, Matrix> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return viaGramSchmidt(
+            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
+                "QRDecompositionComputer.viaGramSchmidt<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            field = koneContextRegistry.requestFor(Field.Key<Number>()) {
+                "QRDecompositionComputer.viaGramSchmidt<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
+                "QRDecompositionComputer.viaGramSchmidt<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
         )
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.setViaGramSchmidt() {
-    QRDecompositionComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaGramSchmidt<Number, Matrix>()
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.setViaGramSchmidt(
+        matrixFactory: MatrixFactory<Number, Matrix>,
+        field: Field<Number>,
+        positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
+    ) {
+        QRDecompositionComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaGramSchmidt(
+                matrixFactory = matrixFactory,
+                field = field,
+                positiveSquareRootComputer = positiveSquareRootComputer,
+            )
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.useViaGramSchmidt(
-    matrixFactory: MatrixFactory<Number, MatrixWithProperties<Number, Matrix>>,
-    field: Field<Number>,
-    positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
-) {
-    QRDecomposition.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        val qrDecompositionComputer = viaGramSchmidt(
-            matrixFactory = matrixFactory,
-            field = field,
-            positiveSquareRootComputer = positiveSquareRootComputer,
-        )
-        qrDecompositionComputer { matrix.get().qrDecomposition() }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.setViaGramSchmidt() {
+        QRDecompositionComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaGramSchmidt<Number, Matrix>()
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.useViaGramSchmidt() {
-    QRDecomposition.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        val qrDecompositionComputer = viaGramSchmidt<Number, MatrixWithProperties<Number, Matrix>>()
-        qrDecompositionComputer { matrix.get().qrDecomposition() }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.useViaGramSchmidt(
+        matrixFactory: MatrixFactory<Number, MatrixWithProperties<Number, Matrix>>,
+        field: Field<Number>,
+        positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
+    ) {
+        QRDecomposition.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            val qrDecompositionComputer = viaGramSchmidt(
+                matrixFactory = matrixFactory,
+                field = field,
+                positiveSquareRootComputer = positiveSquareRootComputer,
+            )
+            qrDecompositionComputer { matrix.get().qrDecomposition() }
+        }
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.useViaGramSchmidt() {
+        QRDecomposition.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            val qrDecompositionComputer = viaGramSchmidt<Number, MatrixWithProperties<Number, Matrix>>()
+            qrDecompositionComputer { matrix.get().qrDecomposition() }
+        }
     }
 }

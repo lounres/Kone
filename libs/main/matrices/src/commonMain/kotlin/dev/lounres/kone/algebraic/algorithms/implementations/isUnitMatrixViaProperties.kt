@@ -36,26 +36,29 @@ public fun <Number, Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.viaP
     fallbackIsUnitMatrixChecker = block(),
 )
 
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.setViaProperties(
-    fallbackIsUnitMatrixChecker: IsUnitMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    IsUnitMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackIsUnitMatrixChecker = fallbackIsUnitMatrixChecker,
-        )
+// TODO: Remove the checker when KT-73135 will be fixed
+public object IsUnitMatrixCheckerPropertiesSuppliableTopLevelFunctions {
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.setViaProperties(
+        fallbackIsUnitMatrixChecker: IsUnitMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        IsUnitMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackIsUnitMatrixChecker = fallbackIsUnitMatrixChecker,
+            )
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.setViaProperties(
-    block: IsUnitMatrixChecker.Companion.() -> IsUnitMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    IsUnitMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackIsUnitMatrixChecker = block(),
-        )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsUnitMatrixChecker.Companion.setViaProperties(
+        block: IsUnitMatrixChecker.Companion.() -> IsUnitMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        IsUnitMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackIsUnitMatrixChecker = block(),
+            )
+        }
     }
 }

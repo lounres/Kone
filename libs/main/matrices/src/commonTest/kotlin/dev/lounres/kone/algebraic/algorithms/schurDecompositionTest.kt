@@ -7,19 +7,24 @@ package dev.lounres.kone.algebraic.algorithms
 
 import de.infix.testBalloon.framework.core.testSuite
 import dev.lounres.kone.algebraic.*
+import dev.lounres.kone.algebraic.ComplexNumberFieldExtensionOverSuppliableTopLevelFunctions.setFieldExtensionOver
+import dev.lounres.kone.algebraic.MatrixCategoryOverFieldViaDefaultSuppliableTopLevelFunctions.setViaDefault
+import dev.lounres.kone.algebraic.MatrixFactoryViaDefaultSuppliableTopLevelFunctions.setViaDefault
 import dev.lounres.kone.algebraic.algorithms.implementations.*
-import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
+import dev.lounres.kone.algebraic.algorithms.implementations.ConjugateTransposeMatrixComputerDefaultSuppliableTopLevelFunctions.setViaDefault
+import dev.lounres.kone.algebraic.algorithms.implementations.HessenbergDecompositionComputerHouseholderForComplexNumbersSuppliableTopLevelFunctions.setViaHouseholderForComplexNumbers
+import dev.lounres.kone.algebraic.algorithms.implementations.HessenbergDecompositionComputerouseholderSuppliableTopLevelFunctions.setViaHouseholder
+import dev.lounres.kone.algebraic.algorithms.implementations.MatrixProductComputerViaDefaultSuppliableTopLevelFunctions.setViaDefault
+import dev.lounres.kone.algebraic.algorithms.implementations.SchurDecompositionComputerGolubVanLoanForComplexNumbersSuppliableTopLevelFunctions.setViaGolubVanLoanForComplexNumbers
+import dev.lounres.kone.algebraic.algorithms.implementations.SchurDecompositionComputerGolubVanLoanSuppliableTopLevelFunctions.setViaGolubVanLoan
+import dev.lounres.kone.algebraic.algorithms.implementations.SquareRootsComputerDefaultForComplexNumbersSuppliableTopLevelFunctions.setViaDefaultForComplexNumbers
+import dev.lounres.kone.algebraic.algorithms.implementations.TransposeMatrixComputerDefaultSuppliableTopLevelFunctions.setViaDefault
 import dev.lounres.kone.algebraic.algorithms.utils.toMatrixString
 import dev.lounres.kone.algebraic.assertions.toBeEqualToWithTolerance
 import dev.lounres.kone.algebraic.assertions.toBeQuasiUpperTriangularMatrix
 import dev.lounres.kone.algebraic.assertions.toBeUnitMatrixWithTolerance
 import dev.lounres.kone.algebraic.assertions.toBeUpperTriangularMatrix
-import dev.lounres.kone.assertions.AssertionScope
-import dev.lounres.kone.assertions.Expect
-import dev.lounres.kone.assertions.notToThrow
-import dev.lounres.kone.assertions.of
-import dev.lounres.kone.assertions.softly
-import dev.lounres.kone.assertions.withClue
+import dev.lounres.kone.assertions.*
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.of
@@ -29,12 +34,7 @@ import dev.lounres.kone.contexts.buildWithProvider
 import dev.lounres.kone.contexts.koneLocalUnwrap
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
-import dev.lounres.kone.registry.RegisteredValueProvider
-import dev.lounres.kone.registry.cached
-import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.withImpliedUsingFirst
 import dev.lounres.kone.relations.Order
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 val SchurDecompositionImplementationsTests by testSuite {
@@ -111,114 +111,21 @@ val SchurDecompositionImplementationsTests by testSuite {
             Algorithm(
                 name = "via Golub and Van Loan",
                 koneContextRegistry = KoneContextRegistry.buildWithProvider {
-                    val koneContextRegistry by lazy { contextOf<KoneContextRegistry.Provider>().get() }
                     Number.setSafeField()
                     Number.setSafeOrder()
                     PositiveSquareRootComputer.setViaDefaultForDouble()
-                    // TODO: Workaround for KT-87097
-//                    MatrixFactory.setViaDefault<Number>()
-                    MatrixFactory.Key<Number, MDList2<Number>>() correspondsTo RegisteredValueProvider.cached {
-                        MatrixFactory.viaDefault(
-                            ring = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) { "MatrixFactory.default<${suppliedTypeOf<Number>()}>" }
-                        )
-                    }
-                    // TODO: Workaround for KT-87097
-//                    MatrixCategoryOverField.setViaDefault<Number, MDList2<Number>>()
-                    MatrixCategoryOverField.Key<Number, MDList2<Number>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
-                        MatrixCategoryOverField.viaDefault<Number, MDList2<Number>>(
-                            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, MDList2<Number>>()) {
-                                "MatrixCategoryOverField.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                            field = koneContextRegistry.requestFor(Field.Key<Number>()) {
-                                "MatrixCategoryOverField.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                        )
-                    }
-                    // TODO: Workaround for KT-87097
-//                    MatrixProductComputer.setViaDefault<Number, MDList2<Number>>()
-                    MatrixProductComputer.Key<Number, MDList2<Number>>() correspondsTo RegisteredValueProvider.cached {
-                        MatrixProductComputer.viaDefault(
-                            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, MDList2<Number>>()) {
-                                "MatrixProductComputer.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                            ring = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) {
-                                "MatrixProductComputer.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                        )
-                    }
-                    // TODO: Workaround for KT-87097
-//                    TransposeMatrixComputer.setViaDefault<Number, MDList2<Number>>()
-                    TransposeMatrixComputer.Key<Number, MDList2<Number>>() correspondsTo RegisteredValueProvider.cached {
-                        TransposeMatrixComputer.viaDefault<Number, MDList2<Number>>(
-                            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, MDList2<Number>>()) {
-                                "TransposeMatrixComputer.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            }
-                        )
-                    }
-                    // TODO: Workaround for KT-87097
-//                    HessenbergDecompositionComputer.setViaHouseholder<Number, MDList2<Number>>()
-                    HessenbergDecompositionComputer.Key<Number, MDList2<Number>>() correspondsTo RegisteredValueProvider.cached {
-                        HessenbergDecompositionComputer.viaHouseholder<Number, MDList2<Number>>(
-                            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, MDList2<Number>>()) {
-                                "HessenbergDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                            numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
-                                "HessenbergDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                            numberOrder = koneContextRegistry.requestFor(Order.Key<Number>()) {
-                                "HessenbergDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                            positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
-                                "HessenbergDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                            matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<Number, MDList2<Number>>()) {
-                                "HessenbergDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                            matrixProductComputer = koneContextRegistry.requestFor(MatrixProductComputer.Key<Number, MDList2<Number>>()) {
-                                "HessenbergDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                            transposeMatrixComputer = koneContextRegistry.requestFor(TransposeMatrixComputer.Key<Number, MDList2<Number>>()) {
-                                "HessenbergDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                        )
-                    }
-                    // TODO: Workaround for KT-87097
-//                    SchurDecompositionComputer.setViaGolubVanLoan<Number, MDList2<Number>>(tolerance = 1E-10)
-                    SchurDecompositionComputer.Key<Number, MDList2<Number>>() correspondsTo RegisteredValueProvider.cached {
-                        SchurDecompositionComputer.viaGolubVanLoan<Number, MDList2<Number>>(
-                            tolerance = 1E-10,
-                            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, MDList2<Number>>()) {
-                                "SchurDecompositionComputer.viaGolubVanLoan<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                            numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
-                                "SchurDecompositionComputer.viaGolubVanLoan<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                            numberOrder = koneContextRegistry.requestFor(Order.Key<Number>()) {
-                                "SchurDecompositionComputer.viaGolubVanLoan<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                            positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
-                                "SchurDecompositionComputer.viaGolubVanLoan<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                            matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<Number, MDList2<Number>>()) {
-                                "SchurDecompositionComputer.viaGolubVanLoan<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                            matrixProductComputer = koneContextRegistry.requestFor(MatrixProductComputer.Key<Number, MDList2<Number>>()) {
-                                "SchurDecompositionComputer.viaGolubVanLoan<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                            transposeMatrixComputer = koneContextRegistry.requestFor(TransposeMatrixComputer.Key<Number, MDList2<Number>>()) {
-                                "SchurDecompositionComputer.viaGolubVanLoan<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                            hessenbergDecompositionComputer = koneContextRegistry.requestFor(HessenbergDecompositionComputer.Key<Number, MDList2<Number>>()) {
-                                "SchurDecompositionComputer.viaGolubVanLoan<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                        )
-                    }
+                    MatrixFactory.setViaDefault<Number>()
+                    MatrixCategoryOverField.setViaDefault<Number, MDList2<Number>>()
+                    MatrixProductComputer.setViaDefault<Number, MDList2<Number>>()
+                    TransposeMatrixComputer.setViaDefault<Number, MDList2<Number>>()
+                    HessenbergDecompositionComputer.setViaHouseholder<Number, MDList2<Number>>()
+                    SchurDecompositionComputer.setViaGolubVanLoan<Number, MDList2<Number>>(tolerance = 1E-10)
                 }
             )
         )
         
-        for (algorithm in algorithms) testSuite(algorithm.name) {
-            algorithm.koneContextRegistry.koneLocalUnwrap(
+        for ((name, koneContextRegistry) in algorithms) testSuite(name) {
+            koneContextRegistry.koneLocalUnwrap(
                 Field.Key<Number>(),
                 Order.Key<Number>(),
                 MatrixCategoryOverField.Key<Number, MDList2<Number>>(),
@@ -373,140 +280,23 @@ val SchurDecompositionImplementationsTests by testSuite {
             Algorithm(
                 name = "via Golub and Van Loan",
                 koneContextRegistry = KoneContextRegistry.buildWithProvider {
-                    val koneContextRegistry by lazy { contextOf<KoneContextRegistry.Provider>().get() }
                     Number.setSafeField()
-                    // TODO: Workaround for KT-87097
-//                    ComplexNumber.setFieldExtensionOver<Number>()
-                    FieldExtension.Key<Number, ComplexNumber<Number>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
-                        ComplexNumber.fieldExtensionOver(koneContextRegistry[Field.Key<Number>()])
-                    }
+                    ComplexNumber.setFieldExtensionOver<Number>()
                     Number.setSafeOrder()
                     PositiveSquareRootComputer.setViaDefaultForDouble()
-                    // TODO: Workaround for KT-87097
-//                    SquareRootsComputer.setViaDefaultForComplexNumbers<Number>()
-                    SquareRootsComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
-                        SquareRootsComputer.viaDefaultForComplexNumbers<Number>(
-                            field = koneContextRegistry[Field.Key<Number>()],
-                            order = koneContextRegistry[Order.Key<Number>()],
-                            positiveSquareRootComputer = koneContextRegistry[PositiveSquareRootComputer.Key<Number>()],
-                        )
-                    }
-                    // TODO: Workaround for KT-87097
-//                    MatrixFactory.setViaDefault<ComplexNumber<Number>>()
-                    MatrixFactory.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>() correspondsTo RegisteredValueProvider.cached {
-                        MatrixFactory.viaDefault(
-                            ring = koneContextRegistry.requestFor(CommutativeRing.Key<ComplexNumber<Number>>()) { "MatrixFactory.default<${suppliedTypeOf<Number>()}>" }
-                        )
-                    }
-                    // TODO: Workaround for KT-87097
-//                    MatrixCategoryOverField.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>()
-                    MatrixCategoryOverField.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
-                        MatrixCategoryOverField.viaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(
-                            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>()) {
-                                "MatrixCategoryOverField.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                            field = koneContextRegistry.requestFor(Field.Key<ComplexNumber<Number>>()) {
-                                "MatrixCategoryOverField.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                        )
-                    }
-                    // TODO: Workaround for KT-87097
-//                    MatrixProductComputer.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>()
-                    MatrixProductComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>() correspondsTo RegisteredValueProvider.cached {
-                        MatrixProductComputer.viaDefault(
-                            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>()) {
-                                "MatrixProductComputer.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                            ring = koneContextRegistry.requestFor(CommutativeRing.Key<ComplexNumber<Number>>()) {
-                                "MatrixProductComputer.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<Number>>()}>"
-                            },
-                        )
-                    }
-                    // TODO: Workaround for KT-87097
-//                    ConjugateTransposeMatrixComputer.setViaDefault<Number, MDList2<ComplexNumber<Number>>>()
-                    ConjugateTransposeMatrixComputer.Key<Number, MDList2<ComplexNumber<Number>>>() correspondsTo RegisteredValueProvider.cached {
-                        ConjugateTransposeMatrixComputer.viaDefault<Number, MDList2<ComplexNumber<Number>>>(
-                            numberCommutativeRing = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) {
-                                "ConjugateTransposeMatrixComputer.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}>"
-                            },
-                            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>()) {
-                                "ConjugateTransposeMatrixComputer.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}>"
-                            },
-                        )
-                    }
-                    // TODO: Workaround for KT-87097
-//                    HessenbergDecompositionComputer.setViaHouseholderForComplexNumbers<Number, MDList2<ComplexNumber<Number>>>()
-                    HessenbergDecompositionComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>() correspondsTo RegisteredValueProvider.cached {
-                        HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<Number, MDList2<ComplexNumber<Number>>>(
-                            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>()) {
-                                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}>"
-                            },
-                            numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
-                                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}>"
-                            },
-                            complexNumberFieldExtension = koneContextRegistry.requestFor(FieldExtension.Key<Number, ComplexNumber<Number>>()) {
-                                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}>"
-                            },
-                            numberOrder = koneContextRegistry.requestFor(Order.Key<Number>()) {
-                                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}>"
-                            },
-                            positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
-                                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}>"
-                            },
-                            matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>()) {
-                                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}>"
-                            },
-                            matrixProductComputer = koneContextRegistry.requestFor(MatrixProductComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>()) {
-                                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}>"
-                            },
-                            conjugateTransposeMatrixComputer = koneContextRegistry.requestFor(ConjugateTransposeMatrixComputer.Key<Number, MDList2<ComplexNumber<Number>>>()) {
-                                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}>"
-                            },
-                        )
-                    }
-                    // TODO: Workaround for KT-87097
-//                    SchurDecompositionComputer.setViaGolubVanLoanForComplexNumbers<Number, MDList2<ComplexNumber<Number>>>(tolerance = 1E-17)
-                    SchurDecompositionComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>() correspondsTo RegisteredValueProvider.cached {
-                        SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<Number, MDList2<ComplexNumber<Number>>>(
-                            tolerance = 1E-17,
-                            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>()) {
-                                "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}>"
-                            },
-                            numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
-                                "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}>"
-                            },
-                            complexNumberFieldExtension = koneContextRegistry.requestFor(FieldExtension.Key<Number, ComplexNumber<Number>>()) {
-                                "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}>"
-                            },
-                            numberOrder = koneContextRegistry.requestFor(Order.Key<Number>()) {
-                                "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}>"
-                            },
-                            positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
-                                "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}>"
-                            },
-                            complexNumberSquareRootComputer = koneContextRegistry.requestFor(SquareRootsComputer.Key<ComplexNumber<Number>>()) {
-                                "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}>"
-                            },
-                            matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>()) {
-                                "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}>"
-                            },
-                            matrixProductComputer = koneContextRegistry.requestFor(MatrixProductComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>()) {
-                                "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}>"
-                            },
-                            conjugateTransposeMatrixComputer = koneContextRegistry.requestFor(ConjugateTransposeMatrixComputer.Key<Number, MDList2<ComplexNumber<Number>>>()) {
-                                "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}>"
-                            },
-                            hessenbergDecompositionComputer = koneContextRegistry.requestFor(HessenbergDecompositionComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>()) {
-                                "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<MDList2<ComplexNumber<Number>>>()}>"
-                            },
-                        )
-                    }
+                    SquareRootsComputer.setViaDefaultForComplexNumbers<Number>()
+                    MatrixFactory.setViaDefault<ComplexNumber<Number>>()
+                    MatrixCategoryOverField.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>()
+                    MatrixProductComputer.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>()
+                    ConjugateTransposeMatrixComputer.setViaDefault<Number, MDList2<ComplexNumber<Number>>>()
+                    HessenbergDecompositionComputer.setViaHouseholderForComplexNumbers<Number, MDList2<ComplexNumber<Number>>>()
+                    SchurDecompositionComputer.setViaGolubVanLoanForComplexNumbers<Number, MDList2<ComplexNumber<Number>>>(tolerance = 1E-17)
                 }
             )
         )
         
-        for (algorithm in algorithms) testSuite(algorithm.name) {
-            algorithm.koneContextRegistry.koneLocalUnwrap(
+        for ((name, koneContextRegistry) in algorithms) testSuite(name) {
+            koneContextRegistry.koneLocalUnwrap(
                 Field.Key<Number>(),
                 Order.Key<Number>(),
                 PositiveSquareRootComputer.Key<Number>(),

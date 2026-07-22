@@ -42,7 +42,7 @@ public fun <Key, Value> KoneMap.Companion.of(
     keyOrder: Order<Key>? = null,
 ): KoneMap<Key, Value> = KoneMap.empty()
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppress("unused")
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
@@ -63,7 +63,7 @@ public fun <Key, Value> KoneReifiedMap.Companion.of(
     keyOrder: Order<Key>? = null,
 ): KoneReifiedMap<Key, Value> = KoneReifiedMap.empty()
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public fun <@Supply Key, Value> KoneReifiedMap.Companion.contextualOf(): KoneReifiedMap<Key, Value> =
@@ -87,7 +87,7 @@ public fun <Key, Value> KoneMap.Companion.of(
         keyEquality = keyEquality,
     )
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public fun <@Supply Key, Value> KoneMap.Companion.contextualOf(
@@ -147,7 +147,7 @@ public fun <Key, Value> KoneMap.Companion.of(
         else -> TODO()
     }
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public fun <@Supply Key, Value> KoneMap.Companion.contextualOf(
@@ -200,7 +200,7 @@ public fun <Key, Value> KoneMutableMap.Companion.of(
     if (keyHashing != null) KoneHashResizableMap(keyEquality = keyEquality, keyHashing = keyHashing)
     else KoneListBackedMutableMap(keyEquality = keyEquality)
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public fun <@Supply Key, Value> KoneMutableMap.Companion.contextualOf(): KoneMutableMap<Key, Value> =
@@ -240,7 +240,7 @@ public fun <Key, Value> KoneMutableMap.Companion.of(
     if (keyHashing != null) KoneHashResizableMap<Key, Value>(keyEquality = keyEquality, keyHashing = keyHashing).apply { setAllFrom(KoneArray(entries)) }
     else KoneListBackedMutableMap<Key, Value>(keyEquality = keyEquality).apply { setAllFrom(KoneArray(entries)) }
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public fun <@Supply Key, Value> KoneMutableMap.Companion.contextualOf(
@@ -277,7 +277,7 @@ public fun <Key, Value> KoneMutableReifiedMap.Companion.of(
     if (keyHashing != null) KoneHashResizableReifiedMap<Key, Value>(keyReification = keyReification, keyEquality = keyEquality, keyHashing = keyHashing).apply { setAllFrom(KoneArray(entries)) }
     else KoneListBackedMutableReifiedMap<Key, Value>(keyReification = keyReification, keyEquality = keyEquality).apply { setAllFrom(KoneArray(entries)) }
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public fun <@Supply Key, Value> KoneMutableReifiedMap.Companion.contextualOf(
@@ -476,7 +476,7 @@ public inline fun <Key, Value> KoneMap.Companion.build(
     return KoneMapBuilder(mapBuilder).apply(builderAction).build()
 }
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public inline fun <@Supply Key, Value> KoneMap.Companion.buildContextual(
@@ -516,7 +516,7 @@ public inline fun <Key, Value> KoneReifiedMap.Companion.build(
     return KoneReifiedMapBuilder(mapBuilder).apply(builderAction).build()
 }
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public inline fun <@Supply Key, Value> KoneReifiedMap.Companion.buildContextual(
@@ -543,7 +543,7 @@ public inline fun <Key, Value> KoneMap.Companion.build(
     return KoneMapBuilder(mapBuilder).apply(builderAction).build()
 }
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public inline fun <@Supply Key, Value> KoneMap.Companion.buildContextual(
@@ -588,7 +588,7 @@ public inline fun <Key, Value> KoneReifiedMap.Companion.build(
     return KoneReifiedMapBuilder(mapBuilder).apply(builderAction).build()
 }
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public inline fun <@Supply Key, Value> KoneReifiedMap.Companion.buildContextual(

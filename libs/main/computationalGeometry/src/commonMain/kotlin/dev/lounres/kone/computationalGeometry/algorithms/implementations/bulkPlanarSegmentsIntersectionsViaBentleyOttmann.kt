@@ -290,15 +290,18 @@ public fun <Number, Vector, Point> BulkPlanarSegmentsIntersectionsOverFieldCompu
         euclideanSpace = euclideanSpace,
     )
 
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Vector, @Supply Point> BulkPlanarSegmentsIntersectionsOverFieldComputer.Companion.setBentleyOttmann() {
-    BulkPlanarSegmentsIntersectionsOverFieldComputer.Key<Number, Vector, Point>() correspondsTo RegisteredValueProvider.cached {
-        val koneContextRegistry = koneContextRegistry.get()
-        bentleyOttmann(
-            numberField = koneContextRegistry[Field.Key<Number>()],
-            numberOrder = koneContextRegistry[Order.Key<Number>()],
-            euclideanSpace = koneContextRegistry[EuclideanSpaceOverField.Key<Number, Vector, Point>()],
-        )
+// TODO: Remove the checker when KT-73135 will be fixed
+public object BulkPlanarSegmentsIntersectionsOverFieldBentleyOttmannSuppliableTopLevelFunctions {
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Vector, @Supply Point> BulkPlanarSegmentsIntersectionsOverFieldComputer.Companion.setBentleyOttmann() {
+        BulkPlanarSegmentsIntersectionsOverFieldComputer.Key<Number, Vector, Point>() correspondsTo RegisteredValueProvider.cached {
+            val koneContextRegistry = koneContextRegistry.get()
+            bentleyOttmann(
+                numberField = koneContextRegistry[Field.Key<Number>()],
+                numberOrder = koneContextRegistry[Order.Key<Number>()],
+                euclideanSpace = koneContextRegistry[EuclideanSpaceOverField.Key<Number, Vector, Point>()],
+            )
+        }
     }
 }

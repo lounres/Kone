@@ -1688,7 +1688,7 @@ public inline fun <E, K> KoneIterable<E>.groupBy(
         keySelector = keySelector
     )
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(_: KoneContextRegistry)
 //public inline fun <E, @Supply K> KoneIterable<E>.groupContextualBy(
@@ -1716,7 +1716,7 @@ public inline fun <E, K, V> KoneIterable<E>.groupBy(
         valueTransform = valueTransform,
     )
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(_: KoneContextRegistry)
 //public inline fun <E, @Supply K, V> KoneIterable<E>.groupContextualBy(

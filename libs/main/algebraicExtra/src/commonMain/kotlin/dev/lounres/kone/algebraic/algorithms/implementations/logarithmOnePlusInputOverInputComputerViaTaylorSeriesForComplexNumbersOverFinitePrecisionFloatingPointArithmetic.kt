@@ -82,53 +82,56 @@ public fun <Number> LogarithmComputer.Companion.viaTaylorSeriesForComplexNumbers
     threshold = threshold,
 )
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number> LogarithmComputer.Companion.viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
-    threshold: Number,
-): LogarithmOnePlusInputOverInputComputer<ComplexNumber<Number>> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
-        numberRing = koneContextRegistry[CommutativeRing.Key<Number>()],
-        numberOrder = koneContextRegistry[Order.Key<Number>()],
-        complexNumberEquality = koneContextRegistry[Equality.Key<ComplexNumber<Number>>()],
-        complexNumberField = koneContextRegistry[Field.Key<ComplexNumber<Number>>()],
-        numberPositiveSquareRootComputer = koneContextRegistry[PositiveSquareRootComputer.Key<Number>()],
-        complexNumberLogarithmComputer = koneContextRegistry[LogarithmComputer.Key<ComplexNumber<Number>>()],
-        threshold = threshold,
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number> LogarithmComputer.Companion.setViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
-    numberRing: CommutativeRing<Number>,
-    numberOrder: Order<Number>,
-    complexNumberEquality: Equality<ComplexNumber<Number>>,
-    complexNumberField: Field<ComplexNumber<Number>>,
-    numberPositiveSquareRootComputer: PositiveSquareRootComputer<Number>,
-    complexNumberLogarithmComputer: LogarithmComputer<ComplexNumber<Number>>,
-    threshold: Number,
-) {
-    LogarithmOnePlusInputOverInputComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
-        viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>(
-            numberRing = numberRing,
-            numberOrder = numberOrder,
-            complexNumberEquality = complexNumberEquality,
-            complexNumberField = complexNumberField,
-            numberPositiveSquareRootComputer = numberPositiveSquareRootComputer,
-            complexNumberLogarithmComputer = complexNumberLogarithmComputer,
+// TODO: Remove the checker when KT-73135 will be fixed
+public object LogarithmComputerTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmeticSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number> LogarithmComputer.Companion.viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
+        threshold: Number,
+    ): LogarithmOnePlusInputOverInputComputer<ComplexNumber<Number>> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
+            numberRing = koneContextRegistry[CommutativeRing.Key<Number>()],
+            numberOrder = koneContextRegistry[Order.Key<Number>()],
+            complexNumberEquality = koneContextRegistry[Equality.Key<ComplexNumber<Number>>()],
+            complexNumberField = koneContextRegistry[Field.Key<ComplexNumber<Number>>()],
+            numberPositiveSquareRootComputer = koneContextRegistry[PositiveSquareRootComputer.Key<Number>()],
+            complexNumberLogarithmComputer = koneContextRegistry[LogarithmComputer.Key<ComplexNumber<Number>>()],
             threshold = threshold,
         )
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
-public fun <@Supply Number> LogarithmComputer.Companion.setViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
-    threshold: Number,
-) {
-    LogarithmOnePlusInputOverInputComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
-        viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>(threshold = threshold)
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number> LogarithmComputer.Companion.setViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
+        numberRing: CommutativeRing<Number>,
+        numberOrder: Order<Number>,
+        complexNumberEquality: Equality<ComplexNumber<Number>>,
+        complexNumberField: Field<ComplexNumber<Number>>,
+        numberPositiveSquareRootComputer: PositiveSquareRootComputer<Number>,
+        complexNumberLogarithmComputer: LogarithmComputer<ComplexNumber<Number>>,
+        threshold: Number,
+    ) {
+        LogarithmOnePlusInputOverInputComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
+            viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>(
+                numberRing = numberRing,
+                numberOrder = numberOrder,
+                complexNumberEquality = complexNumberEquality,
+                complexNumberField = complexNumberField,
+                numberPositiveSquareRootComputer = numberPositiveSquareRootComputer,
+                complexNumberLogarithmComputer = complexNumberLogarithmComputer,
+                threshold = threshold,
+            )
+        }
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
+    public fun <@Supply Number> LogarithmComputer.Companion.setViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
+        threshold: Number,
+    ) {
+        LogarithmOnePlusInputOverInputComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
+            viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>(threshold = threshold)
+        }
     }
 }

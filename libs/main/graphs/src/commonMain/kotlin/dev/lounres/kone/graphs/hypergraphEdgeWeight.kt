@@ -16,5 +16,8 @@ public class HypergraphEdgeWeightKey<@Supply Weight> : SuppliedTypeRegistryKey<W
     override fun toString(): String = "dev.lounres.kone.graphs.HypergraphEdgeWeightKey.Key<${suppliedTypeOf<Weight>()}>"
 }
 
-@Suppliable
-public fun <@Supply Weight> HypergraphEdge.weightOfType(): Weight = properties[HypergraphEdgeWeightKey<Weight>()]
+// TODO: Remove the checker when KT-73135 will be fixed
+public object HypergraphEdgeWeightOfTypeSuppliableTopLevelFunctions {
+    @Suppliable
+    public fun <@Supply Weight> HypergraphEdge.weightOfType(): Weight = properties[HypergraphEdgeWeightKey<Weight>()]
+}

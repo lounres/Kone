@@ -63,18 +63,21 @@ public fun <Number, Matrix : MDList2<Number>> MatrixFactory.Companion.forMatrixW
         propertiesBuilder = propertiesBuilder,
     )
 
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> MatrixFactory.Companion.setForMatrixWithProperties(
-    propertiesBuilder: context(MatrixWithProperties.Provider<Number, Matrix>) MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>.() -> Unit = {},
-) {
-    MatrixFactory.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        val koneContextRegistry = koneContextRegistry.get()
-        forMatrixWithProperties(
-            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
-                "MatrixFactory.setForMatrixWithProperties<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-            },
-            propertiesBuilder = propertiesBuilder,
-        )
+// TODO: Remove the checker when KT-73135 will be fixed
+public object MatrixFactoryForMatrixWithPropertiesSuppliableTopLevelFunctions {
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> MatrixFactory.Companion.setForMatrixWithProperties(
+        propertiesBuilder: context(MatrixWithProperties.Provider<Number, Matrix>) MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>.() -> Unit = {},
+    ) {
+        MatrixFactory.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            val koneContextRegistry = koneContextRegistry.get()
+            forMatrixWithProperties(
+                matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
+                    "MatrixFactory.setForMatrixWithProperties<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                },
+                propertiesBuilder = propertiesBuilder,
+            )
+        }
     }
 }

@@ -45,40 +45,43 @@ public fun <Number> ExponentComputer.Companion.viaDefaultForComplexNumbers(
     numberSineComputer = numberSineComputer,
 )
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number> ExponentComputer.Companion.viaDefaultForComplexNumbers(): ExponentComputer<ComplexNumber<Number>> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return viaDefaultForComplexNumbers(
-        numberRing = koneContextRegistry[CommutativeRing.Key<Number>()],
-        numberExponentComputer = koneContextRegistry[ExponentComputer.Key<Number>()],
-        numberCosineComputer = koneContextRegistry[CosineComputer.Key<Number>()],
-        numberSineComputer = koneContextRegistry[SineComputer.Key<Number>()],
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number> ExponentComputer.Companion.setViaDefaultForComplexNumbers(
-    numberRing: CommutativeRing<Number>,
-    numberExponentComputer: ExponentComputer<Number>,
-    numberCosineComputer: CosineComputer<Number>,
-    numberSineComputer: SineComputer<Number>,
-) {
-    ExponentComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
-        viaDefaultForComplexNumbers<Number>(
-            numberRing = numberRing,
-            numberExponentComputer = numberExponentComputer,
-            numberCosineComputer = numberCosineComputer,
-            numberSineComputer = numberSineComputer,
+// TODO: Remove the checker when KT-73135 will be fixed
+public object ExponentComputerDefaultForComplexNumbersSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number> ExponentComputer.Companion.viaDefaultForComplexNumbers(): ExponentComputer<ComplexNumber<Number>> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return viaDefaultForComplexNumbers(
+            numberRing = koneContextRegistry[CommutativeRing.Key<Number>()],
+            numberExponentComputer = koneContextRegistry[ExponentComputer.Key<Number>()],
+            numberCosineComputer = koneContextRegistry[CosineComputer.Key<Number>()],
+            numberSineComputer = koneContextRegistry[SineComputer.Key<Number>()],
         )
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
-public fun <@Supply Number> ExponentComputer.Companion.setViaDefaultForComplexNumbers() {
-    ExponentComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
-        viaDefaultForComplexNumbers<Number>()
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number> ExponentComputer.Companion.setViaDefaultForComplexNumbers(
+        numberRing: CommutativeRing<Number>,
+        numberExponentComputer: ExponentComputer<Number>,
+        numberCosineComputer: CosineComputer<Number>,
+        numberSineComputer: SineComputer<Number>,
+    ) {
+        ExponentComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
+            viaDefaultForComplexNumbers<Number>(
+                numberRing = numberRing,
+                numberExponentComputer = numberExponentComputer,
+                numberCosineComputer = numberCosineComputer,
+                numberSineComputer = numberSineComputer,
+            )
+        }
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
+    public fun <@Supply Number> ExponentComputer.Companion.setViaDefaultForComplexNumbers() {
+        ExponentComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
+            viaDefaultForComplexNumbers<Number>()
+        }
     }
 }

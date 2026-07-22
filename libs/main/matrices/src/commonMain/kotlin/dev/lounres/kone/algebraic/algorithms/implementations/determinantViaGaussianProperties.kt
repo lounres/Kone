@@ -25,40 +25,43 @@ private class DeterminantComputerViaProperties<@Supply Number, Matrix : MDList2<
         }
 }
 
-@Suppliable
-public fun <@Supply Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.viaProperties(
-    fallbackDeterminantComputer: DeterminantComputer<Number, MatrixWithProperties<Number, Matrix>>,
-): DeterminantComputer<Number, MatrixWithProperties<Number, Matrix>> = DeterminantComputerViaProperties(
-    fallbackDeterminantComputer = fallbackDeterminantComputer,
-)
-
-@Suppliable
-public fun <@Supply Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.viaProperties(
-    block: DeterminantComputer.Companion.() -> DeterminantComputer<Number, MatrixWithProperties<Number, Matrix>>,
-): DeterminantComputer<Number, MatrixWithProperties<Number, Matrix>> = viaProperties(
-    fallbackDeterminantComputer = block(),
-)
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> DeterminantComputer.Companion.setViaProperties(
-    fallbackDeterminantComputer: DeterminantComputer<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    DeterminantComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackDeterminantComputer = fallbackDeterminantComputer,
-        )
+// TODO: Remove the checker when KT-73135 will be fixed
+public object DeterminantComputerPropertiesSuppliableTopLevelFunctions {
+    @Suppliable
+    public fun <@Supply Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.viaProperties(
+        fallbackDeterminantComputer: DeterminantComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    ): DeterminantComputer<Number, MatrixWithProperties<Number, Matrix>> = DeterminantComputerViaProperties(
+        fallbackDeterminantComputer = fallbackDeterminantComputer,
+    )
+    
+    @Suppliable
+    public fun <@Supply Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.viaProperties(
+        block: DeterminantComputer.Companion.() -> DeterminantComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    ): DeterminantComputer<Number, MatrixWithProperties<Number, Matrix>> = viaProperties(
+        fallbackDeterminantComputer = block(),
+    )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> DeterminantComputer.Companion.setViaProperties(
+        fallbackDeterminantComputer: DeterminantComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        DeterminantComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackDeterminantComputer = fallbackDeterminantComputer,
+            )
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> DeterminantComputer.Companion.setViaProperties(
-    block: DeterminantComputer.Companion.() -> DeterminantComputer<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    DeterminantComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackDeterminantComputer = block(),
-        )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> DeterminantComputer.Companion.setViaProperties(
+        block: DeterminantComputer.Companion.() -> DeterminantComputer<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        DeterminantComputer.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackDeterminantComputer = block(),
+            )
+        }
     }
 }

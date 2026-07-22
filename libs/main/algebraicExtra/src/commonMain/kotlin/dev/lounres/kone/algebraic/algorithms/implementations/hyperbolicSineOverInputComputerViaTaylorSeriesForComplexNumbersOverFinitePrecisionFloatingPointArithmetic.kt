@@ -53,34 +53,37 @@ public fun <Number> HyperbolicSineOverInputComputer.Companion.viaTaylorSeriesFor
     complexNumbersField = complexNumbersField,
 )
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number> HyperbolicSineOverInputComputer.Companion.viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(): HyperbolicSineOverInputComputer<ComplexNumber<Number>> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>(
-        complexNumbersEquality = koneContextRegistry[Equality.Key<ComplexNumber<Number>>()],
-        complexNumbersField = koneContextRegistry[Field.Key<ComplexNumber<Number>>()],
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number> HyperbolicSineOverInputComputer.Companion.setViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
-    complexNumbersEquality: Equality<ComplexNumber<Number>>,
-    complexNumbersField: Field<ComplexNumber<Number>>,
-) {
-    HyperbolicSineOverInputComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
-        viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>(
-            complexNumbersEquality = complexNumbersEquality,
-            complexNumbersField = complexNumbersField,
+// TODO: Remove the checker when KT-73135 will be fixed
+public object HyperbolicSineOverInputComputerTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmeticSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number> HyperbolicSineOverInputComputer.Companion.viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(): HyperbolicSineOverInputComputer<ComplexNumber<Number>> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>(
+            complexNumbersEquality = koneContextRegistry[Equality.Key<ComplexNumber<Number>>()],
+            complexNumbersField = koneContextRegistry[Field.Key<ComplexNumber<Number>>()],
         )
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
-public fun <@Supply Number> HyperbolicSineOverInputComputer.Companion.setViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic() {
-    HyperbolicSineOverInputComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
-        viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>()
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number> HyperbolicSineOverInputComputer.Companion.setViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic(
+        complexNumbersEquality: Equality<ComplexNumber<Number>>,
+        complexNumbersField: Field<ComplexNumber<Number>>,
+    ) {
+        HyperbolicSineOverInputComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
+            viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>(
+                complexNumbersEquality = complexNumbersEquality,
+                complexNumbersField = complexNumbersField,
+            )
+        }
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
+    public fun <@Supply Number> HyperbolicSineOverInputComputer.Companion.setViaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic() {
+        HyperbolicSineOverInputComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
+            viaTaylorSeriesForComplexNumbersOverFinitePrecisionFloatingPointArithmetic<Number>()
+        }
     }
 }

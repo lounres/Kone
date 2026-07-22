@@ -46,54 +46,57 @@ public fun <Number, Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.
     numberRing = numberRing,
 )
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.viaDefault(): IsDiagonalMatrixChecker<Number, Matrix> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return viaDefault(
-        numberRing = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) {
-            "IsDiagonalMatrixChecker.viaDefault<${suppliedTypeOf<Number>()}, ?>"
-        },
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.setViaDefault(
-    numberRing: CommutativeRing<Number>,
-) {
-    IsDiagonalMatrixChecker.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaDefault<Number, Matrix>(
-            numberRing = numberRing,
+// TODO: Remove the checker when KT-73135 will be fixed
+public object IsDiagonalMatrixCheckerDefaultSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.viaDefault(): IsDiagonalMatrixChecker<Number, Matrix> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return viaDefault(
+            numberRing = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) {
+                "IsDiagonalMatrixChecker.viaDefault<${suppliedTypeOf<Number>()}, ?>"
+            },
         )
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.setViaDefault() {
-    IsDiagonalMatrixChecker.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaDefault<Number, Matrix>()
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.setViaDefault(
+        numberRing: CommutativeRing<Number>,
+    ) {
+        IsDiagonalMatrixChecker.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaDefault<Number, Matrix>(
+                numberRing = numberRing,
+            )
+        }
     }
-}
-
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
-public fun <Number, Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.useViaDefault(
-    numberRing: CommutativeRing<Number>,
-) {
-    IsDiagonalMatrixKey correspondsTo RegisteredValueProvider.cached {
-        val isDiagonalMatrixChecker = viaDefault<Number, MatrixWithProperties<Number, Matrix>>(
-            numberRing = numberRing,
-        )
-        isDiagonalMatrixChecker { matrix.get().isDiagonal() }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.setViaDefault() {
+        IsDiagonalMatrixChecker.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaDefault<Number, Matrix>()
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.useViaDefault() {
-    IsDiagonalMatrixKey correspondsTo RegisteredValueProvider.cached {
-        val isDiagonalMatrixChecker = viaDefault<Number, MatrixWithProperties<Number, Matrix>>()
-        isDiagonalMatrixChecker { matrix.get().isDiagonal() }
+    
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
+    public fun <Number, Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.useViaDefault(
+        numberRing: CommutativeRing<Number>,
+    ) {
+        IsDiagonalMatrixKey correspondsTo RegisteredValueProvider.cached {
+            val isDiagonalMatrixChecker = viaDefault<Number, MatrixWithProperties<Number, Matrix>>(
+                numberRing = numberRing,
+            )
+            isDiagonalMatrixChecker { matrix.get().isDiagonal() }
+        }
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.useViaDefault() {
+        IsDiagonalMatrixKey correspondsTo RegisteredValueProvider.cached {
+            val isDiagonalMatrixChecker = viaDefault<Number, MatrixWithProperties<Number, Matrix>>()
+            isDiagonalMatrixChecker { matrix.get().isDiagonal() }
+        }
     }
 }

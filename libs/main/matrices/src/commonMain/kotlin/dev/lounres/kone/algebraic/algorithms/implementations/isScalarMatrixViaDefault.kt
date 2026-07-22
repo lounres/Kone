@@ -57,61 +57,64 @@ public fun <Number, Matrix : MDList2<Number>> IsScalarMatrixChecker.Companion.vi
     numberRing = numberRing,
 )
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, Matrix : MDList2<Number>> IsScalarMatrixChecker.Companion.viaDefault(): IsScalarMatrixChecker<Number, Matrix> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return viaDefault(
-        numberEquality = koneContextRegistry.requestFor(Equality.Key<Number>()) {
-            "IsScalarMatrixChecker.viaDefault<${suppliedTypeOf<Number>()}, ?>"
-        },
-        numberRing = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) {
-            "IsScalarMatrixChecker.viaDefault<${suppliedTypeOf<Number>()}, ?>"
-        },
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsScalarMatrixChecker.Companion.setViaDefault(
-    numberEquality: Equality<Number>,
-    numberRing: CommutativeRing<Number>,
-) {
-    IsScalarMatrixChecker.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaDefault<Number, Matrix>(
-            numberEquality = numberEquality,
-            numberRing = numberRing,
+// TODO: Remove the checker when KT-73135 will be fixed
+public object IsScalarMatrixCheckerDefaultSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, Matrix : MDList2<Number>> IsScalarMatrixChecker.Companion.viaDefault(): IsScalarMatrixChecker<Number, Matrix> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return viaDefault(
+            numberEquality = koneContextRegistry.requestFor(Equality.Key<Number>()) {
+                "IsScalarMatrixChecker.viaDefault<${suppliedTypeOf<Number>()}, ?>"
+            },
+            numberRing = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) {
+                "IsScalarMatrixChecker.viaDefault<${suppliedTypeOf<Number>()}, ?>"
+            },
         )
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsScalarMatrixChecker.Companion.setViaDefault() {
-    IsScalarMatrixChecker.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaDefault<Number, Matrix>()
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsScalarMatrixChecker.Companion.setViaDefault(
+        numberEquality: Equality<Number>,
+        numberRing: CommutativeRing<Number>,
+    ) {
+        IsScalarMatrixChecker.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaDefault<Number, Matrix>(
+                numberEquality = numberEquality,
+                numberRing = numberRing,
+            )
+        }
     }
-}
-
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
-public fun <Number, Matrix : MDList2<Number>> IsScalarMatrixChecker.Companion.useViaDefault(
-    numberEquality: Equality<Number>,
-    numberRing: CommutativeRing<Number>,
-) {
-    IsScalarMatrixKey correspondsTo RegisteredValueProvider.cached {
-        val isScalarMatrixChecker = viaDefault<Number, MatrixWithProperties<Number, Matrix>>(
-            numberEquality = numberEquality,
-            numberRing = numberRing,
-        )
-        isScalarMatrixChecker { matrix.get().isScalar() }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsScalarMatrixChecker.Companion.setViaDefault() {
+        IsScalarMatrixChecker.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaDefault<Number, Matrix>()
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, Matrix : MDList2<Number>> IsScalarMatrixChecker.Companion.useViaDefault() {
-    IsScalarMatrixKey correspondsTo RegisteredValueProvider.cached {
-        val isScalarMatrixChecker = viaDefault<Number, MatrixWithProperties<Number, Matrix>>()
-        isScalarMatrixChecker { matrix.get().isScalar() }
+    
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
+    public fun <Number, Matrix : MDList2<Number>> IsScalarMatrixChecker.Companion.useViaDefault(
+        numberEquality: Equality<Number>,
+        numberRing: CommutativeRing<Number>,
+    ) {
+        IsScalarMatrixKey correspondsTo RegisteredValueProvider.cached {
+            val isScalarMatrixChecker = viaDefault<Number, MatrixWithProperties<Number, Matrix>>(
+                numberEquality = numberEquality,
+                numberRing = numberRing,
+            )
+            isScalarMatrixChecker { matrix.get().isScalar() }
+        }
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, Matrix : MDList2<Number>> IsScalarMatrixChecker.Companion.useViaDefault() {
+        IsScalarMatrixKey correspondsTo RegisteredValueProvider.cached {
+            val isScalarMatrixChecker = viaDefault<Number, MatrixWithProperties<Number, Matrix>>()
+            isScalarMatrixChecker { matrix.get().isScalar() }
+        }
     }
 }

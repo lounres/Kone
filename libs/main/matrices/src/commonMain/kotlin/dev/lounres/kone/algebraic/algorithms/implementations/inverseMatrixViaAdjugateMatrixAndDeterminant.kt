@@ -35,55 +35,58 @@ public fun <Number, Matrix : MDList2<Number>> InverseMatrixComputer.Companion.vi
     matrixFactory = matrixFactory,
 )
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.viaAdjugateMatrixAndDeterminant(): InverseMatrixComputer<Number, Matrix> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return viaAdjugateMatrixAndDeterminant(
-        matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
-            "InverseMatrixComputer.viaAdjugateMatrixAndDeterminant<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-        },
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.setViaAdjugateMatrixAndDeterminant(
-    matrixFactory: MatrixFactory<Number, Matrix>,
-) {
-    InverseMatrixComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaAdjugateMatrixAndDeterminant<Number, Matrix>(
-            matrixFactory = matrixFactory,
+// TODO: Remove the checker when KT-73135 will be fixed
+public object InverseMatrixComputerAdjugateMatrixAndDeterminantSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.viaAdjugateMatrixAndDeterminant(): InverseMatrixComputer<Number, Matrix> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return viaAdjugateMatrixAndDeterminant(
+            matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
+                "InverseMatrixComputer.viaAdjugateMatrixAndDeterminant<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
         )
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.setViaAdjugateMatrixAndDeterminant() {
-    InverseMatrixComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaAdjugateMatrixAndDeterminant<Number, Matrix>()
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.setViaAdjugateMatrixAndDeterminant(
+        matrixFactory: MatrixFactory<Number, Matrix>,
+    ) {
+        InverseMatrixComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaAdjugateMatrixAndDeterminant<Number, Matrix>(
+                matrixFactory = matrixFactory,
+            )
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.useViaAdjugateMatrixAndDeterminant(
-    matrixFactory: MatrixFactory<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    InverseMatrixKey<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        val inverseMatrixComputer = viaAdjugateMatrixAndDeterminant<Number, MatrixWithProperties<Number, Matrix>>(
-            matrixFactory = matrixFactory,
-        )
-        inverseMatrixComputer { matrix.get().invert() }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.setViaAdjugateMatrixAndDeterminant() {
+        InverseMatrixComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaAdjugateMatrixAndDeterminant<Number, Matrix>()
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, _: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.useViaAdjugateMatrixAndDeterminant() {
-    InverseMatrixKey<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        val inverseMatrixComputer = viaAdjugateMatrixAndDeterminant<Number, MatrixWithProperties<Number, Matrix>>()
-        inverseMatrixComputer { matrix.get().invert() }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.useViaAdjugateMatrixAndDeterminant(
+        matrixFactory: MatrixFactory<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        InverseMatrixKey<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            val inverseMatrixComputer = viaAdjugateMatrixAndDeterminant<Number, MatrixWithProperties<Number, Matrix>>(
+                matrixFactory = matrixFactory,
+            )
+            inverseMatrixComputer { matrix.get().invert() }
+        }
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, _: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.useViaAdjugateMatrixAndDeterminant() {
+        InverseMatrixKey<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            val inverseMatrixComputer = viaAdjugateMatrixAndDeterminant<Number, MatrixWithProperties<Number, Matrix>>()
+            inverseMatrixComputer { matrix.get().invert() }
+        }
     }
 }

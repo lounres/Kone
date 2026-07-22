@@ -40,26 +40,29 @@ public fun <Number, Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.
     fallbackIsDiagonalMatrixChecker = block(),
 )
 
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.setViaProperties(
-    fallbackIsDiagonalMatrixChecker: IsDiagonalMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    IsDiagonalMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackIsDiagonalMatrixChecker = fallbackIsDiagonalMatrixChecker,
-        )
+// TODO: Remove the checker when KT-73135 will be fixed
+public object IsDiagonalMatrixCheckerPropertiesSuppliableTopLevelFunctions {
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.setViaProperties(
+        fallbackIsDiagonalMatrixChecker: IsDiagonalMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        IsDiagonalMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackIsDiagonalMatrixChecker = fallbackIsDiagonalMatrixChecker,
+            )
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.setViaProperties(
-    block: IsDiagonalMatrixChecker.Companion.() -> IsDiagonalMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    IsDiagonalMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackIsDiagonalMatrixChecker = block(),
-        )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsDiagonalMatrixChecker.Companion.setViaProperties(
+        block: IsDiagonalMatrixChecker.Companion.() -> IsDiagonalMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        IsDiagonalMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackIsDiagonalMatrixChecker = block(),
+            )
+        }
     }
 }

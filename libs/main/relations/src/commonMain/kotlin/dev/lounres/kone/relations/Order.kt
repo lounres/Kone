@@ -57,45 +57,6 @@ public interface Order<in Element> : KoneContext {
 }
 
 /**
- * Shortcut for getting [Order] context for the given [suppliedElementType].
- * Throws if there is no such context in the registry.
- */
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry)
-public fun <@Supply Element> Order.Companion.getFor(): Order<Element> =
-    koneContextRegistry[Order.Key()]
-/**
- * Shortcut for getting [Order] context for the given [suppliedElementType]
- * or `null` if there is no such context in the registry.
- */
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry)
-public fun <@Supply Element> Order.Companion.getForOrNull(): Order<Element>? =
-    koneContextRegistry.getOrNull(Order.Key())
-/**
- * Shortcut for getting [Order] context for the given [suppliedElementType]
- * or [default] context if there is no such context in the registry.
- */
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry)
-public fun <@Supply Element> Order.Companion.getForOrDefault(default: Order<Element>): Order<Element> =
-    koneContextRegistry.getOrDefault(Order.Key(), default)
-/**
- * Shortcut for getting [Order] context for the given [suppliedElementType]
- * or compute [block] to get such context if there is no such context in the registry.
- */
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry)
-public inline fun <@Supply Element> Order.Companion.getForOrElse(block: () -> Order<Element>): Order<Element> =
-    koneContextRegistry.getOrElse(Order.Key(), block)
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Element: Comparable<Element>> Order.Companion.setDefaultFor() {
-    Order.Key<Element>() correspondsTo Order.defaultFor<Element>()
-}
-
-/**
  * Provides comparison of two elements. Alternative of [Kotlin stlib Comparator][KotlinStdlibComparator] but with result of type [ComparisonResult].
  */
 public fun interface Comparator<in Element> {
@@ -300,6 +261,14 @@ public val <Element: Any> Comparator<Element>.withNullAsGreatest: Comparator<Ele
  * Returns [Order] instance which [Order.compareTo] operator just uses [Comparable.compareTo] operator's result as a return value.
  */
 public fun <Element: Comparable<Element>> Order.Companion.defaultFor(): Order<Element> = DefaultOrderOnComparables
+// TODO: Remove the checker when KT-73135 will be fixed
+public object OrderDefaultForSuppliableTopLevelFunctions {
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Element : Comparable<Element>> Order.Companion.setDefaultFor() {
+        Order.Key<Element>() correspondsTo Order.defaultFor<Element>()
+    }
+}
 /**
  * Returns [Comparator] instance which [Comparator.compare] operator just uses [Comparable.compareTo] operator's result as a return value.
  */

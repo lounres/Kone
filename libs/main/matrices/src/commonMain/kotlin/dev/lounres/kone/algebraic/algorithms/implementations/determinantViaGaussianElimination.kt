@@ -84,55 +84,58 @@ public fun <Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.viaG
     field = field,
 )
 
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.viaGaussianElimination(): DeterminantComputer<Number, Matrix> {
-    val koneContextRegistry = koneContextRegistry.get()
-    return viaGaussianElimination(
-        field = koneContextRegistry.requestFor(Field.Key<Number>()) {
-            "DeterminantComputer.viaGaussianElimination<${suppliedTypeOf<Number>()}, ?>"
-        },
-    )
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> DeterminantComputer.Companion.setViaGaussianElimination(
-    field: Field<Number>,
-) {
-    DeterminantComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaGaussianElimination<Number, Matrix>(
-            field = field,
+// TODO: Remove the checker when KT-73135 will be fixed
+public object DeterminantComputerGaussianEliminationSuppliableTopLevelFunctions {
+    @Suppliable
+    context(koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.viaGaussianElimination(): DeterminantComputer<Number, Matrix> {
+        val koneContextRegistry = koneContextRegistry.get()
+        return viaGaussianElimination(
+            field = koneContextRegistry.requestFor(Field.Key<Number>()) {
+                "DeterminantComputer.viaGaussianElimination<${suppliedTypeOf<Number>()}, ?>"
+            },
         )
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> DeterminantComputer.Companion.setViaGaussianElimination() {
-    DeterminantComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
-        viaGaussianElimination<Number, Matrix>()
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> DeterminantComputer.Companion.setViaGaussianElimination(
+        field: Field<Number>,
+    ) {
+        DeterminantComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaGaussianElimination<Number, Matrix>(
+                field = field,
+            )
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
-public fun <@Supply Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.useViaGaussianElimination(
-    field: Field<Number>,
-) {
-    DeterminantKey<Number>() correspondsTo RegisteredValueProvider.cached {
-        val determinantComputer = viaGaussianElimination<Number, MatrixWithProperties<Number, Matrix>>(
-            field = field,
-        )
-        determinantComputer { matrix.get().determinant() }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, _: KoneContextRegistry.Provider)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> DeterminantComputer.Companion.setViaGaussianElimination() {
+        DeterminantComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
+            viaGaussianElimination<Number, Matrix>()
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, _: KoneContextRegistry.Provider)
-public fun <@Supply Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.useViaGaussianElimination() {
-    DeterminantKey<Number>() correspondsTo RegisteredValueProvider.cached {
-        val determinantComputer = viaGaussianElimination<Number, MatrixWithProperties<Number, Matrix>>()
-        determinantComputer { matrix.get().determinant() }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
+    public fun <@Supply Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.useViaGaussianElimination(
+        field: Field<Number>,
+    ) {
+        DeterminantKey<Number>() correspondsTo RegisteredValueProvider.cached {
+            val determinantComputer = viaGaussianElimination<Number, MatrixWithProperties<Number, Matrix>>(
+                field = field,
+            )
+            determinantComputer { matrix.get().determinant() }
+        }
+    }
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>, _: KoneContextRegistry.Provider)
+    public fun <@Supply Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.useViaGaussianElimination() {
+        DeterminantKey<Number>() correspondsTo RegisteredValueProvider.cached {
+            val determinantComputer = viaGaussianElimination<Number, MatrixWithProperties<Number, Matrix>>()
+            determinantComputer { matrix.get().determinant() }
+        }
     }
 }

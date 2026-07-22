@@ -156,12 +156,15 @@ private class MDList1EuclideanSpaceOverRing<Number>(
 public fun <Number> EuclideanSpaceOverRing.Companion.mdList1(ring: Ring<Number>, dimension: UInt): EuclideanSpaceOverRing<Number, MDList1<Number>, PointWrapper<MDList1<Number>>> =
     MDList1EuclideanSpaceOverRing(ring, dimension)
 
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number> EuclideanSpaceOverRing.Companion.setMDList1For(dimension: UInt) {
-    EuclideanSpaceOverRing.Key<Number, MDList1<Number>, PointWrapper<MDList1<Number>>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
-        val koneContextRegistry = koneContextRegistry.get()
-        mdList1(koneContextRegistry[Ring.Key<Number>()], dimension)
+// TODO: Remove the checker when KT-73135 will be fixed
+public object EuclideanSpaceOverRingMDList1ForSuppliableTopLevelFunctions {
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number> EuclideanSpaceOverRing.Companion.setMDList1For(dimension: UInt) {
+        EuclideanSpaceOverRing.Key<Number, MDList1<Number>, PointWrapper<MDList1<Number>>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
+            val koneContextRegistry = koneContextRegistry.get()
+            mdList1(koneContextRegistry[Ring.Key<Number>()], dimension)
+        }
     }
 }
 
@@ -319,11 +322,14 @@ private class MDList1EuclideanSpaceOverField<Number>(
 public fun <Number> EuclideanSpaceOverField.Companion.mdList1(field: Field<Number>, dimension: UInt): EuclideanSpaceOverField<Number, MDList1<Number>, PointWrapper<MDList1<Number>>> =
     MDList1EuclideanSpaceOverField(field, dimension)
 
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number> EuclideanSpaceOverField.Companion.setMDList1For(dimension: UInt) {
-    EuclideanSpaceOverField.Key<Number, MDList1<Number>, PointWrapper<MDList1<Number>>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
-        val koneContextRegistry = koneContextRegistry.get()
-        mdList1(koneContextRegistry[Field.Key<Number>()], dimension)
+// TODO: Remove the checker when KT-73135 will be fixed
+public object EuclideanSpaceOverFieldMDList1ForSuppliableTopLevelFunctions {
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number> EuclideanSpaceOverField.Companion.setMDList1For(dimension: UInt) {
+        EuclideanSpaceOverField.Key<Number, MDList1<Number>, PointWrapper<MDList1<Number>>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
+            val koneContextRegistry = koneContextRegistry.get()
+            mdList1(koneContextRegistry[Field.Key<Number>()], dimension)
+        }
     }
 }

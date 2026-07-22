@@ -189,12 +189,15 @@ public class EuclideanSpace3OverRing<Number>(
     }
 }
 
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number> EuclideanSpace3OverRing.Companion.setFor() {
-    EuclideanSpace3OverRing.Key<Number>() correspondsTo RegisteredValueProvider.cached {
-        val koneContextRegistry = koneContextRegistry.get()
-        EuclideanSpace3OverRing(koneContextRegistry[Ring.Key<Number>()])
+// TODO: Remove the checker when KT-73135 will be fixed
+public object EuclideanSpace3OverRingForSuppliableTopLevelFunctions {
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number> EuclideanSpace3OverRing.Companion.setFor() {
+        EuclideanSpace3OverRing.Key<Number>() correspondsTo RegisteredValueProvider.cached {
+            val koneContextRegistry = koneContextRegistry.get()
+            EuclideanSpace3OverRing(koneContextRegistry[Ring.Key<Number>()])
+        }
     }
 }
 
@@ -328,11 +331,14 @@ public class EuclideanSpace3OverField<Number>(
     }
 }
 
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
-public fun <@Supply Number> EuclideanSpace3OverField.Companion.setFor() {
-    EuclideanSpace3OverField.Key<Number>() correspondsTo RegisteredValueProvider.cached {
-        val koneContextRegistry = koneContextRegistry.get()
-        EuclideanSpace3OverField(koneContextRegistry[Field.Key<Number>()])
+// TODO: Remove the checker when KT-73135 will be fixed
+public object EuclideanSpace3OverFieldForSuppliableTopLevelFunctions {
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number> EuclideanSpace3OverField.Companion.setFor() {
+        EuclideanSpace3OverField.Key<Number>() correspondsTo RegisteredValueProvider.cached {
+            val koneContextRegistry = koneContextRegistry.get()
+            EuclideanSpace3OverField(koneContextRegistry[Field.Key<Number>()])
+        }
     }
 }

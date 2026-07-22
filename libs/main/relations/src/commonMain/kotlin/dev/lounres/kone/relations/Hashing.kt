@@ -41,47 +41,6 @@ public interface Hashing<in Element> : KoneContext {
     }
 }
 
-/**
- * Shortcut for getting [Hashing] context for the given [suppliedElementType].
- * Throws if there is no such context in the registry.
- */
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry)
-public fun <@Supply Element> Hashing.Companion.getFor(): Hashing<Element> =
-    koneContextRegistry[Hashing.Key()]
-/**
- * Shortcut for getting [Hashing] context for the given [suppliedElementType]
- * or `null` if there is no such context in the registry.
- */
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry)
-public fun <@Supply Element> Hashing.Companion.getForOrNull(): Hashing<Element>? =
-    koneContextRegistry.getOrNull(Hashing.Key())
-/**
- * Shortcut for getting [Hashing] context for the given [suppliedElementType]
- * or [default] context if there is no such context in the registry.
- */
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry)
-public fun <@Supply Element> Hashing.Companion.getForOrDefault(default: Hashing<Element>): Hashing<Element> =
-    koneContextRegistry.getOrDefault(Hashing.Key(), default)
-/**
- * Shortcut for getting [Hashing] context for the given [suppliedElementType]
- * or compute [block] to get such context if there is no such context in the registry.
- */
-@Suppliable
-context(koneContextRegistry: KoneContextRegistry)
-public inline fun <@Supply Element> Hashing.Companion.getForOrElse(block: () -> Hashing<Element>): Hashing<Element> =
-    koneContextRegistry.getOrElse(Hashing.Key(), block)
-
-/**
- * Sets default [Hashing] context for the given [suppliedElementType] into context registry builder.
- */
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Element> Hashing.Companion.setDefaultFor() {
-    Hashing.Key<Element>() correspondsTo Hashing.defaultFor<Element>()
-}
 
 /**
  * Computes a hash code of [this] element in the provided [Hashing] context.
@@ -104,6 +63,17 @@ public inline fun <Element> Hashing(crossinline hasher: (Element) -> Int): Hashi
  * and which [Hashing.hash] operator just uses [Any.hashCode] operator's result as a return value.
  */
 public fun <Element> Hashing.Companion.defaultFor(): Hashing<Element> = DefaultHashing
+// TODO: Remove the checker when KT-73135 will be fixed
+public object HashingSuppliableTopLevelFunctions {
+    /**
+     * Sets default [Hashing] context for the given [suppliedElementType] into context registry builder.
+     */
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Element> Hashing.Companion.setDefaultFor() {
+        Hashing.Key<Element>() correspondsTo Hashing.defaultFor<Element>()
+    }
+}
 
 public val <Element: Any> Hashing<Element>.nullable: Hashing<Element?> get() = Hashing {
     if (it == null) 0 else with(this) { it.hash() }

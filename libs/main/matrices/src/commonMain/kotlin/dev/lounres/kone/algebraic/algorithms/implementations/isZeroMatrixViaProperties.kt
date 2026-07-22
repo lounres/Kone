@@ -36,26 +36,29 @@ public fun <Number, Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.viaP
     fallbackIsZeroMatrixChecker = block(),
 )
 
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.setViaProperties(
-    fallbackIsZeroMatrixChecker: IsZeroMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    IsZeroMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackIsZeroMatrixChecker = fallbackIsZeroMatrixChecker,
-        )
+// TODO: Remove the checker when KT-73135 will be fixed
+public object IsZeroMatrixCheckerPropertiesSuppliableTopLevelFunctions {
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.setViaProperties(
+        fallbackIsZeroMatrixChecker: IsZeroMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        IsZeroMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackIsZeroMatrixChecker = fallbackIsZeroMatrixChecker,
+            )
+        }
     }
-}
-
-@Suppliable
-context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
-public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.setViaProperties(
-    block: IsZeroMatrixChecker.Companion.() -> IsZeroMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
-) {
-    IsZeroMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-        viaProperties(
-            fallbackIsZeroMatrixChecker = block(),
-        )
+    
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsZeroMatrixChecker.Companion.setViaProperties(
+        block: IsZeroMatrixChecker.Companion.() -> IsZeroMatrixChecker<Number, MatrixWithProperties<Number, Matrix>>,
+    ) {
+        IsZeroMatrixChecker.Key<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
+            viaProperties(
+                fallbackIsZeroMatrixChecker = block(),
+            )
+        }
     }
 }

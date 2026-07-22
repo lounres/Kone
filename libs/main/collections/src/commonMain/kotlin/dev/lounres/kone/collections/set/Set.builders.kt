@@ -6,32 +6,18 @@
 package dev.lounres.kone.collections.set
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
-import dev.lounres.kone.collections.set.empty.KoneEmptyNoddedReifiedSet
-import dev.lounres.kone.collections.set.implementations.KoneListBackedSet
-import dev.lounres.kone.collections.set.implementations.KoneListBackedMutableSet
-import dev.lounres.kone.collections.set.implementations.KoneHashResizableSet
-import dev.lounres.kone.collections.set.implementations.KoneHashResizableReifiedSet
-import dev.lounres.kone.collections.set.implementations.KoneListBackedMutableReifiedSet
-import dev.lounres.kone.collections.set.implementations.KoneListBackedReifiedSet
-import dev.lounres.kone.collections.set.singleton.KoneSingletonNoddedReifiedSet
-import dev.lounres.kone.collections.set.singleton.KoneSingletonNoddedSet
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.iterables.KoneRemovableIterator
 import dev.lounres.kone.collections.iterables.contains
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedList
-import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.Hashing
-import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.defaultFor
-import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.collections.set.empty.KoneEmptyNoddedReifiedSet
+import dev.lounres.kone.collections.set.implementations.*
+import dev.lounres.kone.collections.set.singleton.KoneSingletonNoddedReifiedSet
+import dev.lounres.kone.collections.set.singleton.KoneSingletonNoddedSet
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.relations.getFor
-import dev.lounres.kone.relations.getForOrNull
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.relations.*
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
@@ -51,7 +37,7 @@ public fun <Element> KoneSet.Companion.of(
     elementOrder: Order<Element>? = null,
 ): KoneSet<Element> = KoneSet.empty()
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public fun <@Supply Element> KoneSet.Companion.contextualOf(): KoneSet<Element> =
@@ -76,7 +62,7 @@ public fun <Element> KoneReifiedSet.Companion.of(
     elementOrder: Order<Element>? = null,
 ): KoneReifiedSet<Element> = KoneReifiedSet.empty()
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public fun <@Supply Element> KoneReifiedSet.Companion.contextualOf(): KoneReifiedSet<Element> =
@@ -95,7 +81,7 @@ public fun <Element> KoneSet.Companion.of(
     elementOrder: Order<Element>? = null,
 ): KoneSet<Element> = KoneSingletonNoddedSet(element, elementEquality)
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public fun <@Supply Element> KoneSet.Companion.contextualOf(
@@ -126,7 +112,7 @@ public fun <Element> KoneReifiedSet.Companion.of(
 ): KoneReifiedSet<Element> =
     KoneSingletonNoddedReifiedSet(element, elementReification = elementReification, elementEquality = elementEquality)
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public fun <@Supply Element> KoneReifiedSet.Companion.contextualOf(
@@ -155,7 +141,7 @@ public fun <Element> KoneSet.Companion.of(
         KoneListBackedSet(elementEquality, backingList)
     }
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public fun <@Supply Element> KoneSet.Companion.contextualOf(
@@ -200,7 +186,7 @@ public fun <Element> KoneReifiedSet.Companion.of(
         KoneListBackedReifiedSet(elementReification, elementEquality, backingList)
     }
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public fun <@Supply Element> KoneReifiedSet.Companion.contextualOf(
@@ -222,7 +208,7 @@ public fun <Element> KoneMutableSet.Companion.of(
     if (elementHashing != null) KoneHashResizableSet(elementEquality = elementEquality, elementHashing = elementHashing)
     else KoneListBackedMutableSet(elementEquality = elementEquality)
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public fun <@Supply Element> KoneMutableSet.Companion.contextualOf(): KoneMutableSet<Element> =
@@ -252,7 +238,7 @@ public fun <Element> KoneMutableReifiedSet.Companion.of(
     if (elementHashing != null) KoneHashResizableReifiedSet(elementReification = elementReification, elementEquality = elementEquality, elementHashing = elementHashing)
     else KoneListBackedMutableReifiedSet(elementReification = elementReification, elementEquality = elementEquality)
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public fun <@Supply Element> KoneMutableReifiedSet.Companion.contextualOf(): KoneMutableReifiedSet<Element> =
@@ -278,7 +264,7 @@ public fun <Element> KoneMutableSet.Companion.of(
         KoneListBackedMutableSet(elementEquality, backingList)
     }
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public fun <@Supply Element> KoneMutableSet.Companion.contextualOf(
@@ -328,7 +314,7 @@ public fun <Element> KoneMutableReifiedSet.Companion.of(
         )
     }
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public fun <@Supply Element> KoneMutableReifiedSet.Companion.contextualOf(
@@ -356,7 +342,7 @@ public fun <Element> KoneIterable<Element>.toKoneMutableSet(
         KoneListBackedMutableSet(elementEquality, backingList)
     }
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public fun <@Supply Element> KoneIterable<Element>.toKoneContextualMutableSet(): KoneMutableSet<Element> =
@@ -393,7 +379,7 @@ public fun <Element> KoneIterable<Element>.toKoneMutableReifiedSet(
         KoneListBackedMutableReifiedSet(elementReification, elementEquality, backingList)
     }
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public fun <@Supply Element> KoneIterable<Element>.toKoneContextualMutableReifiedSet(): KoneMutableReifiedSet<Element> =
@@ -415,7 +401,7 @@ public fun <Element> KoneIterable<Element>.toKoneSet(
         else -> this.toKoneMutableSet(elementEquality = elementEquality, elementHashing = elementHashing, elementOrder = elementOrder)
     }
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public fun <@Supply Element> KoneIterable<Element>.toKoneContextualSet(): KoneSet<Element> =
@@ -458,7 +444,7 @@ public fun <Element> KoneIterable<Element>.toKoneReifiedSet(
         )
     }
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public fun <@Supply Element> KoneIterable<Element>.toKoneContextualReifiedSet(): KoneReifiedSet<Element> =
@@ -615,7 +601,7 @@ public inline fun <Element> KoneSet.Companion.build(
     return KoneSetBuilder(result).apply(builderAction).build()
 }
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public inline fun <@Supply Element> KoneSet.Companion.buildContextual(
@@ -657,7 +643,7 @@ public inline fun <Element> KoneReifiedSet.Companion.build(
     return KoneReifiedSetBuilder(result).apply(builderAction).build()
 }
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public inline fun <@Supply Element> KoneReifiedSet.Companion.buildContextual(
@@ -686,7 +672,7 @@ public inline fun <Element> KoneSet.Companion.build(
     return KoneSetBuilder(result).apply(builderAction).build()
 }
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public inline fun <@Supply Element> KoneSet.Companion.buildContextual(
@@ -733,7 +719,7 @@ public inline fun <Element> KoneReifiedSet.Companion.build(
     return KoneReifiedSetBuilder(result).apply(builderAction).build()
 }
 
-// FIXME: Wait for KT-87097
+// FIXME: Wait for KT-73135
 //@Suppliable
 //context(koneContextRegistry: KoneContextRegistry)
 //public inline fun <@Supply Element> KoneReifiedSet.Companion.buildContextual(
