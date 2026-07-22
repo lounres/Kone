@@ -27,9 +27,9 @@ public fun localContexts(vararg contexts: Any?) {
 public fun KoneContext.Companion.localUnwrap(vararg koneContexts: KoneContext) {
     contextsPluginExceptionForRuntimeDeclarations()
 }
-//public fun KoneContextRegistry.koneLocalUnwrap(vararg keys: RegistryKey<out KoneContext>) {
-//    contextsPluginExceptionForRuntimeDeclarations()
-//}
+public fun KoneContextRegistry.koneLocalUnwrap(vararg keys: RegistryKey<out KoneContext>) {
+    contextsPluginExceptionForRuntimeDeclarations()
+}
 //@JvmName("koneLocalUnwrapContextual")
 //context(koneContextRegistry: KoneContextRegistry)
 //public fun koneLocalUnwrap(vararg keys: RegistryKey<out KoneContext>) {

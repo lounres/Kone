@@ -7,7 +7,7 @@ package dev.lounres.kone.plugin.contexts.fir
 
 import dev.lounres.kone.plugin.contexts.fir.FirLocalContextsExpressionResolutionExtension.GeneratedReceiverFromLocalContextsFunctionKey
 import dev.lounres.kone.plugin.contexts.koneContextsPackageFQName
-import dev.lounres.kone.plugin.contexts.localContextsActualValueParameterName
+import dev.lounres.kone.plugin.contexts.localUnwrapActualValueParameterName
 import dev.lounres.kone.plugin.contexts.localUnwrapFakeValueParameterName
 import dev.lounres.kone.plugin.contexts.localUnwrapFunctionShortName
 import org.jetbrains.kotlin.GeneratedDeclarationKey
@@ -86,7 +86,7 @@ class FirLocalUnwrapExpressionResolutionExtension(session: FirSession) : FirExpr
                     returnTypeRef = buildResolvedTypeRef {
                         coneType = it
                     }
-                    name = localContextsActualValueParameterName
+                    name = localUnwrapActualValueParameterName
                     symbol = FirValueParameterSymbol()
                     containingDeclarationSymbol = fakeValueParameter.symbol
                     valueParameterKind = ContextParameter
