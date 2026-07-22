@@ -18,7 +18,9 @@ import org.jetbrains.kotlin.ir.expressions.IrCall
 import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
 import org.jetbrains.kotlin.ir.symbols.IrSymbol
 import org.jetbrains.kotlin.ir.types.defaultType
+import org.jetbrains.kotlin.ir.util.constructedClass
 import org.jetbrains.kotlin.ir.util.parentAsClass
+import org.jetbrains.kotlin.ir.util.substitute
 import org.jetbrains.kotlin.ir.visitors.IrTransformer
 
 
@@ -34,6 +36,7 @@ class SuppliableCallSubstitutionTransformer(
         val suppliable = expression.symbol.owner
         val suppliance = suppliabilityMapper.mapSuppliableToSupplianceOrNull(suppliable) ?: return super.visitConstructorCall(expression, data)
         val suppliedTypeParametersIndices = suppliable.parentAsClass.typeParameters.withIndex().filter { it.value.isSupply }.map { it.index }
+        val expressionTypeArguments = expression.typeArguments.requireNoNulls()
         
         return super.visitConstructorCall(
             DeclarationIrBuilder(
@@ -44,7 +47,7 @@ class SuppliableCallSubstitutionTransformer(
             ).run {
                 irCallConstructor(
                     callee = suppliance.symbol,
-                    typeArguments = expression.typeArguments.requireNoNulls(),
+                    typeArguments = expressionTypeArguments,
                 ).apply {
                     var initialParameterIndex = 0
                     for ([parameterIndex, parameter] in suppliance.parameters.withIndex()) {
@@ -59,13 +62,14 @@ class SuppliableCallSubstitutionTransformer(
                                     irCall(
                                         callee = irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol
                                     ).apply {
-                                        typeArguments[0] = expression.typeArguments[suppliedTypeParametersIndices[parameterIndex - initialParameterIndex]]
+                                        typeArguments[0] = expressionTypeArguments[suppliedTypeParametersIndices[parameterIndex - initialParameterIndex]]
                                     }
                         } else {
                             arguments[parameterIndex] = expression.arguments[initialParameterIndex]
                             initialParameterIndex++
                         }
                     }
+                    type = type.substitute(suppliance.constructedClass.typeParameters, expressionTypeArguments)
                 }
             },
             data,
@@ -76,6 +80,7 @@ class SuppliableCallSubstitutionTransformer(
         val suppliable = expression.symbol.owner
         val suppliance = suppliabilityMapper.mapSuppliableToSupplianceOrNull(suppliable) ?: return super.visitCall(expression, data)
         val suppliedTypeParametersIndices = suppliable.typeParameters.withIndex().filter { it.value.isSupply }.map { it.index }
+        val expressionTypeArguments = expression.typeArguments.requireNoNulls()
         
         return super.visitCall(
             DeclarationIrBuilder(
@@ -93,7 +98,7 @@ class SuppliableCallSubstitutionTransformer(
                             arguments[parameterIndex] = arguments[parameterIndex] ?: irCall(
                                 callee = irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol
                             ).apply {
-                                typeArguments[0] = expression.typeArguments[suppliedTypeParametersIndices[parameterIndex - initialParameterIndex]]
+                                typeArguments[0] = expressionTypeArguments[suppliedTypeParametersIndices[parameterIndex - initialParameterIndex]]
                             }
                         } else {
                             arguments[parameterIndex] = expression.arguments[parameterIndex] // ?: suppliable.parameters[initialParameterIndex].defaultValue?.expression?.deepCopyWithSymbols()
@@ -101,7 +106,8 @@ class SuppliableCallSubstitutionTransformer(
                         }
                     }
                     typeArguments.clear()
-                    typeArguments += expression.typeArguments
+                    typeArguments += expressionTypeArguments
+                    type = type.substitute(suppliance.typeParameters, expressionTypeArguments)
                 }
             },
             data,
