@@ -56,7 +56,7 @@ public fun KoneContext.Companion.localUnwrap(vararg koneContexts: KoneContext) {
 //    }
 //    contextsPluginExceptionForRuntimeDeclarations()
 //}
-//public fun <Result> KoneContextRegistry.koneUnwrap(vararg keys: RegistryKey<out KoneContext>, block: () -> Result) {
+//public inline fun <Result> KoneContextRegistry.koneUnwrap(vararg keys: RegistryKey<out KoneContext>, block: () -> Result) {
 //    contract {
 //        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
 //        returnsResultOf(block)
@@ -65,7 +65,7 @@ public fun KoneContext.Companion.localUnwrap(vararg koneContexts: KoneContext) {
 //}
 //@JvmName("koneUnwrapContextual")
 //context(koneContextRegistry: KoneContextRegistry)
-//public fun <Result> koneUnwrap(vararg keys: RegistryKey<out KoneContext>, block: () -> Result) {
+//public inline fun <Result> koneUnwrap(vararg keys: RegistryKey<out KoneContext>, block: () -> Result) {
 //    contract {
 //        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
 //        returnsResultOf(block)

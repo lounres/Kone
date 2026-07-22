@@ -20,6 +20,7 @@ const val koneContextExcludeAnnotationShortNameString = "KoneContextExclude"
 const val localReceiversFunctionShortNameString = "localReceivers"
 const val localContextsFunctionShortNameString = "localContexts"
 const val localUnwrapFunctionShortNameString = "localUnwrap"
+//const val contextsFunctionShortNameString = "contexts"
 // Private runtime
 
 val koneContextsPackageFQName = FqName(koneContextsPackageFQNameString)
@@ -31,6 +32,7 @@ val koneContextExcludeAnnotationShortName = FqName(koneContextExcludeAnnotationS
 val localReceiversFunctionShortName = Name.identifier(localReceiversFunctionShortNameString)
 val localContextsFunctionShortName = Name.identifier(localContextsFunctionShortNameString)
 val localUnwrapFunctionShortName = Name.identifier(localUnwrapFunctionShortNameString)
+//val contextsFunctionShortName = Name.identifier(contextsFunctionShortNameString)
 // Private runtime
 
 // Library
@@ -65,4 +67,9 @@ val localUnwrapFunctionCallableId = CallableId(
     className = null,
     callableName = localUnwrapFunctionShortName,
 )
+//val contextsFunctionCallableId = CallableId(
+//    packageName = koneContextsPackageFQName,
+//    className = null,
+//    callableName = contextsFunctionShortName,
+//)
 // Private runtime
