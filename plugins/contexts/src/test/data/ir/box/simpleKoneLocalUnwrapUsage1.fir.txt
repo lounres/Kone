@@ -1,4 +1,4 @@
-FILE: test.kt
+FILE: simpleKoneLocalUnwrapUsage1.kt
     package foo.bar
 
     public final class Foo : R|dev/lounres/kone/contexts/KoneContext| {

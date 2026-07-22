@@ -1,0 +1,138 @@
+FILE fqName:foo.bar fileName:/test.kt
+  PROPERTY name:koneContextRegsitry visibility:public modality:FINAL [val]
+    FIELD PROPERTY_BACKING_FIELD name:koneContextRegsitry type:dev.lounres.kone.contexts.KoneContextRegistry visibility:private [final,static]
+      EXPRESSION_BODY
+        CALL 'public final fun build (<this>: dev.lounres.kone.contexts.KoneContextRegistry.Companion, block: @[ExtensionFunctionType] kotlin.Function1<@[KoneContextRegistryBuilderDsl] dev.lounres.kone.registry.MutableOwnedProviderRegistry<dev.lounres.kone.contexts.KoneContextRegistry>, kotlin.Unit>): dev.lounres.kone.contexts.KoneContextRegistry declared in dev.lounres.kone.contexts' type=dev.lounres.kone.contexts.KoneContextRegistry origin=null
+          ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.contexts.KoneContextRegistry.Companion
+          ARG block: FUN_EXPR type=@[ExtensionFunctionType] kotlin.Function1<@[KoneContextRegistryBuilderDsl] dev.lounres.kone.registry.MutableOwnedProviderRegistry<dev.lounres.kone.contexts.KoneContextRegistry>, kotlin.Unit> origin=LAMBDA
+            FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL returnType:kotlin.Unit
+              VALUE_PARAMETER kind:ExtensionReceiver name:$this$build index:0 type:@[KoneContextRegistryBuilderDsl] dev.lounres.kone.registry.MutableOwnedProviderRegistry<dev.lounres.kone.contexts.KoneContextRegistry>
+              BLOCK_BODY
+                CALL 'public final fun correspondsTo <T> (registry: dev.lounres.kone.registry.MutableRegistry, <this>: dev.lounres.kone.registry.RegistryKey<in T of dev.lounres.kone.registry.correspondsTo>, value: T of dev.lounres.kone.registry.correspondsTo): kotlin.Unit declared in dev.lounres.kone.registry' type=kotlin.Unit origin=null
+                  TYPE_ARG T: foo.bar.Foo
+                  ARG registry: GET_VAR '$this$build: @[KoneContextRegistryBuilderDsl] dev.lounres.kone.registry.MutableOwnedProviderRegistry<dev.lounres.kone.contexts.KoneContextRegistry> declared in foo.bar.koneContextRegsitry.<anonymous>' type=@[KoneContextRegistryBuilderDsl] dev.lounres.kone.registry.MutableOwnedProviderRegistry<dev.lounres.kone.contexts.KoneContextRegistry> origin=IMPLICIT_ARGUMENT
+                  ARG <this>: GET_OBJECT 'CLASS OBJECT name:Key modality:FINAL visibility:public [data] superTypes:[dev.lounres.kone.registry.RegistryKey<foo.bar.Foo>]' type=foo.bar.Foo.Key
+                  ARG value: CONSTRUCTOR_CALL 'public constructor <init> () declared in foo.bar.Foo' type=foo.bar.Foo origin=null
+    FUN DEFAULT_PROPERTY_ACCESSOR name:<get-koneContextRegsitry> visibility:public modality:FINAL returnType:dev.lounres.kone.contexts.KoneContextRegistry
+      correspondingProperty: PROPERTY name:koneContextRegsitry visibility:public modality:FINAL [val]
+      BLOCK_BODY
+        RETURN type=kotlin.Nothing from='public final fun <get-koneContextRegsitry> (): dev.lounres.kone.contexts.KoneContextRegistry declared in foo.bar'
+          GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:koneContextRegsitry type:dev.lounres.kone.contexts.KoneContextRegistry visibility:private [final,static]' type=dev.lounres.kone.contexts.KoneContextRegistry origin=null
+  CLASS CLASS name:Foo modality:FINAL visibility:public superTypes:[dev.lounres.kone.contexts.KoneContext]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Foo
+    PROPERTY name:bar visibility:public modality:FINAL [val]
+      FIELD PROPERTY_BACKING_FIELD name:bar type:kotlin.Int visibility:private [final]
+        EXPRESSION_BODY
+          CONST Int type=kotlin.Int value=57
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-bar> visibility:public modality:FINAL returnType:kotlin.Int
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Foo
+        correspondingProperty: PROPERTY name:bar visibility:public modality:FINAL [val]
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-bar> (): kotlin.Int declared in foo.bar.Foo'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:bar type:kotlin.Int visibility:private [final]' type=kotlin.Int origin=null
+              receiver: GET_VAR '<this>: foo.bar.Foo declared in foo.bar.Foo.<get-bar>' type=foo.bar.Foo origin=null
+    CLASS OBJECT name:Key modality:FINAL visibility:public [data] superTypes:[dev.lounres.kone.registry.RegistryKey<foo.bar.Foo>]
+      thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Foo.Key
+      CONSTRUCTOR visibility:private returnType:foo.bar.Foo.Key [primary]
+        BLOCK_BODY
+          DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+          INSTANCE_INITIALIZER_CALL classDescriptor='CLASS OBJECT name:Key modality:FINAL visibility:public [data] superTypes:[dev.lounres.kone.registry.RegistryKey<foo.bar.Foo>]' type=kotlin.Unit
+      FUN GENERATED_DATA_CLASS_MEMBER name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [operator]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Foo.Key
+        VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+        overridden:
+          public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in dev.lounres.kone.registry.RegistryKey
+        BLOCK_BODY
+          WHEN type=kotlin.Unit origin=null
+            BRANCH
+              if: CALL 'public final fun EQEQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQEQ
+                ARG arg0: GET_VAR '<this>: foo.bar.Foo.Key declared in foo.bar.Foo.Key.equals' type=foo.bar.Foo.Key origin=null
+                ARG arg1: GET_VAR 'other: kotlin.Any? declared in foo.bar.Foo.Key.equals' type=kotlin.Any? origin=null
+              then: RETURN type=kotlin.Nothing from='public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in foo.bar.Foo.Key'
+                CONST Boolean type=kotlin.Boolean value=true
+          WHEN type=kotlin.Unit origin=null
+            BRANCH
+              if: TYPE_OP type=kotlin.Boolean origin=NOT_INSTANCEOF typeOperand=foo.bar.Foo.Key
+                GET_VAR 'other: kotlin.Any? declared in foo.bar.Foo.Key.equals' type=kotlin.Any? origin=null
+              then: RETURN type=kotlin.Nothing from='public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in foo.bar.Foo.Key'
+                CONST Boolean type=kotlin.Boolean value=false
+          VAR IR_TEMPORARY_VARIABLE name:tmp_0 type:foo.bar.Foo.Key [val]
+            TYPE_OP type=foo.bar.Foo.Key origin=IMPLICIT_CAST typeOperand=foo.bar.Foo.Key
+              GET_VAR 'other: kotlin.Any? declared in foo.bar.Foo.Key.equals' type=kotlin.Any? origin=null
+          RETURN type=kotlin.Nothing from='public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in foo.bar.Foo.Key'
+            CONST Boolean type=kotlin.Boolean value=true
+      FUN GENERATED_DATA_CLASS_MEMBER name:hashCode visibility:public modality:OPEN returnType:kotlin.Int
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Foo.Key
+        overridden:
+          public open fun hashCode (): kotlin.Int declared in dev.lounres.kone.registry.RegistryKey
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public open fun hashCode (): kotlin.Int declared in foo.bar.Foo.Key'
+            CONST Int type=kotlin.Int value=70415604
+      FUN GENERATED_DATA_CLASS_MEMBER name:toString visibility:public modality:OPEN returnType:kotlin.String
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Foo.Key
+        overridden:
+          public open fun toString (): kotlin.String declared in dev.lounres.kone.registry.RegistryKey
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public open fun toString (): kotlin.String declared in foo.bar.Foo.Key'
+            CONST String type=kotlin.String value="Key"
+      PROPERTY FAKE_OVERRIDE name:context visibility:public modality:OPEN [fake_override,val]
+        overridden:
+          public open context: dev.lounres.kone.registry.RegistryKeyContext declared in dev.lounres.kone.registry.RegistryKey
+        FUN FAKE_OVERRIDE name:<get-context> visibility:public modality:OPEN returnType:dev.lounres.kone.registry.RegistryKeyContext [fake_override]
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:dev.lounres.kone.registry.RegistryKey<foo.bar.Foo>
+          correspondingProperty: PROPERTY FAKE_OVERRIDE name:context visibility:public modality:OPEN [fake_override,val]
+          overridden:
+            public open fun <get-context> (): dev.lounres.kone.registry.RegistryKeyContext declared in dev.lounres.kone.registry.RegistryKey
+      PROPERTY FAKE_OVERRIDE name:impliedKeys visibility:public modality:OPEN [fake_override,val]
+        overridden:
+          public open impliedKeys: dev.lounres.kone.registry.ImpliedKeysRegistry<T of dev.lounres.kone.registry.RegistryKey> declared in dev.lounres.kone.registry.RegistryKey
+        FUN FAKE_OVERRIDE name:<get-impliedKeys> visibility:public modality:OPEN returnType:dev.lounres.kone.registry.ImpliedKeysRegistry<foo.bar.Foo> [fake_override]
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:dev.lounres.kone.registry.RegistryKey<foo.bar.Foo>
+          correspondingProperty: PROPERTY FAKE_OVERRIDE name:impliedKeys visibility:public modality:OPEN [fake_override,val]
+          overridden:
+            public open fun <get-impliedKeys> (): dev.lounres.kone.registry.ImpliedKeysRegistry<T of dev.lounres.kone.registry.RegistryKey> declared in dev.lounres.kone.registry.RegistryKey
+    CONSTRUCTOR visibility:public returnType:foo.bar.Foo [primary]
+      BLOCK_BODY
+        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:Foo modality:FINAL visibility:public superTypes:[dev.lounres.kone.contexts.KoneContext]' type=kotlin.Unit
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in dev.lounres.kone.contexts.KoneContext
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in dev.lounres.kone.contexts.KoneContext
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in dev.lounres.kone.contexts.KoneContext
+  FUN name:box visibility:public modality:FINAL returnType:kotlin.String
+    BLOCK_BODY
+      VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:dev.lounres.kone.contexts.KoneContextRegistry [val]
+        CALL 'public final fun <get-koneContextRegsitry> (): dev.lounres.kone.contexts.KoneContextRegistry declared in foo.bar' type=dev.lounres.kone.contexts.KoneContextRegistry origin=GET_PROPERTY
+      VAR IR_TEMPORARY_VARIABLE name:tmp_2 type:foo.bar.Foo [val]
+        CALL 'public abstract fun get <T> (registryKey: dev.lounres.kone.registry.RegistryKey<out T of dev.lounres.kone.registry.Registry.get>): T of dev.lounres.kone.registry.Registry.get declared in dev.lounres.kone.registry.Registry' type=foo.bar.Foo origin=null
+          TYPE_ARG T: foo.bar.Foo
+          ARG <this>: GET_VAR 'val tmp_1: dev.lounres.kone.contexts.KoneContextRegistry declared in foo.bar.box' type=dev.lounres.kone.contexts.KoneContextRegistry origin=null
+          ARG registryKey: GET_OBJECT 'CLASS OBJECT name:Key modality:FINAL visibility:public [data] superTypes:[dev.lounres.kone.registry.RegistryKey<foo.bar.Foo>]' type=foo.bar.Foo.Key
+      RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in foo.bar'
+        WHEN type=kotlin.String origin=IF
+          BRANCH
+            if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+              ARG arg0: CALL 'public final fun <get-baz> (foo: foo.bar.Foo): kotlin.Int declared in foo.bar' type=kotlin.Int origin=GET_PROPERTY
+                ARG foo: GET_VAR 'val tmp_2: foo.bar.Foo declared in foo.bar.box' type=foo.bar.Foo origin=null
+              ARG arg1: CONST Int type=kotlin.Int value=57
+            then: CONST String type=kotlin.String value="OK"
+          BRANCH
+            if: CONST Boolean type=kotlin.Boolean value=true
+            then: CONST String type=kotlin.String value="INCORRECT"
+  PROPERTY name:baz visibility:public modality:FINAL [val]
+    FUN name:<get-baz> visibility:public modality:FINAL returnType:kotlin.Int
+      VALUE_PARAMETER kind:Context name:foo index:0 type:foo.bar.Foo
+      correspondingProperty: PROPERTY name:baz visibility:public modality:FINAL [val]
+      BLOCK_BODY
+        RETURN type=kotlin.Nothing from='public final fun <get-baz> (foo: foo.bar.Foo): kotlin.Int declared in foo.bar'
+          CALL 'public final fun <get-bar> (): kotlin.Int declared in foo.bar.Foo' type=kotlin.Int origin=GET_PROPERTY
+            ARG <this>: GET_VAR 'foo: foo.bar.Foo declared in foo.bar.<get-baz>' type=foo.bar.Foo origin=null
