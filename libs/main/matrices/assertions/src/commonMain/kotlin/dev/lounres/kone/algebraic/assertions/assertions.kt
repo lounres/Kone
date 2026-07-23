@@ -442,6 +442,74 @@ public fun <Number> Expect<MDList2<ComplexNumber<Number>>>.toBeUnitMatrixWithTol
 }
 
 context(_: AssertionScope, ring: CommutativeRing<Number>)
+public fun <Number> Expect<MDList2<Number>>.toBeDiagonalMatrix() {
+    val value = this.exposeValue()
+    
+    KoneContext.localUnwrap(ring)
+    
+    if (value.rowNumber != value.columnNumber) {
+        fail(
+            message = "Non-square matrix ${value.rowNumber}✖${value.columnNumber} tried to be checked on diagonality"
+        )
+        return
+    }
+    
+    val isCorrect = MDList2.generate(rowNumber = value.rowNumber, columnNumber = value.columnNumber) { row, column ->
+        if (row == column) return@generate true
+        val actual = value[row, column]
+        actual.isZero()
+    }
+    
+    if (isCorrect.any { !it }) {
+        fail(
+            message = buildString {
+                appendLine("Non-upper-triangular matrix.")
+                appendLine()
+                appendLine("Inequal elements diagram (■ means non-zero non-diagonal element, □ means zero non-diagonal element, ✖ means element on diagonal):")
+                append('⎛')
+                repeat(isCorrect.columnNumber * 2u + 1u) { append(' ') }
+                appendLine('⎞')
+                for (row in isCorrect.rowIndices) {
+                    if (row != 0u) {
+                        append('⎜')
+                        repeat(isCorrect.columnNumber * 2u + 1u) { append(' ') }
+                        appendLine('⎟')
+                    }
+                    append('⎜')
+                    repeat(isCorrect.columnNumber * 2u + 1u) { column ->
+                        append(
+                            when {
+                                column % 2u == 0u -> ' '
+                                row == column / 2u -> '✖'
+                                isCorrect[row, column / 2u] -> '□'
+                                else -> '■'
+                            }
+                        )
+                    }
+                    appendLine('⎟')
+                }
+                append('⎝')
+                repeat(isCorrect.columnNumber * 2u + 1u) { append(' ') }
+                appendLine('⎠')
+                appendLine()
+                appendLine("Inequal elements list:")
+                isCorrect.forEachIndexed { row, column, flag ->
+                    if (!flag) {
+                        appendLine(
+                            """
+                                [$row, $column]:
+                                  expected: ${ring.zero}
+                                  actual: ${value[row, column]}
+                            """.trimIndent()
+                        )
+                    }
+                }
+            }
+        )
+    }
+}
+
+context(_: AssertionScope, ring: CommutativeRing<Number>)
 public fun <Number> Expect<MDList2<Number>>.toBeUpperTriangularMatrix() {
     val value = this.exposeValue()
     
@@ -548,7 +616,143 @@ public fun <Number> Expect<MDList2<Number>>.toBeLowerTriangularMatrix() {
                         append(
                             when {
                                 column % 2u == 0u -> ' '
-                                row <= column / 2u -> '✖'
+                                row >= column / 2u -> '✖'
+                                isCorrect[row, column / 2u] -> '□'
+                                else -> '■'
+                            }
+                        )
+                    }
+                    appendLine('⎟')
+                }
+                append('⎝')
+                repeat(isCorrect.columnNumber * 2u + 1u) { append(' ') }
+                appendLine('⎠')
+                appendLine()
+                appendLine("Inequal elements list:")
+                isCorrect.forEachIndexed { row, column, flag ->
+                    if (!flag) {
+                        appendLine(
+                            """
+                                [$row, $column]:
+                                  expected: ${ring.zero}
+                                  actual: ${value[row, column]}
+                            """.trimIndent()
+                        )
+                    }
+                }
+            }
+        )
+    }
+}
+
+context(_: AssertionScope, ring: CommutativeRing<Number>)
+public fun <Number> Expect<MDList2<Number>>.toBeUpperUnitriangularMatrix() {
+    val value = this.exposeValue()
+    
+    KoneContext.localUnwrap(ring)
+    
+    if (value.rowNumber != value.columnNumber) {
+        fail(
+            message = "Non-square matrix ${value.rowNumber}✖${value.columnNumber} tried to be checked on upper unitriangularity"
+        )
+        return
+    }
+    
+    val isCorrect = MDList2.generate(rowNumber = value.rowNumber, columnNumber = value.columnNumber) { row, column ->
+        if (row < column) return@generate true
+        val actual = value[row, column]
+        if (row == column) actual.isOne() else actual.isZero()
+    }
+    
+    if (isCorrect.any { !it }) {
+        fail(
+            message = buildString {
+                appendLine("Non-upper-triangular matrix.")
+                appendLine()
+                appendLine("Inequal elements diagram (■ means non-zero element under diagonal or non-unit element on diagonal, □ means zero element under diagonal or unit element on diagonal, ✖ means element above diagonal):")
+                append('⎛')
+                repeat(isCorrect.columnNumber * 2u + 1u) { append(' ') }
+                appendLine('⎞')
+                for (row in isCorrect.rowIndices) {
+                    if (row != 0u) {
+                        append('⎜')
+                        repeat(isCorrect.columnNumber * 2u + 1u) { append(' ') }
+                        appendLine('⎟')
+                    }
+                    append('⎜')
+                    repeat(isCorrect.columnNumber * 2u + 1u) { column ->
+                        append(
+                            when {
+                                column % 2u == 0u -> ' '
+                                row < column / 2u -> '✖'
+                                isCorrect[row, column / 2u] -> '□'
+                                else -> '■'
+                            }
+                        )
+                    }
+                    appendLine('⎟')
+                }
+                append('⎝')
+                repeat(isCorrect.columnNumber * 2u + 1u) { append(' ') }
+                appendLine('⎠')
+                appendLine()
+                appendLine("Inequal elements list:")
+                isCorrect.forEachIndexed { row, column, flag ->
+                    if (!flag) {
+                        appendLine(
+                            """
+                                [$row, $column]:
+                                  expected: ${ring.zero}
+                                  actual: ${value[row, column]}
+                            """.trimIndent()
+                        )
+                    }
+                }
+            }
+        )
+    }
+}
+
+context(_: AssertionScope, ring: CommutativeRing<Number>)
+public fun <Number> Expect<MDList2<Number>>.toBeLowerUniriangularMatrix() {
+    val value = this.exposeValue()
+    
+    KoneContext.localUnwrap(ring)
+    
+    if (value.rowNumber != value.columnNumber) {
+        fail(
+            message = "Non-square matrix ${value.rowNumber}✖${value.columnNumber} tried to be checked on lower unitriangularity"
+        )
+        return
+    }
+    
+    val isCorrect = MDList2.generate(rowNumber = value.rowNumber, columnNumber = value.columnNumber) { row, column ->
+        if (row >= column) return@generate true
+        val actual = value[row, column]
+        actual.isZero()
+    }
+    
+    if (isCorrect.any { !it }) {
+        fail(
+            message = buildString {
+                appendLine("Non-upper-triangular matrix.")
+                appendLine()
+                appendLine("Inequal elements diagram (■ means non-zero element above diagonal or non-unit element on diagonal, □ means zero element above diagonal or unit element on diagonal, ✖ means element under diagonal):")
+                append('⎛')
+                repeat(isCorrect.columnNumber * 2u + 1u) { append(' ') }
+                appendLine('⎞')
+                for (row in isCorrect.rowIndices) {
+                    if (row != 0u) {
+                        append('⎜')
+                        repeat(isCorrect.columnNumber * 2u + 1u) { append(' ') }
+                        appendLine('⎟')
+                    }
+                    append('⎜')
+                    repeat(isCorrect.columnNumber * 2u + 1u) { column ->
+                        append(
+                            when {
+                                column % 2u == 0u -> ' '
+                                row > column / 2u -> '✖'
                                 isCorrect[row, column / 2u] -> '□'
                                 else -> '■'
                             }
