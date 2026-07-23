@@ -88,16 +88,16 @@ public object CholeskyDecompositionComputerCholeskyCroutSuppliableTopLevelFuncti
         val koneContextRegistry = koneContextRegistry.get()
         return viaCholeskyCrout(
             matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
-                "CholeskyDecompositionComputer.viaCholesky<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "CholeskyDecompositionComputer.viaCholeskyCrout<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
             },
             numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
-                "CholeskyDecompositionComputer.viaCholesky<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "CholeskyDecompositionComputer.viaCholeskyCrout<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
             },
             positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
-                "CholeskyDecompositionComputer.viaCholesky<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "CholeskyDecompositionComputer.viaCholeskyCrout<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
             },
             transposeMatrixComputer = koneContextRegistry.requestFor(TransposeMatrixComputer.Key<Number, Matrix>()) {
-                "CholeskyDecompositionComputer.viaCholesky<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "CholeskyDecompositionComputer.viaCholeskyCrout<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
             },
         )
     }

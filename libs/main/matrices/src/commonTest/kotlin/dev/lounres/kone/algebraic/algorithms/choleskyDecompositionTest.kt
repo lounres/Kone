@@ -7,11 +7,16 @@ package dev.lounres.kone.algebraic.algorithms
 
 import de.infix.testBalloon.framework.core.testSuite
 import dev.lounres.kone.algebraic.*
+import dev.lounres.kone.algebraic.ComplexNumberFieldExtensionOverSuppliableTopLevelFunctions.setFieldExtensionOver
 import dev.lounres.kone.algebraic.MatrixCategoryOverFieldViaDefaultSuppliableTopLevelFunctions.setViaDefault
 import dev.lounres.kone.algebraic.MatrixFactoryViaDefaultSuppliableTopLevelFunctions.setViaDefault
+import dev.lounres.kone.algebraic.algorithms.implementations.CholeskyDecompositionComputerCholeskyBanachiewiczForComplexNumbersSuppliableTopLevelFunctions.setViaCholeskyBanachiewiczForComplexNumbers
 import dev.lounres.kone.algebraic.algorithms.implementations.CholeskyDecompositionComputerCholeskyBanachiewiczSuppliableTopLevelFunctions.setViaCholeskyBanachiewicz
+import dev.lounres.kone.algebraic.algorithms.implementations.CholeskyDecompositionComputerCholeskyCroutForComplexNumbersSuppliableTopLevelFunctions.setViaCholeskyCroutForComplexNumbers
 import dev.lounres.kone.algebraic.algorithms.implementations.CholeskyDecompositionComputerCholeskyCroutSuppliableTopLevelFunctions.setViaCholeskyCrout
+import dev.lounres.kone.algebraic.algorithms.implementations.CholeskyDecompositionComputerCholeskyForComplexNumbersSuppliableTopLevelFunctions.setViaCholeskyForComplexNumbers
 import dev.lounres.kone.algebraic.algorithms.implementations.CholeskyDecompositionComputerCholeskySuppliableTopLevelFunctions.setViaCholesky
+import dev.lounres.kone.algebraic.algorithms.implementations.ConjugateTransposeMatrixComputerDefaultSuppliableTopLevelFunctions.setViaDefault
 import dev.lounres.kone.algebraic.algorithms.implementations.MatrixProductComputerViaDefaultSuppliableTopLevelFunctions.setViaDefault
 import dev.lounres.kone.algebraic.algorithms.implementations.TransposeMatrixComputerDefaultSuppliableTopLevelFunctions.setViaDefault
 import dev.lounres.kone.algebraic.algorithms.implementations.setViaDefaultForDouble
@@ -37,7 +42,7 @@ val CholeskyDecompositionImplementationsTests by testSuite {
         typealias Number = Double
         typealias Matrix = MDList2<Number>
         
-        val inputs = KoneList.of<MDList2<Number>>(
+        val inputs = KoneList.of<Matrix>(
             MDList2.of(
                 rowNumber = 2u,
                 columnNumber = 2u,
@@ -72,10 +77,10 @@ val CholeskyDecompositionImplementationsTests by testSuite {
                     Number.setSafeOrder()
                     PositiveSquareRootComputer.setViaDefaultForDouble()
                     MatrixFactory.setViaDefault<Number>()
-                    MatrixCategoryOverField.setViaDefault<Number, MDList2<Number>>()
-                    MatrixProductComputer.setViaDefault<Number, MDList2<Number>>()
-                    TransposeMatrixComputer.setViaDefault<Number, MDList2<Number>>()
-                    CholeskyDecompositionComputer.setViaCholesky<Number, MDList2<Number>>()
+                    MatrixCategoryOverField.setViaDefault<Number, Matrix>()
+                    MatrixProductComputer.setViaDefault<Number, Matrix>()
+                    TransposeMatrixComputer.setViaDefault<Number, Matrix>()
+                    CholeskyDecompositionComputer.setViaCholesky<Number, Matrix>()
                 },
             ),
             Algorithm(
@@ -85,10 +90,10 @@ val CholeskyDecompositionImplementationsTests by testSuite {
                     Number.setSafeOrder()
                     PositiveSquareRootComputer.setViaDefaultForDouble()
                     MatrixFactory.setViaDefault<Number>()
-                    MatrixCategoryOverField.setViaDefault<Number, MDList2<Number>>()
-                    MatrixProductComputer.setViaDefault<Number, MDList2<Number>>()
-                    TransposeMatrixComputer.setViaDefault<Number, MDList2<Number>>()
-                    CholeskyDecompositionComputer.setViaCholeskyBanachiewicz<Number, MDList2<Number>>()
+                    MatrixCategoryOverField.setViaDefault<Number, Matrix>()
+                    MatrixProductComputer.setViaDefault<Number, Matrix>()
+                    TransposeMatrixComputer.setViaDefault<Number, Matrix>()
+                    CholeskyDecompositionComputer.setViaCholeskyBanachiewicz<Number, Matrix>()
                 },
             ),
             Algorithm(
@@ -98,10 +103,10 @@ val CholeskyDecompositionImplementationsTests by testSuite {
                     Number.setSafeOrder()
                     PositiveSquareRootComputer.setViaDefaultForDouble()
                     MatrixFactory.setViaDefault<Number>()
-                    MatrixCategoryOverField.setViaDefault<Number, MDList2<Number>>()
-                    MatrixProductComputer.setViaDefault<Number, MDList2<Number>>()
-                    TransposeMatrixComputer.setViaDefault<Number, MDList2<Number>>()
-                    CholeskyDecompositionComputer.setViaCholeskyCrout<Number, MDList2<Number>>()
+                    MatrixCategoryOverField.setViaDefault<Number, Matrix>()
+                    MatrixProductComputer.setViaDefault<Number, Matrix>()
+                    TransposeMatrixComputer.setViaDefault<Number, Matrix>()
+                    CholeskyDecompositionComputer.setViaCholeskyCrout<Number, Matrix>()
                 },
             ),
         )
@@ -113,6 +118,146 @@ val CholeskyDecompositionImplementationsTests by testSuite {
                 MatrixProductComputer.Key<Number, Matrix>(),
                 TransposeMatrixComputer.Key<Number, Matrix>(),
                 CholeskyDecompositionComputer.Key<Number, Matrix>(),
+            )
+            for ((val index, val input = value) in inputs.withIndex()) test("input #$index") {
+                AssertionScope.withClue(
+                    {
+                        buildString {
+                            appendLine("Received the following matrix to decompose.")
+                            appendLine()
+                            appendLine("Input:")
+                            appendLine(input.toMatrixString())
+                        }
+                    }
+                ) {
+                    Expect.notToThrow({ input.choleskyDecomposition() }) {
+                        (val l = leftLowerTriangular, val r = rightUpperTriangular) = exposeValue()
+                        withClue(
+                            {
+                                buildString {
+                                    appendLine("Received the following matrices to check.")
+                                    appendLine()
+                                    appendLine("L:")
+                                    appendLine(l.toMatrixString())
+                                    appendLine("R (L^*):")
+                                    appendLine(r.toMatrixString())
+                                }
+                            }
+                        ) {
+                            softly {
+                                withClue("Input differs from LR.") {
+                                    Expect.of(l * r).toBeEqualToWithTolerance(input, 1E-10)
+                                }
+                                withClue("L is not lower-triangular.") {
+                                    Expect.of(l).toBeLowerTriangularMatrix()
+                                }
+                                withClue("R is not upper-triangular.") {
+                                    Expect.of(r).toBeUpperTriangularMatrix()
+                                }
+                                withClue("R is not L^*.") {
+                                    Expect.of(r.transpose()).toBeEqualToWithTolerance(l, 1E-10)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    testSuite("imaginary case") {
+        typealias Number = Double
+        typealias CNumber = ComplexNumber<Number>
+        typealias Matrix = MDList2<CNumber>
+        
+        val inputs = KoneList.of<Matrix>(
+            MDList2.of(
+                rowNumber = 2u,
+                columnNumber = 2u,
+                ComplexNumber(1.0, 0.0), ComplexNumber(0.0, 0.0),
+                ComplexNumber(0.0, 0.0), ComplexNumber(1.0, 0.0),
+            ),
+            MDList2.of(
+                rowNumber = 2u,
+                columnNumber = 2u,
+                ComplexNumber(5.0, 0.0), ComplexNumber(3.0, 0.0),
+                ComplexNumber(3.0, 0.0), ComplexNumber(5.0, 0.0),
+            ),
+            MDList2.of(
+                rowNumber = 3u,
+                columnNumber = 3u,
+                ComplexNumber(32.49, 0.0), ComplexNumber(102.03, 0.0), ComplexNumber(15.4926, 0.0),
+                ComplexNumber(102.03, 0.0), ComplexNumber(330.2696, 0.0), ComplexNumber(48.6522, 0.0),
+                ComplexNumber(15.4926, 0.0), ComplexNumber(48.6522, 0.0), ComplexNumber(8.387524, 0.0),
+            ),
+            MDList2.of(
+                rowNumber = 3u,
+                columnNumber = 3u,
+                ComplexNumber(32.49, 0.0), ComplexNumber(57.0, -45.03), ComplexNumber(11.457, -4.0356),
+                ComplexNumber(57.0, 45.03), ComplexNumber(172.2696, 0.0), ComplexNumber(25.6932, 8.799),
+                ComplexNumber(11.457, 4.0356), ComplexNumber(25.6932, -8.799), ComplexNumber(5.541364, 0.0),
+            ),
+        )
+        
+        data class Algorithm(
+            val name: String,
+            val koneContextRegistry: KoneContextRegistry,
+        )
+        
+        val algorithms = KoneList.of<Algorithm>(
+            Algorithm(
+                name = "via Cholesky",
+                koneContextRegistry = KoneContextRegistry.buildWithProvider {
+                    Number.setSafeField()
+                    Number.setSafeOrder()
+                    ComplexNumber.setFieldExtensionOver<Number>()
+                    PositiveSquareRootComputer.setViaDefaultForDouble()
+                    MatrixFactory.setViaDefault<CNumber>()
+                    MatrixCategoryOverField.setViaDefault<CNumber, Matrix>()
+                    MatrixProductComputer.setViaDefault<CNumber, Matrix>()
+                    ConjugateTransposeMatrixComputer.setViaDefault<Number, Matrix>()
+                    CholeskyDecompositionComputer.setViaCholeskyForComplexNumbers<Number, Matrix>()
+                },
+            ),
+            Algorithm(
+                name = "via Cholesky and Banachiewicz",
+                koneContextRegistry = KoneContextRegistry.buildWithProvider {
+                    Number.setSafeField()
+                    Number.setSafeOrder()
+                    ComplexNumber.setFieldExtensionOver<Number>()
+                    PositiveSquareRootComputer.setViaDefaultForDouble()
+                    MatrixFactory.setViaDefault<CNumber>()
+                    MatrixCategoryOverField.setViaDefault<CNumber, Matrix>()
+                    MatrixProductComputer.setViaDefault<CNumber, Matrix>()
+                    ConjugateTransposeMatrixComputer.setViaDefault<Number, Matrix>()
+                    CholeskyDecompositionComputer.setViaCholeskyBanachiewiczForComplexNumbers<Number, Matrix>()
+                },
+            ),
+            Algorithm(
+                name = "via Cholesky and Crout",
+                koneContextRegistry = KoneContextRegistry.buildWithProvider {
+                    Number.setSafeField()
+                    Number.setSafeOrder()
+                    ComplexNumber.setFieldExtensionOver<Number>()
+                    PositiveSquareRootComputer.setViaDefaultForDouble()
+                    MatrixFactory.setViaDefault<CNumber>()
+                    MatrixCategoryOverField.setViaDefault<CNumber, Matrix>()
+                    MatrixProductComputer.setViaDefault<CNumber, Matrix>()
+                    ConjugateTransposeMatrixComputer.setViaDefault<Number, Matrix>()
+                    CholeskyDecompositionComputer.setViaCholeskyCroutForComplexNumbers<Number, Matrix>()
+                },
+            ),
+        )
+        
+        for ((name, koneContextRegistry) in algorithms) testSuite(name) {
+            koneContextRegistry.koneLocalUnwrap(
+                Field.Key<Number>(),
+                Order.Key<Number>(),
+                FieldExtension.Key<Number, CNumber>(),
+                PositiveSquareRootComputer.Key<Number>(),
+                MatrixProductComputer.Key<CNumber, Matrix>(),
+                ConjugateTransposeMatrixComputer.Key<Number, Matrix>(),
+                CholeskyDecompositionComputer.Key<CNumber, Matrix>(),
             )
             for ((val index, val input = value) in inputs.withIndex()) test("input #$index") {
                 AssertionScope.withClue(
@@ -149,8 +294,8 @@ val CholeskyDecompositionImplementationsTests by testSuite {
                                 withClue("R is not upper-triangular.") {
                                     Expect.of(r).toBeUpperTriangularMatrix()
                                 }
-                                withClue("R is not L^T.") {
-                                    Expect.of(r.transpose()).toBeEqualToWithTolerance(l, 1E-10)
+                                withClue("R is not L^*.") {
+                                    Expect.of(r.conjugateTranspose()).toBeEqualToWithTolerance(l, 1E-10)
                                 }
                             }
                         }
