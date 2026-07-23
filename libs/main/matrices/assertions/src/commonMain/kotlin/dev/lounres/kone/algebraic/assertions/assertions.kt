@@ -449,7 +449,7 @@ public fun <Number> Expect<MDList2<Number>>.toBeUpperTriangularMatrix() {
     
     if (value.rowNumber != value.columnNumber) {
         fail(
-            message = "Non-square matrix ${value.rowNumber}✖${value.columnNumber} tried to be checked on unitality"
+            message = "Non-square matrix ${value.rowNumber}✖${value.columnNumber} tried to be checked on upper triangularity"
         )
         return
     }
@@ -510,6 +510,74 @@ public fun <Number> Expect<MDList2<Number>>.toBeUpperTriangularMatrix() {
 }
 
 context(_: AssertionScope, ring: CommutativeRing<Number>)
+public fun <Number> Expect<MDList2<Number>>.toBeLowerTriangularMatrix() {
+    val value = this.exposeValue()
+    
+    KoneContext.localUnwrap(ring)
+    
+    if (value.rowNumber != value.columnNumber) {
+        fail(
+            message = "Non-square matrix ${value.rowNumber}✖${value.columnNumber} tried to be checked on lower triangularity"
+        )
+        return
+    }
+    
+    val isCorrect = MDList2.generate(rowNumber = value.rowNumber, columnNumber = value.columnNumber) { row, column ->
+        if (row >= column) return@generate true
+        val actual = value[row, column]
+        actual.isZero()
+    }
+    
+    if (isCorrect.any { !it }) {
+        fail(
+            message = buildString {
+                appendLine("Non-upper-triangular matrix.")
+                appendLine()
+                appendLine("Inequal elements diagram (■ means non-zero element above diagonal, □ means zero element above diagonal, ✖ means element on diagonal and under):")
+                append('⎛')
+                repeat(isCorrect.columnNumber * 2u + 1u) { append(' ') }
+                appendLine('⎞')
+                for (row in isCorrect.rowIndices) {
+                    if (row != 0u) {
+                        append('⎜')
+                        repeat(isCorrect.columnNumber * 2u + 1u) { append(' ') }
+                        appendLine('⎟')
+                    }
+                    append('⎜')
+                    repeat(isCorrect.columnNumber * 2u + 1u) { column ->
+                        append(
+                            when {
+                                column % 2u == 0u -> ' '
+                                row <= column / 2u -> '✖'
+                                isCorrect[row, column / 2u] -> '□'
+                                else -> '■'
+                            }
+                        )
+                    }
+                    appendLine('⎟')
+                }
+                append('⎝')
+                repeat(isCorrect.columnNumber * 2u + 1u) { append(' ') }
+                appendLine('⎠')
+                appendLine()
+                appendLine("Inequal elements list:")
+                isCorrect.forEachIndexed { row, column, flag ->
+                    if (!flag) {
+                        appendLine(
+                            """
+                                [$row, $column]:
+                                  expected: ${ring.zero}
+                                  actual: ${value[row, column]}
+                            """.trimIndent()
+                        )
+                    }
+                }
+            }
+        )
+    }
+}
+
+context(_: AssertionScope, ring: CommutativeRing<Number>)
 public fun <Number> Expect<MDList2<Number>>.toBeUpperHessenbergMatrix() {
     val value = this.exposeValue()
     
@@ -517,7 +585,7 @@ public fun <Number> Expect<MDList2<Number>>.toBeUpperHessenbergMatrix() {
     
     if (value.rowNumber != value.columnNumber) {
         fail(
-            message = "Non-square matrix ${value.rowNumber}✖${value.columnNumber} tried to be checked on unitality"
+            message = "Non-square matrix ${value.rowNumber}✖${value.columnNumber} tried to be checked on upper Hessenbergity"
         )
         return
     }
@@ -585,7 +653,7 @@ public fun <Number> Expect<MDList2<Number>>.toBeQuasiUpperTriangularMatrix() {
     
     if (value.rowNumber != value.columnNumber) {
         fail(
-            message = "Non-square matrix ${value.rowNumber}✖${value.columnNumber} tried to be checked on unitality"
+            message = "Non-square matrix ${value.rowNumber}✖${value.columnNumber} tried to be checked on quasi-upper triangularity"
         )
         return
     }
