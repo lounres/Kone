@@ -9,11 +9,15 @@ import dev.lounres.kone.plugin.contexts.koneContextsPackageFQName
 import dev.lounres.kone.plugin.contexts.localReceiversFakeValueParameterName
 import dev.lounres.kone.plugin.contexts.localReceiversFunctionShortName
 import org.jetbrains.kotlin.GeneratedDeclarationKey
+import org.jetbrains.kotlin.descriptors.EffectiveVisibility
+import org.jetbrains.kotlin.descriptors.Modality
+import org.jetbrains.kotlin.descriptors.Visibilities
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.SessionAndScopeSessionHolder
 import org.jetbrains.kotlin.fir.declarations.FirResolvePhase
+import org.jetbrains.kotlin.fir.declarations.builder.buildProperty
 import org.jetbrains.kotlin.fir.declarations.builder.buildReceiverParameter
-import org.jetbrains.kotlin.fir.declarations.builder.buildValueParameter
+import org.jetbrains.kotlin.fir.declarations.impl.FirResolvedDeclarationStatusImpl
 import org.jetbrains.kotlin.fir.declarations.origin
 import org.jetbrains.kotlin.fir.expressions.FirFunctionCall
 import org.jetbrains.kotlin.fir.expressions.FirVarargArgumentsExpression
@@ -26,9 +30,10 @@ import org.jetbrains.kotlin.fir.resolve.providers.symbolProvider
 import org.jetbrains.kotlin.fir.symbols.FirBasedSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirFunctionSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirReceiverParameterSymbol
-import org.jetbrains.kotlin.fir.symbols.impl.FirValueParameterSymbol
+import org.jetbrains.kotlin.fir.symbols.impl.FirRegularPropertySymbol
 import org.jetbrains.kotlin.fir.types.builder.buildResolvedTypeRef
 import org.jetbrains.kotlin.fir.types.resolvedType
+import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstance
 
 
@@ -49,30 +54,47 @@ class FirLocalReceiversExpressionResolutionExtension(session: FirSession) : FirE
         if (functionCall.calleeReference.resolved?.resolvedSymbol != localReceiversFirFunctionSymbol) return emptyList()
         if (functionCall.arguments.size != 1) return emptyList()
         val varargArgument = functionCall.arguments[0] as FirVarargArgumentsExpression
-        val contextsToUse = varargArgument.arguments.map { it.resolvedType }
-        val fakeValueParameter = buildValueParameter {
+        val fakeValueProperty = buildProperty {
+            val theSymbol = FirRegularPropertySymbol(CallableId(koneContextsPackageFQName, localReceiversFakeValueParameterName))
+            
             resolvePhase = FirResolvePhase.BODY_RESOLVE
             moduleData = session.moduleData
             origin = GeneratedReceiverFromLocalReceiversFunctionKey.origin
-            symbol = FirValueParameterSymbol()
-            containingDeclarationSymbol = localReceiversFirFunctionSymbol
-            returnTypeRef = session.builtinTypes.anyType
-            name = localReceiversFakeValueParameterName
-        }
-        return contextsToUse.map {
-            val receiverParameter = buildReceiverParameter {
+            status = FirResolvedDeclarationStatusImpl(
+                Visibilities.DEFAULT_VISIBILITY,
+                Modality.FINAL,
+                EffectiveVisibility.Public,
+            )
+            isLocal = true
+            returnTypeRef = session.builtinTypes.nullableAnyType
+            receiverParameter = buildReceiverParameter {
                 resolvePhase = FirResolvePhase.BODY_RESOLVE
                 moduleData = session.moduleData
                 origin = GeneratedReceiverFromLocalReceiversFunctionKey.origin
                 symbol = FirReceiverParameterSymbol()
-                containingDeclarationSymbol = fakeValueParameter.symbol
+                typeRef = session.builtinTypes.nullableAnyType
+                containingDeclarationSymbol = theSymbol
+            }
+            name = localReceiversFakeValueParameterName
+            isVar = false
+            symbol = theSymbol
+        }
+        return varargArgument.arguments.map { holder ->
+            val type = holder.resolvedType
+            val receiverParameter = buildReceiverParameter {
+                source = holder.source
+                resolvePhase = FirResolvePhase.BODY_RESOLVE
+                moduleData = session.moduleData
+                origin = GeneratedReceiverFromLocalReceiversFunctionKey.origin
+                symbol = FirReceiverParameterSymbol()
+                containingDeclarationSymbol = fakeValueProperty.symbol
                 typeRef = buildResolvedTypeRef {
-                    coneType = it
+                    coneType = type
                 }
             }
             ImplicitExtensionReceiverValue(
                 boundSymbol = receiverParameter.symbol,
-                type = it,
+                type = type,
                 useSiteSession = sessionHolder.session,
                 scopeSession = sessionHolder.scopeSession
             )

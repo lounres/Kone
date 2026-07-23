@@ -39,7 +39,7 @@ FILE fqName:foo.bar fileName:/simpleLocalContextsUsage1.kt
           BRANCH
             if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
               ARG arg0: CALL 'public final fun <get-baz> (foo: foo.bar.Foo): kotlin.Int declared in foo.bar' type=kotlin.Int origin=GET_PROPERTY
-                ARG foo: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts localContexts context holder>|' type=foo.bar.Foo
+                ARG foo: ERROR_CALL 'Unresolved reference: this@R|dev/lounres/kone/contexts/<Kone contexts localContexts context holder>|' type=foo.bar.Foo
               ARG arg1: CONST Int type=kotlin.Int value=57
             then: CONST String type=kotlin.String value="OK"
           BRANCH

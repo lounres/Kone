@@ -82,7 +82,7 @@ FILE fqName:foo.bar fileName:/simpleLocalUnwrapUsage2.kt
             if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
               ARG arg0: CALL 'public final fun makeItCool <X> (coolContext: foo.bar.CoolContext<X of foo.bar.makeItCool>): X of foo.bar.makeItCool declared in foo.bar' type=kotlin.Int origin=null
                 TYPE_ARG X: kotlin.Int
-                ARG coolContext: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts localUnwrap context holder>|' type=foo.bar.CoolContext<kotlin.Int>
+                ARG coolContext: ERROR_CALL 'Unresolved reference: this@R|dev/lounres/kone/contexts/<Kone contexts localUnwrap context holder>|' type=foo.bar.CoolContext<kotlin.Int>
               ARG arg1: CONST Int type=kotlin.Int value=57
             then: CONST String type=kotlin.String value="OK"
           BRANCH

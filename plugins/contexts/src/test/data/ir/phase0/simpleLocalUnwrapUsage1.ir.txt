@@ -50,7 +50,7 @@ FILE fqName:foo.bar fileName:/simpleLocalUnwrapUsage1.kt
             if: CALL 'public abstract fun isEmpty (): kotlin.Boolean declared in kotlin.collections.List' type=kotlin.Boolean origin=null
               ARG <this>: CALL 'public final fun contextOf <A> (context: @[NoInfer] A of kotlin.contextOf): @[NoInfer] A of kotlin.contextOf declared in kotlin' type=@[NoInfer] kotlin.collections.List<kotlin.Int> origin=null
                 TYPE_ARG A: kotlin.collections.List<kotlin.Int>
-                ARG context: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts localUnwrap context holder>|' type=kotlin.collections.List<kotlin.Int>
+                ARG context: ERROR_CALL 'Unresolved reference: this@R|dev/lounres/kone/contexts/<Kone contexts localUnwrap context holder>|' type=kotlin.collections.List<kotlin.Int>
             then: CONST String type=kotlin.String value="OK"
           BRANCH
             if: CONST Boolean type=kotlin.Boolean value=true

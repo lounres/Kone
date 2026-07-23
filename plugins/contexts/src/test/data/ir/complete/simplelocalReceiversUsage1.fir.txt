@@ -13,7 +13,7 @@ FILE: simpleLocalReceiversUsage1.kt
     public final fun box(): R|kotlin/String| {
         R|dev/lounres/kone/contexts/localReceivers|(vararg(R|foo/bar/Baz.Baz|()))
         ^box when () {
-            ==(this@R|<local>/<Kone contexts localReceivers receiver holder>|.R|foo/bar/Baz.gee|, Int(57)) ->  {
+            ==(this@R|dev/lounres/kone/contexts/<Kone contexts localReceivers receiver holder>|.R|foo/bar/Baz.gee|, Int(57)) ->  {
                 String(OK)
             }
             else ->  {

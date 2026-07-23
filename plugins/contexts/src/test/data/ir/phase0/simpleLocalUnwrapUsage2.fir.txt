@@ -30,7 +30,7 @@ FILE: simpleLocalUnwrapUsage2.kt
     public final fun box(): R|kotlin/String| {
         Q|dev/lounres/kone/contexts/KoneContext|.R|dev/lounres/kone/contexts/localUnwrap|(vararg(Q|foo/bar/Foo|))
         ^box when () {
-            ==(context(this@R|<local>/<Kone contexts localUnwrap context holder>|) R|foo/bar/makeItCool|<R|kotlin/Int|>(), Int(57)) ->  {
+            ==(context(this@R|dev/lounres/kone/contexts/<Kone contexts localUnwrap context holder>|) R|foo/bar/makeItCool|<R|kotlin/Int|>(), Int(57)) ->  {
                 String(OK)
             }
             else ->  {

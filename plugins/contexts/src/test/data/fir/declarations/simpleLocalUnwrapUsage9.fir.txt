@@ -50,10 +50,10 @@ FILE: simpleLocalUnwrapUsage9.kt
     public final infix fun <Number> R|Number|.doublingPlus(other: R|kotlin/Int|): R|Number| {
         Q|dev/lounres/kone/contexts/KoneContext|.R|dev/lounres/kone/contexts/localUnwrap|(vararg(R|<local>/ring|))
         ^doublingPlus R|foo/bar/rightAddMultipliedByDoubling|<R|Number|>(this@R|foo/bar/doublingPlus|, R|<local>/ring|.R|SubstitutionOverride<foo/bar/Ring.one: R|Number|>|, R|<local>/other|, rightAddMultipliedByDoubling@fun <anonymous>(left: R|Number|, right: R|Number|): R|Number| <inline=Inline, kind=UNKNOWN>  {
-            ^ context(this@R|<local>/<Kone contexts localUnwrap context holder>|) R|<local>/left|.R|foo/bar/plus|<R|Number|, R|Number|, R|Number|>(R|<local>/right|)
+            ^ context(this@R|dev/lounres/kone/contexts/<Kone contexts localUnwrap context holder>|) R|<local>/left|.R|foo/bar/plus|<R|Number|, R|Number|, R|Number|>(R|<local>/right|)
         }
         , rightAddMultipliedByDoubling@fun <anonymous>(left: R|Number|, right: R|Number|): R|Number| <inline=Inline, kind=UNKNOWN>  {
-            ^ context(this@R|<local>/<Kone contexts localUnwrap context holder>|) R|<local>/left|.R|foo/bar/minus|<R|Number|, R|Number|, R|Number|>(R|<local>/right|)
+            ^ context(this@R|dev/lounres/kone/contexts/<Kone contexts localUnwrap context holder>|) R|<local>/left|.R|foo/bar/minus|<R|Number|, R|Number|, R|Number|>(R|<local>/right|)
         }
         )
     }

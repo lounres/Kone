@@ -18,7 +18,7 @@ FILE: simpleLocalContextsUsage1.kt
     public final fun box(): R|kotlin/String| {
         R|dev/lounres/kone/contexts/localContexts|(vararg(R|foo/bar/Foo.Foo|()))
         ^box when () {
-            ==(context(this@R|<local>/<Kone contexts localContexts context holder>|) R|foo/bar/baz|, Int(57)) ->  {
+            ==(context(this@R|dev/lounres/kone/contexts/<Kone contexts localContexts context holder>|) R|foo/bar/baz|, Int(57)) ->  {
                 String(OK)
             }
             else ->  {

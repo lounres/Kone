@@ -154,28 +154,28 @@ FILE fqName:foo.bar fileName:/simpleLocalUnwrapUsage11.kt
             if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
               ARG <this>: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
                 ARG arg0: CALL 'public final fun work (work: foo.bar.Work): kotlin.Int declared in foo.bar' type=kotlin.Int origin=null
-                  ARG work: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts localUnwrap context holder>|' type=foo.bar.Work
+                  ARG work: ERROR_CALL 'Unresolved reference: this@R|dev/lounres/kone/contexts/<Kone contexts localUnwrap context holder>|' type=foo.bar.Work
                 ARG arg1: CONST Int type=kotlin.Int value=57
             then: CONST String type=kotlin.String value="INCORRECT 1"
           BRANCH
             if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
               ARG <this>: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
                 ARG arg0: CALL 'public final fun makeItFoo (foo: foo.bar.Foo): kotlin.Int declared in foo.bar' type=kotlin.Int origin=null
-                  ARG foo: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts localUnwrap context holder>|' type=foo.bar.Foo
+                  ARG foo: ERROR_CALL 'Unresolved reference: this@R|dev/lounres/kone/contexts/<Kone contexts localUnwrap context holder>|' type=foo.bar.Foo
                 ARG arg1: CONST Int type=kotlin.Int value=57
             then: CONST String type=kotlin.String value="INCORRECT 2"
           BRANCH
             if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
               ARG <this>: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
                 ARG arg0: CALL 'public final fun makeItBar (bar: foo.bar.Bar): kotlin.Int declared in foo.bar' type=kotlin.Int origin=null
-                  ARG bar: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts localUnwrap context holder>|' type=foo.bar.Baz
+                  ARG bar: ERROR_CALL 'Unresolved reference: this@R|dev/lounres/kone/contexts/<Kone contexts localUnwrap context holder>|' type=foo.bar.Baz
                 ARG arg1: CONST Int type=kotlin.Int value=179
             then: CONST String type=kotlin.String value="INCORRECT 3"
           BRANCH
             if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
               ARG <this>: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
                 ARG arg0: CALL 'public final fun makeItBaz (baz: foo.bar.Baz): kotlin.Int declared in foo.bar' type=kotlin.Int origin=null
-                  ARG baz: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts localUnwrap context holder>|' type=foo.bar.Baz
+                  ARG baz: ERROR_CALL 'Unresolved reference: this@R|dev/lounres/kone/contexts/<Kone contexts localUnwrap context holder>|' type=foo.bar.Baz
                 ARG arg1: CONST Int type=kotlin.Int value=57
             then: CONST String type=kotlin.String value="INCORRECT 4"
           BRANCH

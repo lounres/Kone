@@ -209,7 +209,7 @@ FILE fqName:foo.bar fileName:/simpleLocalUnwrapUsage9.kt
                     TYPE_ARG Left: Number of foo.bar.doublingPlus
                     TYPE_ARG Right: Number of foo.bar.doublingPlus
                     TYPE_ARG Result: Number of foo.bar.doublingPlus
-                    ARG plus: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts localUnwrap context holder>|' type=foo.bar.Plus<Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus>
+                    ARG plus: ERROR_CALL 'Unresolved reference: this@R|dev/lounres/kone/contexts/<Kone contexts localUnwrap context holder>|' type=foo.bar.Plus<Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus>
                     ARG <this>: GET_VAR 'left: Number of foo.bar.doublingPlus declared in foo.bar.doublingPlus.<anonymous>' type=Number of foo.bar.doublingPlus origin=null
                     ARG other: GET_VAR 'right: Number of foo.bar.doublingPlus declared in foo.bar.doublingPlus.<anonymous>' type=Number of foo.bar.doublingPlus origin=null
           ARG rightSubtractionOp: FUN_EXPR type=kotlin.Function2<Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus> origin=LAMBDA
@@ -222,7 +222,7 @@ FILE fqName:foo.bar fileName:/simpleLocalUnwrapUsage9.kt
                     TYPE_ARG Left: Number of foo.bar.doublingPlus
                     TYPE_ARG Right: Number of foo.bar.doublingPlus
                     TYPE_ARG Result: Number of foo.bar.doublingPlus
-                    ARG minus: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts localUnwrap context holder>|' type=foo.bar.Minus<Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus>
+                    ARG minus: ERROR_CALL 'Unresolved reference: this@R|dev/lounres/kone/contexts/<Kone contexts localUnwrap context holder>|' type=foo.bar.Minus<Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus, Number of foo.bar.doublingPlus>
                     ARG <this>: GET_VAR 'left: Number of foo.bar.doublingPlus declared in foo.bar.doublingPlus.<anonymous>' type=Number of foo.bar.doublingPlus origin=null
                     ARG other: GET_VAR 'right: Number of foo.bar.doublingPlus declared in foo.bar.doublingPlus.<anonymous>' type=Number of foo.bar.doublingPlus origin=null
   FUN name:minus visibility:public modality:FINAL returnType:Result of foo.bar.minus [operator]

@@ -11,11 +11,16 @@ import dev.lounres.kone.plugin.contexts.koneLocalUnwrapActualValueParameterName
 import dev.lounres.kone.plugin.contexts.koneLocalUnwrapFakeValueParameterName
 import dev.lounres.kone.plugin.contexts.koneLocalUnwrapFunctionShortName
 import org.jetbrains.kotlin.GeneratedDeclarationKey
+import org.jetbrains.kotlin.descriptors.EffectiveVisibility
+import org.jetbrains.kotlin.descriptors.Modality
+import org.jetbrains.kotlin.descriptors.Visibilities
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.SessionAndScopeSessionHolder
 import org.jetbrains.kotlin.fir.declarations.FirResolvePhase
+import org.jetbrains.kotlin.fir.declarations.builder.buildProperty
 import org.jetbrains.kotlin.fir.declarations.builder.buildReceiverParameter
 import org.jetbrains.kotlin.fir.declarations.builder.buildValueParameter
+import org.jetbrains.kotlin.fir.declarations.impl.FirResolvedDeclarationStatusImpl
 import org.jetbrains.kotlin.fir.declarations.origin
 import org.jetbrains.kotlin.fir.expressions.FirFunctionCall
 import org.jetbrains.kotlin.fir.expressions.FirVarargArgumentsExpression
@@ -30,15 +35,17 @@ import org.jetbrains.kotlin.fir.resolve.transformers.body.resolve.FirAbstractBod
 import org.jetbrains.kotlin.fir.symbols.FirBasedSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirFunctionSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirReceiverParameterSymbol
+import org.jetbrains.kotlin.fir.symbols.impl.FirRegularPropertySymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirValueParameterSymbol
 import org.jetbrains.kotlin.fir.types.builder.buildResolvedTypeRef
 import org.jetbrains.kotlin.fir.types.resolvedType
+import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.util.PrivateForInline
 import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstance
 
 
 class FirKoneLocalUnwrapExpressionResolutionExtension(session: FirSession) : FirExpressionResolutionExtension(session) {
-    data object GeneratedReceiverFromUnwrapFunctionKey : GeneratedDeclarationKey()
+    data object GeneratedReceiverFromKoneLocalUnwrapFunctionKey : GeneratedDeclarationKey()
     
     private val koneLocalUnwrapFirFunctionSymbol by lazy {
         session.symbolProvider
@@ -52,34 +59,52 @@ class FirKoneLocalUnwrapExpressionResolutionExtension(session: FirSession) : Fir
         sessionHolder: SessionAndScopeSessionHolder,
         containingCallableSymbol: FirBasedSymbol<*>,
     ): List<ImplicitExtensionReceiverValue> = context(session) {
-        if (sessionHolder !is FirAbstractBodyResolveTransformer.BodyResolveTransformerComponents) return listOf()
+        if (sessionHolder !is FirAbstractBodyResolveTransformer.BodyResolveTransformerComponents) return emptyList()
         if (functionCall.calleeReference.resolved?.resolvedSymbol != koneLocalUnwrapFirFunctionSymbol) return emptyList()
         if (functionCall.arguments.size != 1) return emptyList()
         val varargArgument = functionCall.arguments[0] as FirVarargArgumentsExpression
-        val holdersToUnwrap = varargArgument.arguments.mapNotNull { it.resolvedType.registryKeyTypeArgument() }
-        val fakeValueParameter = buildValueParameter {
+        val fakeValueProperty = buildProperty {
+            val theSymbol = FirRegularPropertySymbol(CallableId(koneContextsPackageFQName, koneLocalUnwrapFakeValueParameterName))
+            
             resolvePhase = FirResolvePhase.BODY_RESOLVE
             moduleData = session.moduleData
-            origin = GeneratedReceiverFromUnwrapFunctionKey.origin
-            symbol = FirValueParameterSymbol()
-            containingDeclarationSymbol = koneLocalUnwrapFirFunctionSymbol
+            origin = GeneratedReceiverFromKoneLocalUnwrapFunctionKey.origin
+            status = FirResolvedDeclarationStatusImpl(
+                Visibilities.DEFAULT_VISIBILITY,
+                Modality.FINAL,
+                EffectiveVisibility.Public,
+            )
+            isLocal = true
             returnTypeRef = session.builtinTypes.nullableAnyType
+            receiverParameter = buildReceiverParameter {
+                resolvePhase = FirResolvePhase.BODY_RESOLVE
+                moduleData = session.moduleData
+                origin = GeneratedReceiverFromKoneLocalUnwrapFunctionKey.origin
+                symbol = FirReceiverParameterSymbol()
+                typeRef = session.builtinTypes.nullableAnyType
+                containingDeclarationSymbol = theSymbol
+            }
             name = koneLocalUnwrapFakeValueParameterName
+            isVar = false
+            symbol = theSymbol
         }
         val firTypesToUnwrapProvider = FirTypesToUnwrapProvider(session)
-        val newImplicitContextParameters = holdersToUnwrap.flatMap { holder ->
-            firTypesToUnwrapProvider[holder].map {
+        val newImplicitContextParameters = varargArgument.arguments.flatMap { holder ->
+            val type = holder.resolvedType.registryKeyTypeArgument() ?: return@flatMap emptyList()
+            firTypesToUnwrapProvider[type].map {
                 val receiverParameter = buildReceiverParameter {
+                    source = holder.source
                     resolvePhase = FirResolvePhase.BODY_RESOLVE
                     moduleData = session.moduleData
-                    origin = GeneratedReceiverFromUnwrapFunctionKey.origin
+                    origin = GeneratedReceiverFromKoneLocalUnwrapFunctionKey.origin
                     symbol = FirReceiverParameterSymbol()
                     typeRef = buildResolvedTypeRef {
                         coneType = it
                     }
-                    containingDeclarationSymbol = fakeValueParameter.symbol
+                    containingDeclarationSymbol = fakeValueProperty.symbol
                 }
                 val valueParameterSymbol = buildValueParameter {
+                    source = holder.source
                     resolvePhase = FirResolvePhase.BODY_RESOLVE
                     moduleData = session.moduleData
                     origin = GeneratedReceiverFromLocalContextsFunctionKey.origin
@@ -88,7 +113,7 @@ class FirKoneLocalUnwrapExpressionResolutionExtension(session: FirSession) : Fir
                     }
                     name = koneLocalUnwrapActualValueParameterName
                     symbol = FirValueParameterSymbol()
-                    containingDeclarationSymbol = fakeValueParameter.symbol
+                    containingDeclarationSymbol = fakeValueProperty.symbol
                     valueParameterKind = ContextParameter
                 }.apply { fakeReceiver = receiverParameter }
                 ImplicitContextParameterValue(

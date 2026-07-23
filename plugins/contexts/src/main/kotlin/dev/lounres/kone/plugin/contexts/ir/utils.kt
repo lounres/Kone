@@ -48,7 +48,7 @@ inline fun IrClassSymbol.referencePropertyThatOrFail(name: Name, predicate: (IrP
 inline fun IrClassSymbol.referencePropertyThatOrFail(name: String, predicate: (IrPropertySymbol) -> Boolean = { true }): IrPropertySymbol =
     referencePropertyThatOrFail(Name.identifier(name), predicate)
 
-val fakeValueParametersErrorCallsDescriptions = fakeValueParametersNameStrings.map { "Unresolved reference: this@R|<local>/$it|" }
+val fakeValueParametersErrorCallsDescriptions = fakeValueParametersNameStrings.map { "Unresolved reference: this@R|dev/lounres/kone/contexts/$it|" }
 
 fun IrProperty.isInclude() = hasAnnotation(koneContextIncludeAnnotationClassId)
 fun IrProperty.isExclude() = hasAnnotation(koneContextExcludeAnnotationClassId)

@@ -63,16 +63,16 @@ FILE: simpleLocalUnwrapUsage11.kt
     public final fun box(): R|kotlin/String| {
         Q|dev/lounres/kone/contexts/KoneContext|.R|dev/lounres/kone/contexts/localUnwrap|(vararg(R|foo/bar/Baz.Baz|()))
         ^box when () {
-            !=(context(this@R|<local>/<Kone contexts localUnwrap context holder>|) R|foo/bar/work|(), Int(57)) ->  {
+            !=(context(this@R|dev/lounres/kone/contexts/<Kone contexts localUnwrap context holder>|) R|foo/bar/work|(), Int(57)) ->  {
                 String(INCORRECT 1)
             }
-            !=(context(this@R|<local>/<Kone contexts localUnwrap context holder>|) R|foo/bar/makeItFoo|(), Int(57)) ->  {
+            !=(context(this@R|dev/lounres/kone/contexts/<Kone contexts localUnwrap context holder>|) R|foo/bar/makeItFoo|(), Int(57)) ->  {
                 String(INCORRECT 2)
             }
-            !=(context(this@R|<local>/<Kone contexts localUnwrap context holder>|) R|foo/bar/makeItBar|(), Int(179)) ->  {
+            !=(context(this@R|dev/lounres/kone/contexts/<Kone contexts localUnwrap context holder>|) R|foo/bar/makeItBar|(), Int(179)) ->  {
                 String(INCORRECT 3)
             }
-            !=(context(this@R|<local>/<Kone contexts localUnwrap context holder>|) R|foo/bar/makeItBaz|(), Int(57)) ->  {
+            !=(context(this@R|dev/lounres/kone/contexts/<Kone contexts localUnwrap context holder>|) R|foo/bar/makeItBaz|(), Int(57)) ->  {
                 String(INCORRECT 4)
             }
             else ->  {

@@ -51,7 +51,7 @@ FILE: simpleLocalUnwrapUsage10.kt
     public final fun box(): R|kotlin/String| {
         Q|dev/lounres/kone/contexts/KoneContext|.R|dev/lounres/kone/contexts/localUnwrap|(vararg(R|foo/bar/Baz.Baz|()))
         ^box when () {
-            ==(context(this@R|<local>/<Kone contexts localUnwrap context holder>|) R|foo/bar/work|(), Int(57)) ->  {
+            ==(context(this@R|dev/lounres/kone/contexts/<Kone contexts localUnwrap context holder>|) R|foo/bar/work|(), Int(57)) ->  {
                 String(OK)
             }
             else ->  {

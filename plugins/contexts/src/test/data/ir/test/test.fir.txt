@@ -30,7 +30,7 @@ FILE: test.kt
     public final fun box(): R|kotlin/String| {
         R|foo/bar/koneContextRegsitry|.R|dev/lounres/kone/contexts/koneLocalUnwrap|(vararg(Q|foo/bar/Foo.Key|))
         ^box when () {
-            ==(context(this@R|<local>/<Kone contexts koneLocalUnwrap context holder>|) R|foo/bar/baz|, Int(57)) ->  {
+            ==(context(this@R|dev/lounres/kone/contexts/<Kone contexts koneLocalUnwrap context holder>|) R|foo/bar/baz|, Int(57)) ->  {
                 String(OK)
             }
             else ->  {

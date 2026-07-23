@@ -39,7 +39,7 @@ FILE fqName:foo.bar fileName:/simpleLocalReceiversUsage1.kt
           BRANCH
             if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
               ARG arg0: CALL 'public final fun <get-gee> (): kotlin.Int declared in foo.bar.Baz' type=kotlin.Int origin=GET_PROPERTY
-                ARG <this>: ERROR_CALL 'Unresolved reference: this@R|<local>/<Kone contexts localReceivers receiver holder>|' type=foo.bar.Baz
+                ARG <this>: ERROR_CALL 'Unresolved reference: this@R|dev/lounres/kone/contexts/<Kone contexts localReceivers receiver holder>|' type=foo.bar.Baz
               ARG arg1: CONST Int type=kotlin.Int value=57
             then: CONST String type=kotlin.String value="OK"
           BRANCH

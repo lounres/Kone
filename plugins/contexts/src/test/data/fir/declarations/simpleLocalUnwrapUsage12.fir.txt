@@ -49,10 +49,10 @@ FILE: simpleLocalUnwrapUsage12.kt
     context(ring: R|foo/bar/Ring<Number>|)
     public final fun <Number> R|Number|.double(): R|Number| {
         Q|dev/lounres/kone/contexts/KoneContext|.R|dev/lounres/kone/contexts/localUnwrap|(vararg(R|<local>/ring|))
-        ^double context(this@R|<local>/<Kone contexts localUnwrap context holder>|) this@R|foo/bar/double|.R|foo/bar/plus|<R|Number|, R|Number|, R|Number|>(this@R|foo/bar/double|)
+        ^double context(this@R|dev/lounres/kone/contexts/<Kone contexts localUnwrap context holder>|) this@R|foo/bar/double|.R|foo/bar/plus|<R|Number|, R|Number|, R|Number|>(this@R|foo/bar/double|)
     }
     context(ring: R|foo/bar/Ring<Number>|)
     public final fun <Number> test(arg: R|Number|): R|kotlin/Unit| {
         Q|dev/lounres/kone/contexts/KoneContext|.R|dev/lounres/kone/contexts/localUnwrap|(vararg(R|<local>/ring|))
-        context(this@R|<local>/<Kone contexts localUnwrap context holder>|) R|<local>/arg|.R|foo/bar/double|<R|Number|>()
+        context(this@R|dev/lounres/kone/contexts/<Kone contexts localUnwrap context holder>|) R|<local>/arg|.R|foo/bar/double|<R|Number|>()
     }
