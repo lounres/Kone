@@ -30,11 +30,11 @@ public fun KoneContext.Companion.localUnwrap(vararg koneContexts: KoneContext) {
 public fun KoneContextRegistry.koneLocalUnwrap(vararg keys: RegistryKey<out KoneContext>) {
     contextsPluginExceptionForRuntimeDeclarations()
 }
-//@JvmName("koneLocalUnwrapContextual")
-//context(koneContextRegistry: KoneContextRegistry)
-//public fun koneLocalUnwrap(vararg keys: RegistryKey<out KoneContext>) {
-//    contextsPluginExceptionForRuntimeDeclarations()
-//}
+@JvmName("koneLocalUnwrapContextual")
+context(koneContextRegistry: KoneContextRegistry)
+public fun koneLocalUnwrap(vararg keys: RegistryKey<out KoneContext>) {
+    contextsPluginExceptionForRuntimeDeclarations()
+}
 //public inline fun <Result> receivers(vararg receivers: Any?, block: () -> Result): Result {
 //    contract {
 //        callsInPlace(block, InvocationKind.EXACTLY_ONCE)

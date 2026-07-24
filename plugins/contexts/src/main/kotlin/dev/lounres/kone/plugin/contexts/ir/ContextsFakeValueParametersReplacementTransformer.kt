@@ -197,7 +197,7 @@ class ContextsFakeValueParametersReplacementTransformer(
                         expressions.addAll(newContextVariables)
                     }
                 }
-                irRuntimeReferences.koneLocalUnwrapIrSimpleFunctionSymbol -> {
+                in irRuntimeReferences.koneLocalUnwrapIrSimpleFunctionSymbols -> {
                     iterator.remove()
                     check(newStatement.arguments.size == 2)
                     val koneContextRegistryExpression = newStatement.arguments[0]!!

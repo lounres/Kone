@@ -33,7 +33,6 @@ import org.jetbrains.kotlin.fir.resolve.calls.ImplicitExtensionReceiverValue
 import org.jetbrains.kotlin.fir.resolve.providers.symbolProvider
 import org.jetbrains.kotlin.fir.resolve.transformers.body.resolve.FirAbstractBodyResolveTransformer
 import org.jetbrains.kotlin.fir.symbols.FirBasedSymbol
-import org.jetbrains.kotlin.fir.symbols.impl.FirFunctionSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirReceiverParameterSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirRegularPropertySymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirValueParameterSymbol
@@ -41,16 +40,13 @@ import org.jetbrains.kotlin.fir.types.builder.buildResolvedTypeRef
 import org.jetbrains.kotlin.fir.types.resolvedType
 import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.util.PrivateForInline
-import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstance
 
 
 class FirKoneLocalUnwrapExpressionResolutionExtension(session: FirSession) : FirExpressionResolutionExtension(session) {
     data object GeneratedReceiverFromKoneLocalUnwrapFunctionKey : GeneratedDeclarationKey()
     
-    private val koneLocalUnwrapFirFunctionSymbol by lazy {
-        session.symbolProvider
-            .getTopLevelFunctionSymbols(koneContextsPackageFQName, koneLocalUnwrapFunctionShortName)
-            .firstIsInstance<FirFunctionSymbol<*>>()
+    private val koneLocalUnwrapFirFunctionSymbols by lazy {
+        session.symbolProvider.getTopLevelFunctionSymbols(koneContextsPackageFQName, koneLocalUnwrapFunctionShortName)
     }
     
     @OptIn(PrivateForInline::class)
@@ -60,7 +56,7 @@ class FirKoneLocalUnwrapExpressionResolutionExtension(session: FirSession) : Fir
         containingCallableSymbol: FirBasedSymbol<*>,
     ): List<ImplicitExtensionReceiverValue> = context(session) {
         if (sessionHolder !is FirAbstractBodyResolveTransformer.BodyResolveTransformerComponents) return emptyList()
-        if (functionCall.calleeReference.resolved?.resolvedSymbol != koneLocalUnwrapFirFunctionSymbol) return emptyList()
+        if (functionCall.calleeReference.resolved?.resolvedSymbol !in koneLocalUnwrapFirFunctionSymbols) return emptyList()
         if (functionCall.arguments.size != 1) return emptyList()
         val varargArgument = functionCall.arguments[0] as FirVarargArgumentsExpression
         val fakeValueProperty = buildProperty {
