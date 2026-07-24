@@ -10,9 +10,7 @@ import org.jetbrains.kotlin.fir.extensions.FirExtensionRegistrar
 
 
 class FirContextsExtensionRegistrar : FirExtensionRegistrar() {
-    @OptIn(FirExtensionApiInternals::class)
     override fun ExtensionRegistrarContext.configurePlugin() {
-//        +::FirLocalContextsExpressionInsertionExtension
         +::FirLocalReceiversExpressionResolutionExtension
         +::FirLocalContextsExpressionResolutionExtension
         +::FirLocalUnwrapExpressionResolutionExtension

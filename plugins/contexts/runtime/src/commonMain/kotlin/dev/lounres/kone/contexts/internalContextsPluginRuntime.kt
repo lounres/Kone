@@ -10,3 +10,8 @@ private class ContextsPluginException(message: String? = null, reason: Throwable
 
 @PublishedApi
 internal fun contextsPluginExceptionForRuntimeDeclarations(): Nothing = throw ContextsPluginException(contextsPluginExceptionForRuntimeDeclarationsMessage)
+
+//@Deprecated(message = "...", level = HIDDEN)
+//public fun contextsPluginLambdaLeadingCall() {
+////    error("...")
+//}
