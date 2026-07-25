@@ -12,6 +12,7 @@ import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.list.lastIndex
 import dev.lounres.kone.collections.utils.plusAssign
+import dev.lounres.kone.collections.utils.reversed
 import dev.lounres.kone.collections.utils.sumOf
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
@@ -33,12 +34,12 @@ private class AutoregressiveModelGeneratorViaDefault<Number>(
     private val ring: CommutativeRing<Number>,
 ) : AutoregressiveModelGenerator<Number> {
     override fun AutoregressiveModelDescription<Number>.generate(): KoneSeries<Number> = object : KoneSeries<Number> {
-        val description = this@generate
-        val results = KoneArrayGrowableList<Number>().also { it += description.initialValues }
+        val parameters = this@generate.parameters.reversed()
+        val results = KoneArrayGrowableList<Number>().also { it += this@generate.initialValues }
         
         fun addNewValue() {
             KoneContext.localUnwrap(ring)
-            results += (0u ..< description.parameters.size).asKoneSequence().sumOf { results[results.size + it - description.parameters.size] * description.parameters[description.parameters.lastIndex - it] }
+            results += (0u ..< parameters.size).asKoneSequence().sumOf { results[results.size + it - parameters.size] * parameters[it] }
         }
         
         override fun iterator(): KoneIterator<Number> = object : KoneIterator<Number> {
