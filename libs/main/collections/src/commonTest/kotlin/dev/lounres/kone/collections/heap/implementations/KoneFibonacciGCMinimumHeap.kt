@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.collections.heap.implementations
 
+import dev.lounres.kone.assertions.*
 import dev.lounres.kone.collections.deque.KoneDeque
 import dev.lounres.kone.collections.deque.empty
 import dev.lounres.kone.collections.deque.isNotEmpty
@@ -17,13 +18,6 @@ import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.lt
 import dev.lounres.kone.scope
-import io.kotest.matchers.booleans.shouldBeFalse
-import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
-import io.kotest.matchers.nulls.shouldBeNull
-import io.kotest.matchers.nulls.shouldNotBeNull
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.types.shouldBeSameInstanceAs
-import kotlin.test.fail
 
 
 object KoneFibonacciGCMinimumHeapDescription : MinimumHeapImplementationDescription {
@@ -42,75 +36,79 @@ object KoneFibonacciGCMinimumHeapDescription : MinimumHeapImplementationDescript
         }
     override val validator: MinimumHeapValidator =
         object : MinimumHeapValidator {
+            context(assertionScope: AssertionScope)
             override fun <Element, Priority> validate(heap: MinimumHeap<Element, Priority>) {
-                if (heap !is KoneFibonacciGCMinimumHeap<Element, Priority>) fail("The heap is invalid")
+                if (heap !is KoneFibonacciGCMinimumHeap<Element, Priority>) {
+                    fail("The heap is invalid")
+                    return
+                }
                 
                 if (heap.numberOfChildren == 0u) {
-                    heap.size shouldBe 0u
-                    heap.firstChild.shouldBeNull()
-                    heap.lastChild.shouldBeNull()
-                    heap.minimumNode.shouldBeNull()
+                    Expect of heap.size toBe 0u
+                    Expect of heap.firstChild toBe null
+                    Expect of heap.lastChild toBe null
+                    Expect of heap.minimumNode toBe null
                 } else {
-                    heap.size shouldBeGreaterThanOrEqualTo heap.numberOfChildren
-                    heap.firstChild.shouldNotBeNull()
-                    heap.lastChild.shouldNotBeNull()
-                    heap.minimumNode.shouldNotBeNull()
+                    Expect of heap.size toBeGreaterThanOrEqualTo heap.numberOfChildren
+                    Expect of heap.firstChild notToBe null
+                    Expect of heap.lastChild notToBe null
+                    Expect of heap.minimumNode notToBe null
                     
                     val children = KoneDeque.empty<KoneFibonacciGCMinimumHeap.Node<Element, Priority>>()
                     scope {
                         var child = heap.firstChild
-                        child!!.previousSibling.shouldBeNull()
+                        Expect of child!!.previousSibling toBe null
                         while (child != null) {
                             children.addLast(child)
-                            child.isDetached.shouldBeFalse()
-                            child.parent.shouldBeNull()
+                            Expect of child.isDetached toBe false
+                            Expect of child.parent toBe null
                             if (child === heap.minimumNode) {
-                                child.heap shouldBeSameInstanceAs heap
+                                Expect of child.heap toBeTheSameInstanceAs heap
                             } else {
-                                child.heap.shouldBeNull()
+                                Expect of child.heap toBe null
                             }
                             val nextChild = child.nextSibling
-                            if (nextChild != null) nextChild.previousSibling shouldBeSameInstanceAs child
-                            child.isMarked.shouldBeFalse()
+                            if (nextChild != null) Expect of nextChild.previousSibling toBeTheSameInstanceAs child
+                            Expect of child.isMarked toBe false
                             child = nextChild
                         }
                     }
-                    children.size shouldBe heap.numberOfChildren
+                    Expect of children.size toBe heap.numberOfChildren
                     
                     var restSize = heap.size - heap.numberOfChildren
                     while (children.isNotEmpty()) {
                         val parent = children.popFirst()
                         if (parent.numberOfChildren == 0u) {
-                            parent.firstChild.shouldBeNull()
-                            parent.lastChild.shouldBeNull()
+                            Expect of parent.firstChild toBe null
+                            Expect of parent.lastChild toBe null
                         } else {
-                            restSize shouldBeGreaterThanOrEqualTo parent.numberOfChildren
-                            parent.firstChild.shouldNotBeNull()
-                            parent.lastChild.shouldNotBeNull()
+                            Expect of restSize toBeGreaterThanOrEqualTo parent.numberOfChildren
+                            Expect of parent.firstChild notToBe null
+                            Expect of parent.lastChild notToBe null
                             
                             scope {
                                 var child = parent.firstChild
                                 var childrenCounter = 0u
-                                child!!.previousSibling.shouldBeNull()
+                                Expect of child!!.previousSibling toBe null
                                 while (child != null) {
                                     children.addLast(child)
                                     childrenCounter++
-                                    child.isDetached.shouldBeFalse()
+                                    Expect of child.isDetached toBe false
                                     heap.priorityOrder { if (child.priority lt parent.priority) fail("The heap is invalid") }
-                                    child.parent shouldBeSameInstanceAs parent
-                                    child.heap.shouldBeNull()
+                                    Expect of child.parent toBeTheSameInstanceAs parent
+                                    Expect of child.heap toBe null
                                     val nextChild = child.nextSibling
-                                    if (nextChild != null) nextChild.previousSibling shouldBeSameInstanceAs child
+                                    if (nextChild != null) Expect of nextChild.previousSibling toBeTheSameInstanceAs child
                                     child = nextChild
                                 }
-                                childrenCounter shouldBe parent.numberOfChildren
+                                Expect of childrenCounter toBe parent.numberOfChildren
                             }
                             
                             restSize -= parent.numberOfChildren
                         }
                     }
                     
-                    restSize shouldBe 0u
+                    Expect of restSize toBe 0u
                 }
             }
         }

@@ -19,7 +19,7 @@ public fun interface Expect<out Value> {
     public annotation class Dsl
 }
 
-public fun <Value> Expect.Companion.of(value: Value): Expect<Value> = Expect { value }
+public infix fun <Value> Expect.Companion.of(value: Value): Expect<Value> = Expect { value }
 public inline fun <Value> Expect.Companion.of(value: Value, block: Expect<Value>.() -> Unit) {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
@@ -27,14 +27,14 @@ public inline fun <Value> Expect.Companion.of(value: Value, block: Expect<Value>
     of(value).block()
 }
 
-public fun <Value> Expect.Companion.using(provider: () -> Value): Expect<Value> = Expect { provider() }
+public infix fun <Value> Expect.Companion.using(provider: () -> Value): Expect<Value> = Expect { provider() }
 public inline fun <Value> Expect.Companion.using(noinline provider: () -> Value, block: Expect<Value>.() -> Unit) {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
     using(provider).block()
 }
-public fun <OldValue, NewValue> Expect<OldValue>.using(provider: (OldValue) -> NewValue): Expect<NewValue> = Expect { provider(this.exposeValue()) }
+public infix fun <OldValue, NewValue> Expect<OldValue>.using(provider: (OldValue) -> NewValue): Expect<NewValue> = Expect { provider(this.exposeValue()) }
 public inline fun <OldValue, NewValue> Expect<OldValue>.using(noinline provider: (OldValue) -> NewValue, block: Expect<NewValue>.() -> Unit) {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
@@ -42,7 +42,7 @@ public inline fun <OldValue, NewValue> Expect<OldValue>.using(noinline provider:
     using(provider).block()
 }
 
-public fun <Value> Expect.Companion.ofLazy(provider: () -> Value): Expect<Value> {
+public infix fun <Value> Expect.Companion.ofLazy(provider: () -> Value): Expect<Value> {
     val value by lazy(provider)
     return Expect { value }
 }
@@ -52,7 +52,7 @@ public inline fun <Value> Expect.Companion.ofLazy(noinline provider: () -> Value
     }
     ofLazy(provider).block()
 }
-public fun <OldValue, NewValue> Expect<OldValue>.usingLazily(provider: (OldValue) -> NewValue): Expect<NewValue> {
+public infix fun <OldValue, NewValue> Expect<OldValue>.usingLazily(provider: (OldValue) -> NewValue): Expect<NewValue> {
     val value by lazy { provider(this.exposeValue()) }
     return Expect { value }
 }

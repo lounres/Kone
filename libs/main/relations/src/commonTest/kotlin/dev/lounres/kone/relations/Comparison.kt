@@ -5,34 +5,30 @@
 
 package dev.lounres.kone.relations
 
+import de.infix.testBalloon.framework.core.testSuite
+import dev.lounres.kone.assertions.*
 import dev.lounres.kone.contexts.invoke
-import io.kotest.assertions.assertSoftly
-import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.types.shouldBeSameInstanceAs
-import io.kotest.matchers.types.shouldNotBeSameInstanceAs
-import io.kotest.property.checkAll
 
 
-class Comparison : FunSpec({
-    
+val RelationsTests by testSuite {
     test("test that the default equalities and hashings are the same instances`") {
-        assertSoftly {
-            Equality.defaultFor<Int>() shouldBeSameInstanceAs Equality.defaultFor<String>()
-            Equality.absoluteFor<Int>() shouldNotBeSameInstanceAs Equality.absoluteFor<String>()
-            Hashing.defaultFor<Int>() shouldBeSameInstanceAs Hashing.defaultFor<String>()
+        AssertionScope.softly {
+            Expect of Equality.defaultFor<Int>() toBeTheSameInstanceAs Equality.defaultFor<String>()
+            Expect of Equality.absoluteFor<Int>() toBeTheSameInstanceAs Equality.absoluteFor<String>()
+            Expect of Hashing.defaultFor<Int>() toBeTheSameInstanceAs Hashing.defaultFor<String>()
         }
     }
     
     test("test behaviours of the default equalities and hashings") {
-        assertSoftly {
-            checkAll<Int, Int> { a, b ->
-                (a == b) shouldBe (Equality.defaultFor<Int>()) { a eq b }
+        AssertionScope.softly {
+            val intValues = listOf(1, 2, 3, 4, 5)
+            for (a in intValues) for (b in intValues) withClue("Checking properties for $a and $b") {
+                Expect of (Equality.defaultFor<Int>()) { a eq b } toBe (a == b)
             }
-            checkAll<String, String> { a, b ->
-                (a == b) shouldBe (Equality.defaultFor<String>()) { a eq b }
+            val stringValues = listOf("a", "b", "c", "d", "e", "f")
+            for (a in stringValues) for (b in stringValues) withClue("Checking properties for \"$a\" and \"$b\"") {
+                Expect of (Equality.defaultFor<String>()) { a eq b } toBe (a == b)
             }
         }
     }
-    
-})
+}

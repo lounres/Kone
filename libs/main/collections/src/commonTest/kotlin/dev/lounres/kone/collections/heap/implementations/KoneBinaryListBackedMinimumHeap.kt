@@ -5,9 +5,10 @@
 
 package dev.lounres.kone.collections.heap.implementations
 
+import dev.lounres.kone.assertions.*
 import dev.lounres.kone.collections.heap.MinimumHeap
-import dev.lounres.kone.collections.heap.MinimumHeapProducer
 import dev.lounres.kone.collections.heap.MinimumHeapImplementationDescription
+import dev.lounres.kone.collections.heap.MinimumHeapProducer
 import dev.lounres.kone.collections.heap.MinimumHeapValidator
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityListProducer
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableListProducer
@@ -16,23 +17,23 @@ import dev.lounres.kone.collections.list.indices
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.gt
-import io.kotest.matchers.booleans.shouldBeFalse
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.types.shouldBeSameInstanceAs
-import kotlin.test.fail
 
 
 object KoneBinaryListBackedMinimumHeapValidator : MinimumHeapValidator {
+    context(assertionScope: AssertionScope)
     override fun <Element, Priority> validate(heap: MinimumHeap<Element, Priority>) {
-        if (heap !is KoneBinaryListBackedMinimumHeap<Element, Priority>) fail("The heap is invalid")
+        if (heap !is KoneBinaryListBackedMinimumHeap<Element, Priority>) {
+            fail("The heap is invalid")
+            return
+        }
         if (heap.isDisposed) fail("The heap is invalid")
         
         val data = heap.data
         for (index in data.indices) {
             val node = data[index]
-            node.heap shouldBeSameInstanceAs heap
-            node.isDetached.shouldBeFalse()
-            node.index shouldBe index
+            Expect of node.heap toBeTheSameInstanceAs heap
+            Expect of node.isDetached toBe false
+            Expect of node.index toBe index
             if (index != 0u) {
                 val parent = data[(index - 1u) / 2u]
                 heap.priorityOrder { if (parent.priority gt node.priority) fail("The heap is invalid") }

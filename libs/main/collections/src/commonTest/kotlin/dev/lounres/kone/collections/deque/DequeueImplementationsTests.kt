@@ -7,8 +7,6 @@ package dev.lounres.kone.collections.deque
 
 import de.infix.testBalloon.framework.core.testSuite
 import dev.lounres.kone.repeat
-import io.kotest.assertions.withClue
-import io.kotest.matchers.shouldBe
 
 
 interface KoneDequeProducer

@@ -5,7 +5,8 @@
 
 package dev.lounres.kone.collections.list.implementations
 
-import dev.lounres.kone.algebraic.primaryFor
+import dev.lounres.kone.assertions.AssertionScope
+import dev.lounres.kone.assertions.fail
 import dev.lounres.kone.collections.implementations.POWERS_OF_2
 import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.iterables.contains
@@ -16,15 +17,16 @@ import dev.lounres.kone.collections.list.contexts.KoneListProducer
 import dev.lounres.kone.collections.utils.any
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.defaultFor
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
-import kotlin.test.fail
 
 
 object KoneArrayGrowableLinkedNoddedListDescription : ListImplementationDescription {
     override val name get() = "KoneArrayGrowableLinkedNoddedList"
     
     internal object Validator {
+        context(assertionScope: AssertionScope)
         fun <Element: Any> validate(
             list: KoneArrayGrowableLinkedNoddedList<Element>,
         ) {
@@ -38,7 +40,7 @@ object KoneArrayGrowableLinkedNoddedListDescription : ListImplementationDescript
             val previousNodeIndex = list.previousNodeIndex
             val data = list.data
             
-            if ((Equality.primaryFor(UInt)) { sizeUpperBound !in POWERS_OF_2 }) fail("The list is invalid")
+            if ((Equality.defaultFor<UInt>()) { sizeUpperBound !in POWERS_OF_2 }) fail("The list is invalid")
             if (size > sizeUpperBound) fail("The list is invalid")
             if (data.size != sizeUpperBound || nextNodeIndex.size != sizeUpperBound || previousNodeIndex.size != sizeUpperBound) fail("The list is invalid")
             if (nextNodeIndex.any { it !in 0u..<sizeUpperBound } || previousNodeIndex.any { it !in 0u..<sizeUpperBound }) fail("The list is invalid")
@@ -61,10 +63,13 @@ object KoneArrayGrowableLinkedNoddedListDescription : ListImplementationDescript
                     if ((iteration == (size + sizeUpperBound - 1u).mod(sizeUpperBound)) != (currentIndex == end)) fail("The list is invalid")
                     val currentNodeOrNull = data[currentIndex]
                     if (iteration < size) {
-                        if (currentNodeOrNull == null) fail("The list is invalid")
-                        if (currentNodeOrNull.actualIndex != currentIndex) fail("The list is invalid")
-                        if (currentNodeOrNull.isDetached) fail("The list is invalid")
-                        if (currentNodeOrNull.list !== list) fail("The list is invalid")
+                        if (currentNodeOrNull == null) {
+                            fail("The list is invalid")
+                        } else {
+                            if (currentNodeOrNull.actualIndex != currentIndex) fail("The list is invalid")
+                            if (currentNodeOrNull.isDetached) fail("The list is invalid")
+                            if (currentNodeOrNull.list !== list) fail("The list is invalid")
+                        }
                     } else {
                         if (currentNodeOrNull != null) fail("The list is invalid")
                     }
@@ -73,6 +78,7 @@ object KoneArrayGrowableLinkedNoddedListDescription : ListImplementationDescript
             }
         }
         
+        context(assertionScope: AssertionScope)
         fun validateWithIterator(
             list: KoneArrayGrowableLinkedNoddedList<Any>,
             iterator: KoneArrayGrowableLinkedNoddedList.Iterator<Any>,
@@ -94,19 +100,30 @@ object KoneArrayGrowableLinkedNoddedListDescription : ListImplementationDescript
     
     override val listProducer: KoneListProducer get() = KoneArrayGrowableLinkedNoddedListProducer
     override val listValidator: KoneListValidator = object : KoneListValidator {
+        context(assertionScope: AssertionScope)
         override fun validate(
             list: KoneList<Any>,
         ) {
-            if (list !is KoneArrayGrowableLinkedNoddedList<Any>) fail("The list is invalid")
+            if (list !is KoneArrayGrowableLinkedNoddedList<Any>) {
+                fail("The list is invalid")
+                return
+            }
             Validator.validate(list)
         }
         
+        context(assertionScope: AssertionScope)
         override fun validateWithIterator(
             list: KoneList<Any>,
             iterator: KoneIterator<Any>,
         ) {
-            if (list !is KoneArrayGrowableLinkedNoddedList<Any>) fail("The list is invalid")
-            if (iterator !is KoneArrayGrowableLinkedNoddedList.Iterator<Any>) fail("The iterator is invalid")
+            if (list !is KoneArrayGrowableLinkedNoddedList<Any>) {
+                fail("The list is invalid")
+                return
+            }
+            if (iterator !is KoneArrayGrowableLinkedNoddedList.Iterator<Any>) {
+                fail("The iterator is invalid")
+                return
+            }
             Validator.validateWithIterator(list, iterator)
         }
     }

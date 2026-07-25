@@ -5,30 +5,19 @@
 
 package dev.lounres.kone.collections.list
 
-import de.infix.testBalloon.framework.core.testSuite
+import dev.lounres.kone.assertions.*
 import dev.lounres.kone.collections.iterables.KoneIterator
-import dev.lounres.kone.collections.list.implementations.*
-import dev.lounres.kone.collections.list.contexts.KoneFixedCapacityMutableListProducer
-import dev.lounres.kone.collections.list.contexts.KoneFixedCapacityMutableNoddedListProducer
-import dev.lounres.kone.collections.list.contexts.KoneGrowableMutableListProducer
-import dev.lounres.kone.collections.list.contexts.KoneGrowableMutableNoddedListProducer
 import dev.lounres.kone.collections.list.contexts.KoneListProducer
-import dev.lounres.kone.collections.list.contexts.KoneResizableMutableListProducer
-import dev.lounres.kone.collections.list.contexts.KoneResizableMutableNoddedListProducer
-import dev.lounres.kone.collections.list.contexts.KoneSettableListProducer
-import dev.lounres.kone.repeat
-import dev.lounres.kone.scope
-import io.kotest.assertions.withClue
-import io.kotest.matchers.booleans.shouldBeTrue
-import io.kotest.matchers.shouldBe
-import kotlin.test.fail
+import dev.lounres.kone.collections.list.implementations.*
 
 
 interface KoneListValidator {
+    context(assertionScope: AssertionScope)
     fun validate(
         list: KoneList<Any>,
     )
     
+    context(assertionScope: AssertionScope)
     fun validateWithIterator(
         list: KoneList<Any>,
         iterator: KoneIterator<Any>,
@@ -36,13 +25,14 @@ interface KoneListValidator {
 }
 
 @IgnorableReturnValue
-fun <Validator: KoneListValidator> Validator.shouldValidate(list: KoneList<Any>): Validator =
-    apply { validate(list) }
+context(assertionScope: AssertionScope)
+fun <Validator: KoneListValidator> Expect<Validator>.toValidate(list: KoneList<Any>) { exposeValue().validate(list) }
 @IgnorableReturnValue
-fun <Validator: KoneListValidator> Validator.shouldValidate(list: KoneList<Any>, iterator: KoneIterator<Any>): Validator =
-    apply { validateWithIterator(list, iterator) }
+context(assertionScope: AssertionScope)
+fun <Validator: KoneListValidator> Expect<Validator>.toValidate(list: KoneList<Any>, iterator: KoneIterator<Any>) { exposeValue().validateWithIterator(list, iterator) }
 
 interface ListDisposabilityTest {
+    context(assertionScope: AssertionScope)
     fun <Element: Any> test(list: KoneList<Element>) {}
 }
 
@@ -72,23 +62,25 @@ val listImplementations = listOf<ListImplementationDescription>(
     KoneTwoThreeTreeListDescription,
 )
 
+context(assertionScope: AssertionScope)
 fun <Element> testEqualityIndexAccess(list1: KoneList<Element>, list2: List<Element>) {
     withClue("Checking equality of the lists by accessing element by index") {
         if (list1.size != list2.size.toUInt()) fail("the lists have different sizes")
         for (index in 0u ..< list1.size)
             withClue({ "Checking equality of elements at index $index" }) {
-                list1[index] shouldBe list2[index.toInt()]
+                Expect of list1[index] toBe list2[index.toInt()]
             }
     }
 }
 
+context(assertionScope: AssertionScope)
 fun <Element> testEqualityByIteration(list1: KoneList<Element>, list2: List<Element>) {
     withClue("Checking equality of the lists by iteration through them") {
         val listIterator = list1.iterator()
         for (i in 0u ..< list2.size.toUInt()) {
             if (!listIterator.hasNext()) fail("List iterator stopped before the length ended")
             withClue({ "Checking equality of elements at index $i" }) {
-                listIterator.getNext() shouldBe list2[i.toInt()]
+                Expect of listIterator.getNext() toBe list2[i.toInt()]
             }
             listIterator.moveNext()
         }
@@ -96,12 +88,14 @@ fun <Element> testEqualityByIteration(list1: KoneList<Element>, list2: List<Elem
     }
 }
 
+context(assertionScope: AssertionScope)
 fun <Element> testEqualityByStringRepresentation(list1: KoneList<Element>, list2: List<Element>) {
     withClue("Checking equality of the lists' string representations") {
-        list1.toString() shouldBe list2.toString()
+        Expect of list1.toString() toBe list2.toString()
     }
 }
 
+context(assertionScope: AssertionScope)
 fun <Element> testEquality(list1: KoneList<Element>, list2: List<Element>) {
     testEqualityIndexAccess(list1, list2)
     testEqualityByIteration(list1, list2)

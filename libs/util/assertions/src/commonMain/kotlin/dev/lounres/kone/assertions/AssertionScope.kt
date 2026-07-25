@@ -7,7 +7,7 @@ package dev.lounres.kone.assertions
 
 
 @AssertionScope.Dsl
-public fun interface AssertionScope {
+public interface AssertionScope {
     public fun consumeAssertion(assertionResult: Assertion)
     
     public companion object : AssertionScope {

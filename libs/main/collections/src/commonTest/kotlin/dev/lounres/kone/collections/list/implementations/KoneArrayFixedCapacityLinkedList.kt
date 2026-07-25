@@ -5,6 +5,8 @@
 
 package dev.lounres.kone.collections.list.implementations
 
+import dev.lounres.kone.assertions.AssertionScope
+import dev.lounres.kone.assertions.fail
 import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneListValidator
@@ -14,13 +16,13 @@ import dev.lounres.kone.collections.list.contexts.KoneListProducer
 import dev.lounres.kone.collections.utils.any
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
-import kotlin.test.fail
 
 
 object KoneArrayFixedCapacityLinkedListDescription : ListImplementationDescription {
     override val name get() = "KoneArrayFixedCapacityLinkedList"
     
     internal object Validator {
+        context(assertionScope: AssertionScope)
         fun <Element: Any> validate(
             list: KoneArrayFixedCapacityLinkedList<Element>,
         ) {
@@ -60,6 +62,7 @@ object KoneArrayFixedCapacityLinkedListDescription : ListImplementationDescripti
             }
         }
         
+        context(assertionScope: AssertionScope)
         fun validateWithIterator(
             list: KoneArrayFixedCapacityLinkedList<Any>,
             iterator: KoneArrayFixedCapacityLinkedList.Iterator<Any>,
@@ -81,25 +84,40 @@ object KoneArrayFixedCapacityLinkedListDescription : ListImplementationDescripti
     
     override val listProducer: KoneListProducer get() = KoneArrayFixedCapacityLinkedListProducer
     override val listValidator: KoneListValidator = object : KoneListValidator {
+        context(assertionScope: AssertionScope)
         override fun validate(
             list: KoneList<Any>,
         ) {
-            if (list !is KoneArrayFixedCapacityLinkedList<Any>) fail("The list is invalid")
+            if (list !is KoneArrayFixedCapacityLinkedList<Any>) {
+                fail("The list is invalid")
+                return
+            }
             Validator.validate(list)
         }
         
+        context(assertionScope: AssertionScope)
         override fun validateWithIterator(
             list: KoneList<Any>,
             iterator: KoneIterator<Any>,
         ) {
-            if (list !is KoneArrayFixedCapacityLinkedList<Any>) fail("The list is invalid")
-            if (iterator !is KoneArrayFixedCapacityLinkedList.Iterator<Any>) fail("The iterator is invalid")
+            if (list !is KoneArrayFixedCapacityLinkedList<Any>) {
+                fail("The list is invalid")
+                return
+            }
+            if (iterator !is KoneArrayFixedCapacityLinkedList.Iterator<Any>) {
+                fail("The iterator is invalid")
+                return
+            }
             Validator.validateWithIterator(list, iterator)
         }
     }
     override val listDisposabilityTest: ListDisposabilityTest = object : ListDisposabilityTest {
+        context(assertionScope: AssertionScope)
         override fun <Element : Any> test(list: KoneList<Element>) {
-            if (list !is KoneArrayFixedCapacityLinkedList<Element>) fail("The list is invalid")
+            if (list !is KoneArrayFixedCapacityLinkedList<Element>) {
+                fail("The list is invalid")
+                return
+            }
             
             TODO()
             

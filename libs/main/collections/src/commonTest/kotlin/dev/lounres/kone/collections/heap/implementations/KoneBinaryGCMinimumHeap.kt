@@ -5,22 +5,15 @@
 
 package dev.lounres.kone.collections.heap.implementations
 
+import dev.lounres.kone.assertions.*
 import dev.lounres.kone.collections.heap.MinimumHeap
-import dev.lounres.kone.collections.heap.MinimumHeapProducer
 import dev.lounres.kone.collections.heap.MinimumHeapImplementationDescription
+import dev.lounres.kone.collections.heap.MinimumHeapProducer
 import dev.lounres.kone.collections.heap.MinimumHeapValidator
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.lt
-import io.kotest.matchers.booleans.shouldBeFalse
-import io.kotest.matchers.comparables.shouldBeLessThan
-import io.kotest.matchers.comparables.shouldBeLessThanOrEqualTo
-import io.kotest.matchers.nulls.shouldBeNull
-import io.kotest.matchers.nulls.shouldNotBeNull
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.types.shouldBeSameInstanceAs
-import kotlin.test.fail
 
 
 object KoneBinaryGCMinimumHeapDescription : MinimumHeapImplementationDescription {
@@ -39,37 +32,41 @@ object KoneBinaryGCMinimumHeapDescription : MinimumHeapImplementationDescription
         }
     override val validator: MinimumHeapValidator =
         object : MinimumHeapValidator {
+            context(assertionScope: AssertionScope)
             override fun <Element, Priority> validate(heap: MinimumHeap<Element, Priority>) {
-                if (heap !is KoneBinaryGCMinimumHeap<Element, Priority>) fail("The heap is invalid")
+                if (heap !is KoneBinaryGCMinimumHeap<Element, Priority>) {
+                    fail("The heap is invalid")
+                    return
+                }
                 
                 if (heap.size == 0u) {
-                    heap.rootHolder.shouldBeNull()
-                    heap.lastHolder.shouldBeNull()
+                    Expect of heap.rootHolder toBe null
+                    Expect of heap.lastHolder toBe null
                 } else {
-                    heap.rootHolder.shouldNotBeNull()
-                    heap.lastHolder.shouldNotBeNull()
+                    Expect of heap.rootHolder toBe null
+                    Expect of heap.lastHolder toBe null
                     
                     val nodes = KoneArrayFixedCapacityList<KoneBinaryGCMinimumHeap.NodeHolder<Element, Priority>>(heap.size)
                     
                     val rootHolder = heap.rootHolder!!
-                    rootHolder.parent.shouldBeNull()
+                    Expect of rootHolder.parent toBe null
                     
                     nodes.add(rootHolder)
                     var currentIndex = 0u
                     while (true) {
-                        currentIndex shouldBeLessThan heap.size
+                        Expect of currentIndex toBeLessThan heap.size
                         val currentHolder = nodes[currentIndex]
-                        currentHolder.isDisposed.shouldBeFalse()
-                        currentHolder.heap shouldBeSameInstanceAs heap
-                        currentHolder.index shouldBe currentIndex
+                        Expect of currentHolder.isDisposed toBe false
+                        Expect of currentHolder.heap toBeTheSameInstanceAs heap
+                        Expect of currentHolder.index toBe currentIndex
                         if (currentIndex > 0u) {
-                            currentHolder.previous shouldBeSameInstanceAs nodes[currentIndex - 1u]
-                            nodes[currentIndex - 1u].next shouldBeSameInstanceAs currentHolder
+                            Expect of currentHolder.previous toBeTheSameInstanceAs nodes[currentIndex - 1u]
+                            Expect of nodes[currentIndex - 1u].next toBeTheSameInstanceAs currentHolder
                         } else {
-                            currentHolder.previous.shouldBeNull()
+                            Expect of currentHolder.previous toBe null
                         }
                         val node = currentHolder.node
-                        node.holder shouldBeSameInstanceAs currentHolder
+                        Expect of node.holder toBeTheSameInstanceAs currentHolder
                         
                         val firstChildHolder = currentHolder.firstChild
                         val secondChildHolder = currentHolder.secondChild
@@ -78,24 +75,24 @@ object KoneBinaryGCMinimumHeapDescription : MinimumHeapImplementationDescription
                         
                         when {
                             firstChildHolder == null -> {
-                                secondChildHolder.shouldBeNull()
+                                Expect of secondChildHolder toBe null
                                 break
                             }
                             secondChildHolder == null -> {
-                                nodes.size + 1u shouldBeLessThanOrEqualTo heap.size
+                                Expect of nodes.size + 1u toBeLessThanOrEqualTo heap.size
                                 nodes.add(firstChildHolder)
-                                firstChildHolder.parent shouldBeSameInstanceAs currentHolder
+                                Expect of firstChildHolder.parent toBeTheSameInstanceAs currentHolder
                                 heap.priorityOrder {
                                     if (firstChildHolder.node.priority lt node.priority) fail("The heap is invalid")
                                 }
                                 break
                             }
                             else -> {
-                                nodes.size + 2u shouldBeLessThanOrEqualTo heap.size
+                                Expect of nodes.size + 2u toBeLessThanOrEqualTo heap.size
                                 nodes.add(firstChildHolder)
                                 nodes.add(secondChildHolder)
-                                firstChildHolder.parent shouldBeSameInstanceAs currentHolder
-                                secondChildHolder.parent shouldBeSameInstanceAs currentHolder
+                                Expect of firstChildHolder.parent toBeTheSameInstanceAs currentHolder
+                                Expect of secondChildHolder.parent toBeTheSameInstanceAs currentHolder
                                 heap.priorityOrder {
                                     if (firstChildHolder.node.priority lt node.priority) fail("The heap is invalid")
                                     if (secondChildHolder.node.priority lt node.priority) fail("The heap is invalid")
@@ -103,23 +100,23 @@ object KoneBinaryGCMinimumHeapDescription : MinimumHeapImplementationDescription
                             }
                         }
                     }
-                    nodes.size shouldBe heap.size
+                    Expect of nodes.size toBe heap.size
                     while (currentIndex < nodes.size) {
                         val currentHolder = nodes[currentIndex]
-                        currentHolder.isDisposed.shouldBeFalse()
-                        currentHolder.heap shouldBeSameInstanceAs heap
-                        currentHolder.index shouldBe currentIndex
+                        Expect of currentHolder.isDisposed toBe false
+                        Expect of currentHolder.heap toBeTheSameInstanceAs heap
+                        Expect of currentHolder.index toBe currentIndex
                         if (currentIndex > 0u) {
-                            currentHolder.previous shouldBeSameInstanceAs nodes[currentIndex - 1u]
-                            nodes[currentIndex - 1u].next shouldBeSameInstanceAs currentHolder
+                            Expect of currentHolder.previous toBeTheSameInstanceAs nodes[currentIndex - 1u]
+                            Expect of nodes[currentIndex - 1u].next toBeTheSameInstanceAs currentHolder
                         } else {
-                            currentHolder.previous.shouldBeNull()
+                            Expect of currentHolder.previous toBe null
                         }
                         val node = currentHolder.node
-                        node.holder shouldBeSameInstanceAs currentHolder
+                        Expect of node.holder toBeTheSameInstanceAs currentHolder
                         
-                        currentHolder.firstChild.shouldBeNull()
-                        currentHolder.secondChild.shouldBeNull()
+                        Expect of currentHolder.firstChild toBe null
+                        Expect of currentHolder.secondChild toBe null
                         
                         currentIndex++
                     }

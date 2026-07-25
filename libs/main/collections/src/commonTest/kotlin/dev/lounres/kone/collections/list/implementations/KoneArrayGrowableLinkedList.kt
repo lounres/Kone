@@ -5,7 +5,8 @@
 
 package dev.lounres.kone.collections.list.implementations
 
-import dev.lounres.kone.algebraic.primaryFor
+import dev.lounres.kone.assertions.AssertionScope
+import dev.lounres.kone.assertions.fail
 import dev.lounres.kone.collections.implementations.POWERS_OF_2
 import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.iterables.contains
@@ -16,15 +17,16 @@ import dev.lounres.kone.collections.list.contexts.KoneListProducer
 import dev.lounres.kone.collections.utils.any
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.defaultFor
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
-import kotlin.test.fail
 
 
 object KoneArrayGrowableLinkedListDescription : ListImplementationDescription {
     override val name get() = "KoneArrayGrowableLinkedList"
     
     internal object Validator {
+        context(assertionScope: AssertionScope)
         fun <Element: Any> validate(
             list: KoneArrayGrowableLinkedList<Element>,
         ) {
@@ -38,7 +40,7 @@ object KoneArrayGrowableLinkedListDescription : ListImplementationDescription {
             val previousNodeIndex = list.previousNodeIndex
             val data = list.data
             
-            if ((Equality.primaryFor(UInt)) { sizeUpperBound !in POWERS_OF_2 }) fail("The list is invalid")
+            if ((Equality.defaultFor<UInt>()) { sizeUpperBound !in POWERS_OF_2 }) fail("The list is invalid")
             if (size > sizeUpperBound) fail("The list is invalid")
             if (data.size != sizeUpperBound || nextNodeIndex.size != sizeUpperBound || previousNodeIndex.size != sizeUpperBound) fail("The list is invalid")
             if (nextNodeIndex.any { it !in 0u..<sizeUpperBound } || previousNodeIndex.any { it !in 0u..<sizeUpperBound }) fail("The list is invalid")
@@ -65,6 +67,7 @@ object KoneArrayGrowableLinkedListDescription : ListImplementationDescription {
             }
         }
         
+        context(assertionScope: AssertionScope)
         fun validateWithIterator(
             list: KoneArrayGrowableLinkedList<Any>,
             iterator: KoneArrayGrowableLinkedList.Iterator<Any>,
@@ -86,19 +89,30 @@ object KoneArrayGrowableLinkedListDescription : ListImplementationDescription {
     
     override val listProducer: KoneListProducer get() = KoneArrayGrowableLinkedListProducer
     override val listValidator: KoneListValidator = object : KoneListValidator {
+        context(assertionScope: AssertionScope)
         override fun validate(
             list: KoneList<Any>,
         ) {
-            if (list !is KoneArrayGrowableLinkedList<Any>) fail("The list is invalid")
+            if (list !is KoneArrayGrowableLinkedList<Any>) {
+                fail("The list is invalid")
+                return
+            }
             Validator.validate(list)
         }
         
+        context(assertionScope: AssertionScope)
         override fun validateWithIterator(
             list: KoneList<Any>,
             iterator: KoneIterator<Any>,
         ) {
-            if (list !is KoneArrayGrowableLinkedList<Any>) fail("The list is invalid")
-            if (iterator !is KoneArrayGrowableLinkedList.Iterator<Any>) fail("The iterator is invalid")
+            if (list !is KoneArrayGrowableLinkedList<Any>) {
+                fail("The list is invalid")
+                return
+            }
+            if (iterator !is KoneArrayGrowableLinkedList.Iterator<Any>) {
+                fail("The iterator is invalid")
+                return
+            }
             Validator.validateWithIterator(list, iterator)
         }
     }

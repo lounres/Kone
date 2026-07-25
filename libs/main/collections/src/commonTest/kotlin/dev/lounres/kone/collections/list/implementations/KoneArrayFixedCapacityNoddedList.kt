@@ -5,13 +5,14 @@
 
 package dev.lounres.kone.collections.list.implementations
 
+import dev.lounres.kone.assertions.AssertionScope
+import dev.lounres.kone.assertions.fail
 import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneListValidator
 import dev.lounres.kone.collections.list.ListImplementationDescription
 import dev.lounres.kone.collections.list.contexts.KoneListProducer
 import dev.lounres.kone.repeat
-import kotlin.test.fail
 
 
 object KoneArrayFixedCapacityNoddedListDescription : ListImplementationDescription {
@@ -19,10 +20,14 @@ object KoneArrayFixedCapacityNoddedListDescription : ListImplementationDescripti
     
     override val listProducer: KoneListProducer get() = KoneArrayFixedCapacityNoddedListProducer
     override val listValidator: KoneListValidator = object : KoneListValidator {
+        context(assertionScope: AssertionScope)
         override fun validate(
             list: KoneList<Any>,
         ) {
-            if (list !is KoneArrayFixedCapacityNoddedList<Any>) fail("The list is invalid")
+            if (list !is KoneArrayFixedCapacityNoddedList<Any>) {
+                fail("The list is invalid")
+                return
+            }
             if (list.isDisposed) fail("The list is invalid")
             
             val size = list.size
@@ -33,7 +38,10 @@ object KoneArrayFixedCapacityNoddedListDescription : ListImplementationDescripti
             repeat(data.size) { index ->
                 if (index < size) {
                     val node = data[index]
-                    if (node == null) fail("The list is invalid")
+                    if (node == null) {
+                        fail("The list is invalid")
+                        return@repeat
+                    }
                     if (node.list !== list) fail("The list is invalid")
                     if (node.index != index) fail("The list is invalid")
                 } else {
@@ -42,13 +50,17 @@ object KoneArrayFixedCapacityNoddedListDescription : ListImplementationDescripti
             }
         }
         
+        context(assertionScope: AssertionScope)
         override fun validateWithIterator(
             list: KoneList<Any>,
             iterator: KoneIterator<Any>,
         ) {
             validate(list)
             
-            if (iterator !is KoneArrayFixedCapacityNoddedList.Iterator<Any>) fail("The iterator is invalid")
+            if (iterator !is KoneArrayFixedCapacityNoddedList.Iterator<Any>) {
+                fail("The iterator is invalid")
+                return
+            }
             if (iterator.list !== list) fail("The iterator is invalid")
             
             if (iterator.currentIndex > list.size) fail("The iterator is invalid")

@@ -132,3 +132,51 @@ public inline fun <reified ThrowableType: Throwable> Expect.Companion.toThrow(cr
         fail("Exception of unexpected type was thrown.\nExpected: ${ThrowableType::class.simpleName}\nActual: ${throwable::class.simpleName}")
     }
 }
+
+context(assertionScope: AssertionScope)
+public infix fun Expect<Any?>.toBe(expected: Any?) {
+    val actual = exposeValue()
+    if (actual != expected) fail("Expected of $actual to be $expected")
+}
+
+context(assertionScope: AssertionScope)
+public infix fun Expect<Any?>.notToBe(expected: Any?) {
+    val actual = exposeValue()
+    if (actual == expected) fail("Expected of $actual not to be $expected")
+}
+
+context(assertionScope: AssertionScope)
+public infix fun Expect<Any?>.toBeTheSameInstanceAs(expected: Any?) {
+    val actual = exposeValue()
+    if (actual !== expected) fail("Expected of $actual to be the same instance as $expected")
+}
+
+context(assertionScope: AssertionScope)
+public infix fun Expect<Any?>.notToBeTheSameInstanceAs(expected: Any?) {
+    val actual = exposeValue()
+    if (actual === expected) fail("Expected of $actual not to be the same instance as $expected")
+}
+
+context(assertionScope: AssertionScope)
+public infix fun <Element : Comparable<Element>> Expect<Element>.toBeLessThan(expected: Element) {
+    val actual = exposeValue()
+    if (actual >= expected) fail("Expected of $actual to be less than $expected")
+}
+
+context(assertionScope: AssertionScope)
+public infix fun <Element : Comparable<Element>> Expect<Element>.toBeGreaterThan(expected: Element) {
+    val actual = exposeValue()
+    if (actual <= expected) fail("Expected of $actual to be greater than $expected")
+}
+
+context(assertionScope: AssertionScope)
+public infix fun <Element : Comparable<Element>> Expect<Element>.toBeLessThanOrEqualTo(expected: Element) {
+    val actual = exposeValue()
+    if (actual > expected) fail("Expected of $actual to be less than or equal to $expected")
+}
+
+context(assertionScope: AssertionScope)
+public infix fun <Element : Comparable<Element>> Expect<Element>.toBeGreaterThanOrEqualTo(expected: Element) {
+    val actual = exposeValue()
+    if (actual < expected) fail("Expected of $actual to be greater than or equal to $expected")
+}
