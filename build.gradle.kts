@@ -187,19 +187,6 @@ tasks.register("publishSiteToProduction") {
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven("https://repo.kotlin.link")
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")
-        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev")
-        maven("https://packages.jetbrains.team/maven/p/ij/intellij-dependencies/")
-        mavenLocal()
-    }
-}
-
 
 val ignoreManualBugFixes = (property("ignoreManualBugFixes") as String) == "true"
 

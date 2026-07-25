@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 rootProject.name = "buildSrc"
 
 val projectProperties = java.util.Properties()
@@ -12,9 +14,12 @@ dependencyResolutionManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
+        maven("https://packages.jetbrains.team/maven/p/ij/intellij-dependencies/")
         maven("https://repo.kotlin.link")
         mavenLocal()
     }
+    
+    repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
     
     versionCatalogs {
         create("versions").from("dev.lounres:versions:$versions")
