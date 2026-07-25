@@ -10,6 +10,7 @@ import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.collections.interop.asKoneSequence
 import dev.lounres.kone.collections.iterables.KoneIterator
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
+import dev.lounres.kone.collections.list.lastIndex
 import dev.lounres.kone.collections.utils.plusAssign
 import dev.lounres.kone.collections.utils.sumOf
 import dev.lounres.kone.contexts.KoneContext
@@ -37,7 +38,7 @@ private class AutoregressiveModelGeneratorViaDefault<Number>(
         
         fun addNewValue() {
             KoneContext.localUnwrap(ring)
-            results += (0u ..< description.parameters.size).asKoneSequence().sumOf { results[results.size + it - description.parameters.size] * description.parameters[it] }
+            results += (0u ..< description.parameters.size).asKoneSequence().sumOf { results[results.size + it - description.parameters.size] * description.parameters[description.parameters.lastIndex - it] }
         }
         
         override fun iterator(): KoneIterator<Number> = object : KoneIterator<Number> {
