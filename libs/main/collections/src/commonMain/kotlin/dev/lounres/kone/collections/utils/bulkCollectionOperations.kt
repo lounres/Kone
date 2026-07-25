@@ -154,6 +154,7 @@ private class KoneTakeIterator<Element>(
     override fun moveNext() {
         if (!hasNext()) noNextElementInIteratorException()
         source.moveNext()
+        nextIndex++
     }
 }
 
