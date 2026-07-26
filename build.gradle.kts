@@ -68,10 +68,6 @@ val koneGroup = project.extra["koneGroup"] as String
 val koneUrl = project.property("koneUrl") as String
 val koneBaseUrl = project.property("koneBaseUrl") as String
 
-allprojects {
-    version = koneVersion
-}
-
 val docusaurusGenerateInputData = tasks.register("docusaurusGenerateInputData") {
     group = "site"
     outputs.files("site/inputData.ts")
@@ -537,11 +533,11 @@ stal {
             val writePaths = tasks.register("writePaths") {
                 doFirst {
                     val parentProject = project.parent!!
-                    val pluginDependency = "$koneGroup:${parentProject.extra["artifactId"] as String}:${project.version as String}"
-                    val runtimeDependency = "$koneGroup:${parentProject.childProjects["runtime"]!!.extra["artifactId"] as String}:${project.version as String}"
+                    val pluginDependency = "$koneGroup:${parentProject.extra["artifactId"] as String}:$koneVersion"
+                    val runtimeDependency = "$koneGroup:${parentProject.childProjects["runtime"]!!.extra["artifactId"] as String}:$koneVersion"
                     constsSourceDirectory.also { it.mkdirs() }.resolve("Consts.kt").writeText(
                         """
-                            internal val dependencyVersion: String = "${project.version as String}"
+                            internal val dependencyVersion: String = "$koneVersion"
                             internal val plguinDependencyGroup: String = "$koneGroup"
                             internal val plguinDependencyArtifact: String = "${parentProject.extra["artifactId"] as String}"
                             internal val plguinDependency: String = "$pluginDependency"
@@ -917,7 +913,7 @@ stal {
                 
                 signAllPublications()
                 
-                coordinates(groupId = koneGroup, artifactId = project.artifact, version = project.version as String)
+                coordinates(groupId = koneGroup, artifactId = project.artifact, version = koneVersion)
 
                 pom {
                     name = "Kone library"
