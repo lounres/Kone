@@ -350,9 +350,6 @@ stal {
 //                iosSimulatorArm64()
 //                macosArm64()
             }
-            afterEvaluate {
-                yarn.lockFileDirectoryProperty = rootDir.resolve("gradle")
-            }
         }
         "kotlin android" {
             apply(versions.plugins.android.library)
@@ -585,7 +582,7 @@ stal {
                     sourceSets {
                         getByName("test") {
                             dependencies {
-                                implementation(versions.testBaloon.framework.core)
+                                implementation(versions.testBalloon.framework.core)
                             }
                         }
                     }
@@ -597,7 +594,7 @@ stal {
                     sourceSets {
                         commonTest {
                             dependencies {
-                                implementation(versions.testBaloon.framework.core)
+                                implementation(versions.testBalloon.framework.core)
                             }
                         }
 //                        named("androidHostTest") {

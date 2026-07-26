@@ -227,7 +227,7 @@ class SuppliableConstructorsDuplicatesGenerationExtension(session: FirSession) :
                                             coneTypeOrNull = session.builtinTypes.unitType.coneType
                                             packageFqName = deprecationLevelClassLikeSymbol.classId.packageFqName
                                             relativeClassFqName = deprecationLevelClassLikeSymbol.classId.relativeClassName
-                                            symbol = deprecationLevelClassLikeSymbol
+                                            qualifierSymbol = deprecationLevelClassLikeSymbol
                                             resolvedToCompanionObject = false
                                         }
                                         explicitReceiver = receiver

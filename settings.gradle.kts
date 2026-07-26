@@ -34,7 +34,8 @@ dependencyResolutionManagement {
         mavenLocal()
     }
     
-    repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
+    // FIXME: KT-68533
+//    repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
     
     versionCatalogs {
         create("versions").from("dev.lounres:versions:$versions")
