@@ -18,12 +18,37 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 
+/**
+ * A provider that can compute or supply a value of type [T].
+ * 
+ * Providers are used in [ProviderRegistry] to enable lazy computation of values.
+ * Implementations can cache results, compute values on demand, or use any other strategy
+ * for providing values.
+ * 
+ * @param T The type of value provided by this provider.
+ */
 public fun interface RegisteredValueProvider<out T> {
+    /**
+     * Gets the value provided by this provider.
+     * 
+     * @return The provided value of type [T].
+     */
     public fun get(): T
     
     public companion object;
 }
 
+/**
+ * Creates a cached provider that memorizes the result of the original provider.
+ * 
+ * The returned provider will compute the value from the original provider on the first call,
+ * and then cache and return the same value for all subsequent calls. This is thread-safe.
+ * 
+ * @receiver The [RegisteredValueProvider] companion object.
+ * @param T The type of value provided by the provider.
+ * @param provider The provider whose result should be cached.
+ * @return A new [RegisteredValueProvider] that caches the result.
+ */
 public fun <T> RegisteredValueProvider.Companion.cached(provider: RegisteredValueProvider<T>): RegisteredValueProvider<T> =
     object : SynchronizedObject(), RegisteredValueProvider<T> {
         private var result: Maybe<T> = None
@@ -37,18 +62,39 @@ public fun <T> RegisteredValueProvider.Companion.cached(provider: RegisteredValu
         }
     }
 
+/**
+ * Represents a registration entry in a provider registry, containing a key-provider pair.
+ * 
+ * @param key The [RegistryKey] associated with the provider.
+ * @param provider The [RegisteredValueProvider] that computes the value for the given [key].
+ * @param T The type of the value provided by the provider.
+ */
 public data class ProvidingRegistration<T>(
     val key: RegistryKey<T>,
     val provider: RegisteredValueProvider<T>,
 )
 
 /**
- * Represents a type-safe associative array.
- * It means that it stores association like `Key<T> -> T` for arbitrary types `T`.
+ * Represents a type-safe associative array that stores associations like `Key<T> -> Provider<T>`.
+ * 
+ * Provider registries extend [Registry] by allowing values to be computed lazily through providers.
+ * This enables deferred computation, caching, and other advanced value provision strategies.
  */
 public interface ProviderRegistry : Registry {
+    /**
+     * Gets the provider associated with the specified [registryKey].
+     * 
+     * @param registryKey The [RegistryKey] to get the provider for.
+     * @return The [RegisteredValueProvider] associated with the [registryKey].
+     * @throws IllegalArgumentException if the [registryKey] is not present in this registry.
+     */
     public fun <T> provide(registryKey: RegistryKey<out T>): RegisteredValueProvider<T>
     
+    /**
+     * Returns an iterable of all key-provider pairs in this registry.
+     * 
+     * @return An [Iterable] containing all [ProvidingRegistration] entries.
+     */
     public fun asProvidingRegistrationIterable(): Iterable<ProvidingRegistration<*>>
     
     public companion object;
@@ -67,15 +113,45 @@ public interface ProviderRegistry : Registry {
     }
 }
 
+/**
+ * Gets the provider associated with the specified [registryKey], or returns `null` if no association is present.
+ * 
+ * @receiver The [ProviderRegistry] in which to look up the [registryKey].
+ * @param T The type of value provided by the provider.
+ * @param registryKey The [RegistryKey] to get the provider for.
+ * @return The [RegisteredValueProvider] associated with the [registryKey], or `null` if the [registryKey] is not present.
+ */
 public fun <T> ProviderRegistry.provideOrNull(registryKey: RegistryKey<out T>): RegisteredValueProvider<T>? =
     if (registryKey in this) this.provide(registryKey) else null
 
+/**
+ * A mutable provider registry that allows adding, updating, and removing key-provider associations.
+ */
 public interface MutableProviderRegistry : ProviderRegistry, MutableRegistry {
+    /**
+     * Associates the specified [provider] with the specified [registryKey] in this registry.
+     * 
+     * @param registryKey The [RegistryKey] to associate with the [provider].
+     * @param provider The [RegisteredValueProvider] to associate with the [registryKey].
+     */
     public operator fun <T> set(registryKey: RegistryKey<in T>, provider: RegisteredValueProvider<T>)
     
+    /**
+     * Copies all key-provider associations from the [from] provider registry into this registry.
+     * 
+     * @param from The [ProviderRegistry] to copy associations from.
+     */
     public fun setFrom(from: ProviderRegistry)
 }
 
+/**
+ * DSL function to associate this registry key with a provider in the context registry.
+ * 
+ * @receiver The [RegistryKey] to associate with the [provider].
+ * @param registry The [MutableProviderRegistry] context in which this function is called.
+ * @param T The type of value that this registry key accepts.
+ * @param provider The [RegisteredValueProvider] to associate with this key.
+ */
 context(registry: MutableProviderRegistry)
 public infix fun <T> RegistryKey<in T>.correspondsTo(provider: RegisteredValueProvider<T>) {
     registry[this] = provider
@@ -112,6 +188,11 @@ private class MutableProviderRegistryImpl(private val content: MutableMap<Regist
     override fun toString(): String = content.keys.joinToString(separator = ", ", prefix = "{", postfix = "}")
 }
 
+/**
+ * Creates a new empty mutable provider registry.
+ * 
+ * @return A new instance of [MutableProviderRegistry].
+ */
 public fun MutableProviderRegistry(): MutableProviderRegistry = MutableProviderRegistryImpl(mutableMapOf())
 
 @Suppress("UNCHECKED_CAST")
@@ -176,6 +257,12 @@ internal class ProviderRegistryBuilder : MutableProviderRegistry {
 
 /**
  * Builder function for [ProviderRegistry].
+ * 
+ * Creates a new [ProviderRegistry] using the builder pattern. The [block] lambda receives a [MutableProviderRegistry]
+ * that can be configured with the desired key-provider associations.
+ * 
+ * @param block A lambda that configures the registry by adding key-provider associations.
+ * @return A new [ProviderRegistry] configured according to the [block].
  */
 public inline fun ProviderRegistry.Companion.build(block: MutableProviderRegistry.() -> Unit): ProviderRegistry {
     contract {
