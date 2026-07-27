@@ -24,10 +24,29 @@ import kotlinx.serialization.encoding.decodeStructure
 import kotlinx.serialization.encoding.encodeStructure
 
 
+/**
+ * A [RegistryKey] that has an associated [KSerializer] for serialization.
+ * 
+ * Keys implementing this interface can be used with the registry serializers to enable
+ * automatic serialization and deserialization of registry values.
+ * 
+ * @param T The type of value associated with this key.
+ */
 public interface RegistrySerializableKey<T> : RegistryKey<T> {
+    /**
+     * The [KSerializer] used to serialize and deserialize values associated with this key.
+     */
     public val serializer: KSerializer<T>
 }
 
+/**
+ * A [KSerializer] for [Registry] that can serialize and deserialize registry contents.
+ * 
+ * This serializer works with [RegistrySerializableKey] instances to properly serialize
+ * registry values using their associated serializers.
+ * 
+ * @param serializableKeys A map from string names to [RegistrySerializableKey] instances that this serializer should handle.
+ */
 @OptIn(InternalSerializationApi::class)
 public class RegistrySerializer(
     private val serializableKeys: Map<String, RegistrySerializableKey<*>>,
@@ -43,6 +62,12 @@ public class RegistrySerializer(
         )
     }
     
+    /**
+     * Serializes a [Registry] to the specified [encoder].
+     * 
+     * @param encoder The [Encoder] to write the serialized data to.
+     * @param value The [Registry] to serialize.
+     */
     override fun serialize(encoder: Encoder, value: Registry) {
         encoder.encodeStructure(descriptor) {
             var registrationIndex = 0
@@ -55,6 +80,13 @@ public class RegistrySerializer(
         }
     }
     
+    /**
+     * Deserializes a [Registry] from the specified [decoder].
+     * 
+     * @param decoder The [Decoder] to read the serialized data from.
+     * @return The deserialized [Registry].
+     * @throws IllegalArgumentException if an unregistered key is encountered during deserialization.
+     */
     override fun deserialize(decoder: Decoder): Registry =
         decoder.decodeStructure(descriptor) {
             val result = MutableRegistry()
@@ -85,6 +117,14 @@ public class RegistrySerializer(
         }
 }
 
+/**
+ * A [KSerializer] for [ProviderRegistry] that can serialize and deserialize provider registry contents.
+ * 
+ * This serializer works with [RegistrySerializableKey] instances to properly serialize
+ * provider registry values using their associated serializers.
+ * 
+ * @param serializableKeys A map from string names to [RegistrySerializableKey] instances that this serializer should handle.
+ */
 @OptIn(InternalSerializationApi::class)
 public class ProviderRegistrySerializer(
     private val serializableKeys: Map<String, RegistrySerializableKey<*>>,
@@ -100,6 +140,12 @@ public class ProviderRegistrySerializer(
         )
     }
     
+    /**
+     * Serializes a [ProviderRegistry] to the specified [encoder].
+     * 
+     * @param encoder The [Encoder] to write the serialized data to.
+     * @param value The [ProviderRegistry] to serialize.
+     */
     override fun serialize(encoder: Encoder, value: ProviderRegistry) {
         encoder.encodeStructure(descriptor) {
             var registrationIndex = 0
@@ -112,6 +158,13 @@ public class ProviderRegistrySerializer(
         }
     }
     
+    /**
+     * Deserializes a [ProviderRegistry] from the specified [decoder].
+     * 
+     * @param decoder The [Decoder] to read the serialized data from.
+     * @return The deserialized [ProviderRegistry].
+     * @throws IllegalArgumentException if an unregistered key is encountered during deserialization.
+     */
     override fun deserialize(decoder: Decoder): ProviderRegistry =
         decoder.decodeStructure(descriptor) {
             val result = MutableProviderRegistry()
