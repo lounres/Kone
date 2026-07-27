@@ -1,0 +1,8 @@
+product: jvm/amper-plugin
+
+settings:
+  kotlin:
+    serialization: enabled
+
+dependencies:
+  - $kotlin.serialization.json

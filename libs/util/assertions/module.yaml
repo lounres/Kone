@@ -1,0 +1,12 @@
+product:
+  type: kmp/lib
+  platforms: [jvm, android, js, wasmJs]
+
+apply:
+  - ../../../templates/kotlin-multiplatform-common-settings.module-template.yaml
+
+settings:
+  android:
+    compileSdk: 37
+    targetSdk: 37
+    minSdk: 24

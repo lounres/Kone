@@ -1,0 +1,32 @@
+settings:
+  kotlin:
+    version: "2.4.20-Beta2"
+    freeCompilerArgs:
+      - "-Xcontext-parameters"
+      - "-Xexplicit-backing-fields"
+      - "-Xexpect-actual-classes"
+      - "-Xconsistent-data-class-copy-visibility"
+      - "-Xcontext-sensitive-resolution"
+      - "-Xreturn-value-checker=full"
+      - "-Xlocal-type-aliases"
+      - "-Xname-based-destructuring=complete"
+      - "-Xcollection-literals"
+      - "-Xallow-returns-result-of"
+    optIns:
+      - "kotlin.experimental.ExperimentalTypeInference"
+      - "kotlin.contracts.ExperimentalContracts"
+      - "kotlin.ExperimentalStdlibApi"
+      - "kotlin.ExperimentalSubclassOptIn"
+      - "kotlin.ExperimentalUnsignedTypes"
+      - "kotlin.uuid.ExperimentalUuidApi"
+      - "kotlin.concurrent.atomics.ExperimentalAtomicApi"
+      - "kotlinx.serialization.ExperimentalSerializationApi"
+      - "dev.lounres.kone.annotations.UnstableKoneAPI"
+      - "dev.lounres.kone.annotations.ExperimentalKoneAPI"
+    progressiveMode: true
+    verbose: true
+  jvm:
+    jdk:
+      version: 24
+      distributions: [graalVM]
+    release: 8

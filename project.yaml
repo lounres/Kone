@@ -1,0 +1,17 @@
+modules:
+  - ./buildLogic
+#  - ./libs/main/*
+#  - ./libs/main/*/algorithms
+#  - ./libs/main/*/assertions
+#  - ./libs/main/*/benchmarks
+#  - ./libs/main/*/examples
+#  - ./libs/misc/*
+  - ./libs/util/*
+#  - ./plugins/*
+#  - ./plugins/*/runtime
+#  - ./plugins/*/testGeneration
+#  - ./plugins/*/gradleWrapper
+#  - ./docs
+
+plugins:
+  - ./buildLogic
