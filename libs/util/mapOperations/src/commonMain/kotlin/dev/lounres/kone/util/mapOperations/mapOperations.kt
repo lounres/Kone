@@ -10,11 +10,17 @@ import kotlin.contracts.contract
 
 
 /**
- * Computes the given lambda [compute] on value corresponding to the provided [key] or `null` if the key is not present.
+ * Computes [compute] on the value associated with [key], or on `null` if the key is absent.
  *
- * @param key key which corresponding value will be used if it's present.
- * @param compute lambda that is computed on the received value.
- * @return result of the computation of the lambda.
+ * The [compute] lambda is invoked exactly once.
+ *
+ * @param K The key type of this map.
+ * @param V The value type of this map.
+ * @param R The return type of [compute].
+ * @receiver This map to read from.
+ * @param key The key whose associated value is passed to [compute], or `null` if the key is absent.
+ * @param compute Called with the value associated with [key], or with `null` if the key is absent.
+ * @return The result returned by [compute].
  */
 public inline fun <K, V, R> Map<in K, V>.computeOn(key: K, compute: (V?) -> R): R {
     contract {
@@ -24,13 +30,18 @@ public inline fun <K, V, R> Map<in K, V>.computeOn(key: K, compute: (V?) -> R): 
 }
 
 /**
- * Computes the given lambda [compute] on value corresponding to the provided [key] or computes the given lambda
- * [defaultResult] if the key is not present.
+ * Computes [compute] on the value associated with [key], or [defaultResult] if the key is absent.
  *
- * @param key key which corresponding value will be used if it's present.
- * @param compute lambda that is computed on the value corresponding to the [key].
- * @param defaultResult lambda that is computed if the [key] is not present.
- * @return result of [compute] lambda if the [key] is present or result of [defaultResult] otherwise.
+ * Exactly one of [compute] or [defaultResult] is invoked.
+ *
+ * @param K The key type of this map.
+ * @param V The value type of this map.
+ * @param R The common return type of [compute] and [defaultResult].
+ * @receiver This map to read from.
+ * @param key The key whose associated value is passed to [compute] when present.
+ * @param defaultResult Called when [key] is absent; its result is returned instead of invoking [compute].
+ * @param compute Called with the non-null value associated with [key] when the key is present.
+ * @return The result of [compute] if [key] is present, or the result of [defaultResult] otherwise.
  */
 public inline fun <K, V, R> Map<K, V>.computeOnOrElse(key: K, defaultResult: () -> R, compute: (value: V) -> R): R {
     contract {
@@ -42,12 +53,16 @@ public inline fun <K, V, R> Map<K, V>.computeOnOrElse(key: K, defaultResult: () 
 }
 
 /**
- * Applies the [transformation][transform] to the value corresponding to the given [key] or null instead if it's not
- * present.
+ * Applies [transform] to the value associated with [key] (or to `null` if absent) and stores the result.
  *
- * @param key key to check.
- * @param transform transformation to apply.
- * @return result of the transformation
+ * The [transform] lambda is invoked exactly once. The map is updated in place.
+ *
+ * @param K The key type of this map.
+ * @param V The value type of this map.
+ * @receiver This mutable map to update.
+ * @param key The key whose associated value is transformed and written back.
+ * @param transform Called with the current value associated with [key], or with `null` if the key is absent; returns the new value to store.
+ * @return The value stored under [key] after the transformation.
  */
 @IgnorableReturnValue
 public inline fun <K, V> MutableMap<in K, V>.applyToKey(key: K, transform: (currentValue: V?) -> V): V {
@@ -58,14 +73,19 @@ public inline fun <K, V> MutableMap<in K, V>.applyToKey(key: K, transform: (curr
 }
 
 /**
- * Depending on presence of value corresponding to the given [key] either puts new value calculated by [valueOnPut] or
- * changes the present value with [transformOnChange].
+ * Inserts or updates the value associated with [key] in this mutable map.
  *
- * @param key key to check.
- * @param valueOnPut lazily calculated value to put in case of absence of the [key].
- * @param transformOnChange transform to apply to current value corresponding to the [key] in case of its presence. Uses
- * current value as a parameter.
- * @return result value corresponding to the [key].
+ * If [key] is absent, [valueOnPut] is invoked and its result is stored. If [key] is present, [transformOnChange]
+ * is invoked on the current value and the result is stored. Exactly one of [valueOnPut] or [transformOnChange]
+ * is invoked.
+ *
+ * @param K The key type of this map.
+ * @param V The value type of this map.
+ * @receiver This mutable map to update.
+ * @param key The key to insert or update.
+ * @param valueOnPut Called when [key] is absent; its result is stored as the new value.
+ * @param transformOnChange Called with the current value when [key] is present; its result replaces the stored value.
+ * @return The value stored under [key] after the operation.
  */
 @IgnorableReturnValue
 public inline fun <K, V> MutableMap<K, V>.putOrChange(key: K, valueOnPut: () -> V, transformOnChange: (currentValue: V) -> V): V {
@@ -77,12 +97,16 @@ public inline fun <K, V> MutableMap<K, V>.putOrChange(key: K, valueOnPut: () -> 
 }
 
 /**
- * Creates copy of [the map][this] and applies the [transformation][transform] to the value corresponding to the given
- * [key] in the copy or null instead if it's not present.
+ * Returns a copy of this map with [transform] applied to the value associated with [key].
  *
- * @param key key to check.
- * @param transform transformation to apply.
- * @return the copy of [the map][this].
+ * If [key] is absent in the copy, [transform] receives `null`. The original map is not modified.
+ *
+ * @param K The key type of this map.
+ * @param V The value type of this map.
+ * @receiver This map to copy.
+ * @param key The key whose associated value is transformed in the copy.
+ * @param transform Called with the current value associated with [key] in the copy, or with `null` if the key is absent.
+ * @return A new map equal to this map except for the transformed entry at [key].
  */
 public inline fun <K, V> Map<in K, V>.withAppliedToKey(key: K, transform: (currentValue: V?) -> V): Map<K, V> {
     contract {
@@ -95,14 +119,18 @@ public inline fun <K, V> Map<in K, V>.withAppliedToKey(key: K, transform: (curre
 }
 
 /**
- * Creates copy of [the map][this] and depending on presence of value corresponding to the given [key] either puts new
- * value calculated by [valueOnPut] or changes the present value with [transformOnChange].
+ * Returns a copy of this map with [putOrChange] applied to [key].
  *
- * @param key key to check.
- * @param valueOnPut lazily calculated value to put in case of absence of the [key].
- * @param transformOnChange transform to apply to current value corresponding to the [key] in case of its presence. Uses
- * current value as a parameter.
- * @return the copy of [the map][this].
+ * If [key] is absent in the copy, [valueOnPut] supplies the new value. If [key] is present, [transformOnChange]
+ * updates the existing value. The original map is not modified.
+ *
+ * @param K The key type of this map.
+ * @param V The value type of this map.
+ * @receiver This map to copy.
+ * @param key The key to insert or update in the copy.
+ * @param valueOnPut Called when [key] is absent in the copy; its result is stored.
+ * @param transformOnChange Called with the current value when [key] is present in the copy; its result replaces the stored value.
+ * @return A new map equal to this map except for the entry inserted or updated at [key].
  */
 public inline fun <K, V> Map<out K, V>.withPutOrChanged(key: K, valueOnPut: () -> V, transformOnChange: (currentValue: V) -> V): Map<K, V> {
     contract {
@@ -116,11 +144,14 @@ public inline fun <K, V> Map<out K, V>.withPutOrChanged(key: K, valueOnPut: () -
 }
 
 /**
- * Copies entries of [this map][this] to the [destination] map overriding present ones if needed.
+ * Copies all entries from this map into [destination], overwriting existing entries with the same keys.
  *
- * @receiver map to be copied.
- * @param destination map to receive copies.
- * @return the [destination].
+ * @param K The key type of this map.
+ * @param V The value type of this map.
+ * @param D The destination map type.
+ * @receiver This map whose entries are copied.
+ * @param destination The mutable map that receives copies of all entries from this map.
+ * @return [destination] after all entries have been copied.
  */
 @IgnorableReturnValue
 public fun <K, V, D: MutableMap<in K, in V>> Map<out K, V>.copyTo(destination: D): D {
@@ -131,14 +162,20 @@ public fun <K, V, D: MutableMap<in K, in V>> Map<out K, V>.copyTo(destination: D
 }
 
 /**
- * Copies entries of [this map][this] to the [destination] map merging present entries with new ones using [resolve]
- * lambda.
+ * Copies all entries from this map into [destination], merging with existing entries using [resolve].
  *
- * @receiver map to be copied.
- * @param destination map to receive copies.
- * @param resolve lambda function that resolves overriding. It takes a key, current value corresponding to the key, and
- * a new one and returns value to associate to the key.
- * @return the [destination].
+ * For each entry in this map, if [destination] already contains the key, [resolve] chooses the stored value from
+ * the current destination value and the new value from this map; otherwise the new value is inserted.
+ *
+ * @param K The key type of this map.
+ * @param V The value type of entries in this map.
+ * @param W The common value type stored in [destination].
+ * @param D The destination map type.
+ * @receiver This map whose entries are copied.
+ * @param destination The mutable map that receives merged entries.
+ * @param resolve Called when a key from this map already exists in [destination]; receives the key, the current
+ * destination value, and the new value from this map, and returns the value to store.
+ * @return [destination] after all entries have been merged.
  */
 @IgnorableReturnValue
 public inline fun <K, V: W, W, D: MutableMap<in K, W>> Map<out K, V>.copyToBy(destination: D, resolve: (key: K, currentValue: W, newValue: V) -> W): D {
@@ -149,17 +186,19 @@ public inline fun <K, V: W, W, D: MutableMap<in K, W>> Map<out K, V>.copyToBy(de
 }
 
 /**
- * Transforms values of entries of [this map][this] with [the given transformation][transform] and copies resulting
- * entries to the [destination] map overriding present ones if needed. Is equivalent to
- * ```kotlin
- * this.mapValues(transform).copyTo(destination)
- * ```
+ * Transforms each entry of this map with [transform] and copies the results into [destination].
  *
- * @receiver map to be transformed and copied.
- * @param destination map to receive copies.
- * @param transform generates value of transformed entry using initial entry as an argument. Key of transformed entry is
- * the same as initial entry.
- * @return the [destination].
+ * Keys are preserved; values are replaced by [transform]. Existing entries in [destination] with the same keys are
+ * overwritten. Equivalent to `this.mapValues(transform).copyTo(destination)`.
+ *
+ * @param K The key type of this map.
+ * @param V The value type of entries in this map.
+ * @param W The transformed value type stored in [destination].
+ * @param D The destination map type.
+ * @receiver This map whose entries are transformed and copied.
+ * @param destination The mutable map that receives transformed entries.
+ * @param transform Called with each entry of this map; its result becomes the value stored under the entry's key.
+ * @return [destination] after all transformed entries have been copied.
  */
 @IgnorableReturnValue
 public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapTo(destination: D, transform: (Map.Entry<K, V>) -> W): D {
@@ -170,19 +209,21 @@ public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapTo(destina
 }
 
 /**
- * Transforms values of entries of [this map][this] with [the given transformation][transform] and copies resulting
- * entries to the [destination] map merging present entries with new ones using [resolve] lambda. Is equivalent to
- * ```kotlin
- * this.mapValues(transform).copyToBy(destination, resolve)
- * ```
+ * Transforms each entry of this map with [transform] and merges the results into [destination] using [resolve].
  *
- * @receiver map to be transformed and copied.
- * @param destination map to receive copies.
- * @param transform generates value of transformed entry using initial entry as an argument. Key of transformed entry is
- * the same as initial entry.
- * @param resolve lambda function that resolves overriding. It takes a key, current value corresponding to the key, and
- * a new one and returns value to associate to the key.
- * @return the [destination].
+ * Keys are preserved; values are replaced by [transform]. When a transformed key already exists in [destination],
+ * [resolve] chooses the stored value. Equivalent to `this.mapValues(transform).copyToBy(destination, resolve)`.
+ *
+ * @param K The key type of this map.
+ * @param V The value type of entries in this map.
+ * @param W The transformed value type stored in [destination].
+ * @param D The destination map type.
+ * @receiver This map whose entries are transformed and merged.
+ * @param destination The mutable map that receives transformed entries.
+ * @param transform Called with each entry of this map; its result is the new value candidate for the entry's key.
+ * @param resolve Called when a transformed key already exists in [destination]; receives the key, the current
+ * destination value, and the original entry value from this map, and returns the value to store.
+ * @return [destination] after all transformed entries have been merged.
  */
 @IgnorableReturnValue
 public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(destination: D, transform: (Map.Entry<K, V>) -> W, resolve: (key: K, currentValue: W, newValue: V) -> W): D {
@@ -194,17 +235,18 @@ public inline fun <K, V, W, D: MutableMap<K, W>> Map<out K, V>.copyMapToBy(desti
 }
 
 /**
- * Merges [the first map][map1] and [the second map][map2] prioritising the second one, puts result to the [destination]
- * and returns the [destination].
+ * Merges [map1] and [map2] into [destination], with [map2] taking precedence on key conflicts.
  *
- * Precisely, corresponding keys and values of the received maps are put into the destination overriding existing values
- * in the [destination] if needed. For every key appearing in both maps corresponding value from the second map is
- * chosen.
+ * All entries from [map1] are copied first, then all entries from [map2]; entries in [destination] with matching
+ * keys are overwritten.
  *
- * @param map1 the first (less prioritised) map to merge.
- * @param map2 the second (more prioritised) map to merge.
- * @param destination the map where result of the merge is put.
- * @return the destination.
+ * @param K The key type of the merged maps.
+ * @param V The value type of the merged maps.
+ * @param D The destination map type.
+ * @param map1 The first map to merge; its entries are overwritten by [map2] on key conflicts.
+ * @param map2 The second map to merge; its entries take precedence on key conflicts.
+ * @param destination The mutable map that receives the merged entries.
+ * @return [destination] after the merge completes.
  */
 @IgnorableReturnValue
 public fun <K, V, D: MutableMap<in K, in V>> mergeTo(map1: Map<out K, V>, map2: Map<out K, V>, destination: D): D {
@@ -218,18 +260,22 @@ public fun <K, V, D: MutableMap<in K, in V>> mergeTo(map1: Map<out K, V>, map2: 
 }
 
 /**
- * Merges [the first map][map1] and [the second map][map2] resolving conflicts with [resolve] lambda, puts result to the
- * [destination] and returns the [destination].
+ * Merges [map1] and [map2] into [destination], resolving key conflicts with [resolve].
  *
- * Precisely, corresponding keys and values of the received maps are put into the destination overriding existing values
- * in the [destination] if needed. For every key appearing in both maps corresponding value is a result of the [resolve]
- * lambda calculated on the key and its corresponding values from the merged maps.
+ * All entries from [map1] are copied first, then entries from [map2] are merged with [putOrChange]. For keys present
+ * in both maps, [resolve] chooses the stored value.
  *
- * @param map1 the first map to merge.
- * @param map2 the second map to merge.
- * @param resolve lambda function that resolves merge conflicts.
- * @param destination the map where the result of the merge is put.
- * @return the destination.
+ * @param K The key type of the merged maps.
+ * @param V1 The value type of entries in [map1].
+ * @param V2 The value type of entries in [map2].
+ * @param W The common value type stored in [destination].
+ * @param D The destination map type.
+ * @param map1 The first map to merge.
+ * @param map2 The second map to merge.
+ * @param destination The mutable map that receives the merged entries.
+ * @param resolve Called when a key from [map2] already exists in [destination] after [map1] has been copied; receives
+ * the key, the value from [map1], and the value from [map2], and returns the value to store.
+ * @return [destination] after the merge completes.
  */
 @IgnorableReturnValue
 public inline fun <K, V1: W, V2: W, W, D: MutableMap<K, W>> mergeToBy(map1: Map<out K, V1>, map2: Map<out K, V2>, destination: D, resolve: (key: K, value1: V1, value2: V2) -> W): D {
@@ -247,14 +293,18 @@ public inline fun <K, V1: W, V2: W, W, D: MutableMap<K, W>> mergeToBy(map1: Map<
 }
 
 /**
- * Merges [the first map][map1] and [the second map][map2] prioritising the second one.
+ * Merges [map1] and [map2] into a new map, with [map2] taking precedence on key conflicts.
  *
- * Precisely, corresponding keys and values of the received maps are put into a new empty map which is returned after
- * afterwards. For every key appearing in both maps corresponding value from the second map is chosen.
+ * Returns a new [LinkedHashMap] containing all entries from [map1] followed by all entries from [map2]; for keys
+ * present in both maps, the value from [map2] is kept.
  *
- * @param map1 the first (less prioritised) map to merge.
- * @param map2 the second (more prioritised) map to merge.
- * @return the result of the merge.
+ * @param K The key type of the merged maps.
+ * @param V1 The value type of entries in [map1].
+ * @param V2 The value type of entries in [map2].
+ * @param W The common value type of the result map.
+ * @param map1 The first map to merge; its entries are overwritten by [map2] on key conflicts.
+ * @param map2 The second map to merge; its entries take precedence on key conflicts.
+ * @return A new map containing the merged entries.
  */
 public fun <K, V1: W, V2: W, W> merge(map1: Map<out K, V1>, map2: Map<out K, V2>): Map<K, W> {
     val result = LinkedHashMap<K, W>(map1.size + map2.size)
@@ -262,16 +312,19 @@ public fun <K, V1: W, V2: W, W> merge(map1: Map<out K, V1>, map2: Map<out K, V2>
 }
 
 /**
- * Merges [the first map][map1] and [the second map][map2] resolving conflicts with [resolve] lambda.
+ * Merges [map1] and [map2] into a new map, resolving key conflicts with [resolve].
  *
- * Precisely, corresponding keys and values of the received maps are put into a new empty map which is returned after
- * afterwards. For every key appearing in both maps corresponding value is a result of the [resolve] lambda calculated
- * on the key and its corresponding values from the merged maps.
+ * Returns a new [LinkedHashMap]. For keys present in both maps, [resolve] chooses the stored value.
  *
- * @param map1 the first map to merge.
- * @param map2 the second map to merge.
- * @param resolve lambda function that resolves merge conflicts.
- * @return the result of the merge.
+ * @param K The key type of the merged maps.
+ * @param V1 The value type of entries in [map1].
+ * @param V2 The value type of entries in [map2].
+ * @param W The common value type of the result map.
+ * @param map1 The first map to merge.
+ * @param map2 The second map to merge.
+ * @param resolve Called for each key present in both maps; receives the key and the corresponding values from [map1]
+ * and [map2], and returns the value to store.
+ * @return A new map containing the merged entries.
  */
 public inline fun <K, V1: W, V2: W, W> mergeBy(map1: Map<out K, V1>, map2: Map<out K, V2>, resolve: (key: K, value1: V1, value2: V2) -> W): Map<K, W> {
     val result = LinkedHashMap<K, W>(map1.size + map2.size)
@@ -279,16 +332,20 @@ public inline fun <K, V1: W, V2: W, W> mergeBy(map1: Map<out K, V1>, map2: Map<o
 }
 
 /**
- * Populates the [destination] map with key-value pairs provided by [transform] function applied to each element of the
- * given collection resolving conflicts with [resolve] function and returns the [destination].
+ * Populates [destination] with key–value pairs produced from each element of this iterable, resolving conflicts with [resolve].
  *
- * All pairs are added and resolved in order of iteration.
+ * Pairs are added in iteration order. When a key already exists in [destination], [resolve] chooses the stored value.
  *
- * @param destination the destination of the generated key-value pairs.
- * @param transform function which transforms each element to key-value.
- * @param resolve lambda function that resolves merge conflicts which receives some key, its current, and new
- * corresponding values.
- * @return the [destination].
+ * @param T The element type of this iterable.
+ * @param K The key type of the destination map.
+ * @param V The value type of the destination map.
+ * @param D The destination map type.
+ * @receiver This iterable whose elements are associated into [destination].
+ * @param destination The mutable map that receives generated key–value pairs.
+ * @param transform Called with each element; returns the key–value pair to insert.
+ * @param resolve Called when a generated key already exists in [destination]; receives the key, the current value, and
+ * the new value, and returns the value to store.
+ * @return [destination] after all pairs have been added.
  */
 @IgnorableReturnValue
 public inline fun <T, K, V, D : MutableMap<K, V>> Iterable<T>.associateTo(destination: D, transform: (T) -> Pair<K, V>, resolve: (key: K, currentValue: V, newValue: V) -> V): D {
@@ -300,18 +357,22 @@ public inline fun <T, K, V, D : MutableMap<K, V>> Iterable<T>.associateTo(destin
 }
 
 /**
- * Populates the [destination] map with key-value pairs, where key is provided by [keySelector] function and value is
- * provided by [valueTransform] applied to each element of the given collection, resolving conflicts with [resolve]
- * function and returns the [destination].
+ * Populates [destination] with key–value pairs derived from each element of this iterable, resolving conflicts with [resolve].
  *
- * All pairs are added and resolved in order of iteration.
+ * For each element, [keySelector] produces the key and [valueTransform] produces the value. Pairs are added in
+ * iteration order; duplicate keys are resolved with [resolve].
  *
- * @param destination the destination of the generated key-value pairs.
- * @param keySelector lambda functions that generates keys for the key-value pairs.
- * @param valueTransform lambda functions that generates value for the key-value pairs.
- * @param resolve lambda function that resolves merge conflicts which receives some key, its current, and new
- * corresponding values.
- * @return the [destination].
+ * @param T The element type of this iterable.
+ * @param K The key type of the destination map.
+ * @param V The value type of the destination map.
+ * @param D The destination map type.
+ * @receiver This iterable whose elements are associated into [destination].
+ * @param destination The mutable map that receives generated key–value pairs.
+ * @param keySelector Called with each element; returns the key for the generated pair.
+ * @param valueTransform Called with each element; returns the value for the generated pair.
+ * @param resolve Called when a generated key already exists in [destination]; receives the key, the current value, and
+ * the new value, and returns the value to store.
+ * @return [destination] after all pairs have been added.
  */
 @IgnorableReturnValue
 public inline fun <T, K, V, D : MutableMap<K, V>> Iterable<T>.associateByTo(destination: D, keySelector: (T) -> K, valueTransform: (T) -> V, resolve: (key: K, currentValue: V, newValue: V) -> V): D {
@@ -324,17 +385,20 @@ public inline fun <T, K, V, D : MutableMap<K, V>> Iterable<T>.associateByTo(dest
 }
 
 /**
- * Populates the [destination] map with key-value pairs, where key is provided by [keySelector] function applied to each
- * element of the given collection and value is the element itself, resolving conflicts with [resolve] function and
- * returns the [destination].
+ * Populates [destination] by indexing each element of this iterable with [keySelector], resolving conflicts with [resolve].
  *
- * All pairs are added and resolved in order of iteration.
+ * For each element, [keySelector] produces the key and the element itself becomes the value. Pairs are added in
+ * iteration order; duplicate keys are resolved with [resolve].
  *
- * @param destination the destination of the generated key-value pairs.
- * @param keySelector lambda functions that generates keys for the key-value pairs.
- * @param resolve lambda function that resolves merge conflicts which receives some key, its current, and new
- * corresponding values.
- * @return the [destination].
+ * @param T The element type of this iterable.
+ * @param K The key type of the destination map.
+ * @param D The destination map type.
+ * @receiver This iterable whose elements are associated into [destination].
+ * @param destination The mutable map that receives generated key–value pairs.
+ * @param keySelector Called with each element; returns the key for the generated pair.
+ * @param resolve Called when a generated key already exists in [destination]; receives the key, the current value, and
+ * the new value, and returns the value to store.
+ * @return [destination] after all pairs have been added.
  */
 @IgnorableReturnValue
 public inline fun <T, K, D : MutableMap<K, T>> Iterable<T>.associateByTo(destination: D, keySelector: (T) -> K, resolve: (key: K, currentValue: T, newValue: T) -> T): D {
@@ -346,109 +410,126 @@ public inline fun <T, K, D : MutableMap<K, T>> Iterable<T>.associateByTo(destina
 }
 
 /**
- * Returns a map containing key-value pairs provided by [transform] function applied to elements of the given collection.
+ * Returns a map of key–value pairs produced from each element of this iterable, resolving duplicate keys with [resolve].
  *
- * All pairs are added in order of iteration. If some key is already added to the map, adding new key-value pair with the
- * key is resolved with [resolve] function which takes the key, current value corresponding to the key, and new value
- * from the pair.
+ * Pairs are added in iteration order into a new [LinkedHashMap]. When a key already exists, [resolve] chooses the
+ * stored value.
  *
- * @param transform function which transforms each element to key-value pair.
- * @param resolve lambda function that resolves merge conflicts which receives some key, its current, and new
- * corresponding values.
- * @return the result map.
+ * @param T The element type of this iterable.
+ * @param K The key type of the result map.
+ * @param V The value type of the result map.
+ * @receiver This iterable whose elements are associated into the result map.
+ * @param transform Called with each element; returns the key–value pair to insert.
+ * @param resolve Called when a generated key already exists; receives the key, the current value, and the new value,
+ * and returns the value to store.
+ * @return A new map containing the generated key–value pairs.
  */
 public inline fun <T, K, V> Iterable<T>.associate(transform: (T) -> Pair<K, V>, resolve: (key: K, currentValue: V, newValue: V) -> V): Map<K, V> =
     associateTo(LinkedHashMap(), transform, resolve)
 
 /**
- * Returns a map containing the values provided by [valueTransform] and indexed by [keySelector] functions applied to
- * elements of the given collection.
+ * Returns a map keyed by [keySelector] with values from [valueTransform], resolving duplicate keys with [resolve].
  *
- * All pairs are added in order of iteration. If some key is already added to the map, adding new key-value pair with
- * the key is resolved with [resolve] function which takes the key, current value corresponding to the key, and new
- * value from the pair.
+ * Pairs are added in iteration order into a new [LinkedHashMap].
  *
- * @param keySelector lambda functions that generates keys for the key-value pairs.
- * @param valueTransform lambda functions that generates value for the key-value pairs.
- * @param resolve lambda function that resolves merge conflicts which receives some key, its current, and new
- * corresponding values.
- * @return the result map.
+ * @param T The element type of this iterable.
+ * @param K The key type of the result map.
+ * @param V The value type of the result map.
+ * @receiver This iterable whose elements are associated into the result map.
+ * @param keySelector Called with each element; returns the key for the generated pair.
+ * @param valueTransform Called with each element; returns the value for the generated pair.
+ * @param resolve Called when a generated key already exists; receives the key, the current value, and the new value,
+ * and returns the value to store.
+ * @return A new map containing the generated key–value pairs.
  */
 public inline fun <T, K, V> Iterable<T>.associateBy(keySelector: (T) -> K, valueTransform: (T) -> V, resolve: (key: K, currentValue: V, newValue: V) -> V): Map<K, V> =
     associateByTo(LinkedHashMap(), keySelector, valueTransform, resolve)
 
 /**
- * Returns a map containing the elements from the given collection indexed by the key returned from [keySelector]
- * function applied to each element.
+ * Returns a map keyed by [keySelector] with elements of this iterable as values, resolving duplicate keys with [resolve].
  *
- * All pairs are added in order of iteration. If some key is already added to the map, adding new key-value pair with
- * the key is resolved with [resolve] function which takes the key, current value corresponding to the key, and new
- * value from the pair.
+ * Pairs are added in iteration order into a new [LinkedHashMap].
  *
- * @param keySelector lambda functions that generates keys for the key-value pairs.
- * @param resolve lambda function that resolves merge conflicts which receives some key, its current, and new
- * corresponding values.
- * @return the result map.
+ * @param T The element type of this iterable.
+ * @param K The key type of the result map.
+ * @receiver This iterable whose elements are associated into the result map.
+ * @param keySelector Called with each element; returns the key for the generated pair.
+ * @param resolve Called when a generated key already exists; receives the key, the current value, and the new value,
+ * and returns the value to store.
+ * @return A new map containing the generated key–value pairs.
  */
 public inline fun <T, K> Iterable<T>.associateBy(keySelector: (T) -> K, resolve: (key: K, currentValue: T, newValue: T) -> T): Map<K, T> =
     associateByTo(LinkedHashMap(), keySelector, resolve)
 
 /**
- * Populates the given [destination] map with entries having the keys of this map and the values obtained
- * by applying the [transform] function to each entry in this map resolving conflicts with [resolve] function and
- * returns the [destination].
+ * Populates [destination] with entries that keep the keys of this map and transform values with [transform].
  *
- * All pairs are added and resolved in order of iteration.
+ * Duplicate keys in [destination] are resolved with [resolve]. Pairs are added in iteration order.
  *
- * @param destination the destination of the generated key-value pairs.
- * @param transform function which transforms each key-value pair to new value.
- * @param resolve lambda function that resolves merge conflicts which receives some key, its current, and new
- * corresponding values.
- * @return the [destination].
+ * @param K The key type of this map.
+ * @param V The value type of entries in this map.
+ * @param W The transformed value type stored in [destination].
+ * @param D The destination map type.
+ * @receiver This map whose values are transformed into [destination].
+ * @param destination The mutable map that receives transformed entries.
+ * @param transform Called with each entry of this map; its result becomes the value candidate for the entry's key.
+ * @param resolve Called when a key already exists in [destination]; receives the key, the current value, and the new
+ * transformed value, and returns the value to store.
+ * @return [destination] after all transformed entries have been added.
  */
 @IgnorableReturnValue
 public inline fun <K, V, W, D : MutableMap<K, W>> Map<out K, V>.mapValuesTo(destination: D, transform: (Map.Entry<K, V>) -> W, resolve: (key: K, currentValue: W, newValue: W) -> W): D =
     entries.associateByTo(destination, { it.key }, transform, resolve)
 
 /**
- * Populates the given [destination] map with entries having the keys obtained by applying the [transform] function to
- * each entry in this map and the values of this map, resolving conflicts with [resolve] function and returns the
- * [destination].
+ * Populates [destination] with entries that transform keys with [transform] while keeping values from this map.
  *
- * All pairs are added and resolved in order of iteration.
+ * Duplicate keys in [destination] are resolved with [resolve]. Pairs are added in iteration order.
  *
- * @param destination the destination of the generated key-value pairs.
- * @param transform function which transforms each key-value pair to new key.
- * @param resolve lambda function that resolves merge conflicts which receives some key, its current, and new
- * corresponding values.
- * @return the [destination].
+ * @param K The key type of this map.
+ * @param V The value type of entries in this map.
+ * @param L The transformed key type stored in [destination].
+ * @param D The destination map type.
+ * @receiver This map whose keys are transformed into [destination].
+ * @param destination The mutable map that receives transformed entries.
+ * @param transform Called with each entry of this map; its result becomes the key for the generated pair.
+ * @param resolve Called when a transformed key already exists in [destination]; receives the key, the current value,
+ * and the new value, and returns the value to store.
+ * @return [destination] after all transformed entries have been added.
  */
 @IgnorableReturnValue
 public inline fun <K, V, L, D : MutableMap<L, V>> Map<out K, V>.mapKeysTo(destination: D, transform: (Map.Entry<K, V>) -> L, resolve: (key: L, currentValue: V, newValue: V) -> V): D =
     entries.associateByTo(destination, transform, { it.value }, resolve)
 
 /**
- * Returns a new map with entries having the keys obtained by applying the [transform] function to each entry in this
- * map and the values of this map and resolving conflicts with [resolve] function.
+ * Returns a new map with keys transformed by [transform] and values unchanged, resolving duplicate keys with [resolve].
  *
- * All pairs are added and resolved in order of iteration.
+ * Pairs are added in iteration order into a new [LinkedHashMap].
  *
- * @param transform function which transforms each key-value pair to a new key.
- * @param resolve lambda function that resolves merge conflicts which receives some key, its current, and new
- * corresponding values.
- * @return the result map.
+ * @param K The key type of this map.
+ * @param V The value type of entries in this map.
+ * @param L The transformed key type of the result map.
+ * @receiver This map whose keys are transformed.
+ * @param transform Called with each entry of this map; its result becomes the key for the generated pair.
+ * @param resolve Called when a transformed key already exists; receives the key, the current value, and the new value,
+ * and returns the value to store.
+ * @return A new map with transformed keys and the same values.
  */
 public inline fun <K, V, L> Map<out K, V>.mapKeys(transform: (Map.Entry<K, V>) -> L, resolve: (key: L, currentValue: V, newValue: V) -> V): Map<L, V> =
     mapKeysTo(LinkedHashMap(size), transform, resolve)
 
 /**
- * Accumulates value starting with [initial] value and applying [operation]
- * to current accumulator value and each entry of the map.
+ * Accumulates a value by applying [operation] to [initial] and each entry of this map in iteration order.
  *
- * Returns the specified [initial] value if the map is empty.
+ * Returns [initial] unchanged if this map is empty.
  *
- * @param initial initial value of the accumulation.
- * @param operation function that takes current accumulator value and an entry of the map and calculates the next accumulator value.
+ * @param K The key type of this map.
+ * @param V The value type of this map.
+ * @param R The accumulator and result type.
+ * @receiver This map whose entries are folded.
+ * @param initial The starting accumulator value.
+ * @param operation Called with the current accumulator and each entry; returns the next accumulator value.
+ * @return The final accumulator value after all entries have been processed, or [initial] if this map is empty.
  */
 public inline fun <K, V, R> Map<out K, V>.fold(initial: R, operation: (acc: R, Map.Entry<K, V>) -> R): R {
     var accumulator = initial
@@ -457,18 +538,20 @@ public inline fun <K, V, R> Map<out K, V>.fold(initial: R, operation: (acc: R, M
 }
 
 /**
- * Lazily applies the given [transform] function to each entry of the map getting a new element
- * and accumulates value starting with the first element and applying [operation] one-by-one
- * to current accumulator value and each element.
+ * Transforms each entry of this map with [transform] and reduces the results with [operation].
  *
- * Iterator of the map's entries is obtained with `entries.iterator()` method.
- * Thus, iteration order is specified by the map's `entries` set `iterator` implementation.
+ * The first entry is transformed to the initial accumulator; each subsequent entry is transformed and combined with
+ * [operation]. Iteration order follows this map's entry iterator.
  *
- * Throws an exception if this map is empty. If the map can be empty in an expected way,
- * please use [mapReduceOrNull] instead. It returns `null` when its receiver is empty.
- *
- * @param transform function which transforms each key-value pair to a new element which will be processed with given [operation].
- * @param operation function that takes current accumulator value and transformed into a new element entry of the map and calculates the next accumulator value.
+ * @param K The key type of this map.
+ * @param V The value type of this map.
+ * @param T The type produced by [transform] for each entry; must be a subtype of [R].
+ * @param R The accumulator and result type.
+ * @receiver This map whose entries are transformed and reduced.
+ * @param transform Called with each entry; its result becomes an element passed to [operation].
+ * @param operation Called with the current accumulator and each transformed element; returns the next accumulator value.
+ * @return The final reduced value.
+ * @throws UnsupportedOperationException if this map is empty.
  */
 public inline fun <K, V, T: R, R> Map<out K, V>.mapReduce(transform: (Map.Entry<K, V>) -> T, operation: (acc: R, T) -> R): R {
     val iterator = this.iterator()
@@ -479,17 +562,18 @@ public inline fun <K, V, T: R, R> Map<out K, V>.mapReduce(transform: (Map.Entry<
 }
 
 /**
- * Lazily applies the given [transform] function to each entry of the map getting a new element
- * and accumulates value starting with the first element and applying [operation] one-by-one
- * to current accumulator value and each element.
+ * Transforms each entry of this map with [transform] and reduces the results with [operation], or returns `null` if empty.
  *
- * Iterator of the map's entries is obtained with `entries.iterator()` method.
- * Thus, iteration order is specified by the map's `entries` set `iterator` implementation.
+ * Same as [mapReduce], but returns `null` instead of throwing when this map has no entries.
  *
- * Returns null if this map is empty.
- *
- * @param transform function which transforms each key-value pair to a new element which will be processed with given [operation].
- * @param operation function that takes current accumulator value and transformed into a new element entry of the map and calculates the next accumulator value.
+ * @param K The key type of this map.
+ * @param V The value type of this map.
+ * @param T The type produced by [transform] for each entry; must be a subtype of [R].
+ * @param R The accumulator and result type.
+ * @receiver This map whose entries are transformed and reduced.
+ * @param transform Called with each entry; its result becomes an element passed to [operation].
+ * @param operation Called with the current accumulator and each transformed element; returns the next accumulator value.
+ * @return The final reduced value, or `null` if this map is empty.
  */
 public inline fun <K, V, T: R, R> Map<out K, V>.mapReduceOrNull(transform: (Map.Entry<K, V>) -> T, operation: (acc: R, T) -> R): R? {
     val iterator = this.iterator()
@@ -500,17 +584,22 @@ public inline fun <K, V, T: R, R> Map<out K, V>.mapReduceOrNull(transform: (Map.
 }
 
 /**
- * Accumulates value starting with [initial] value and applying
- * [operation1] to current accumulator value and each entry of [map1] which key does not appear in [map2],
- * [operation2] to current accumulator value and each entry of [map2] which key does not appear in [map2],
- * and [operationMerge] to current accumulator value and triple of a common key of the maps and both its corresponding values in [map1] and [map2].
+ * Folds over the union of [map1] and [map2], applying different [operation] variants depending on key membership.
  *
- * @param map1 the first map to fold with another.
- * @param map2 the second map to fold with another.
- * @param initial initial value of the accumulation.
- * @param operation1 function that takes current accumulator value and an entry of the [map1] which key does not appear in [map2] and calculates the next accumulator value.
- * @param operation2 function that takes current accumulator value and an entry of the [map2] which key does not appear in [map1] and calculates the next accumulator value.
- * @param operationMerge function that takes current accumulator value and triple `(key, value1, value2)` where `key=value1` is an entry of [map1] and `key=value2` is an entry of [map2] and calculates the next accumulator value.
+ * Entries unique to [map2] are processed with [operation2], then entries from [map1] are processed with [operation1]
+ * when the key is absent from [map2], or with [operationMerge] when the key appears in both maps.
+ *
+ * @param K The key type of both maps.
+ * @param V1 The value type of entries in [map1].
+ * @param V2 The value type of entries in [map2].
+ * @param R The accumulator and result type.
+ * @param map1 The first map to fold over.
+ * @param map2 The second map to fold over.
+ * @param initial The starting accumulator value.
+ * @param operation1 Called with the accumulator and each entry of [map1] whose key is absent from [map2].
+ * @param operation2 Called with the accumulator and each entry of [map2] whose key is absent from [map1].
+ * @param operationMerge Called with the accumulator, a common key, and the corresponding values from [map1] and [map2].
+ * @return The final accumulator value.
  */
 public inline fun <K, V1, V2, R> mergingFold(
     map1: Map<out K, V1>,
@@ -529,17 +618,20 @@ public inline fun <K, V1, V2, R> mergingFold(
 }
 
 /**
- * Returns `false` if:
- * - for every entry `e` of [map1] which key does not appear in [map2] result of [operation1]`(e)` is `false`,
- * - for every entry `e` of [map2] which key does not appear in [map1] result of [operation2]`(e)` is `false`,
- * - for every key `k` appearing in [map2] with `v1` and in [map2] with `v2` result of [operationMerge]`(k, v1, v2)` is `false`.
- * Returns `true` otherwise.
+ * Returns `true` if any entry across the union of [map1] and [map2] satisfies the corresponding predicate.
  *
- * @param map1 the first map to test with another.
- * @param map2 the second map to test with another.
- * @param operation1 predicate that tests an entry of the [map1] which key does not appear in [map2].
- * @param operation2 predicate that tests an entry of the [map2] which key does not appear in [map1].
- * @param operationMerge predicate that tests triple `(key, value1, value2)` where `key=value1` is an entry of [map1] and `key=value2` is an entry of [map2].
+ * Entries unique to [map2] are tested with [operation2], entries unique to [map1] with [operation1], and keys present
+ * in both maps with [operationMerge].
+ *
+ * @param K The key type of both maps.
+ * @param V1 The value type of entries in [map1].
+ * @param V2 The value type of entries in [map2].
+ * @param map1 The first map to test.
+ * @param map2 The second map to test.
+ * @param operation1 Called with each entry of [map1] whose key is absent from [map2]; should return `true` to short-circuit with `true`.
+ * @param operation2 Called with each entry of [map2] whose key is absent from [map1]; should return `true` to short-circuit with `true`.
+ * @param operationMerge Called with a common key and the corresponding values from [map1] and [map2]; should return `true` to short-circuit with `true`.
+ * @return `true` if any tested entry or key group satisfies its predicate, `false` otherwise.
  */
 public inline fun <K, V1, V2> mergingAny(
     map1: Map<out K, V1>,
@@ -556,17 +648,20 @@ public inline fun <K, V1, V2> mergingAny(
 }
 
 /**
- * Returns `true` if:
- * - for every entry `e` of [map1] which key does not appear in [map2] result of [operation1]`(e)` is `true`,
- * - for every entry `e` of [map2] which key does not appear in [map1] result of [operation2]`(e)` is `true`,
- * - for every key `k` appearing in [map2] with `v1` and in [map2] with `v2` result of [operationMerge]`(k, v1, v2)` is `true`.
- * Returns `false` otherwise.
+ * Returns `true` if every entry across the union of [map1] and [map2] satisfies the corresponding predicate.
  *
- * @param map1 the first map to test with another.
- * @param map2 the second map to test with another.
- * @param operation1 predicate that tests an entry of the [map1] which key does not appear in [map2].
- * @param operation2 predicate that tests an entry of the [map2] which key does not appear in [map1].
- * @param operationMerge predicate that tests triple `(key, value1, value2)` where `key=value1` is an entry of [map1] and `key=value2` is an entry of [map2].
+ * Entries unique to [map2] are tested with [operation2], entries unique to [map1] with [operation1], and keys present
+ * in both maps with [operationMerge].
+ *
+ * @param K The key type of both maps.
+ * @param V1 The value type of entries in [map1].
+ * @param V2 The value type of entries in [map2].
+ * @param map1 The first map to test.
+ * @param map2 The second map to test.
+ * @param operation1 Called with each entry of [map1] whose key is absent from [map2]; should return `true` for the entry to pass.
+ * @param operation2 Called with each entry of [map2] whose key is absent from [map1]; should return `true` for the entry to pass.
+ * @param operationMerge Called with a common key and the corresponding values from [map1] and [map2]; should return `true` for the key group to pass.
+ * @return `true` if all tested entries and key groups satisfy their predicates, `false` otherwise.
  */
 public inline fun <K, V1, V2> mergingAll(
     map1: Map<out K, V1>,
@@ -583,17 +678,20 @@ public inline fun <K, V1, V2> mergingAll(
 }
 
 /**
- * Returns `true` if:
- * - for every entry `e` of [map1] which key does not appear in [map2] result of [operation1]`(e)` is `false`,
- * - for every entry `e` of [map2] which key does not appear in [map1] result of [operation2]`(e)` is `false`,
- * - for every key `k` appearing in [map2] with `v1` and in [map2] with `v2` result of [operationMerge]`(k, v1, v2)` is `false`.
- * Returns `false` otherwise.
+ * Returns `true` if no entry across the union of [map1] and [map2] satisfies the corresponding predicate.
  *
- * @param map1 the first map to test with another.
- * @param map2 the second map to test with another.
- * @param operation1 predicate that tests an entry of the [map1] which key does not appear in [map2].
- * @param operation2 predicate that tests an entry of the [map2] which key does not appear in [map1].
- * @param operationMerge predicate that tests triple `(key, value1, value2)` where `key=value1` is an entry of [map1] and `key=value2` is an entry of [map2].
+ * Entries unique to [map2] are tested with [operation2], entries unique to [map1] with [operation1], and keys present
+ * in both maps with [operationMerge].
+ *
+ * @param K The key type of both maps.
+ * @param V1 The value type of entries in [map1].
+ * @param V2 The value type of entries in [map2].
+ * @param map1 The first map to test.
+ * @param map2 The second map to test.
+ * @param operation1 Called with each entry of [map1] whose key is absent from [map2]; should return `false` for the entry to pass.
+ * @param operation2 Called with each entry of [map2] whose key is absent from [map1]; should return `false` for the entry to pass.
+ * @param operationMerge Called with a common key and the corresponding values from [map1] and [map2]; should return `false` for the key group to pass.
+ * @return `true` if all tested entries and key groups fail their predicates, `false` otherwise.
  */
 public inline fun <K, V1, V2> mergingNone(
     map1: Map<out K, V1>,
