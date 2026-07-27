@@ -5,7 +5,6 @@
 
 package dev.lounres.kone.coroutinesMutexes.implementations
 
-import dev.lounres.kone.castOrNull
 import dev.lounres.kone.coroutinesMutexes.KoneSemaphore
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
@@ -26,7 +25,7 @@ public class KoneSundellTsigasSemaphore(
     private val head = AtomicReference<Any>(HeadPermitsLink(permits))
     private val tail = AtomicReference<BackwardLink>(BackwardLink(null))
 
-    private fun loadHeadForwardLinkOrNull() = head.load().castOrNull<HeadForwardLink>()
+    private fun loadHeadForwardLinkOrNull() = head.load() as? HeadForwardLink
 
     public companion object {
         private val ForwardLink.isBeingDeleted get() = deletionStatus != NotYetDeleted
@@ -123,7 +122,7 @@ public class KoneSundellTsigasSemaphore(
 
     override fun tryAcquiring(): Boolean {
         while (true) {
-            val next = head.load().castOrNull<HeadPermitsLink>() ?: return false
+            val next = head.load() as? HeadPermitsLink ?: return false
             if (head.compareAndSet(next, if (next.availablePermits > 1u) HeadPermitsLink(availablePermits = next.availablePermits - 1u) else HeadForwardLink(null))) {
                 return true
             }
