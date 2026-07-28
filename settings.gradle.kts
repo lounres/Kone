@@ -78,7 +78,7 @@ stal {
         }
 //        "bom"("bom")
         "plugins" {
-            subdirs("kotlin compiler plugin") {
+            subdirs("kotlin compiler plugin", includeIf = { it.name !in listOf("fiktion") }) {
                 "runtime"("kotlin compiler plugin runtime")
                 "testGeneration"("kotlin compiler plugin test generator")
                 "gradleWrapper"("kotlin compiler plugin gradle wrapper")
@@ -112,7 +112,7 @@ stal {
         "kotlin multiplatform publication" since { hasAnyOf("libs", "bom", "kotlin compiler plugin runtime") }
         "gradle plugin publication" since { hasAnyOf("kotlin compiler plugin gradle wrapper") }
         "publishing" since { hasAnyOf("version catalog", "libs", "kotlin compiler plugin", "kotlin compiler plugin runtime", "kotlin compiler plugin gradle wrapper", /*"bom"*/) }
-        "dokka" since { hasAnyOf("libs", /*"kotlin compiler plugin runtime"*/) }
+        "dokka" since { hasAnyOf("libs", "kotlin compiler plugin runtime") }
     }
 
     action {
