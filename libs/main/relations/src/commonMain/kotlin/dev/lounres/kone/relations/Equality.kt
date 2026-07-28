@@ -67,6 +67,7 @@ public interface Equality<in Element> : KoneContext {
  *
  * A bridge contextual function for [Equality.equalsTo].
  *
+ * @param Element The type of elements being compared.
  * @receiver The element to check for equality.
  * @param equality The equality context in which to perform the comparison.
  * @param other The element to compare with this element.
@@ -80,6 +81,7 @@ public inline infix fun <Element> Element.equalsTo(other: Element): Boolean = wi
  * Checks inequality of [this] and [other] elements in the provided [Equality] context.
  * A shortcut for negation of [equalsTo].
  *
+ * @param Element The type of elements being compared.
  * @receiver The element to check for inequality.
  * @param equality The equality context in which to perform the comparison.
  * @param other The element to compare with this element.
@@ -94,6 +96,7 @@ public inline infix fun <Element> Element.notEqualsTo(other: Element): Boolean =
  * Checks equality of [this] and [other] elements in the provided [Equality] context.
  * A shortcut for [equalsTo].
  *
+ * @param Element The type of elements being compared.
  * @receiver The element to check for equality.
  * @param equality The equality context in which to perform the comparison.
  * @param other The element to compare with this element.
@@ -106,6 +109,7 @@ public inline infix fun <Element> Element.eq(other: Element): Boolean = this equ
  * Checks inequality of [this] and [other] elements in the provided [Equality] context.
  * A shortcut for negation of [equalsTo].
  *
+ * @param Element The type of elements being compared.
  * @receiver The element to check for inequality.
  * @param equality The equality context in which to perform the comparison.
  * @param other The element to compare with this element.

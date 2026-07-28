@@ -137,6 +137,7 @@ public fun ComparisonResult.asKotlinComparisonResult(): Int = kotlinComparisonRe
  * Creates a Kotlin standard library comparator that delegates to this Kone comparator
  * and converts the result to an integer.
  *
+ * @param Element The type of elements this comparator handles.
  * @receiver The Kone comparator to convert.
  * @return A [KotlinStdlibComparator] that wraps this Kone comparator.
  */
@@ -149,6 +150,7 @@ public fun <Element> Comparator<Element>.asKotlinStdlib(): KotlinStdlibComparato
  * Creates a Kone comparator that delegates to the Kotlin standard library comparator
  * and converts the integer result to a [ComparisonResult].
  *
+ * @param Element The type of elements this comparator handles.
  * @receiver The Kotlin standard library comparator to convert.
  * @return A [Comparator] that wraps the Kotlin standard library comparator.
  */
@@ -160,6 +162,7 @@ public fun <Element> KotlinStdlibComparator<Element>.asKone(): Comparator<Elemen
  *
  * A bridge contextual function for [Order.compareWith].
  *
+ * @param Element The type of elements being compared.
  * @receiver The left element in the comparison.
  * @param order The order context in which to perform the comparison.
  * @param other The right element to compare with this element.
@@ -193,6 +196,7 @@ public infix operator fun <Element> Element.compareTo(other: Element): Int = thi
  */
 context(order: Order<Element>)
 public inline infix fun <Element> Element.coincidesWith(other: Element): Boolean = this.compareWith(other) == ComparisonResult.Equal
+
 /**
  * Alternative notation to `!=` operator that uses [Order.compareTo] for comparison.
  *
@@ -205,6 +209,7 @@ public inline infix fun <Element> Element.coincidesWith(other: Element): Boolean
 // FIXME: KT-5351
 context(order: Order<Element>)
 public inline infix fun <Element> Element.notCoincidesWith(other: Element): Boolean = this.compareWith(other) != ComparisonResult.Equal
+
 /**
  * Alternative notation to `>` operator that uses [Order.compareTo] for comparison.
  *
@@ -216,6 +221,7 @@ public inline infix fun <Element> Element.notCoincidesWith(other: Element): Bool
  */
 context(order: Order<Element>)
 public inline infix fun <Element> Element.greaterThan(other: Element): Boolean = this.compareWith(other) == ComparisonResult.LeftIsGreaterThanRight
+
 /**
  * Alternative notation to `>=` operator that uses [Order.compareTo] for comparison.
  *
@@ -227,113 +233,132 @@ public inline infix fun <Element> Element.greaterThan(other: Element): Boolean =
  */
 context(order: Order<Element>)
 public inline infix fun <Element> Element.greaterThanOrEqual(other: Element): Boolean = this.compareWith(other) != ComparisonResult.LeftIsLessThanRight
+
 /**
  * Alternative notation to `<` operator that uses [Order.compareTo] for comparison.
  *
+ * @param Element The type of elements being compared.
  * @receiver The left element in the comparison.
- * @param _ The order context in which to perform the comparison.
+ * @param order The order context in which to perform the comparison.
  * @param other The right element to compare with this element.
  * @return `true` if this element is less than the other element according to the order context.
  */
-context(_: Order<Element>)
+context(order: Order<Element>)
 public inline infix fun <Element> Element.lessThen(other: Element): Boolean = this.compareWith(other) == ComparisonResult.LeftIsLessThanRight
+
 /**
  * Alternative notation to `<=` operator that uses [Order.compareTo] for comparison.
  *
+ * @param Element The type of elements being compared.
  * @receiver The left element in the comparison.
- * @param _ The order context in which to perform the comparison.
+ * @param order The order context in which to perform the comparison.
  * @param other The right element to compare with this element.
  * @return `true` if this element is less than or equal to the other element according to the order context.
  */
-context(_: Order<Element>)
+context(order: Order<Element>)
 public inline infix fun <Element> Element.lessThenOrEqual(other: Element): Boolean = this.compareWith(other) != ComparisonResult.LeftIsGreaterThanRight
+
 /**
  * Alternative notation to `>` operator that uses [Order.compareTo] for comparison.
  * Shorthand for [greaterThan].
  *
+ * @param Element The type of elements being compared.
  * @receiver The left element in the comparison.
- * @param _ The order context in which to perform the comparison.
+ * @param order The order context in which to perform the comparison.
  * @param other The right element to compare with this element.
  * @return `true` if this element is greater than the other element according to the order context.
  */
-context(_: Order<Element>)
+context(order: Order<Element>)
 public inline infix fun <Element> Element.gt(other: Element): Boolean = this greaterThan other
+
 /**
  * Alternative notation to `>=` operator that uses [Order.compareTo] for comparison.
  * Shorthand for [greaterThanOrEqual].
  *
+ * @param Element The type of elements being compared.
  * @receiver The left element in the comparison.
- * @param _ The order context in which to perform the comparison.
+ * @param order The order context in which to perform the comparison.
  * @param other The right element to compare with this element.
  * @return `true` if this element is greater than or equal to the other element according to the order context.
  */
-context(_: Order<Element>)
+context(order: Order<Element>)
 public inline infix fun <Element> Element.geq(other: Element): Boolean = this greaterThanOrEqual other
+
 /**
  * Alternative notation to `<` operator that uses [Order.compareTo] for comparison.
  * Shorthand for [lessThen].
  *
+ * @param Element The type of elements being compared.
  * @receiver The left element in the comparison.
- * @param _ The order context in which to perform the comparison.
+ * @param order The order context in which to perform the comparison.
  * @param other The right element to compare with this element.
  * @return `true` if this element is less than the other element according to the order context.
  */
-context(_: Order<Element>)
+context(order: Order<Element>)
 public inline infix fun <Element> Element.lt(other: Element): Boolean = this lessThen other
+
 /**
  * Alternative notation to `<=` operator that uses [Order.compareTo] for comparison.
  * Shorthand for [lessThenOrEqual].
  *
+ * @param Element The type of elements being compared.
  * @receiver The left element in the comparison.
- * @param _ The order context in which to perform the comparison.
+ * @param order The order context in which to perform the comparison.
  * @param other The right element to compare with this element.
  * @return `true` if this element is less than or equal to the other element according to the order context.
  */
-context(_: Order<Element>)
+context(order: Order<Element>)
 public inline infix fun <Element> Element.leq(other: Element): Boolean = this lessThenOrEqual other
 
 /**
  * Returns the smaller of two values [a] and [b].
  *
- * @param _ The order context in which to perform the comparison.
+ * @param Element The type of elements being compared.
+ * @param order The order context in which to perform the comparison.
  * @param a The first value to compare.
  * @param b The second value to compare.
  * @return The smaller of the two values according to the order context.
  */
-context(_: Order<Element>)
+context(order: Order<Element>)
 public fun <Element> minOf(a: Element, b: Element): Element = if (a leq b) a else b
+
 /**
  * Returns the greater of two values [a] and [b].
  *
- * @param _ The order context in which to perform the comparison.
+ * @param Element The type of elements being compared.
+ * @param order The order context in which to perform the comparison.
  * @param a The first value to compare.
  * @param b The second value to compare.
  * @return The greater of the two values according to the order context.
  */
-context(_: Order<Element>)
+context(order: Order<Element>)
 public fun <Element> maxOf(a: Element, b: Element): Element = if (a geq b) a else b
+
 /**
  * Returns the smallest value from [elements]. If [elements] is empty throws [IllegalArgumentException].
  *
- * @param _ The order context in which to perform the comparison.
+ * @param Element The type of elements being compared.
+ * @param order The order context in which to perform the comparison.
  * @param elements The vararg array of elements from which to find the minimum.
  * @return The smallest element from the array according to the order context.
  * @throws IllegalArgumentException If [elements] is empty.
  */
-context(_: Order<Element>)
+context(order: Order<Element>)
 public fun <Element> minOf(vararg elements: Element): Element {
     require(elements.isNotEmpty()) { "Cannot calculate minimum of an empty collection of elements" }
     return elements.reduce { a, b -> minOf(a, b) }
 }
+
 /**
  * Returns the greatest value from [elements]. If [elements] is empty throws [IllegalArgumentException].
  *
- * @param _ The order context in which to perform the comparison.
+ * @param Element The type of elements being compared.
+ * @param order The order context in which to perform the comparison.
  * @param elements The vararg array of elements from which to find the maximum.
  * @return The greatest element from the array according to the order context.
  * @throws IllegalArgumentException If [elements] is empty.
  */
-context(_: Order<Element>)
+context(order: Order<Element>)
 public fun <Element> maxOf(vararg elements: Element): Element {
     require(elements.isNotEmpty()) { "Cannot calculate maximum of an empty collection of elements" }
     return elements.reduce { a, b -> maxOf(a, b) }
@@ -358,6 +383,7 @@ public inline fun <Element> Order(crossinline comparator: (left: Element, right:
  *
  * Creates an [Order] context that delegates to the provided [Comparator] for comparisons.
  *
+ * @param Element The type of elements this comparator handles.
  * @receiver The comparator to convert to an order context.
  * @return An [Order] instance that delegates to this comparator.
  */
@@ -374,13 +400,13 @@ public fun <Element> Comparator<Element>.asOrder(): Order<Element> =
  * a non-equal comparison result determines the overall result.
  *
  * @receiver The order companion object.
- * @param _ The order context for the element type.
+ * @param order The order context for the element type.
  * @param Target The type of elements to be ordered.
  * @param Element The type of values produced by the selectors.
  * @param selectors The sequence of selector functions to apply to elements before comparison.
  * @return An [Order] instance that compares [Target] elements by their selected [Element] values.
  */
-context(_: Order<Element>)
+context(order: Order<Element>)
 public fun <Target, Element> Order.Companion.byOrdered(vararg selectors: (Target) -> Element): Order<Target> = Order { left, right ->
     for (selector in selectors) {
         val comparisonResult = selector(left).compareWith(selector(right))
@@ -397,6 +423,7 @@ public fun <Target, Element> Order.Companion.byOrdered(vararg selectors: (Target
  * - A null value is considered less than any non-null value
  * - Two non-null values are compared using this order context
  *
+ * @param Element The non-nullable element type for which to create the nullable order context.
  * @receiver The order context for non-nullable elements.
  * @return An [Order] instance where null is treated as the minimum value.
  */
@@ -417,6 +444,7 @@ public val <Element: Any> Order<Element>.withNullAsLeast: Order<Element?> get() 
  * - A null value is considered greater than any non-null value
  * - Two non-null values are compared using this order context
  *
+ * @param Element The non-nullable element type for which to create the nullable order context.
  * @receiver The order context for non-nullable elements.
  * @return An [Order] instance where null is treated as the maximum value.
  */
@@ -437,6 +465,7 @@ public val <Element: Any> Order<Element>.withNullAsGreatest: Order<Element?> get
  * - A null value is considered less than any non-null value
  * - Two non-null values are compared using this comparator
  *
+ * @param Element The non-nullable element type for which to create the nullable comparator.
  * @receiver The comparator for non-nullable elements.
  * @return A [Comparator] instance where null is treated as the minimum value.
  */
@@ -457,6 +486,7 @@ public val <Element: Any> Comparator<Element>.withNullAsLeast: Comparator<Elemen
  * - A null value is considered greater than any non-null value
  * - Two non-null values are compared using this comparator
  *
+ * @param Element The non-nullable element type for which to create the nullable comparator.
  * @receiver The comparator for non-nullable elements.
  * @return A [Comparator] instance where null is treated as the maximum value.
  */
@@ -479,6 +509,7 @@ public val <Element: Any> Comparator<Element>.withNullAsGreatest: Comparator<Ele
  * @return An [Order] instance that uses the natural ordering of comparable elements.
  */
 public fun <Element: Comparable<Element>> Order.Companion.defaultFor(): Order<Element> = DefaultOrderOnComparables
+
 // TODO: Remove the checker when KT-73135 will be fixed
 /**
  * Container object for suppliable top-level functions related to [Order] context registration.
@@ -493,15 +524,16 @@ public object OrderDefaultForSuppliableTopLevelFunctions {
      * The registered order context uses the natural ordering of comparable elements.
      *
      * @receiver The order companion object.
-     * @param _ The mutable owned provider registry to register into.
+     * @param registry The mutable owned provider registry to register into.
      * @param Element The supplied element type (must implement [Comparable]) for which to set the default order context.
      */
     @Suppliable
-    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
     public fun <@Supply Element : Comparable<Element>> Order.Companion.setDefaultFor() {
         Order.Key<Element>() correspondsTo Order.defaultFor<Element>()
     }
 }
+
 /**
  * Returns [Comparator] instance which [Comparator.compare] operator just uses [Comparable.compareTo] operator's result as a return value.
  *
@@ -512,23 +544,28 @@ public object OrderDefaultForSuppliableTopLevelFunctions {
  * @return A [Comparator] instance that uses the natural ordering of comparable elements.
  */
 public fun <Element: Comparable<Element>> Comparator.Companion.defaultFor(): Comparator<Element> = DefaultComparatorOnComparables
+
 /**
  * Converts provided [Order] receiver into [Comparator] that delegates its [Comparator.compare] operator to
  * [Order.compareTo] operator.
  *
+ * @param Element The type of elements this order context handles.
  * @receiver The order context to convert.
  * @return A [Comparator] that delegates to this order context.
  */
 public fun <Element> Order<Element>.asComparator(): Comparator<Element> = Comparator { left, right -> left.compareWith(right) }
+
 /**
  * Converts provided [Order] context receiver into [Comparator] that delegates its [Comparator.compare] operator to
  * [Order.compareTo] operator.
  *
- * @param _ The order context in which to create the comparator.
+ * @param Element The type of elements being compared.
+ * @param order The order context in which to create the comparator.
  * @return A [Comparator] that uses the provided order context for comparisons.
  */
-context(_: Order<Element>)
+context(order: Order<Element>)
 public val <Element> comparator: Comparator<Element> get() = Comparator { left, right -> left.compareWith(right) }
+
 /**
  * Creates a comparator using the sequence of functions to calculate a result of comparison.
  * The functions are called sequentially, receive the given values `a` and `b` and return objects comparable via
@@ -539,13 +576,13 @@ public val <Element> comparator: Comparator<Element> get() = Comparator { left, 
  * with respect to the provided orders.
  *
  * @receiver The comparator companion object.
- * @param _ The order context for the element type.
+ * @param order The order context for the element type.
  * @param Target The type of elements to be compared.
  * @param Element The type of values produced by the selectors.
  * @param selectors The sequence of selector functions to apply to elements before comparison.
  * @return A [Comparator] that compares [Target] elements by their selected [Element] values.
  */
-context(_: Order<Element>)
+context(order: Order<Element>)
 public fun <Target, Element> Comparator.Companion.byOrdered(vararg selectors: (Target) -> Element): Comparator<Target> = Comparator { left, right ->
     for (selector in selectors) {
         val comparisonResult = selector(left).compareWith(selector(right))
@@ -558,15 +595,18 @@ public fun <Target, Element> Comparator.Companion.byOrdered(vararg selectors: (T
  * A wrapper data class that contains values [startInclusive] and [endInclusive] to be used by [ClosedRange.contains] operator that checks
  * if the provided value lies in a closed interval `[startInclusive; endInclusive]`.
  *
+ * @param Element The type of elements in the range.
  * @param startInclusive The start of the interval (inclusive).
  * @param endInclusive The end of the interval (inclusive).
  */
 //@JvmInline
 public /*value*/ data class ClosedRange<out Element>(public val startInclusive: Element, public val endInclusive: Element)
+
 /**
  * A wrapper data class that contains values [startInclusive] and [endExclusive] to be used by [OpenEndRange.contains] operator that checks
  * if the provided value lies in a right-open interval `[startInclusive; endExclusive)`.
  *
+ * @param Element The type of elements in the range.
  * @param startInclusive The start of the interval (inclusive).
  * @param endExclusive The end of the interval (exclusive).
  */
@@ -577,15 +617,18 @@ public /*value*/ data class OpenEndRange<out Element>(public val startInclusive:
  * Creates [ClosedRange] instance to be used by [ClosedRange.contains] operator that checks if the provided value
  * lies in a closed interval from [this] to [other].
  *
+ * @param Element The type of elements in the range.
  * @receiver The start value of the interval (inclusive).
  * @param other The end value of the interval (inclusive).
  * @return A [ClosedRange] instance representing the interval from this value to the other value.
  */
 public operator fun <Element> Element.rangeTo(other: Element): ClosedRange<Element> = ClosedRange(this, other)
+
 /**
  * Creates [OpenEndRange] instance to be used by [OpenEndRange.contains] operator that checks if the provided value
  * lies in a right-open interval from [this] to [other].
  *
+ * @param Element The type of elements in the range.
  * @receiver The start value of the interval (inclusive).
  * @param other The end value of the interval (exclusive).
  * @return An [OpenEndRange] instance representing the interval from this value to the other value.
@@ -596,23 +639,26 @@ public operator fun <Element> Element.rangeUntil(other: Element): OpenEndRange<E
  * Checks if the provided [element] lies in a closed interval from [ClosedRange.startInclusive] to [ClosedRange.endInclusive]
  * with respect to contextual order.
  *
+ * @param Element The type of elements in the range.
  * @receiver The closed range to check against.
- * @param _ The order context in which to perform the comparison.
+ * @param order The order context in which to perform the comparison.
  * @param element The element to check for containment in the interval.
  * @return `true` if the element lies in the closed interval, `false` otherwise.
  */
-context(_: Order<Element>)
+context(order: Order<Element>)
 public operator fun <Element> ClosedRange<Element>.contains(element: Element): Boolean = element geq startInclusive && element leq endInclusive
+
 /**
  * Checks if the provided [element] lies in a right-open interval from [OpenEndRange.startInclusive] to [OpenEndRange.endExclusive]
  * with respect to contextual order.
  *
+ * @param Element The type of elements in the range.
  * @receiver The open-end range to check against.
- * @param _ The order context in which to perform the comparison.
+ * @param order The order context in which to perform the comparison.
  * @param element The element to check for containment in the interval.
  * @return `true` if the element lies in the right-open interval, `false` otherwise.
  */
-context(_: Order<Element>)
+context(order: Order<Element>)
 public operator fun <Element> OpenEndRange<Element>.contains(element: Element): Boolean = element geq startInclusive && element lt endExclusive
 
 /**
@@ -620,6 +666,7 @@ public operator fun <Element> OpenEndRange<Element>.contains(element: Element): 
  *
  * This allows using Kotlin's standard range syntax (`a..b`) with Kone's contextual comparison functions.
  *
+ * @param Element The comparable element type of the range.
  * @receiver The Kotlin closed range to convert.
  * @return A [ClosedRange] with the same bounds as this Kotlin range.
  */
@@ -631,6 +678,7 @@ public fun <Element : Comparable<Element>> KotlinClosedRange<Element>.toKoneClos
  *
  * This allows using Kotlin's standard range syntax (`a..<b`) with Kone's contextual comparison functions.
  *
+ * @param Element The comparable element type of the range.
  * @receiver The Kotlin open-end range to convert.
  * @return An [OpenEndRange] with the same bounds as this Kotlin range.
  */

@@ -61,6 +61,7 @@ public interface Hashing<in Element> : KoneContext {
  *
  * A bridge contextual function for [Hashing.hash].
  *
+ * @param Element The type of elements for which to compute the hash code.
  * @receiver The element for which to compute the hash code.
  * @param hashing The hashing context in which to compute the hash code.
  * @return The hash code value for this element according to the provided hashing context.

@@ -110,6 +110,7 @@ public fun reificationException(message: String = "Value can not be reified"): N
  *
  * A bridge contextual function for [Reification.reifyMaybe].
  *
+ * @param Element The type of elements this reification context handles.
  * @param reification The reification context to use for checking and casting the element.
  * @param element The element to reify.
  * @return [Some] containing the element if it is in the domain, [None] otherwise.
@@ -123,6 +124,7 @@ public fun <Element> reifyMaybe(element: Any?): Maybe<Element> = reification.rei
  *
  * A bridge contextual function for [Reification.reifyOrNull].
  *
+ * @param Element The type of elements this reification context handles.
  * @param reification The reification context to use for checking and casting the element.
  * @param element The element to reify.
  * @return The element cast to [Element] if it is in the domain, null otherwise.
@@ -136,6 +138,7 @@ public fun <Element> reifyOrNull(element: Any?): Element? = reification.reifyOrN
  *
  * A bridge contextual function for [Reification.reify].
  *
+ * @param Element The type of elements this reification context handles.
  * @param reification The reification context to use for checking and casting the element.
  * @param element The element to reify.
  * @return The element cast to [Element] if it is in the domain.
@@ -187,11 +190,11 @@ public object ReificationSuppliableTopLevelFunctions {
      * The set reification just only checks that the element is of type [Element].
      *
      * @receiver The reification companion object.
-     * @param _ The mutable owned provider registry to register into.
+     * @param registry The mutable owned provider registry to register into.
      * @param Element The supplied element type for which to set the reification context.
      */
     @Suppliable
-    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
+    context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
     public inline fun <@Supply reified Element> Reification.Companion.setDefaultFor() {
         Reification.Key<Element>() correspondsTo RegisteredValueProvider.cached { Reification.defaultFor<Element>() }
     }
