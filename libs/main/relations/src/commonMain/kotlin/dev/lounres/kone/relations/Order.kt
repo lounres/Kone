@@ -555,12 +555,13 @@ public fun <Element: Comparable<Element>> Comparator.Companion.defaultFor(): Com
  */
 public fun <Element> Order<Element>.asComparator(): Comparator<Element> = Comparator { left, right -> left.compareWith(right) }
 
+// FIXME: Fix this KDoc (' // @param order') when DOKKA-4566 will be fixed
 /**
  * Converts provided [Order] context receiver into [Comparator] that delegates its [Comparator.compare] operator to
  * [Order.compareTo] operator.
  *
  * @param Element The type of elements being compared.
- * @param order The order context in which to create the comparator.
+ * // @param order The order context in which to create the comparator.
  * @return A [Comparator] that uses the provided order context for comparisons.
  */
 context(order: Order<Element>)

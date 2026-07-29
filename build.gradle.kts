@@ -46,7 +46,7 @@ plugins {
 //    alias(versions.plugins.kotlinx.benchmark) apply false
     alias(versions.plugins.testBalloon) apply false
     alias(versions.plugins.kotlinx.kover) apply false
-    id("org.ajoberstar.grgit") version "5.3.0"
+    alias(versions.plugins.grgit)
     alias(versions.plugins.dokka)
     `version-catalog`
     alias(versions.plugins.gradle.maven.publish.plugin)
@@ -842,8 +842,6 @@ stal {
             
             configure<DokkaExtension> {
                 moduleName = project.artifact
-                // DOKKA-3885
-                dokkaGeneratorIsolation = ClassLoaderIsolation()
                 
                 dokkaSourceSets.all {
 //                    reportUndocumented = true
