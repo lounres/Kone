@@ -12,7 +12,6 @@ import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.Registry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
-import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
 import dev.lounres.kone.suppliedTypes.suppliedTypeOf

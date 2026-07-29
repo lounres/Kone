@@ -78,7 +78,7 @@ public interface Group<Number> : Monoid<Number> {
     @KoneContextInclude
     public val numberUnaryMinus: UnaryMinus<Number, Number>
     /**
-     * The associative binary subtraction operation on elements of type [Number].
+     * The subtraction operation on elements of type [Number].
      *
      * @return The subtraction context represented as [Minus] instance.
      */
