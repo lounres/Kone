@@ -246,83 +246,243 @@ private data object SafeLongContext: Reification<Long>, Equality<Long>, Order<Lo
     // endregion
 }
 
+/**
+ * Returns the safe [Long] reification context (a singleton implementing [Reification] for [Long] with overflow checking).
+ *
+ * @return The safe [Reification] context for [Long].
+ */
 public fun Long.Companion.safeReification(): Reification<Long> = SafeLongContext
+/**
+ * Returns the safe [Long] equality context (a singleton implementing [Equality] for [Long] with overflow checking).
+ *
+ * @return The safe [Equality] context for [Long].
+ */
 public fun Long.Companion.safeEquality(): Equality<Long> = SafeLongContext
+/**
+ * Returns the safe [Long] order context (a singleton implementing [Order] for [Long] with overflow checking).
+ *
+ * @return The safe [Order] context for [Long].
+ */
 public fun Long.Companion.safeOrder(): Order<Long> = SafeLongContext
+/**
+ * Returns the safe [Long] hashing context (a singleton implementing [Hashing] for [Long] with overflow checking).
+ *
+ * @return The safe [Hashing] context for [Long].
+ */
 public fun Long.Companion.safeHashing(): Hashing<Long> = SafeLongContext
+/**
+ * Returns the safe [Long] Euclidean ring context (a singleton implementing [EuclideanRing] for [Long] with overflow checking).
+ *
+ * @return The safe [EuclideanRing] context for [Long].
+ */
 public fun Long.Companion.safeEuclideanRing(): EuclideanRing<Long> = SafeLongContext
+/**
+ * Returns the safe [Long] Euclidean semiring context (a singleton implementing [EuclideanSemiring] for [Long] with overflow checking).
+ *
+ * @return The safe [EuclideanSemiring] context for [Long].
+ */
 public fun Long.Companion.safeEuclideanSemiring(): EuclideanSemiring<Long> = SafeLongContext
+/**
+ * Returns the safe [Long] commutative ring context (a singleton implementing [CommutativeRing] for [Long] with overflow checking).
+ *
+ * @return The safe [CommutativeRing] context for [Long].
+ */
 public fun Long.Companion.safeCommutativeRing(): CommutativeRing<Long> = SafeLongContext
+/**
+ * Returns the safe [Long] ring context (a singleton implementing [Ring] for [Long] with overflow checking).
+ *
+ * @return The safe [Ring] context for [Long].
+ */
 public fun Long.Companion.safeRing(): Ring<Long> = SafeLongContext
+/**
+ * Returns the safe [Long] commutative semiring context (a singleton implementing [CommutativeSemiring] for [Long] with overflow checking).
+ *
+ * @return The safe [CommutativeSemiring] context for [Long].
+ */
 public fun Long.Companion.safeCommutativeSemiring(): CommutativeSemiring<Long> = SafeLongContext
+/**
+ * Returns the safe [Long] semiring context (a singleton implementing [Semiring] for [Long] with overflow checking).
+ *
+ * @return The safe [Semiring] context for [Long].
+ */
 public fun Long.Companion.safeSemiring(): Semiring<Long> = SafeLongContext
+/**
+ * Returns the safe [Long] commutative group context (a singleton implementing [CommutativeGroup] for [Long] with overflow checking).
+ *
+ * @return The safe [CommutativeGroup] context for [Long].
+ */
 public fun Long.Companion.safeCommutativeGroup(): CommutativeGroup<Long> = SafeLongContext
+/**
+ * Returns the safe [Long] group context (a singleton implementing [Group] for [Long] with overflow checking).
+ *
+ * @return The safe [Group] context for [Long].
+ */
 public fun Long.Companion.safeGroup(): Group<Long> = SafeLongContext
+/**
+ * Returns the safe [Long] commutative monoid context (a singleton implementing [CommutativeMonoid] for [Long] with overflow checking).
+ *
+ * @return The safe [CommutativeMonoid] context for [Long].
+ */
 public fun Long.Companion.safeCommutativeMonoid(): CommutativeMonoid<Long> = SafeLongContext
+/**
+ * Returns the safe [Long] monoid context (a singleton implementing [Monoid] for [Long] with overflow checking).
+ *
+ * @return The safe [Monoid] context for [Long].
+ */
 public fun Long.Companion.safeMonoid(): Monoid<Long> = SafeLongContext
+/**
+ * Returns the safe [Long] commutative semigroup context (a singleton implementing [CommutativeSemigroup] for [Long] with overflow checking).
+ *
+ * @return The safe [CommutativeSemigroup] context for [Long].
+ */
 public fun Long.Companion.safeCommutativeSemigroup(): CommutativeSemigroup<Long> = SafeLongContext
+/**
+ * Returns the safe [Long] semigroup context (a singleton implementing [Semigroup] for [Long] with overflow checking).
+ *
+ * @return The safe [Semigroup] context for [Long].
+ */
 public fun Long.Companion.safeSemigroup(): Semigroup<Long> = SafeLongContext
 
+/**
+ * Registers the safe [Reification] context for [Long] (with overflow checking) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeReification() {
     Reification.Key<Long>().withImpliedUsingFirst correspondsTo SafeLongContext
 }
+/**
+ * Registers the safe [Equality] context for [Long] (with overflow checking) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeEquality() {
     Equality.Key<Long>().withImpliedUsingFirst correspondsTo SafeLongContext
 }
+/**
+ * Registers the safe [Order] context for [Long] (with overflow checking) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeOrder() {
     Order.Key<Long>().withImpliedUsingFirst correspondsTo SafeLongContext
 }
+/**
+ * Registers the safe [Hashing] context for [Long] (with overflow checking) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeHashing() {
     Hashing.Key<Long>().withImpliedUsingFirst correspondsTo SafeLongContext
 }
+/**
+ * Registers the safe [EuclideanRing] context for [Long] (with overflow checking) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeEuclideanRing() {
     EuclideanRing.Key<Long>().withImpliedUsingFirst correspondsTo SafeLongContext
 }
+/**
+ * Registers the safe [EuclideanSemiring] context for [Long] (with overflow checking) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeEuclideanSemiring() {
     EuclideanSemiring.Key<Long>().withImpliedUsingFirst correspondsTo SafeLongContext
 }
+/**
+ * Registers the safe [CommutativeRing] context for [Long] (with overflow checking) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeCommutativeRing() {
     CommutativeRing.Key<Long>().withImpliedUsingFirst correspondsTo SafeLongContext
 }
+/**
+ * Registers the safe [Ring] context for [Long] (with overflow checking) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeRing() {
     Ring.Key<Long>().withImpliedUsingFirst correspondsTo SafeLongContext
 }
+/**
+ * Registers the safe [CommutativeSemiring] context for [Long] (with overflow checking) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeCommutativeSemiring() {
     CommutativeSemiring.Key<Long>().withImpliedUsingFirst correspondsTo SafeLongContext
 }
+/**
+ * Registers the safe [Semiring] context for [Long] (with overflow checking) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeSemiring() {
     Semiring.Key<Long>().withImpliedUsingFirst correspondsTo SafeLongContext
 }
+/**
+ * Registers the safe [CommutativeGroup] context for [Long] (with overflow checking) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeCommutativeGroup() {
     CommutativeGroup.Key<Long>().withImpliedUsingFirst correspondsTo SafeLongContext
 }
+/**
+ * Registers the safe [Group] context for [Long] (with overflow checking) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeGroup() {
     Group.Key<Long>().withImpliedUsingFirst correspondsTo SafeLongContext
 }
+/**
+ * Registers the safe [CommutativeMonoid] context for [Long] (with overflow checking) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeCommutativeMonoid() {
     CommutativeMonoid.Key<Long>().withImpliedUsingFirst correspondsTo SafeLongContext
 }
+/**
+ * Registers the safe [Monoid] context for [Long] (with overflow checking) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeMonoid() {
     Monoid.Key<Long>().withImpliedUsingFirst correspondsTo SafeLongContext
 }
+/**
+ * Registers the safe [CommutativeSemigroup] context for [Long] (with overflow checking) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeCommutativeSemigroup() {
     CommutativeSemigroup.Key<Long>().withImpliedUsingFirst correspondsTo SafeLongContext
 }
+/**
+ * Registers the safe [Semigroup] context for [Long] (with overflow checking) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSafeSemigroup() {
     Semigroup.Key<Long>().withImpliedUsingFirst correspondsTo SafeLongContext
@@ -605,78 +765,228 @@ private data object SafeDoubleContext: Reification<Double>, Equality<Double>, Or
     // endregion
 }
 
+/**
+ * Returns the safe [Double] reification context (a singleton implementing [Reification] for [Double] with NaN/Infinity validation).
+ *
+ * @return The safe [Reification] context for [Double].
+ */
 public fun Double.Companion.safeReification(): Reification<Double> = SafeDoubleContext
+/**
+ * Returns the safe [Double] equality context (a singleton implementing [Equality] for [Double] with NaN/Infinity validation).
+ *
+ * @return The safe [Equality] context for [Double].
+ */
 public fun Double.Companion.safeEquality(): Equality<Double> = SafeDoubleContext
+/**
+ * Returns the safe [Double] order context (a singleton implementing [Order] for [Double] with NaN/Infinity validation).
+ *
+ * @return The safe [Order] context for [Double].
+ */
 public fun Double.Companion.safeOrder(): Order<Double> = SafeDoubleContext
+/**
+ * Returns the safe [Double] hashing context (a singleton implementing [Hashing] for [Double] with NaN/Infinity validation).
+ *
+ * @return The safe [Hashing] context for [Double].
+ */
 public fun Double.Companion.safeHashing(): Hashing<Double> = SafeDoubleContext
+/**
+ * Returns the safe [Double] field context (a singleton implementing [Field] for [Double] with NaN/Infinity validation).
+ *
+ * @return The safe [Field] context for [Double].
+ */
 public fun Double.Companion.safeField(): Field<Double> = SafeDoubleContext
+/**
+ * Returns the safe [Double] commutative ring context (a singleton implementing [CommutativeRing] for [Double] with NaN/Infinity validation).
+ *
+ * @return The safe [CommutativeRing] context for [Double].
+ */
 public fun Double.Companion.safeCommutativeRing(): CommutativeRing<Double> = SafeDoubleContext
+/**
+ * Returns the safe [Double] ring context (a singleton implementing [Ring] for [Double] with NaN/Infinity validation).
+ *
+ * @return The safe [Ring] context for [Double].
+ */
 public fun Double.Companion.safeRing(): Ring<Double> = SafeDoubleContext
+/**
+ * Returns the safe [Double] commutative semiring context (a singleton implementing [CommutativeSemiring] for [Double] with NaN/Infinity validation).
+ *
+ * @return The safe [CommutativeSemiring] context for [Double].
+ */
 public fun Double.Companion.safeCommutativeSemiring(): CommutativeSemiring<Double> = SafeDoubleContext
+/**
+ * Returns the safe [Double] semiring context (a singleton implementing [Semiring] for [Double] with NaN/Infinity validation).
+ *
+ * @return The safe [Semiring] context for [Double].
+ */
 public fun Double.Companion.safeSemiring(): Semiring<Double> = SafeDoubleContext
+/**
+ * Returns the safe [Double] commutative group context (a singleton implementing [CommutativeGroup] for [Double] with NaN/Infinity validation).
+ *
+ * @return The safe [CommutativeGroup] context for [Double].
+ */
 public fun Double.Companion.safeCommutativeGroup(): CommutativeGroup<Double> = SafeDoubleContext
+/**
+ * Returns the safe [Double] group context (a singleton implementing [Group] for [Double] with NaN/Infinity validation).
+ *
+ * @return The safe [Group] context for [Double].
+ */
 public fun Double.Companion.safeGroup(): Group<Double> = SafeDoubleContext
+/**
+ * Returns the safe [Double] commutative monoid context (a singleton implementing [CommutativeMonoid] for [Double] with NaN/Infinity validation).
+ *
+ * @return The safe [CommutativeMonoid] context for [Double].
+ */
 public fun Double.Companion.safeCommutativeMonoid(): CommutativeMonoid<Double> = SafeDoubleContext
+/**
+ * Returns the safe [Double] monoid context (a singleton implementing [Monoid] for [Double] with NaN/Infinity validation).
+ *
+ * @return The safe [Monoid] context for [Double].
+ */
 public fun Double.Companion.safeMonoid(): Monoid<Double> = SafeDoubleContext
+/**
+ * Returns the safe [Double] commutative semigroup context (a singleton implementing [CommutativeSemigroup] for [Double] with NaN/Infinity validation).
+ *
+ * @return The safe [CommutativeSemigroup] context for [Double].
+ */
 public fun Double.Companion.safeCommutativeSemigroup(): CommutativeSemigroup<Double> = SafeDoubleContext
+/**
+ * Returns the safe [Double] semigroup context (a singleton implementing [Semigroup] for [Double] with NaN/Infinity validation).
+ *
+ * @return The safe [Semigroup] context for [Double].
+ */
 public fun Double.Companion.safeSemigroup(): Semigroup<Double> = SafeDoubleContext
 
+/**
+ * Registers the safe [Reification] context for [Double] (with NaN/Infinity validation) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeReification() {
     Reification.Key<Double>().withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
+/**
+ * Registers the safe [Equality] context for [Double] (with NaN/Infinity validation) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeEquality() {
     Equality.Key<Double>().withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
+/**
+ * Registers the safe [Order] context for [Double] (with NaN/Infinity validation) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeOrder() {
     Order.Key<Double>().withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
+/**
+ * Registers the safe [Hashing] context for [Double] (with NaN/Infinity validation) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeHashing() {
     Hashing.Key<Double>().withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
+/**
+ * Registers the safe [Field] context for [Double] (with NaN/Infinity validation) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeField() {
     Field.Key<Double>().withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
+/**
+ * Registers the safe [CommutativeRing] context for [Double] (with NaN/Infinity validation) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeCommutativeRing() {
     CommutativeRing.Key<Double>().withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
+/**
+ * Registers the safe [Ring] context for [Double] (with NaN/Infinity validation) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeRing() {
     Ring.Key<Double>().withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
+/**
+ * Registers the safe [CommutativeSemiring] context for [Double] (with NaN/Infinity validation) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeCommutativeSemiring() {
     CommutativeSemiring.Key<Double>().withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
+/**
+ * Registers the safe [Semiring] context for [Double] (with NaN/Infinity validation) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeSemiring() {
     Semiring.Key<Double>().withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
+/**
+ * Registers the safe [CommutativeGroup] context for [Double] (with NaN/Infinity validation) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeCommutativeGroup() {
     CommutativeGroup.Key<Double>().withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
+/**
+ * Registers the safe [Group] context for [Double] (with NaN/Infinity validation) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeGroup() {
     Group.Key<Double>().withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
+/**
+ * Registers the safe [CommutativeMonoid] context for [Double] (with NaN/Infinity validation) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeCommutativeMonoid() {
     CommutativeMonoid.Key<Double>().withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
+/**
+ * Registers the safe [Monoid] context for [Double] (with NaN/Infinity validation) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeMonoid() {
     Monoid.Key<Double>().withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
+/**
+ * Registers the safe [CommutativeSemigroup] context for [Double] (with NaN/Infinity validation) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeCommutativeSemigroup() {
     CommutativeSemigroup.Key<Double>().withImpliedUsingFirst correspondsTo SafeDoubleContext
 }
+/**
+ * Registers the safe [Semigroup] context for [Double] (with NaN/Infinity validation) in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSafeSemigroup() {
     Semigroup.Key<Double>().withImpliedUsingFirst correspondsTo SafeDoubleContext
