@@ -9,7 +9,7 @@ package dev.lounres.kone.util.collectionOperations
 /**
  * Returns the first element in this object array for which [predicate] returns `true`.
  *
- * The [predicate] receives the zero-based [index] of each element together with the element itself.
+ * The [predicate] receives the zero-based index of each element together with the element itself.
  *
  * @param T The element type of this object array.
  * @receiver This object array to search from start to end.
@@ -25,7 +25,7 @@ public inline fun <T> Array<T>.firstThat(predicate: (index: Int, T) -> Boolean):
 /**
  * Returns the first element in this byte array for which [predicate] returns `true`.
  *
- * The [predicate] receives the zero-based [index] of each element together with the element itself.
+ * The [predicate] receives the zero-based index of each element together with the element itself.
  *
  * @receiver This byte array to search from start to end.
  * @param predicate Called with the index and each element; should return `true` for the element to return.
@@ -40,7 +40,7 @@ public inline fun ByteArray.firstThat(predicate: (index: Int, Byte) -> Boolean):
 /**
  * Returns the first element in this short array for which [predicate] returns `true`.
  *
- * The [predicate] receives the zero-based [index] of each element together with the element itself.
+ * The [predicate] receives the zero-based index of each element together with the element itself.
  *
  * @receiver This short array to search from start to end.
  * @param predicate Called with the index and each element; should return `true` for the element to return.
@@ -55,7 +55,7 @@ public inline fun ShortArray.firstThat(predicate: (index: Int, Short) -> Boolean
 /**
  * Returns the first element in this int array for which [predicate] returns `true`.
  *
- * The [predicate] receives the zero-based [index] of each element together with the element itself.
+ * The [predicate] receives the zero-based index of each element together with the element itself.
  *
  * @receiver This int array to search from start to end.
  * @param predicate Called with the index and each element; should return `true` for the element to return.
@@ -70,7 +70,7 @@ public inline fun IntArray.firstThat(predicate: (index: Int, Int) -> Boolean): I
 /**
  * Returns the first element in this long array for which [predicate] returns `true`.
  *
- * The [predicate] receives the zero-based [index] of each element together with the element itself.
+ * The [predicate] receives the zero-based index of each element together with the element itself.
  *
  * @receiver This long array to search from start to end.
  * @param predicate Called with the index and each element; should return `true` for the element to return.
@@ -85,7 +85,7 @@ public inline fun LongArray.firstThat(predicate: (index: Int, Long) -> Boolean):
 /**
  * Returns the first element in this float array for which [predicate] returns `true`.
  *
- * The [predicate] receives the zero-based [index] of each element together with the element itself.
+ * The [predicate] receives the zero-based index of each element together with the element itself.
  *
  * @receiver This float array to search from start to end.
  * @param predicate Called with the index and each element; should return `true` for the element to return.
@@ -100,7 +100,7 @@ public inline fun FloatArray.firstThat(predicate: (index: Int, Float) -> Boolean
 /**
  * Returns the first element in this double array for which [predicate] returns `true`.
  *
- * The [predicate] receives the zero-based [index] of each element together with the element itself.
+ * The [predicate] receives the zero-based index of each element together with the element itself.
  *
  * @receiver This double array to search from start to end.
  * @param predicate Called with the index and each element; should return `true` for the element to return.
@@ -115,7 +115,7 @@ public inline fun DoubleArray.firstThat(predicate: (index: Int, Double) -> Boole
 /**
  * Returns the first element in this boolean array for which [predicate] returns `true`.
  *
- * The [predicate] receives the zero-based [index] of each element together with the element itself.
+ * The [predicate] receives the zero-based index of each element together with the element itself.
  *
  * @receiver This boolean array to search from start to end.
  * @param predicate Called with the index and each element; should return `true` for the element to return.
@@ -130,7 +130,7 @@ public inline fun BooleanArray.firstThat(predicate: (index: Int, Boolean) -> Boo
 /**
  * Returns the first element in this char array for which [predicate] returns `true`.
  *
- * The [predicate] receives the zero-based [index] of each element together with the element itself.
+ * The [predicate] receives the zero-based index of each element together with the element itself.
  *
  * @receiver This char array to search from start to end.
  * @param predicate Called with the index and each element; should return `true` for the element to return.
@@ -145,7 +145,7 @@ public inline fun CharArray.firstThat(predicate: (index: Int, Char) -> Boolean):
 /**
  * Returns the first element in this object array for which [predicate] returns `true`, or `null` if none match.
  *
- * The [predicate] receives the zero-based [index] of each element together with the element itself.
+ * The [predicate] receives the zero-based index of each element together with the element itself.
  *
  * @param T The element type of this object array.
  * @receiver This object array to search from start to end.
@@ -160,7 +160,7 @@ public inline fun <T> Array<T>.firstThatOrNull(predicate: (index: Int, T) -> Boo
 /**
  * Returns the first element in this byte array for which [predicate] returns `true`, or `null` if none match.
  *
- * The [predicate] receives the zero-based [index] of each element together with the element itself.
+ * The [predicate] receives the zero-based index of each element together with the element itself.
  *
  * @receiver This byte array to search from start to end.
  * @param predicate Called with the index and each element; should return `true` for the element to return.
@@ -174,7 +174,7 @@ public inline fun ByteArray.firstThatOrNull(predicate: (index: Int, Byte) -> Boo
 /**
  * Returns the first element in this short array for which [predicate] returns `true`, or `null` if none match.
  *
- * The [predicate] receives the zero-based [index] of each element together with the element itself.
+ * The [predicate] receives the zero-based index of each element together with the element itself.
  *
  * @receiver This short array to search from start to end.
  * @param predicate Called with the index and each element; should return `true` for the element to return.
@@ -188,7 +188,7 @@ public inline fun ShortArray.firstThatOrNull(predicate: (index: Int, Short) -> B
 /**
  * Returns the first element in this int array for which [predicate] returns `true`, or `null` if none match.
  *
- * The [predicate] receives the zero-based [index] of each element together with the element itself.
+ * The [predicate] receives the zero-based index of each element together with the element itself.
  *
  * @receiver This int array to search from start to end.
  * @param predicate Called with the index and each element; should return `true` for the element to return.
@@ -202,7 +202,7 @@ public inline fun IntArray.firstThatOrNull(predicate: (index: Int, Int) -> Boole
 /**
  * Returns the first element in this long array for which [predicate] returns `true`, or `null` if none match.
  *
- * The [predicate] receives the zero-based [index] of each element together with the element itself.
+ * The [predicate] receives the zero-based index of each element together with the element itself.
  *
  * @receiver This long array to search from start to end.
  * @param predicate Called with the index and each element; should return `true` for the element to return.
@@ -216,7 +216,7 @@ public inline fun LongArray.firstThatOrNull(predicate: (index: Int, Long) -> Boo
 /**
  * Returns the first element in this float array for which [predicate] returns `true`, or `null` if none match.
  *
- * The [predicate] receives the zero-based [index] of each element together with the element itself.
+ * The [predicate] receives the zero-based index of each element together with the element itself.
  *
  * @receiver This float array to search from start to end.
  * @param predicate Called with the index and each element; should return `true` for the element to return.
@@ -230,7 +230,7 @@ public inline fun FloatArray.firstThatOrNull(predicate: (index: Int, Float) -> B
 /**
  * Returns the first element in this double array for which [predicate] returns `true`, or `null` if none match.
  *
- * The [predicate] receives the zero-based [index] of each element together with the element itself.
+ * The [predicate] receives the zero-based index of each element together with the element itself.
  *
  * @receiver This double array to search from start to end.
  * @param predicate Called with the index and each element; should return `true` for the element to return.
@@ -244,7 +244,7 @@ public inline fun DoubleArray.firstThatOrNull(predicate: (index: Int, Double) ->
 /**
  * Returns the first element in this boolean array for which [predicate] returns `true`, or `null` if none match.
  *
- * The [predicate] receives the zero-based [index] of each element together with the element itself.
+ * The [predicate] receives the zero-based index of each element together with the element itself.
  *
  * @receiver This boolean array to search from start to end.
  * @param predicate Called with the index and each element; should return `true` for the element to return.
@@ -258,7 +258,7 @@ public inline fun BooleanArray.firstThatOrNull(predicate: (index: Int, Boolean) 
 /**
  * Returns the first element in this char array for which [predicate] returns `true`, or `null` if none match.
  *
- * The [predicate] receives the zero-based [index] of each element together with the element itself.
+ * The [predicate] receives the zero-based index of each element together with the element itself.
  *
  * @receiver This char array to search from start to end.
  * @param predicate Called with the index and each element; should return `true` for the element to return.
