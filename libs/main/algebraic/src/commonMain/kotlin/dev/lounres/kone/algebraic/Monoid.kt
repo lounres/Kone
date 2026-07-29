@@ -30,10 +30,9 @@ public interface Monoid<Number> : Semigroup<Number> {
     
     // region Equality
     /**
-     * Checks whether an element equals the zero element.
+     * The check on being zero element operation on a [Number].
      *
-     * @receiver The element to check.
-     * @return `true` if this element equals [zero], `false` otherwise.
+     * @return The check context represented as [IsZero] instance.
      */
     @KoneContextInclude
     public val numberIsZero: IsZero<Number>
