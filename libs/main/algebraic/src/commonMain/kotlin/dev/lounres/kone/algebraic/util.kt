@@ -18,39 +18,72 @@ import dev.lounres.kone.relations.lt
 
 /**
  * Checks if [this] number is positive in the ordered semiring.
+ *
+ * @param monoid The monoid providing the zero element for comparison.
+ * @param order The order relation for comparison.
+ * @receiver The number to check.
+ * @param Number The type of numbers being compared.
+ * @return `true` if this number is greater than zero, `false` otherwise.
  */
-context(ring: Monoid<Number>, _: Order<Number>)
-public fun <Number> Number.isPositive(): Boolean = this gt ring.zero
+context(monoid: Monoid<Number>, order: Order<Number>)
+public fun <Number> Number.isPositive(): Boolean = this gt monoid.zero
+
 /**
  * Checks if [this] number is non-positive in the ordered semiring.
+ *
+ * @param monoid The monoid providing the zero element for comparison.
+ * @param order The order relation for comparison.
+ * @receiver The number to check.
+ * @param Number The type of numbers being compared.
+ * @return `true` if this number is less than or equal to zero, `false` otherwise.
  */
-context(ring: Monoid<Number>, _: Order<Number>)
-public fun <Number> Number.isNonPositive(): Boolean = this leq ring.zero
+context(monoid: Monoid<Number>, order: Order<Number>)
+public fun <Number> Number.isNonPositive(): Boolean = this leq monoid.zero
+
 /**
  * Checks if [this] number is negative in the ordered semiring.
+ *
+ * @param monoid The monoid providing the zero element for comparison.
+ * @param order The order relation for comparison.
+ * @receiver The number to check.
+ * @param Number The type of numbers being compared.
+ * @return `true` if this number is less than zero, `false` otherwise.
  */
-context(ring: Monoid<Number>, _: Order<Number>)
-public fun <Number> Number.isNegative(): Boolean = this lt ring.zero
+context(monoid: Monoid<Number>, order: Order<Number>)
+public fun <Number> Number.isNegative(): Boolean = this lt monoid.zero
+
 /**
  * Checks if [this] number is non-negative in the ordered semiring.
+ *
+ * @param monoid The monoid providing the zero element for comparison.
+ * @param order The order relation for comparison.
+ * @receiver The number to check.
+ * @param Number The type of numbers being compared.
+ * @return `true` if this number is greater than or equal to zero, `false` otherwise.
  */
-context(ring: Monoid<Number>, _: Order<Number>)
-public fun <Number> Number.isNonNegative(): Boolean = this geq ring.zero
+context(monoid: Monoid<Number>, order: Order<Number>)
+public fun <Number> Number.isNonNegative(): Boolean = this geq monoid.zero
 
 /**
  * Represents the sign of a number: negative, zero, or positive.
  *
- * @param signInt the integer representation of the sign: -1 for negative, 0 for zero, 1 for positive
+ * @param signInt The integer representation of the sign: -1 for negative, 0 for zero, 1 for positive.
  */
 public enum class Sign(
     private val signInt: Int
 ) {
-    Negative(-1), Zero(0), Positive(1);
+    /** Negative sign (for numbers less than zero). */
+    Negative(-1),
+    /** Zero sign (for numbers equal to zero). */
+    Zero(0),
+    /** Positive sign (for numbers greater than zero). */
+    Positive(1);
+    
     /**
      * Returns the integer representation of this sign.
      *
-     * @receiver the sign to convert
-     * @return -1 for [Negative], 0 for [Zero], 1 for [Positive]
+     * @receiver The sign to convert.
+     * @return `-1` for [Negative], `0` for [Zero], `1` for [Positive].
      */
     public fun toSignInt(): Int = signInt
 }
@@ -58,51 +91,56 @@ public enum class Sign(
 /**
  * Checks if this sign is positive.
  *
- * @receiver the sign to check
- * @return `true` if this sign is [Sign.Positive], `false` otherwise
+ * @receiver The sign to check.
+ * @return `true` if this sign is [Sign.Positive], `false` otherwise.
  */
 public fun Sign.isPositive(): Boolean = this == Sign.Positive
+
 /**
  * Checks if this sign is zero.
  *
- * @receiver the sign to check
- * @return `true` if this sign is [Sign.Zero], `false` otherwise
+ * @receiver The sign to check.
+ * @return `true` if this sign is [Sign.Zero], `false` otherwise.
  */
 public fun Sign.isZero(): Boolean = this == Sign.Zero
+
 /**
  * Checks if this sign is negative.
  *
- * @receiver the sign to check
- * @return `true` if this sign is [Sign.Negative], `false` otherwise
+ * @receiver The sign to check.
+ * @return `true` if this sign is [Sign.Negative], `false` otherwise.
  */
 public fun Sign.isNegative(): Boolean = this == Sign.Negative
+
 /**
  * Checks if this sign is non-positive (i.e. zero or negative).
  *
- * @receiver the sign to check
- * @return `true` if this sign is not [Sign.Positive], `false` otherwise
+ * @receiver The sign to check.
+ * @return `true` if this sign is not [Sign.Positive], `false` otherwise.
  */
 public fun Sign.isNonPositive(): Boolean = this != Sign.Positive
+
 /**
  * Checks if this sign is non-zero.
  *
- * @receiver the sign to check
- * @return `true` if this sign is not [Sign.Zero], `false` otherwise
+ * @receiver The sign to check.
+ * @return `true` if this sign is not [Sign.Zero], `false` otherwise.
  */
 public fun Sign.isNonZero(): Boolean = this != Sign.Zero
+
 /**
  * Checks if this sign is non-negative (i.e. zero or positive).
  *
- * @receiver the sign to check
- * @return `true` if this sign is not [Sign.Negative], `false` otherwise
+ * @receiver The sign to check.
+ * @return `true` if this sign is not [Sign.Negative], `false` otherwise.
  */
 public fun Sign.isNonNegative(): Boolean = this != Sign.Negative
 
 /**
  * Returns the negation of this sign.
  *
- * @receiver the sign to negate
- * @return [Sign.Positive] if this is [Sign.Negative], [Sign.Zero] if this is [Sign.Zero], [Sign.Negative] if this is [Sign.Positive]
+ * @receiver The sign to negate.
+ * @return [Sign.Positive] if this is [Sign.Negative], [Sign.Zero] if this is [Sign.Zero], [Sign.Negative] if this is [Sign.Positive].
  */
 public operator fun Sign.unaryMinus(): Sign =
     when (this) {
@@ -114,9 +152,9 @@ public operator fun Sign.unaryMinus(): Sign =
 /**
  * Multiplies this sign by another sign.
  *
- * @receiver the first sign
- * @param other the second sign
- * @return [Sign.Positive] if signs are equal and non-zero, [Sign.Negative] if signs differ and non-zero, [Sign.Zero] if either sign is zero
+ * @receiver The first sign.
+ * @param other The second sign.
+ * @return [Sign.Positive] if signs are equal and non-zero, [Sign.Negative] if signs differ and non-zero, [Sign.Zero] if either sign is zero.
  */
 public operator fun Sign.times(other: Sign): Sign =
     when {
@@ -128,15 +166,15 @@ public operator fun Sign.times(other: Sign): Sign =
 /**
  * Returns the sign of this number.
  *
- * @param ring the monoid providing the zero element for comparison
- * @param _ the order relation for comparison
- * @receiver the number whose sign is to be determined
- * @param Number the type of numbers being compared
- * @return [Sign.Positive] if this number is greater than zero, [Sign.Negative] if less than zero, [Sign.Zero] if equal to zero
+ * @param monoid The monoid providing the zero element for comparison.
+ * @param order The order relation for comparison.
+ * @receiver The number whose sign is to be determined.
+ * @param Number The type of numbers being compared.
+ * @return [Sign.Positive] if this number is greater than zero, [Sign.Negative] if less than zero, [Sign.Zero] if equal to zero.
  */
-context(ring: Monoid<Number>, _: Order<Number>)
+context(monoid: Monoid<Number>, order: Order<Number>)
 public fun <Number> Number.sign(): Sign =
-    when (this.compareWith(ring.zero)) {
+    when (this.compareWith(monoid.zero)) {
         ComparisonResult.LeftIsGreaterThanRight -> Sign.Positive
         ComparisonResult.LeftIsLessThanRight -> Sign.Negative
         ComparisonResult.Equal -> Sign.Zero
@@ -145,13 +183,25 @@ public fun <Number> Number.sign(): Sign =
 /**
  * Returns value of (mathematical) `sign` function.
  * I.e. returns `1` if [this] number is positive, `-1` if [this] number is negative, or `0` if [this] number is zero.
+ *
+ * @param monoid The monoid providing the zero element for comparison.
+ * @param order The order relation for comparison.
+ * @receiver The number whose sign integer is to be returned.
+ * @param Number The type of numbers being compared.
+ * @return `1` if this number is positive, `-1` if negative, `0` if zero.
  */
-context(ring: Monoid<Number>, _: Order<Number>)
-public fun <Number> Number.signInt(): Int = this.compareWith(ring.zero).asKotlinComparisonResult()
+context(monoid: Monoid<Number>, order: Order<Number>)
+public fun <Number> Number.signInt(): Int = this.compareWith(monoid.zero).asKotlinComparisonResult()
 
 /**
  * Returns absolute value of [this number][this].
  * I.e. if [this number][this] is non-negative it is returned, otherwise its negation is returned.
+ *
+ * @param group The group providing the negation operation.
+ * @param order The order relation for comparison.
+ * @receiver The number whose absolute value is to be returned.
+ * @param Number The type of numbers being compared.
+ * @return This number if non-negative, otherwise its negation.
  */
-context(group: Group<Number>, _: Order<Number>)
+context(group: Group<Number>, order: Order<Number>)
 public fun <Number> Number.absoluteValue(): Number = group.numberUnaryMinus { if (this.isNonNegative()) this else -this }
