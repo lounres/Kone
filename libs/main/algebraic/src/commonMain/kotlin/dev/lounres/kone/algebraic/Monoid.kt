@@ -23,7 +23,7 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 public interface Monoid<Number> : Semigroup<Number> {
     // region Constants
     /**
-     * The identity element (a.k.a. zero element) of the monoid.
+     * The neutral additive element (a.k.a. *zero element*) of the monoid.
      */
     public val zero: Number
     // endregion
