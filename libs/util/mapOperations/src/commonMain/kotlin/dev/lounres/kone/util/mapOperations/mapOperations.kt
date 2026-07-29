@@ -584,7 +584,7 @@ public inline fun <K, V, T: R, R> Map<out K, V>.mapReduceOrNull(transform: (Map.
 }
 
 /**
- * Folds over the union of [map1] and [map2], applying different [operation] variants depending on key membership.
+ * Folds over the union of [map1] and [map2], applying different `operation` variants depending on key membership.
  *
  * Entries unique to [map2] are processed with [operation2], then entries from [map1] are processed with [operation1]
  * when the key is absent from [map2], or with [operationMerge] when the key appears in both maps.
