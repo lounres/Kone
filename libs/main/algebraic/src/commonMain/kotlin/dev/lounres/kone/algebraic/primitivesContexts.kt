@@ -115,83 +115,243 @@ private data object ByteContext: Reification<Byte>, Equality<Byte>, Order<Byte>,
     // endregion
 }
 
+/**
+ * Returns the [Byte] reification context (a singleton implementing [Reification] for [Byte]).
+ *
+ * @return The [Reification] context for [Byte].
+ */
 public fun Byte.Companion.reification(): Reification<Byte> = ByteContext
+/**
+ * Returns the [Byte] equality context (a singleton implementing [Equality] for [Byte]).
+ *
+ * @return The [Equality] context for [Byte].
+ */
 public fun Byte.Companion.equality(): Equality<Byte> = ByteContext
+/**
+ * Returns the [Byte] order context (a singleton implementing [Order] for [Byte]).
+ *
+ * @return The [Order] context for [Byte].
+ */
 public fun Byte.Companion.order(): Order<Byte> = ByteContext
+/**
+ * Returns the [Byte] hashing context (a singleton implementing [Hashing] for [Byte]).
+ *
+ * @return The [Hashing] context for [Byte].
+ */
 public fun Byte.Companion.hashing(): Hashing<Byte> = ByteContext
+/**
+ * Returns the [Byte] euclidean ring context (a singleton implementing [EuclideanRing] for [Byte]).
+ *
+ * @return The [EuclideanRing] context for [Byte].
+ */
 public fun Byte.Companion.euclideanRing(): EuclideanRing<Byte> = ByteContext
+/**
+ * Returns the [Byte] euclidean semiring context (a singleton implementing [EuclideanSemiring] for [Byte]).
+ *
+ * @return The [EuclideanSemiring] context for [Byte].
+ */
 public fun Byte.Companion.euclideanSemiring(): EuclideanSemiring<Byte> = ByteContext
+/**
+ * Returns the [Byte] commutative ring context (a singleton implementing [CommutativeRing] for [Byte]).
+ *
+ * @return The [CommutativeRing] context for [Byte].
+ */
 public fun Byte.Companion.commutativeRing(): CommutativeRing<Byte> = ByteContext
+/**
+ * Returns the [Byte] ring context (a singleton implementing [Ring] for [Byte]).
+ *
+ * @return The [Ring] context for [Byte].
+ */
 public fun Byte.Companion.ring(): Ring<Byte> = ByteContext
+/**
+ * Returns the [Byte] commutative semiring context (a singleton implementing [CommutativeSemiring] for [Byte]).
+ *
+ * @return The [CommutativeSemiring] context for [Byte].
+ */
 public fun Byte.Companion.commutativeSemiring(): CommutativeSemiring<Byte> = ByteContext
+/**
+ * Returns the [Byte] semiring context (a singleton implementing [Semiring] for [Byte]).
+ *
+ * @return The [Semiring] context for [Byte].
+ */
 public fun Byte.Companion.semiring(): Semiring<Byte> = ByteContext
+/**
+ * Returns the [Byte] commutative group context (a singleton implementing [CommutativeGroup] for [Byte]).
+ *
+ * @return The [CommutativeGroup] context for [Byte].
+ */
 public fun Byte.Companion.commutativeGroup(): CommutativeGroup<Byte> = ByteContext
+/**
+ * Returns the [Byte] group context (a singleton implementing [Group] for [Byte]).
+ *
+ * @return The [Group] context for [Byte].
+ */
 public fun Byte.Companion.group(): Group<Byte> = ByteContext
+/**
+ * Returns the [Byte] commutative monoid context (a singleton implementing [CommutativeMonoid] for [Byte]).
+ *
+ * @return The [CommutativeMonoid] context for [Byte].
+ */
 public fun Byte.Companion.commutativeMonoid(): CommutativeMonoid<Byte> = ByteContext
+/**
+ * Returns the [Byte] monoid context (a singleton implementing [Monoid] for [Byte]).
+ *
+ * @return The [Monoid] context for [Byte].
+ */
 public fun Byte.Companion.monoid(): Monoid<Byte> = ByteContext
+/**
+ * Returns the [Byte] commutative semigroup context (a singleton implementing [CommutativeSemigroup] for [Byte]).
+ *
+ * @return The [CommutativeSemigroup] context for [Byte].
+ */
 public fun Byte.Companion.commutativeSemigroup(): CommutativeSemigroup<Byte> = ByteContext
+/**
+ * Returns the [Byte] semigroup context (a singleton implementing [Semigroup] for [Byte]).
+ *
+ * @return The [Semigroup] context for [Byte].
+ */
 public fun Byte.Companion.semigroup(): Semigroup<Byte> = ByteContext
 
+/**
+ * Registers the [Reification] context for [Byte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Byte.Companion.setReification() {
     Reification.Key<Byte>().withImpliedUsingFirst correspondsTo ByteContext
 }
+/**
+ * Registers the [Equality] context for [Byte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Byte.Companion.setEquality() {
     Equality.Key<Byte>().withImpliedUsingFirst correspondsTo ByteContext
 }
+/**
+ * Registers the [Order] context for [Byte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Byte.Companion.setOrder() {
     Order.Key<Byte>().withImpliedUsingFirst correspondsTo ByteContext
 }
+/**
+ * Registers the [Hashing] context for [Byte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Byte.Companion.setHashing() {
     Hashing.Key<Byte>().withImpliedUsingFirst correspondsTo ByteContext
 }
+/**
+ * Registers the [EuclideanRing] context for [Byte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Byte.Companion.setEuclideanRing() {
     EuclideanRing.Key<Byte>().withImpliedUsingFirst correspondsTo ByteContext
 }
+/**
+ * Registers the [EuclideanSemiring] context for [Byte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Byte.Companion.setEuclideanSemiring() {
     EuclideanSemiring.Key<Byte>().withImpliedUsingFirst correspondsTo ByteContext
 }
+/**
+ * Registers the [CommutativeRing] context for [Byte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Byte.Companion.setCommutativeRing() {
     CommutativeRing.Key<Byte>().withImpliedUsingFirst correspondsTo ByteContext
 }
+/**
+ * Registers the [Ring] context for [Byte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Byte.Companion.setRing() {
     Ring.Key<Byte>().withImpliedUsingFirst correspondsTo ByteContext
 }
+/**
+ * Registers the [CommutativeSemiring] context for [Byte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Byte.Companion.setCommutativeSemiring() {
     CommutativeSemiring.Key<Byte>().withImpliedUsingFirst correspondsTo ByteContext
 }
+/**
+ * Registers the [Semiring] context for [Byte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Byte.Companion.setSemiring() {
     Semiring.Key<Byte>().withImpliedUsingFirst correspondsTo ByteContext
 }
+/**
+ * Registers the [CommutativeGroup] context for [Byte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Byte.Companion.setCommutativeGroup() {
     CommutativeGroup.Key<Byte>().withImpliedUsingFirst correspondsTo ByteContext
 }
+/**
+ * Registers the [Group] context for [Byte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Byte.Companion.setGroup() {
     Group.Key<Byte>().withImpliedUsingFirst correspondsTo ByteContext
 }
+/**
+ * Registers the [CommutativeMonoid] context for [Byte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Byte.Companion.setCommutativeMonoid() {
     CommutativeMonoid.Key<Byte>().withImpliedUsingFirst correspondsTo ByteContext
 }
+/**
+ * Registers the [Monoid] context for [Byte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Byte.Companion.setMonoid() {
     Monoid.Key<Byte>().withImpliedUsingFirst correspondsTo ByteContext
 }
+/**
+ * Registers the [CommutativeSemigroup] context for [Byte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Byte.Companion.setCommutativeSemigroup() {
     CommutativeSemigroup.Key<Byte>().withImpliedUsingFirst correspondsTo ByteContext
 }
+/**
+ * Registers the [Semigroup] context for [Byte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Byte.Companion.setSemigroup() {
     Semigroup.Key<Byte>().withImpliedUsingFirst correspondsTo ByteContext
@@ -289,83 +449,243 @@ private data object ShortContext: Reification<Short>, Equality<Short>, Order<Sho
     // endregion
 }
 
+/**
+ * Returns the [Short] reification context (a singleton implementing [Reification] for [Short]).
+ *
+ * @return The [Reification] context for [Short].
+ */
 public fun Short.Companion.reification(): Reification<Short> = ShortContext
+/**
+ * Returns the [Short] equality context (a singleton implementing [Equality] for [Short]).
+ *
+ * @return The [Equality] context for [Short].
+ */
 public fun Short.Companion.equality(): Equality<Short> = ShortContext
+/**
+ * Returns the [Short] order context (a singleton implementing [Order] for [Short]).
+ *
+ * @return The [Order] context for [Short].
+ */
 public fun Short.Companion.order(): Order<Short> = ShortContext
+/**
+ * Returns the [Short] hashing context (a singleton implementing [Hashing] for [Short]).
+ *
+ * @return The [Hashing] context for [Short].
+ */
 public fun Short.Companion.hashing(): Hashing<Short> = ShortContext
+/**
+ * Returns the [Short] euclidean ring context (a singleton implementing [EuclideanRing] for [Short]).
+ *
+ * @return The [EuclideanRing] context for [Short].
+ */
 public fun Short.Companion.euclideanRing(): EuclideanRing<Short> = ShortContext
+/**
+ * Returns the [Short] euclidean semiring context (a singleton implementing [EuclideanSemiring] for [Short]).
+ *
+ * @return The [EuclideanSemiring] context for [Short].
+ */
 public fun Short.Companion.euclideanSemiring(): EuclideanSemiring<Short> = ShortContext
+/**
+ * Returns the [Short] commutative ring context (a singleton implementing [CommutativeRing] for [Short]).
+ *
+ * @return The [CommutativeRing] context for [Short].
+ */
 public fun Short.Companion.commutativeRing(): CommutativeRing<Short> = ShortContext
+/**
+ * Returns the [Short] ring context (a singleton implementing [Ring] for [Short]).
+ *
+ * @return The [Ring] context for [Short].
+ */
 public fun Short.Companion.ring(): Ring<Short> = ShortContext
+/**
+ * Returns the [Short] commutative semiring context (a singleton implementing [CommutativeSemiring] for [Short]).
+ *
+ * @return The [CommutativeSemiring] context for [Short].
+ */
 public fun Short.Companion.commutativeSemiring(): CommutativeSemiring<Short> = ShortContext
+/**
+ * Returns the [Short] semiring context (a singleton implementing [Semiring] for [Short]).
+ *
+ * @return The [Semiring] context for [Short].
+ */
 public fun Short.Companion.semiring(): Semiring<Short> = ShortContext
+/**
+ * Returns the [Short] commutative group context (a singleton implementing [CommutativeGroup] for [Short]).
+ *
+ * @return The [CommutativeGroup] context for [Short].
+ */
 public fun Short.Companion.commutativeGroup(): CommutativeGroup<Short> = ShortContext
+/**
+ * Returns the [Short] group context (a singleton implementing [Group] for [Short]).
+ *
+ * @return The [Group] context for [Short].
+ */
 public fun Short.Companion.group(): Group<Short> = ShortContext
+/**
+ * Returns the [Short] commutative monoid context (a singleton implementing [CommutativeMonoid] for [Short]).
+ *
+ * @return The [CommutativeMonoid] context for [Short].
+ */
 public fun Short.Companion.commutativeMonoid(): CommutativeMonoid<Short> = ShortContext
+/**
+ * Returns the [Short] monoid context (a singleton implementing [Monoid] for [Short]).
+ *
+ * @return The [Monoid] context for [Short].
+ */
 public fun Short.Companion.monoid(): Monoid<Short> = ShortContext
+/**
+ * Returns the [Short] commutative semigroup context (a singleton implementing [CommutativeSemigroup] for [Short]).
+ *
+ * @return The [CommutativeSemigroup] context for [Short].
+ */
 public fun Short.Companion.commutativeSemigroup(): CommutativeSemigroup<Short> = ShortContext
+/**
+ * Returns the [Short] semigroup context (a singleton implementing [Semigroup] for [Short]).
+ *
+ * @return The [Semigroup] context for [Short].
+ */
 public fun Short.Companion.semigroup(): Semigroup<Short> = ShortContext
 
+/**
+ * Registers the [Reification] context for [Short] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Short.Companion.setReification() {
     Reification.Key<Short>().withImpliedUsingFirst correspondsTo ShortContext
 }
+/**
+ * Registers the [Equality] context for [Short] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Short.Companion.setEquality() {
     Equality.Key<Short>().withImpliedUsingFirst correspondsTo ShortContext
 }
+/**
+ * Registers the [Order] context for [Short] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Short.Companion.setOrder() {
     Order.Key<Short>().withImpliedUsingFirst correspondsTo ShortContext
 }
+/**
+ * Registers the [Hashing] context for [Short] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Short.Companion.setHashing() {
     Hashing.Key<Short>().withImpliedUsingFirst correspondsTo ShortContext
 }
+/**
+ * Registers the [EuclideanRing] context for [Short] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Short.Companion.setEuclideanRing() {
     EuclideanRing.Key<Short>().withImpliedUsingFirst correspondsTo ShortContext
 }
+/**
+ * Registers the [EuclideanSemiring] context for [Short] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Short.Companion.setEuclideanSemiring() {
     EuclideanSemiring.Key<Short>().withImpliedUsingFirst correspondsTo ShortContext
 }
+/**
+ * Registers the [CommutativeRing] context for [Short] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Short.Companion.setCommutativeRing() {
     CommutativeRing.Key<Short>().withImpliedUsingFirst correspondsTo ShortContext
 }
+/**
+ * Registers the [Ring] context for [Short] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Short.Companion.setRing() {
     Ring.Key<Short>().withImpliedUsingFirst correspondsTo ShortContext
 }
+/**
+ * Registers the [CommutativeSemiring] context for [Short] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Short.Companion.setCommutativeSemiring() {
     CommutativeSemiring.Key<Short>().withImpliedUsingFirst correspondsTo ShortContext
 }
+/**
+ * Registers the [Semiring] context for [Short] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Short.Companion.setSemiring() {
     Semiring.Key<Short>().withImpliedUsingFirst correspondsTo ShortContext
 }
+/**
+ * Registers the [CommutativeGroup] context for [Short] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Short.Companion.setCommutativeGroup() {
     CommutativeGroup.Key<Short>().withImpliedUsingFirst correspondsTo ShortContext
 }
+/**
+ * Registers the [Group] context for [Short] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Short.Companion.setGroup() {
     Group.Key<Short>().withImpliedUsingFirst correspondsTo ShortContext
 }
+/**
+ * Registers the [CommutativeMonoid] context for [Short] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Short.Companion.setCommutativeMonoid() {
     CommutativeMonoid.Key<Short>().withImpliedUsingFirst correspondsTo ShortContext
 }
+/**
+ * Registers the [Monoid] context for [Short] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Short.Companion.setMonoid() {
     Monoid.Key<Short>().withImpliedUsingFirst correspondsTo ShortContext
 }
+/**
+ * Registers the [CommutativeSemigroup] context for [Short] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Short.Companion.setCommutativeSemigroup() {
     CommutativeSemigroup.Key<Short>().withImpliedUsingFirst correspondsTo ShortContext
 }
+/**
+ * Registers the [Semigroup] context for [Short] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Short.Companion.setSemigroup() {
     Semigroup.Key<Short>().withImpliedUsingFirst correspondsTo ShortContext
@@ -463,83 +783,243 @@ private data object IntContext: Reification<Int>, Equality<Int>, Order<Int>, Has
     // endregion
 }
 
+/**
+ * Returns the [Int] reification context (a singleton implementing [Reification] for [Int]).
+ *
+ * @return The [Reification] context for [Int].
+ */
 public fun Int.Companion.reification(): Reification<Int> = IntContext
+/**
+ * Returns the [Int] equality context (a singleton implementing [Equality] for [Int]).
+ *
+ * @return The [Equality] context for [Int].
+ */
 public fun Int.Companion.equality(): Equality<Int> = IntContext
+/**
+ * Returns the [Int] order context (a singleton implementing [Order] for [Int]).
+ *
+ * @return The [Order] context for [Int].
+ */
 public fun Int.Companion.order(): Order<Int> = IntContext
+/**
+ * Returns the [Int] hashing context (a singleton implementing [Hashing] for [Int]).
+ *
+ * @return The [Hashing] context for [Int].
+ */
 public fun Int.Companion.hashing(): Hashing<Int> = IntContext
+/**
+ * Returns the [Int] euclidean ring context (a singleton implementing [EuclideanRing] for [Int]).
+ *
+ * @return The [EuclideanRing] context for [Int].
+ */
 public fun Int.Companion.euclideanRing(): EuclideanRing<Int> = IntContext
+/**
+ * Returns the [Int] euclidean semiring context (a singleton implementing [EuclideanSemiring] for [Int]).
+ *
+ * @return The [EuclideanSemiring] context for [Int].
+ */
 public fun Int.Companion.euclideanSemiring(): EuclideanSemiring<Int> = IntContext
+/**
+ * Returns the [Int] commutative ring context (a singleton implementing [CommutativeRing] for [Int]).
+ *
+ * @return The [CommutativeRing] context for [Int].
+ */
 public fun Int.Companion.commutativeRing(): CommutativeRing<Int> = IntContext
+/**
+ * Returns the [Int] ring context (a singleton implementing [Ring] for [Int]).
+ *
+ * @return The [Ring] context for [Int].
+ */
 public fun Int.Companion.ring(): Ring<Int> = IntContext
+/**
+ * Returns the [Int] commutative semiring context (a singleton implementing [CommutativeSemiring] for [Int]).
+ *
+ * @return The [CommutativeSemiring] context for [Int].
+ */
 public fun Int.Companion.commutativeSemiring(): CommutativeSemiring<Int> = IntContext
+/**
+ * Returns the [Int] semiring context (a singleton implementing [Semiring] for [Int]).
+ *
+ * @return The [Semiring] context for [Int].
+ */
 public fun Int.Companion.semiring(): Semiring<Int> = IntContext
+/**
+ * Returns the [Int] commutative group context (a singleton implementing [CommutativeGroup] for [Int]).
+ *
+ * @return The [CommutativeGroup] context for [Int].
+ */
 public fun Int.Companion.commutativeGroup(): CommutativeGroup<Int> = IntContext
+/**
+ * Returns the [Int] group context (a singleton implementing [Group] for [Int]).
+ *
+ * @return The [Group] context for [Int].
+ */
 public fun Int.Companion.group(): Group<Int> = IntContext
+/**
+ * Returns the [Int] commutative monoid context (a singleton implementing [CommutativeMonoid] for [Int]).
+ *
+ * @return The [CommutativeMonoid] context for [Int].
+ */
 public fun Int.Companion.commutativeMonoid(): CommutativeMonoid<Int> = IntContext
+/**
+ * Returns the [Int] monoid context (a singleton implementing [Monoid] for [Int]).
+ *
+ * @return The [Monoid] context for [Int].
+ */
 public fun Int.Companion.monoid(): Monoid<Int> = IntContext
+/**
+ * Returns the [Int] commutative semigroup context (a singleton implementing [CommutativeSemigroup] for [Int]).
+ *
+ * @return The [CommutativeSemigroup] context for [Int].
+ */
 public fun Int.Companion.commutativeSemigroup(): CommutativeSemigroup<Int> = IntContext
+/**
+ * Returns the [Int] semigroup context (a singleton implementing [Semigroup] for [Int]).
+ *
+ * @return The [Semigroup] context for [Int].
+ */
 public fun Int.Companion.semigroup(): Semigroup<Int> = IntContext
 
+/**
+ * Registers the [Reification] context for [Int] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Int.Companion.setReification() {
     Reification.Key<Int>().withImpliedUsingFirst correspondsTo IntContext
 }
+/**
+ * Registers the [Equality] context for [Int] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Int.Companion.setEquality() {
     Equality.Key<Int>().withImpliedUsingFirst correspondsTo IntContext
 }
+/**
+ * Registers the [Order] context for [Int] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Int.Companion.setOrder() {
     Order.Key<Int>().withImpliedUsingFirst correspondsTo IntContext
 }
+/**
+ * Registers the [Hashing] context for [Int] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Int.Companion.setHashing() {
     Hashing.Key<Int>().withImpliedUsingFirst correspondsTo IntContext
 }
+/**
+ * Registers the [EuclideanRing] context for [Int] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Int.Companion.setEuclideanRing() {
     EuclideanRing.Key<Int>().withImpliedUsingFirst correspondsTo IntContext
 }
+/**
+ * Registers the [EuclideanSemiring] context for [Int] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Int.Companion.setEuclideanSemiring() {
     EuclideanSemiring.Key<Int>().withImpliedUsingFirst correspondsTo IntContext
 }
+/**
+ * Registers the [CommutativeRing] context for [Int] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Int.Companion.setCommutativeRing() {
     CommutativeRing.Key<Int>().withImpliedUsingFirst correspondsTo IntContext
 }
+/**
+ * Registers the [Ring] context for [Int] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Int.Companion.setRing() {
     Ring.Key<Int>().withImpliedUsingFirst correspondsTo IntContext
 }
+/**
+ * Registers the [CommutativeSemiring] context for [Int] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Int.Companion.setCommutativeSemiring() {
     CommutativeSemiring.Key<Int>().withImpliedUsingFirst correspondsTo IntContext
 }
+/**
+ * Registers the [Semiring] context for [Int] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Int.Companion.setSemiring() {
     Semiring.Key<Int>().withImpliedUsingFirst correspondsTo IntContext
 }
+/**
+ * Registers the [CommutativeGroup] context for [Int] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Int.Companion.setCommutativeGroup() {
     CommutativeGroup.Key<Int>().withImpliedUsingFirst correspondsTo IntContext
 }
+/**
+ * Registers the [Group] context for [Int] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Int.Companion.setGroup() {
     Group.Key<Int>().withImpliedUsingFirst correspondsTo IntContext
 }
+/**
+ * Registers the [CommutativeMonoid] context for [Int] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Int.Companion.setCommutativeMonoid() {
     CommutativeMonoid.Key<Int>().withImpliedUsingFirst correspondsTo IntContext
 }
+/**
+ * Registers the [Monoid] context for [Int] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Int.Companion.setMonoid() {
     Monoid.Key<Int>().withImpliedUsingFirst correspondsTo IntContext
 }
+/**
+ * Registers the [CommutativeSemigroup] context for [Int] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Int.Companion.setCommutativeSemigroup() {
     CommutativeSemigroup.Key<Int>().withImpliedUsingFirst correspondsTo IntContext
 }
+/**
+ * Registers the [Semigroup] context for [Int] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Int.Companion.setSemigroup() {
     Semigroup.Key<Int>().withImpliedUsingFirst correspondsTo IntContext
@@ -637,83 +1117,243 @@ private data object LongContext: Reification<Long>, Equality<Long>, Order<Long>,
     // endregion
 }
 
+/**
+ * Returns the [Long] reification context (a singleton implementing [Reification] for [Long]).
+ *
+ * @return The [Reification] context for [Long].
+ */
 public fun Long.Companion.reification(): Reification<Long> = LongContext
+/**
+ * Returns the [Long] equality context (a singleton implementing [Equality] for [Long]).
+ *
+ * @return The [Equality] context for [Long].
+ */
 public fun Long.Companion.equality(): Equality<Long> = LongContext
+/**
+ * Returns the [Long] order context (a singleton implementing [Order] for [Long]).
+ *
+ * @return The [Order] context for [Long].
+ */
 public fun Long.Companion.order(): Order<Long> = LongContext
+/**
+ * Returns the [Long] hashing context (a singleton implementing [Hashing] for [Long]).
+ *
+ * @return The [Hashing] context for [Long].
+ */
 public fun Long.Companion.hashing(): Hashing<Long> = LongContext
+/**
+ * Returns the [Long] euclidean ring context (a singleton implementing [EuclideanRing] for [Long]).
+ *
+ * @return The [EuclideanRing] context for [Long].
+ */
 public fun Long.Companion.euclideanRing(): EuclideanRing<Long> = LongContext
+/**
+ * Returns the [Long] euclidean semiring context (a singleton implementing [EuclideanSemiring] for [Long]).
+ *
+ * @return The [EuclideanSemiring] context for [Long].
+ */
 public fun Long.Companion.euclideanSemiring(): EuclideanSemiring<Long> = LongContext
+/**
+ * Returns the [Long] commutative ring context (a singleton implementing [CommutativeRing] for [Long]).
+ *
+ * @return The [CommutativeRing] context for [Long].
+ */
 public fun Long.Companion.commutativeRing(): CommutativeRing<Long> = LongContext
+/**
+ * Returns the [Long] ring context (a singleton implementing [Ring] for [Long]).
+ *
+ * @return The [Ring] context for [Long].
+ */
 public fun Long.Companion.ring(): Ring<Long> = LongContext
+/**
+ * Returns the [Long] commutative semiring context (a singleton implementing [CommutativeSemiring] for [Long]).
+ *
+ * @return The [CommutativeSemiring] context for [Long].
+ */
 public fun Long.Companion.commutativeSemiring(): CommutativeSemiring<Long> = LongContext
+/**
+ * Returns the [Long] semiring context (a singleton implementing [Semiring] for [Long]).
+ *
+ * @return The [Semiring] context for [Long].
+ */
 public fun Long.Companion.semiring(): Semiring<Long> = LongContext
+/**
+ * Returns the [Long] commutative group context (a singleton implementing [CommutativeGroup] for [Long]).
+ *
+ * @return The [CommutativeGroup] context for [Long].
+ */
 public fun Long.Companion.commutativeGroup(): CommutativeGroup<Long> = LongContext
+/**
+ * Returns the [Long] group context (a singleton implementing [Group] for [Long]).
+ *
+ * @return The [Group] context for [Long].
+ */
 public fun Long.Companion.group(): Group<Long> = LongContext
+/**
+ * Returns the [Long] commutative monoid context (a singleton implementing [CommutativeMonoid] for [Long]).
+ *
+ * @return The [CommutativeMonoid] context for [Long].
+ */
 public fun Long.Companion.commutativeMonoid(): CommutativeMonoid<Long> = LongContext
+/**
+ * Returns the [Long] monoid context (a singleton implementing [Monoid] for [Long]).
+ *
+ * @return The [Monoid] context for [Long].
+ */
 public fun Long.Companion.monoid(): Monoid<Long> = LongContext
+/**
+ * Returns the [Long] commutative semigroup context (a singleton implementing [CommutativeSemigroup] for [Long]).
+ *
+ * @return The [CommutativeSemigroup] context for [Long].
+ */
 public fun Long.Companion.commutativeSemigroup(): CommutativeSemigroup<Long> = LongContext
+/**
+ * Returns the [Long] semigroup context (a singleton implementing [Semigroup] for [Long]).
+ *
+ * @return The [Semigroup] context for [Long].
+ */
 public fun Long.Companion.semigroup(): Semigroup<Long> = LongContext
 
+/**
+ * Registers the [Reification] context for [Long] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setReification() {
     Reification.Key<Long>().withImpliedUsingFirst correspondsTo LongContext
 }
+/**
+ * Registers the [Equality] context for [Long] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setEquality() {
     Equality.Key<Long>().withImpliedUsingFirst correspondsTo LongContext
 }
+/**
+ * Registers the [Order] context for [Long] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setOrder() {
     Order.Key<Long>().withImpliedUsingFirst correspondsTo LongContext
 }
+/**
+ * Registers the [Hashing] context for [Long] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setHashing() {
     Hashing.Key<Long>().withImpliedUsingFirst correspondsTo LongContext
 }
+/**
+ * Registers the [EuclideanRing] context for [Long] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setEuclideanRing() {
     EuclideanRing.Key<Long>().withImpliedUsingFirst correspondsTo LongContext
 }
+/**
+ * Registers the [EuclideanSemiring] context for [Long] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setEuclideanSemiring() {
     EuclideanSemiring.Key<Long>().withImpliedUsingFirst correspondsTo LongContext
 }
+/**
+ * Registers the [CommutativeRing] context for [Long] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setCommutativeRing() {
     CommutativeRing.Key<Long>().withImpliedUsingFirst correspondsTo LongContext
 }
+/**
+ * Registers the [Ring] context for [Long] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setRing() {
     Ring.Key<Long>().withImpliedUsingFirst correspondsTo LongContext
 }
+/**
+ * Registers the [CommutativeSemiring] context for [Long] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setCommutativeSemiring() {
     CommutativeSemiring.Key<Long>().withImpliedUsingFirst correspondsTo LongContext
 }
+/**
+ * Registers the [Semiring] context for [Long] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSemiring() {
     Semiring.Key<Long>().withImpliedUsingFirst correspondsTo LongContext
 }
+/**
+ * Registers the [CommutativeGroup] context for [Long] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setCommutativeGroup() {
     CommutativeGroup.Key<Long>().withImpliedUsingFirst correspondsTo LongContext
 }
+/**
+ * Registers the [Group] context for [Long] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setGroup() {
     Group.Key<Long>().withImpliedUsingFirst correspondsTo LongContext
 }
+/**
+ * Registers the [CommutativeMonoid] context for [Long] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setCommutativeMonoid() {
     CommutativeMonoid.Key<Long>().withImpliedUsingFirst correspondsTo LongContext
 }
+/**
+ * Registers the [Monoid] context for [Long] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setMonoid() {
     Monoid.Key<Long>().withImpliedUsingFirst correspondsTo LongContext
 }
+/**
+ * Registers the [CommutativeSemigroup] context for [Long] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setCommutativeSemigroup() {
     CommutativeSemigroup.Key<Long>().withImpliedUsingFirst correspondsTo LongContext
 }
+/**
+ * Registers the [Semigroup] context for [Long] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Long.Companion.setSemigroup() {
     Semigroup.Key<Long>().withImpliedUsingFirst correspondsTo LongContext
@@ -788,58 +1428,168 @@ private data object UByteContext: Reification<UByte>, Equality<UByte>, Order<UBy
     // endregion
 }
 
+/**
+ * Returns the [UByte] reification context (a singleton implementing [Reification] for [UByte]).
+ *
+ * @return The [Reification] context for [UByte].
+ */
 public fun UByte.Companion.reification(): Reification<UByte> = UByteContext
+/**
+ * Returns the [UByte] equality context (a singleton implementing [Equality] for [UByte]).
+ *
+ * @return The [Equality] context for [UByte].
+ */
 public fun UByte.Companion.equality(): Equality<UByte> = UByteContext
+/**
+ * Returns the [UByte] order context (a singleton implementing [Order] for [UByte]).
+ *
+ * @return The [Order] context for [UByte].
+ */
 public fun UByte.Companion.order(): Order<UByte> = UByteContext
+/**
+ * Returns the [UByte] hashing context (a singleton implementing [Hashing] for [UByte]).
+ *
+ * @return The [Hashing] context for [UByte].
+ */
 public fun UByte.Companion.hashing(): Hashing<UByte> = UByteContext
+/**
+ * Returns the [UByte] euclidean semiring context (a singleton implementing [EuclideanSemiring] for [UByte]).
+ *
+ * @return The [EuclideanSemiring] context for [UByte].
+ */
 public fun UByte.Companion.euclideanSemiring(): EuclideanSemiring<UByte> = UByteContext
+/**
+ * Returns the [UByte] commutative semiring context (a singleton implementing [CommutativeSemiring] for [UByte]).
+ *
+ * @return The [CommutativeSemiring] context for [UByte].
+ */
 public fun UByte.Companion.commutativeSemiring(): CommutativeSemiring<UByte> = UByteContext
+/**
+ * Returns the [UByte] semiring context (a singleton implementing [Semiring] for [UByte]).
+ *
+ * @return The [Semiring] context for [UByte].
+ */
 public fun UByte.Companion.semiring(): Semiring<UByte> = UByteContext
+/**
+ * Returns the [UByte] commutative monoid context (a singleton implementing [CommutativeMonoid] for [UByte]).
+ *
+ * @return The [CommutativeMonoid] context for [UByte].
+ */
 public fun UByte.Companion.commutativeMonoid(): CommutativeMonoid<UByte> = UByteContext
+/**
+ * Returns the [UByte] monoid context (a singleton implementing [Monoid] for [UByte]).
+ *
+ * @return The [Monoid] context for [UByte].
+ */
 public fun UByte.Companion.monoid(): Monoid<UByte> = UByteContext
+/**
+ * Returns the [UByte] commutative semigroup context (a singleton implementing [CommutativeSemigroup] for [UByte]).
+ *
+ * @return The [CommutativeSemigroup] context for [UByte].
+ */
 public fun UByte.Companion.commutativeSemigroup(): CommutativeSemigroup<UByte> = UByteContext
+/**
+ * Returns the [UByte] semigroup context (a singleton implementing [Semigroup] for [UByte]).
+ *
+ * @return The [Semigroup] context for [UByte].
+ */
 public fun UByte.Companion.semigroup(): Semigroup<UByte> = UByteContext
 
+/**
+ * Registers the [Reification] context for [UByte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UByte.Companion.setReification() {
     Reification.Key<UByte>().withImpliedUsingFirst correspondsTo UByteContext
 }
+/**
+ * Registers the [Equality] context for [UByte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UByte.Companion.setEquality() {
     Equality.Key<UByte>().withImpliedUsingFirst correspondsTo UByteContext
 }
+/**
+ * Registers the [Order] context for [UByte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UByte.Companion.setOrder() {
     Order.Key<UByte>().withImpliedUsingFirst correspondsTo UByteContext
 }
+/**
+ * Registers the [Hashing] context for [UByte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UByte.Companion.setHashing() {
     Hashing.Key<UByte>().withImpliedUsingFirst correspondsTo UByteContext
 }
+/**
+ * Registers the [EuclideanSemiring] context for [UByte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UByte.Companion.setEuclideanSemiring() {
     EuclideanSemiring.Key<UByte>().withImpliedUsingFirst correspondsTo UByteContext
 }
+/**
+ * Registers the [CommutativeSemiring] context for [UByte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UByte.Companion.setCommutativeSemiring() {
     CommutativeSemiring.Key<UByte>().withImpliedUsingFirst correspondsTo UByteContext
 }
+/**
+ * Registers the [Semiring] context for [UByte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UByte.Companion.setSemiring() {
     Semiring.Key<UByte>().withImpliedUsingFirst correspondsTo UByteContext
 }
+/**
+ * Registers the [CommutativeMonoid] context for [UByte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UByte.Companion.setCommutativeMonoid() {
     CommutativeMonoid.Key<UByte>().withImpliedUsingFirst correspondsTo UByteContext
 }
+/**
+ * Registers the [Monoid] context for [UByte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UByte.Companion.setMonoid() {
     Monoid.Key<UByte>().withImpliedUsingFirst correspondsTo UByteContext
 }
+/**
+ * Registers the [CommutativeSemigroup] context for [UByte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UByte.Companion.setCommutativeSemigroup() {
     CommutativeSemigroup.Key<UByte>().withImpliedUsingFirst correspondsTo UByteContext
 }
+/**
+ * Registers the [Semigroup] context for [UByte] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UByte.Companion.setSemigroup() {
     Semigroup.Key<UByte>().withImpliedUsingFirst correspondsTo UByteContext
@@ -914,58 +1664,168 @@ private data object UShortContext: Reification<UShort>, Equality<UShort>, Order<
     // endregion
 }
 
+/**
+ * Returns the [UShort] reification context (a singleton implementing [Reification] for [UShort]).
+ *
+ * @return The [Reification] context for [UShort].
+ */
 public fun UShort.Companion.reification(): Reification<UShort> = UShortContext
+/**
+ * Returns the [UShort] equality context (a singleton implementing [Equality] for [UShort]).
+ *
+ * @return The [Equality] context for [UShort].
+ */
 public fun UShort.Companion.equality(): Equality<UShort> = UShortContext
+/**
+ * Returns the [UShort] order context (a singleton implementing [Order] for [UShort]).
+ *
+ * @return The [Order] context for [UShort].
+ */
 public fun UShort.Companion.order(): Order<UShort> = UShortContext
+/**
+ * Returns the [UShort] hashing context (a singleton implementing [Hashing] for [UShort]).
+ *
+ * @return The [Hashing] context for [UShort].
+ */
 public fun UShort.Companion.hashing(): Hashing<UShort> = UShortContext
+/**
+ * Returns the [UShort] euclidean semiring context (a singleton implementing [EuclideanSemiring] for [UShort]).
+ *
+ * @return The [EuclideanSemiring] context for [UShort].
+ */
 public fun UShort.Companion.euclideanSemiring(): EuclideanSemiring<UShort> = UShortContext
+/**
+ * Returns the [UShort] commutative semiring context (a singleton implementing [CommutativeSemiring] for [UShort]).
+ *
+ * @return The [CommutativeSemiring] context for [UShort].
+ */
 public fun UShort.Companion.commutativeSemiring(): CommutativeSemiring<UShort> = UShortContext
+/**
+ * Returns the [UShort] semiring context (a singleton implementing [Semiring] for [UShort]).
+ *
+ * @return The [Semiring] context for [UShort].
+ */
 public fun UShort.Companion.semiring(): Semiring<UShort> = UShortContext
+/**
+ * Returns the [UShort] commutative monoid context (a singleton implementing [CommutativeMonoid] for [UShort]).
+ *
+ * @return The [CommutativeMonoid] context for [UShort].
+ */
 public fun UShort.Companion.commutativeMonoid(): CommutativeMonoid<UShort> = UShortContext
+/**
+ * Returns the [UShort] monoid context (a singleton implementing [Monoid] for [UShort]).
+ *
+ * @return The [Monoid] context for [UShort].
+ */
 public fun UShort.Companion.monoid(): Monoid<UShort> = UShortContext
+/**
+ * Returns the [UShort] commutative semigroup context (a singleton implementing [CommutativeSemigroup] for [UShort]).
+ *
+ * @return The [CommutativeSemigroup] context for [UShort].
+ */
 public fun UShort.Companion.commutativeSemigroup(): CommutativeSemigroup<UShort> = UShortContext
+/**
+ * Returns the [UShort] semigroup context (a singleton implementing [Semigroup] for [UShort]).
+ *
+ * @return The [Semigroup] context for [UShort].
+ */
 public fun UShort.Companion.semigroup(): Semigroup<UShort> = UShortContext
 
+/**
+ * Registers the [Reification] context for [UShort] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UShort.Companion.setReification() {
     Reification.Key<UShort>().withImpliedUsingFirst correspondsTo UShortContext
 }
+/**
+ * Registers the [Equality] context for [UShort] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UShort.Companion.setEquality() {
     Equality.Key<UShort>().withImpliedUsingFirst correspondsTo UShortContext
 }
+/**
+ * Registers the [Order] context for [UShort] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UShort.Companion.setOrder() {
     Order.Key<UShort>().withImpliedUsingFirst correspondsTo UShortContext
 }
+/**
+ * Registers the [Hashing] context for [UShort] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UShort.Companion.setHashing() {
     Hashing.Key<UShort>().withImpliedUsingFirst correspondsTo UShortContext
 }
+/**
+ * Registers the [EuclideanSemiring] context for [UShort] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UShort.Companion.setEuclideanSemiring() {
     EuclideanSemiring.Key<UShort>().withImpliedUsingFirst correspondsTo UShortContext
 }
+/**
+ * Registers the [CommutativeSemiring] context for [UShort] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UShort.Companion.setCommutativeSemiring() {
     CommutativeSemiring.Key<UShort>().withImpliedUsingFirst correspondsTo UShortContext
 }
+/**
+ * Registers the [Semiring] context for [UShort] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UShort.Companion.setSemiring() {
     Semiring.Key<UShort>().withImpliedUsingFirst correspondsTo UShortContext
 }
+/**
+ * Registers the [CommutativeMonoid] context for [UShort] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UShort.Companion.setCommutativeMonoid() {
     CommutativeMonoid.Key<UShort>().withImpliedUsingFirst correspondsTo UShortContext
 }
+/**
+ * Registers the [Monoid] context for [UShort] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UShort.Companion.setMonoid() {
     Monoid.Key<UShort>().withImpliedUsingFirst correspondsTo UShortContext
 }
+/**
+ * Registers the [CommutativeSemigroup] context for [UShort] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UShort.Companion.setCommutativeSemigroup() {
     CommutativeSemigroup.Key<UShort>().withImpliedUsingFirst correspondsTo UShortContext
 }
+/**
+ * Registers the [Semigroup] context for [UShort] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UShort.Companion.setSemigroup() {
     Semigroup.Key<UShort>().withImpliedUsingFirst correspondsTo UShortContext
@@ -1040,58 +1900,168 @@ private data object UIntContext: Reification<UInt>, Equality<UInt>, Order<UInt>,
     // endregion
 }
 
+/**
+ * Returns the [UInt] reification context (a singleton implementing [Reification] for [UInt]).
+ *
+ * @return The [Reification] context for [UInt].
+ */
 public fun UInt.Companion.reification(): Reification<UInt> = UIntContext
+/**
+ * Returns the [UInt] equality context (a singleton implementing [Equality] for [UInt]).
+ *
+ * @return The [Equality] context for [UInt].
+ */
 public fun UInt.Companion.equality(): Equality<UInt> = UIntContext
+/**
+ * Returns the [UInt] order context (a singleton implementing [Order] for [UInt]).
+ *
+ * @return The [Order] context for [UInt].
+ */
 public fun UInt.Companion.order(): Order<UInt> = UIntContext
+/**
+ * Returns the [UInt] hashing context (a singleton implementing [Hashing] for [UInt]).
+ *
+ * @return The [Hashing] context for [UInt].
+ */
 public fun UInt.Companion.hashing(): Hashing<UInt> = UIntContext
+/**
+ * Returns the [UInt] euclidean semiring context (a singleton implementing [EuclideanSemiring] for [UInt]).
+ *
+ * @return The [EuclideanSemiring] context for [UInt].
+ */
 public fun UInt.Companion.euclideanSemiring(): EuclideanSemiring<UInt> = UIntContext
+/**
+ * Returns the [UInt] commutative semiring context (a singleton implementing [CommutativeSemiring] for [UInt]).
+ *
+ * @return The [CommutativeSemiring] context for [UInt].
+ */
 public fun UInt.Companion.commutativeSemiring(): CommutativeSemiring<UInt> = UIntContext
+/**
+ * Returns the [UInt] semiring context (a singleton implementing [Semiring] for [UInt]).
+ *
+ * @return The [Semiring] context for [UInt].
+ */
 public fun UInt.Companion.semiring(): Semiring<UInt> = UIntContext
+/**
+ * Returns the [UInt] commutative monoid context (a singleton implementing [CommutativeMonoid] for [UInt]).
+ *
+ * @return The [CommutativeMonoid] context for [UInt].
+ */
 public fun UInt.Companion.commutativeMonoid(): CommutativeMonoid<UInt> = UIntContext
+/**
+ * Returns the [UInt] monoid context (a singleton implementing [Monoid] for [UInt]).
+ *
+ * @return The [Monoid] context for [UInt].
+ */
 public fun UInt.Companion.monoid(): Monoid<UInt> = UIntContext
+/**
+ * Returns the [UInt] commutative semigroup context (a singleton implementing [CommutativeSemigroup] for [UInt]).
+ *
+ * @return The [CommutativeSemigroup] context for [UInt].
+ */
 public fun UInt.Companion.commutativeSemigroup(): CommutativeSemigroup<UInt> = UIntContext
+/**
+ * Returns the [UInt] semigroup context (a singleton implementing [Semigroup] for [UInt]).
+ *
+ * @return The [Semigroup] context for [UInt].
+ */
 public fun UInt.Companion.semigroup(): Semigroup<UInt> = UIntContext
 
+/**
+ * Registers the [Reification] context for [UInt] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UInt.Companion.setReification() {
     Reification.Key<UInt>().withImpliedUsingFirst correspondsTo UIntContext
 }
+/**
+ * Registers the [Equality] context for [UInt] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UInt.Companion.setEquality() {
     Equality.Key<UInt>().withImpliedUsingFirst correspondsTo UIntContext
 }
+/**
+ * Registers the [Order] context for [UInt] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UInt.Companion.setOrder() {
     Order.Key<UInt>().withImpliedUsingFirst correspondsTo UIntContext
 }
+/**
+ * Registers the [Hashing] context for [UInt] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UInt.Companion.setHashing() {
     Hashing.Key<UInt>().withImpliedUsingFirst correspondsTo UIntContext
 }
+/**
+ * Registers the [EuclideanSemiring] context for [UInt] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UInt.Companion.setEuclideanSemiring() {
     EuclideanSemiring.Key<UInt>().withImpliedUsingFirst correspondsTo UIntContext
 }
+/**
+ * Registers the [CommutativeSemiring] context for [UInt] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UInt.Companion.setCommutativeSemiring() {
     CommutativeSemiring.Key<UInt>().withImpliedUsingFirst correspondsTo UIntContext
 }
+/**
+ * Registers the [Semiring] context for [UInt] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UInt.Companion.setSemiring() {
     Semiring.Key<UInt>().withImpliedUsingFirst correspondsTo UIntContext
 }
+/**
+ * Registers the [CommutativeMonoid] context for [UInt] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UInt.Companion.setCommutativeMonoid() {
     CommutativeMonoid.Key<UInt>().withImpliedUsingFirst correspondsTo UIntContext
 }
+/**
+ * Registers the [Monoid] context for [UInt] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UInt.Companion.setMonoid() {
     Monoid.Key<UInt>().withImpliedUsingFirst correspondsTo UIntContext
 }
+/**
+ * Registers the [CommutativeSemigroup] context for [UInt] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UInt.Companion.setCommutativeSemigroup() {
     CommutativeSemigroup.Key<UInt>().withImpliedUsingFirst correspondsTo UIntContext
 }
+/**
+ * Registers the [Semigroup] context for [UInt] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun UInt.Companion.setSemigroup() {
     Semigroup.Key<UInt>().withImpliedUsingFirst correspondsTo UIntContext
@@ -1166,58 +2136,168 @@ private data object ULongContext: Reification<ULong>, Equality<ULong>, Order<ULo
     // endregion
 }
 
+/**
+ * Returns the [ULong] reification context (a singleton implementing [Reification] for [ULong]).
+ *
+ * @return The [Reification] context for [ULong].
+ */
 public fun ULong.Companion.reification(): Reification<ULong> = ULongContext
+/**
+ * Returns the [ULong] equality context (a singleton implementing [Equality] for [ULong]).
+ *
+ * @return The [Equality] context for [ULong].
+ */
 public fun ULong.Companion.equality(): Equality<ULong> = ULongContext
+/**
+ * Returns the [ULong] order context (a singleton implementing [Order] for [ULong]).
+ *
+ * @return The [Order] context for [ULong].
+ */
 public fun ULong.Companion.order(): Order<ULong> = ULongContext
+/**
+ * Returns the [ULong] hashing context (a singleton implementing [Hashing] for [ULong]).
+ *
+ * @return The [Hashing] context for [ULong].
+ */
 public fun ULong.Companion.hashing(): Hashing<ULong> = ULongContext
+/**
+ * Returns the [ULong] euclidean semiring context (a singleton implementing [EuclideanSemiring] for [ULong]).
+ *
+ * @return The [EuclideanSemiring] context for [ULong].
+ */
 public fun ULong.Companion.euclideanSemiring(): EuclideanSemiring<ULong> = ULongContext
+/**
+ * Returns the [ULong] commutative semiring context (a singleton implementing [CommutativeSemiring] for [ULong]).
+ *
+ * @return The [CommutativeSemiring] context for [ULong].
+ */
 public fun ULong.Companion.commutativeSemiring(): CommutativeSemiring<ULong> = ULongContext
+/**
+ * Returns the [ULong] semiring context (a singleton implementing [Semiring] for [ULong]).
+ *
+ * @return The [Semiring] context for [ULong].
+ */
 public fun ULong.Companion.semiring(): Semiring<ULong> = ULongContext
+/**
+ * Returns the [ULong] commutative monoid context (a singleton implementing [CommutativeMonoid] for [ULong]).
+ *
+ * @return The [CommutativeMonoid] context for [ULong].
+ */
 public fun ULong.Companion.commutativeMonoid(): CommutativeMonoid<ULong> = ULongContext
+/**
+ * Returns the [ULong] monoid context (a singleton implementing [Monoid] for [ULong]).
+ *
+ * @return The [Monoid] context for [ULong].
+ */
 public fun ULong.Companion.monoid(): Monoid<ULong> = ULongContext
+/**
+ * Returns the [ULong] commutative semigroup context (a singleton implementing [CommutativeSemigroup] for [ULong]).
+ *
+ * @return The [CommutativeSemigroup] context for [ULong].
+ */
 public fun ULong.Companion.commutativeSemigroup(): CommutativeSemigroup<ULong> = ULongContext
+/**
+ * Returns the [ULong] semigroup context (a singleton implementing [Semigroup] for [ULong]).
+ *
+ * @return The [Semigroup] context for [ULong].
+ */
 public fun ULong.Companion.semigroup(): Semigroup<ULong> = ULongContext
 
+/**
+ * Registers the [Reification] context for [ULong] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun ULong.Companion.setReification() {
     Reification.Key<ULong>().withImpliedUsingFirst correspondsTo ULongContext
 }
+/**
+ * Registers the [Equality] context for [ULong] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun ULong.Companion.setEquality() {
     Equality.Key<ULong>().withImpliedUsingFirst correspondsTo ULongContext
 }
+/**
+ * Registers the [Order] context for [ULong] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun ULong.Companion.setOrder() {
     Order.Key<ULong>().withImpliedUsingFirst correspondsTo ULongContext
 }
+/**
+ * Registers the [Hashing] context for [ULong] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun ULong.Companion.setHashing() {
     Hashing.Key<ULong>().withImpliedUsingFirst correspondsTo ULongContext
 }
+/**
+ * Registers the [EuclideanSemiring] context for [ULong] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun ULong.Companion.setEuclideanSemiring() {
     EuclideanSemiring.Key<ULong>().withImpliedUsingFirst correspondsTo ULongContext
 }
+/**
+ * Registers the [CommutativeSemiring] context for [ULong] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun ULong.Companion.setCommutativeSemiring() {
     CommutativeSemiring.Key<ULong>().withImpliedUsingFirst correspondsTo ULongContext
 }
+/**
+ * Registers the [Semiring] context for [ULong] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun ULong.Companion.setSemiring() {
     Semiring.Key<ULong>().withImpliedUsingFirst correspondsTo ULongContext
 }
+/**
+ * Registers the [CommutativeMonoid] context for [ULong] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun ULong.Companion.setCommutativeMonoid() {
     CommutativeMonoid.Key<ULong>().withImpliedUsingFirst correspondsTo ULongContext
 }
+/**
+ * Registers the [Monoid] context for [ULong] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun ULong.Companion.setMonoid() {
     Monoid.Key<ULong>().withImpliedUsingFirst correspondsTo ULongContext
 }
+/**
+ * Registers the [CommutativeSemigroup] context for [ULong] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun ULong.Companion.setCommutativeSemigroup() {
     CommutativeSemigroup.Key<ULong>().withImpliedUsingFirst correspondsTo ULongContext
 }
+/**
+ * Registers the [Semigroup] context for [ULong] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun ULong.Companion.setSemigroup() {
     Semigroup.Key<ULong>().withImpliedUsingFirst correspondsTo ULongContext
@@ -1314,78 +2394,228 @@ private data object DoubleContext: Reification<Double>, Equality<Double>, Order<
     // endregion
 }
 
+/**
+ * Returns the [Double] reification context (a singleton implementing [Reification] for [Double]).
+ *
+ * @return The [Reification] context for [Double].
+ */
 public fun Double.Companion.reification(): Reification<Double> = DoubleContext
+/**
+ * Returns the [Double] equality context (a singleton implementing [Equality] for [Double]).
+ *
+ * @return The [Equality] context for [Double].
+ */
 public fun Double.Companion.equality(): Equality<Double> = DoubleContext
+/**
+ * Returns the [Double] order context (a singleton implementing [Order] for [Double]).
+ *
+ * @return The [Order] context for [Double].
+ */
 public fun Double.Companion.order(): Order<Double> = DoubleContext
+/**
+ * Returns the [Double] hashing context (a singleton implementing [Hashing] for [Double]).
+ *
+ * @return The [Hashing] context for [Double].
+ */
 public fun Double.Companion.hashing(): Hashing<Double> = DoubleContext
+/**
+ * Returns the [Double] field context (a singleton implementing [Field] for [Double]).
+ *
+ * @return The [Field] context for [Double].
+ */
 public fun Double.Companion.field(): Field<Double> = DoubleContext
+/**
+ * Returns the [Double] commutative ring context (a singleton implementing [CommutativeRing] for [Double]).
+ *
+ * @return The [CommutativeRing] context for [Double].
+ */
 public fun Double.Companion.commutativeRing(): CommutativeRing<Double> = DoubleContext
+/**
+ * Returns the [Double] ring context (a singleton implementing [Ring] for [Double]).
+ *
+ * @return The [Ring] context for [Double].
+ */
 public fun Double.Companion.ring(): Ring<Double> = DoubleContext
+/**
+ * Returns the [Double] commutative semiring context (a singleton implementing [CommutativeSemiring] for [Double]).
+ *
+ * @return The [CommutativeSemiring] context for [Double].
+ */
 public fun Double.Companion.commutativeSemiring(): CommutativeSemiring<Double> = DoubleContext
+/**
+ * Returns the [Double] semiring context (a singleton implementing [Semiring] for [Double]).
+ *
+ * @return The [Semiring] context for [Double].
+ */
 public fun Double.Companion.semiring(): Semiring<Double> = DoubleContext
+/**
+ * Returns the [Double] commutative group context (a singleton implementing [CommutativeGroup] for [Double]).
+ *
+ * @return The [CommutativeGroup] context for [Double].
+ */
 public fun Double.Companion.commutativeGroup(): CommutativeGroup<Double> = DoubleContext
+/**
+ * Returns the [Double] group context (a singleton implementing [Group] for [Double]).
+ *
+ * @return The [Group] context for [Double].
+ */
 public fun Double.Companion.group(): Group<Double> = DoubleContext
+/**
+ * Returns the [Double] commutative monoid context (a singleton implementing [CommutativeMonoid] for [Double]).
+ *
+ * @return The [CommutativeMonoid] context for [Double].
+ */
 public fun Double.Companion.commutativeMonoid(): CommutativeMonoid<Double> = DoubleContext
+/**
+ * Returns the [Double] monoid context (a singleton implementing [Monoid] for [Double]).
+ *
+ * @return The [Monoid] context for [Double].
+ */
 public fun Double.Companion.monoid(): Monoid<Double> = DoubleContext
+/**
+ * Returns the [Double] commutative semigroup context (a singleton implementing [CommutativeSemigroup] for [Double]).
+ *
+ * @return The [CommutativeSemigroup] context for [Double].
+ */
 public fun Double.Companion.commutativeSemigroup(): CommutativeSemigroup<Double> = DoubleContext
+/**
+ * Returns the [Double] semigroup context (a singleton implementing [Semigroup] for [Double]).
+ *
+ * @return The [Semigroup] context for [Double].
+ */
 public fun Double.Companion.semigroup(): Semigroup<Double> = DoubleContext
 
+/**
+ * Registers the [Reification] context for [Double] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setReification() {
     Reification.Key<Double>().withImpliedUsingFirst correspondsTo DoubleContext
 }
+/**
+ * Registers the [Equality] context for [Double] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setEquality() {
     Equality.Key<Double>().withImpliedUsingFirst correspondsTo DoubleContext
 }
+/**
+ * Registers the [Order] context for [Double] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setOrder() {
     Order.Key<Double>().withImpliedUsingFirst correspondsTo DoubleContext
 }
+/**
+ * Registers the [Hashing] context for [Double] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setHashing() {
     Hashing.Key<Double>().withImpliedUsingFirst correspondsTo DoubleContext
 }
+/**
+ * Registers the [Field] context for [Double] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setField() {
     Field.Key<Double>().withImpliedUsingFirst correspondsTo DoubleContext
 }
+/**
+ * Registers the [CommutativeRing] context for [Double] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setCommutativeRing() {
     CommutativeRing.Key<Double>().withImpliedUsingFirst correspondsTo DoubleContext
 }
+/**
+ * Registers the [Ring] context for [Double] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setRing() {
     Ring.Key<Double>().withImpliedUsingFirst correspondsTo DoubleContext
 }
+/**
+ * Registers the [CommutativeSemiring] context for [Double] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setCommutativeSemiring() {
     CommutativeSemiring.Key<Double>().withImpliedUsingFirst correspondsTo DoubleContext
 }
+/**
+ * Registers the [Semiring] context for [Double] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSemiring() {
     Semiring.Key<Double>().withImpliedUsingFirst correspondsTo DoubleContext
 }
+/**
+ * Registers the [CommutativeGroup] context for [Double] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setCommutativeGroup() {
     CommutativeGroup.Key<Double>().withImpliedUsingFirst correspondsTo DoubleContext
 }
+/**
+ * Registers the [Group] context for [Double] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setGroup() {
     Group.Key<Double>().withImpliedUsingFirst correspondsTo DoubleContext
 }
+/**
+ * Registers the [CommutativeMonoid] context for [Double] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setCommutativeMonoid() {
     CommutativeMonoid.Key<Double>().withImpliedUsingFirst correspondsTo DoubleContext
 }
+/**
+ * Registers the [Monoid] context for [Double] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setMonoid() {
     Monoid.Key<Double>().withImpliedUsingFirst correspondsTo DoubleContext
 }
+/**
+ * Registers the [CommutativeSemigroup] context for [Double] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setCommutativeSemigroup() {
     CommutativeSemigroup.Key<Double>().withImpliedUsingFirst correspondsTo DoubleContext
 }
+/**
+ * Registers the [Semigroup] context for [Double] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Double.Companion.setSemigroup() {
     Semigroup.Key<Double>().withImpliedUsingFirst correspondsTo DoubleContext
@@ -1482,78 +2712,228 @@ private data object FloatContext: Reification<Float>, Equality<Float>, Order<Flo
     // endregion
 }
 
+/**
+ * Returns the [Float] reification context (a singleton implementing [Reification] for [Float]).
+ *
+ * @return The [Reification] context for [Float].
+ */
 public fun Float.Companion.reification(): Reification<Float> = FloatContext
+/**
+ * Returns the [Float] equality context (a singleton implementing [Equality] for [Float]).
+ *
+ * @return The [Equality] context for [Float].
+ */
 public fun Float.Companion.equality(): Equality<Float> = FloatContext
+/**
+ * Returns the [Float] order context (a singleton implementing [Order] for [Float]).
+ *
+ * @return The [Order] context for [Float].
+ */
 public fun Float.Companion.order(): Order<Float> = FloatContext
+/**
+ * Returns the [Float] hashing context (a singleton implementing [Hashing] for [Float]).
+ *
+ * @return The [Hashing] context for [Float].
+ */
 public fun Float.Companion.hashing(): Hashing<Float> = FloatContext
+/**
+ * Returns the [Float] field context (a singleton implementing [Field] for [Float]).
+ *
+ * @return The [Field] context for [Float].
+ */
 public fun Float.Companion.field(): Field<Float> = FloatContext
+/**
+ * Returns the [Float] commutative ring context (a singleton implementing [CommutativeRing] for [Float]).
+ *
+ * @return The [CommutativeRing] context for [Float].
+ */
 public fun Float.Companion.commutativeRing(): CommutativeRing<Float> = FloatContext
+/**
+ * Returns the [Float] ring context (a singleton implementing [Ring] for [Float]).
+ *
+ * @return The [Ring] context for [Float].
+ */
 public fun Float.Companion.ring(): Ring<Float> = FloatContext
+/**
+ * Returns the [Float] commutative semiring context (a singleton implementing [CommutativeSemiring] for [Float]).
+ *
+ * @return The [CommutativeSemiring] context for [Float].
+ */
 public fun Float.Companion.commutativeSemiring(): CommutativeSemiring<Float> = FloatContext
+/**
+ * Returns the [Float] semiring context (a singleton implementing [Semiring] for [Float]).
+ *
+ * @return The [Semiring] context for [Float].
+ */
 public fun Float.Companion.semiring(): Semiring<Float> = FloatContext
+/**
+ * Returns the [Float] commutative group context (a singleton implementing [CommutativeGroup] for [Float]).
+ *
+ * @return The [CommutativeGroup] context for [Float].
+ */
 public fun Float.Companion.commutativeGroup(): CommutativeGroup<Float> = FloatContext
+/**
+ * Returns the [Float] group context (a singleton implementing [Group] for [Float]).
+ *
+ * @return The [Group] context for [Float].
+ */
 public fun Float.Companion.group(): Group<Float> = FloatContext
+/**
+ * Returns the [Float] commutative monoid context (a singleton implementing [CommutativeMonoid] for [Float]).
+ *
+ * @return The [CommutativeMonoid] context for [Float].
+ */
 public fun Float.Companion.commutativeMonoid(): CommutativeMonoid<Float> = FloatContext
+/**
+ * Returns the [Float] monoid context (a singleton implementing [Monoid] for [Float]).
+ *
+ * @return The [Monoid] context for [Float].
+ */
 public fun Float.Companion.monoid(): Monoid<Float> = FloatContext
+/**
+ * Returns the [Float] commutative semigroup context (a singleton implementing [CommutativeSemigroup] for [Float]).
+ *
+ * @return The [CommutativeSemigroup] context for [Float].
+ */
 public fun Float.Companion.commutativeSemigroup(): CommutativeSemigroup<Float> = FloatContext
+/**
+ * Returns the [Float] semigroup context (a singleton implementing [Semigroup] for [Float]).
+ *
+ * @return The [Semigroup] context for [Float].
+ */
 public fun Float.Companion.semigroup(): Semigroup<Float> = FloatContext
 
+/**
+ * Registers the [Reification] context for [Float] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Float.Companion.setReification() {
     Reification.Key<Float>().withImpliedUsingFirst correspondsTo FloatContext
 }
+/**
+ * Registers the [Equality] context for [Float] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Float.Companion.setEquality() {
     Equality.Key<Float>().withImpliedUsingFirst correspondsTo FloatContext
 }
+/**
+ * Registers the [Order] context for [Float] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Float.Companion.setOrder() {
     Order.Key<Float>().withImpliedUsingFirst correspondsTo FloatContext
 }
+/**
+ * Registers the [Hashing] context for [Float] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Float.Companion.setHashing() {
     Hashing.Key<Float>().withImpliedUsingFirst correspondsTo FloatContext
 }
+/**
+ * Registers the [Field] context for [Float] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Float.Companion.setField() {
     Field.Key<Float>().withImpliedUsingFirst correspondsTo FloatContext
 }
+/**
+ * Registers the [CommutativeRing] context for [Float] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Float.Companion.setCommutativeRing() {
     CommutativeRing.Key<Float>().withImpliedUsingFirst correspondsTo FloatContext
 }
+/**
+ * Registers the [Ring] context for [Float] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Float.Companion.setRing() {
     Ring.Key<Float>().withImpliedUsingFirst correspondsTo FloatContext
 }
+/**
+ * Registers the [CommutativeSemiring] context for [Float] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Float.Companion.setCommutativeSemiring() {
     CommutativeSemiring.Key<Float>().withImpliedUsingFirst correspondsTo FloatContext
 }
+/**
+ * Registers the [Semiring] context for [Float] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Float.Companion.setSemiring() {
     Semiring.Key<Float>().withImpliedUsingFirst correspondsTo FloatContext
 }
+/**
+ * Registers the [CommutativeGroup] context for [Float] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Float.Companion.setCommutativeGroup() {
     CommutativeGroup.Key<Float>().withImpliedUsingFirst correspondsTo FloatContext
 }
+/**
+ * Registers the [Group] context for [Float] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Float.Companion.setGroup() {
     Group.Key<Float>().withImpliedUsingFirst correspondsTo FloatContext
 }
+/**
+ * Registers the [CommutativeMonoid] context for [Float] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Float.Companion.setCommutativeMonoid() {
     CommutativeMonoid.Key<Float>().withImpliedUsingFirst correspondsTo FloatContext
 }
+/**
+ * Registers the [Monoid] context for [Float] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Float.Companion.setMonoid() {
     Monoid.Key<Float>().withImpliedUsingFirst correspondsTo FloatContext
 }
+/**
+ * Registers the [CommutativeSemigroup] context for [Float] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Float.Companion.setCommutativeSemigroup() {
     CommutativeSemigroup.Key<Float>().withImpliedUsingFirst correspondsTo FloatContext
 }
+/**
+ * Registers the [Semigroup] context for [Float] in the given [registry].
+ *
+ * @param registry The mutable owned provider registry to register the context into.
+ */
 context(registry: MutableOwnedProviderRegistry<KoneContextRegistry>)
 public fun Float.Companion.setSemigroup() {
     Semigroup.Key<Float>().withImpliedUsingFirst correspondsTo FloatContext
