@@ -10,6 +10,7 @@ import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.collections.utils.reduce
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.localUnwrap
+import dev.lounres.kone.relations.Equality
 import kotlin.math.abs
 
 
@@ -128,7 +129,7 @@ internal tailrec fun bezoutIdentityWithGCDInternalLogic(a: Long, b: Long, m1: Lo
  *
  * @usesMathJax
  */
-context(ring: EuclideanSemiring<N>)
+context(ring: EuclideanSemiring<N>, equality: Equality<N>)
 public tailrec fun <N> gcd(a: N, b: N): N {
     KoneContext.localUnwrap(ring)
     return if (a.isZero()) b else gcd(b % a, a)
@@ -149,7 +150,7 @@ public fun <N> gcd(values: KoneIterable<N>): N = values.iterator().let { if (it.
  * Computes "the smallest" [Bézout coefficients](https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity) and
  * [GCD](https://en.wikipedia.org/wiki/Greatest_common_divisor) of [a] and [b].
  */
-context(ring: EuclideanRing<N>)
+context(ring: EuclideanRing<N>, equality: Equality<N>)
 public fun <N> bezoutIdentityWithGCD(a: N, b: N): BezoutCoefficientsWithGCD<N> =
     bezoutIdentityWithGCDInternalLogic(a, b, ring.one, ring.zero, ring.zero, ring.one)
 
@@ -159,7 +160,7 @@ public fun <N> bezoutIdentityWithGCD(a: N, b: N): BezoutCoefficientsWithGCD<N> =
  *
  * Also assumes that [a] and [b] are non-negative. TODO: Docs
  */
-context(ring: EuclideanRing<N>)
+context(ring: EuclideanRing<N>, equality: Equality<N>)
 internal tailrec fun <N> bezoutIdentityWithGCDInternalLogic(a: N, b: N, m1: N, m2: N, m3: N, m4: N): BezoutCoefficientsWithGCD<N> {
     KoneContext.localUnwrap(ring)
     return if (b.isZero()) BezoutCoefficientsWithGCD(m1, m3, a) else {

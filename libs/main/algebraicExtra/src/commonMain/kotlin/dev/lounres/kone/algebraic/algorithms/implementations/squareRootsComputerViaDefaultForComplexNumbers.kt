@@ -19,6 +19,7 @@ import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
@@ -26,11 +27,12 @@ import dev.lounres.kone.suppliedTypes.Supply
 
 private class SquareRootsComputerViaDefaultForComplexNumbers<Number>(
     private val field: Field<Number>,
+    private val equality: Equality<Number>,
     private val order: Order<Number>,
     private val positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
 ) : SquareRootsComputer<ComplexNumber<Number>> {
     override fun ComplexNumber<Number>.squareRoots(): KoneList<ComplexNumber<Number>> {
-        KoneContext.localUnwrap(field, order, positiveSquareRootComputer)
+        KoneContext.localUnwrap(field, equality, order, positiveSquareRootComputer)
         localContexts(field.numberDivideInt)
         val absoluteValue = this@squareRoots.absoluteValue()
         if (absoluteValue.isZero()) return KoneList.of(ComplexNumber(field.zero, field.zero))
@@ -54,10 +56,12 @@ private class SquareRootsComputerViaDefaultForComplexNumbers<Number>(
 
 public fun <Number> SquareRootsComputer.Companion.viaDefaultForComplexNumbers(
     field: Field<Number>,
+    equality: Equality<Number>,
     order: Order<Number>,
     positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
 ): SquareRootsComputer<ComplexNumber<Number>> = SquareRootsComputerViaDefaultForComplexNumbers(
     field = field,
+    equality = equality,
     order = order,
     positiveSquareRootComputer = positiveSquareRootComputer,
 )
@@ -70,6 +74,7 @@ public object SquareRootsComputerDefaultForComplexNumbersSuppliableTopLevelFunct
         val koneContextRegistry = koneContextRegistry.get()
         return viaDefaultForComplexNumbers(
             field = koneContextRegistry[Field.Key<Number>()], // TODO: Replace with 'getOrElse(key) { error("${requester()} requested absent key $key") }'
+            equality = koneContextRegistry[Equality.Key<Number>()], // TODO: Replace with 'getOrElse(key) { error("${requester()} requested absent key $key") }'
             order = koneContextRegistry[Order.Key<Number>()], // TODO: Replace with 'getOrElse(key) { error("${requester()} requested absent key $key") }'
             positiveSquareRootComputer = koneContextRegistry[PositiveSquareRootComputer.Key<Number>()], // TODO: Replace with 'getOrElse(key) { error("${requester()} requested absent key $key") }'
         )
@@ -79,12 +84,14 @@ public object SquareRootsComputerDefaultForComplexNumbersSuppliableTopLevelFunct
     context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
     public fun <@Supply Number> SquareRootsComputer.Companion.setViaDefaultForComplexNumbers(
         field: Field<Number>,
+        equality: Equality<Number>,
         order: Order<Number>,
         positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
     ) {
         SquareRootsComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
             viaDefaultForComplexNumbers(
                 field = field,
+                equality = equality,
                 order = order,
                 positiveSquareRootComputer = positiveSquareRootComputer,
             )

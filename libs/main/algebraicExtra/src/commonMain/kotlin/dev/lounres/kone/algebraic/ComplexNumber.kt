@@ -41,6 +41,19 @@ private class ComplexNumberEquality<in Number>(
 public fun <Number> ComplexNumber.Companion.equality(numberEquality: Equality<Number>): Equality<ComplexNumber<Number>> =
     ComplexNumberEquality(numberEquality)
 
+public object ComplexNumberEqualitySuppliableTopLevelFunctions {
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number> ComplexNumber.Companion.setEquality() {
+        Equality.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
+            val koneContextRegistry = koneContextRegistry.get()
+            equality(
+                numberEquality = koneContextRegistry[Equality.Key<Number>()],
+            )
+        }
+    }
+}
+
 private class ComplexNumberHashing<in Number>(
     private val numberHashing: Hashing<Number>
 ) : Hashing<ComplexNumber<Number>> {
@@ -50,6 +63,19 @@ private class ComplexNumberHashing<in Number>(
 
 public fun <Number> ComplexNumber.Companion.hashing(numberHashing: Hashing<Number>): Hashing<ComplexNumber<Number>> =
     ComplexNumberHashing(numberHashing)
+
+public object ComplexNumberHashingSuppliableTopLevelFunctions {
+    @Suppliable
+    context(_: MutableOwnedProviderRegistry<KoneContextRegistry>, koneContextRegistry: KoneContextRegistry.Provider)
+    public fun <@Supply Number> ComplexNumber.Companion.setHashing() {
+        Hashing.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
+            val koneContextRegistry = koneContextRegistry.get()
+            hashing(
+                numberHashing = koneContextRegistry[Hashing.Key<Number>()],
+            )
+        }
+    }
+}
 
 @Suppress("UNCHECKED_CAST")
 private class ComplexNumberReification<out Number>(
@@ -77,17 +103,6 @@ private class ComplexNumberFieldExtension<Number>(
     // region Constants
     override val zero: ComplexNumber<Number> = ComplexNumber(numberField.zero, numberField.zero)
     override val one: ComplexNumber<Number> = ComplexNumber(numberField.one, numberField.zero)
-    // endregion
-    
-    // region Equality
-    override val numberIsZero: IsZero<ComplexNumber<Number>> = IsZero {
-        KoneContext.localUnwrap(numberField)
-        it.realPart.isZero() && it.imaginaryPart.isZero()
-    }
-    override val numberIsOne: IsOne<ComplexNumber<Number>> = IsOne {
-        KoneContext.localUnwrap(numberField)
-        it.realPart.isOne() && it.imaginaryPart.isZero()
-    }
     // endregion
     
     // region Integers conversion

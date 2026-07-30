@@ -16,6 +16,7 @@ import dev.lounres.kone.collections.set.build
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.localContexts
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
@@ -374,7 +375,7 @@ public fun <Number> LabeledPolynomial.Companion.fromUnsafe(
 )
 
 @JvmName("fromSignatures")
-context(group: Monoid<Number>)
+context(group: Monoid<Number>, equality: Equality<Number>)
 public fun <Number> LabeledPolynomial.Companion.from(
     coefficients: KoneMap<LabeledPolynomial.MonomialSignature, Number>,
 ): LabeledPolynomial<Number> = LabeledPolynomial(
@@ -389,12 +390,12 @@ public fun <Number> LabeledPolynomial.Companion.from(
         ) { _, currentValue, newValue ->
             group.numberPlusNumber { currentValue + newValue }
         }
-        removeAllThat { _, value -> group.numberIsZero { value.isZero() } }
+        removeAllThat { _, value -> value.isZero() }
     }
 )
 
 @JvmName("fromSignatures")
-context(group: Monoid<Number>)
+context(group: Monoid<Number>, equality: Equality<Number>)
 public fun <Number> LabeledPolynomial.Companion.from(
     coefficients: KoneIterable<KoneMapEntry<LabeledPolynomial.MonomialSignature, Number>>,
 ): LabeledPolynomial<Number> = LabeledPolynomial(
@@ -409,12 +410,12 @@ public fun <Number> LabeledPolynomial.Companion.from(
         ) { _, currentValue, newValue ->
             group.numberPlusNumber { currentValue + newValue }
         }
-        removeAllThat { _, value -> group.numberIsZero { value.isZero() } }
+        removeAllThat { _, value -> value.isZero() }
     }
 )
 
 @JvmName("fromSignatures")
-context(group: Monoid<Number>)
+context(group: Monoid<Number>, equality: Equality<Number>)
 public fun <Number> LabeledPolynomial.Companion.from(
     vararg coefficients: KoneMapEntry<LabeledPolynomial.MonomialSignature, Number>,
 ): LabeledPolynomial<Number> = LabeledPolynomial(
@@ -429,12 +430,12 @@ public fun <Number> LabeledPolynomial.Companion.from(
         ) { _, currentValue, newValue ->
             group.numberPlusNumber { currentValue + newValue }
         }
-        removeAllThat { _, value -> group.numberIsZero { value.isZero() } }
+        removeAllThat { _, value -> value.isZero() }
     }
 )
 
 @JvmName("fromMaps")
-context(group: Monoid<Number>)
+context(group: Monoid<Number>, equality: Equality<Number>)
 public fun <Number> LabeledPolynomial.Companion.from(
     coefficients: KoneMap<KoneMap<LabeledPolynomial.Variable, UInt>, Number>,
 ): LabeledPolynomial<Number> = LabeledPolynomial(
@@ -449,12 +450,12 @@ public fun <Number> LabeledPolynomial.Companion.from(
         ) { _, currentValue, newValue ->
             group.numberPlusNumber { currentValue + newValue }
         }
-        removeAllThat { _, value -> group.numberIsZero { value.isZero() } }
+        removeAllThat { _, value -> value.isZero() }
     }
 )
 
 @JvmName("fromMaps")
-context(group: Monoid<Number>)
+context(group: Monoid<Number>, equality: Equality<Number>)
 public fun <Number> LabeledPolynomial.Companion.from(
     coefficients: KoneIterable<KoneMapEntry<KoneMap<LabeledPolynomial.Variable, UInt>, Number>>,
 ): LabeledPolynomial<Number> = LabeledPolynomial(
@@ -469,12 +470,12 @@ public fun <Number> LabeledPolynomial.Companion.from(
         ) { _, currentValue, newValue ->
             group.numberPlusNumber { currentValue + newValue }
         }
-        removeAllThat { _, value -> group.numberIsZero { value.isZero() } }
+        removeAllThat { _, value -> value.isZero() }
     }
 )
 
 @JvmName("fromMaps")
-context(group: Monoid<Number>)
+context(group: Monoid<Number>, equality: Equality<Number>)
 public fun <Number> LabeledPolynomial.Companion.from(
     vararg coefficients: KoneMapEntry<KoneMap<LabeledPolynomial.Variable, UInt>, Number>,
 ): LabeledPolynomial<Number> = LabeledPolynomial(
@@ -489,13 +490,14 @@ public fun <Number> LabeledPolynomial.Companion.from(
         ) { _, currentValue, newValue ->
             group.numberPlusNumber { currentValue + newValue }
         }
-        removeAllThat { _, value -> group.numberIsZero { value.isZero() } }
+        removeAllThat { _, value -> value.isZero() }
     }
 )
 
 @OptIn(LabeledPolynomial.DelicateApi::class)
 private open class LabeledPolynomialSpace<Number>(
     protected open val ring: CommutativeRing<Number>,
+    protected val equality: Equality<Number>,
 ) : PolynomialAlgebra<Number, LabeledPolynomial.Variable, LabeledPolynomial<Number>> {
     companion object {
         private val unitSignature = LabeledPolynomial.MonomialSignature(KoneMap.empty())
@@ -506,34 +508,34 @@ private open class LabeledPolynomialSpace<Number>(
     override val one: LabeledPolynomial<Number> = LabeledPolynomial.fromUnsafe(unitSignature mapsTo ring.one)
     
     override fun valueOf(arg: Int): LabeledPolynomial<Number> {
+        localContexts(ring, equality)
         val number = ring.valueOf(arg)
-        return if (ring.numberIsZero { number.isZero() }) zero else LabeledPolynomial.fromUnsafe(unitSignature mapsTo ring.valueOf(arg))
+        return if (number.isZero()) zero else LabeledPolynomial.fromUnsafe(unitSignature mapsTo ring.valueOf(arg))
     }
     override fun valueOf(arg: UInt): LabeledPolynomial<Number> {
+        localContexts(ring, equality)
         val number = ring.valueOf(arg)
-        return if (ring.numberIsZero { number.isZero() }) zero else LabeledPolynomial.fromUnsafe(unitSignature mapsTo ring.valueOf(arg))
+        return if (number.isZero()) zero else LabeledPolynomial.fromUnsafe(unitSignature mapsTo ring.valueOf(arg))
     }
     override fun valueOf(arg: Long): LabeledPolynomial<Number> {
+        localContexts(ring, equality)
         val number = ring.valueOf(arg)
-        return if (ring.numberIsZero { number.isZero() }) zero else LabeledPolynomial.fromUnsafe(unitSignature mapsTo ring.valueOf(arg))
+        return if (number.isZero()) zero else LabeledPolynomial.fromUnsafe(unitSignature mapsTo ring.valueOf(arg))
     }
     override fun valueOf(arg: ULong): LabeledPolynomial<Number> {
+        localContexts(ring, equality)
         val number = ring.valueOf(arg)
-        return if (ring.numberIsZero { number.isZero() }) zero else LabeledPolynomial.fromUnsafe(unitSignature mapsTo ring.valueOf(arg))
+        return if (number.isZero()) zero else LabeledPolynomial.fromUnsafe(unitSignature mapsTo ring.valueOf(arg))
     }
-    override fun valueOf(arg: Number): LabeledPolynomial<Number> =
-        if (ring.numberIsZero { arg.isZero() }) zero else LabeledPolynomial.fromUnsafe(unitSignature mapsTo arg)
-    
-    override val numberIsZero: IsZero<LabeledPolynomial<Number>> = IsZero {
-        it.coefficients.valuesView.all { ring.numberIsZero { it.isZero() } }
-    }
-    override val numberIsOne: IsOne<LabeledPolynomial<Number>> = IsOne {
-        it.coefficients.nodesView.all { if (it.key.isEmpty()) ring.numberIsOne { it.value.isOne() } else ring.numberIsZero { it.value.isZero() } }
+    override fun valueOf(arg: Number): LabeledPolynomial<Number> {
+        localContexts(ring, equality)
+        return if (arg.isZero()) zero else LabeledPolynomial.fromUnsafe(unitSignature mapsTo arg)
     }
     
     override val variablePlusInt: Plus<LabeledPolynomial.Variable, Int, LabeledPolynomial<Number>> = Plus { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
-        if (ring.numberIsZero { right.isZero() }) LabeledPolynomial.fromUnsafe(
+        if (right.isZero()) LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(left mapsTo 1U) mapsTo ring.one,
         )
         else LabeledPolynomial.fromUnsafe(
@@ -542,8 +544,9 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val variableMinusInt: Minus<LabeledPolynomial.Variable, Int, LabeledPolynomial<Number>> = Minus { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
-        if (ring.numberIsZero { right.isZero() }) LabeledPolynomial.fromUnsafe(
+        if (right.isZero()) LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(left mapsTo 1U) mapsTo ring.one,
         )
         else LabeledPolynomial.fromUnsafe(
@@ -552,16 +555,18 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val variableTimesInt: Times<LabeledPolynomial.Variable, Int, LabeledPolynomial<Number>> = Times { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
-        if (ring.numberIsZero { right.isZero() }) zero
+        if (right.isZero()) zero
         else LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(left mapsTo 1U) mapsTo right,
         )
     }
     
     override val variablePlusUInt: Plus<LabeledPolynomial.Variable, UInt, LabeledPolynomial<Number>> = Plus { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
-        if (ring.numberIsZero { right.isZero() }) LabeledPolynomial.fromUnsafe(
+        if (right.isZero()) LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(left mapsTo 1U) mapsTo ring.one,
         )
         else LabeledPolynomial.fromUnsafe(
@@ -570,8 +575,9 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val variableMinusUInt: Minus<LabeledPolynomial.Variable, UInt, LabeledPolynomial<Number>> = Minus { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
-        if (ring.numberIsZero { right.isZero() }) LabeledPolynomial.fromUnsafe(
+        if (right.isZero()) LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(left mapsTo 1U) mapsTo ring.one,
         )
         else LabeledPolynomial.fromUnsafe(
@@ -580,16 +586,18 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val variableTimesUInt: Times<LabeledPolynomial.Variable, UInt, LabeledPolynomial<Number>> = Times { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
-        if (ring.numberIsZero { right.isZero() }) zero
+        if (right.isZero()) zero
         else LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(left mapsTo 1U) mapsTo right,
         )
     }
     
     override val variablePlusLong: Plus<LabeledPolynomial.Variable, Long, LabeledPolynomial<Number>> = Plus { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
-        if (ring.numberIsZero { right.isZero() }) LabeledPolynomial.fromUnsafe(
+        if (right.isZero()) LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(left mapsTo 1U) mapsTo ring.one,
         )
         else LabeledPolynomial.fromUnsafe(
@@ -598,8 +606,9 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val variableMinusLong: Minus<LabeledPolynomial.Variable, Long, LabeledPolynomial<Number>> = Minus { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
-        if (ring.numberIsZero { right.isZero() }) LabeledPolynomial.fromUnsafe(
+        if (right.isZero()) LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(left mapsTo 1U) mapsTo ring.one,
         )
         else LabeledPolynomial.fromUnsafe(
@@ -608,16 +617,18 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val variableTimesLong: Times<LabeledPolynomial.Variable, Long, LabeledPolynomial<Number>> = Times { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
-        if (ring.numberIsZero { right.isZero() }) zero
+        if (right.isZero()) zero
         else LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(left mapsTo 1U) mapsTo right,
         )
     }
     
     override val variablePlusULong: Plus<LabeledPolynomial.Variable, ULong, LabeledPolynomial<Number>> = Plus { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
-        if (ring.numberIsZero { right.isZero() }) LabeledPolynomial.fromUnsafe(
+        if (right.isZero()) LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(left mapsTo 1U) mapsTo ring.one,
         )
         else LabeledPolynomial.fromUnsafe(
@@ -626,8 +637,9 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val variableMinusULong: Minus<LabeledPolynomial.Variable, ULong, LabeledPolynomial<Number>> = Minus { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
-        if (ring.numberIsZero { right.isZero() }) LabeledPolynomial.fromUnsafe(
+        if (right.isZero()) LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(left mapsTo 1U) mapsTo ring.one,
         )
         else LabeledPolynomial.fromUnsafe(
@@ -636,15 +648,17 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val variableTimesULong: Times<LabeledPolynomial.Variable, ULong, LabeledPolynomial<Number>> = Times { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
-        if (ring.numberIsZero { right.isZero() }) zero
+        if (right.isZero()) zero
         else LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(left mapsTo 1U) mapsTo right,
         )
     }
     
     override val variablePlusNumber: Plus<LabeledPolynomial.Variable, Number, LabeledPolynomial<Number>> = Plus { left, right ->
-        if (ring.numberIsZero { right.isZero() }) LabeledPolynomial.fromUnsafe(
+        localContexts(ring, equality)
+        if (right.isZero()) LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(left mapsTo 1U) mapsTo ring.one,
         )
         else LabeledPolynomial.fromUnsafe(
@@ -653,7 +667,8 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val variableMinusNumber: Minus<LabeledPolynomial.Variable, Number, LabeledPolynomial<Number>> = Minus { left, right ->
-        if (ring.numberIsZero { right.isZero() }) LabeledPolynomial.fromUnsafe(
+        localContexts(ring, equality)
+        if (right.isZero()) LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(left mapsTo 1U) mapsTo ring.one,
         )
         else LabeledPolynomial.fromUnsafe(
@@ -662,15 +677,17 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val variableTimesNumber: Times<LabeledPolynomial.Variable, Number, LabeledPolynomial<Number>> = Times { left, right ->
-        if (ring.numberIsZero { right.isZero() }) zero
+        localContexts(ring, equality)
+        if (right.isZero()) zero
         else LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(left mapsTo 1U) mapsTo right,
         )
     }
     
     override val intPlusVariable: Plus<Int, LabeledPolynomial.Variable, LabeledPolynomial<Number>> = Plus { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
-        if (ring.numberIsZero { left.isZero() }) LabeledPolynomial.fromUnsafe(
+        if (left.isZero()) LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(right mapsTo 1U) mapsTo ring.one,
         )
         else LabeledPolynomial.fromUnsafe(
@@ -679,8 +696,9 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val intMinusVariable: Minus<Int, LabeledPolynomial.Variable, LabeledPolynomial<Number>> = Minus { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
-        if (ring.numberIsZero { left.isZero() }) LabeledPolynomial.fromUnsafe(
+        if (left.isZero()) LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(right mapsTo 1U) mapsTo ring.numberUnaryMinus { -ring.one },
         )
         else LabeledPolynomial.fromUnsafe(
@@ -689,16 +707,18 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val intTimesVariable: Times<Int, LabeledPolynomial.Variable, LabeledPolynomial<Number>> = Times { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
-        if (ring.numberIsZero { left.isZero() }) zero
+        if (left.isZero()) zero
         else LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(right mapsTo 1U) mapsTo left,
         )
     }
     
     override val uIntPlusVariable: Plus<UInt, LabeledPolynomial.Variable, LabeledPolynomial<Number>> = Plus { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
-        if (ring.numberIsZero { left.isZero() }) LabeledPolynomial.fromUnsafe(
+        if (left.isZero()) LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(right mapsTo 1U) mapsTo ring.one,
         )
         else LabeledPolynomial.fromUnsafe(
@@ -707,8 +727,9 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val uIntMinusVariable: Minus<UInt, LabeledPolynomial.Variable, LabeledPolynomial<Number>> = Minus { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
-        if (ring.numberIsZero { left.isZero() }) LabeledPolynomial.fromUnsafe(
+        if (left.isZero()) LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(right mapsTo 1U) mapsTo ring.numberUnaryMinus { -ring.one },
         )
         else LabeledPolynomial.fromUnsafe(
@@ -717,16 +738,18 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val uIntTimesVariable: Times<UInt, LabeledPolynomial.Variable, LabeledPolynomial<Number>> = Times { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
-        if (ring.numberIsZero { left.isZero() }) zero
+        if (left.isZero()) zero
         else LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(right mapsTo 1U) mapsTo left,
         )
     }
     
     override val longPlusVariable: Plus<Long, LabeledPolynomial.Variable, LabeledPolynomial<Number>> = Plus { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
-        if (ring.numberIsZero { left.isZero() }) LabeledPolynomial.fromUnsafe(
+        if (left.isZero()) LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(right mapsTo 1U) mapsTo ring.one,
         )
         else LabeledPolynomial.fromUnsafe(
@@ -735,8 +758,9 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val longMinusVariable: Minus<Long, LabeledPolynomial.Variable, LabeledPolynomial<Number>> = Minus { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
-        if (ring.numberIsZero { left.isZero() }) LabeledPolynomial.fromUnsafe(
+        if (left.isZero()) LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(right mapsTo 1U) mapsTo ring.numberUnaryMinus { -ring.one },
         )
         else LabeledPolynomial.fromUnsafe(
@@ -745,16 +769,18 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val longTimesVariable: Times<Long, LabeledPolynomial.Variable, LabeledPolynomial<Number>> = Times { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
-        if (ring.numberIsZero { left.isZero() }) zero
+        if (left.isZero()) zero
         else LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(right mapsTo 1U) mapsTo left,
         )
     }
     
     override val uLongPlusVariable: Plus<ULong, LabeledPolynomial.Variable, LabeledPolynomial<Number>> = Plus { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
-        if (ring.numberIsZero { left.isZero() }) LabeledPolynomial.fromUnsafe(
+        if (left.isZero()) LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(right mapsTo 1U) mapsTo ring.one,
         )
         else LabeledPolynomial.fromUnsafe(
@@ -763,8 +789,9 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val uLongMinusVariable: Minus<ULong, LabeledPolynomial.Variable, LabeledPolynomial<Number>> = Minus { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
-        if (ring.numberIsZero { left.isZero() }) LabeledPolynomial.fromUnsafe(
+        if (left.isZero()) LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(right mapsTo 1U) mapsTo ring.numberUnaryMinus { -ring.one },
         )
         else LabeledPolynomial.fromUnsafe(
@@ -773,15 +800,17 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val uLongTimesVariable: Times<ULong, LabeledPolynomial.Variable, LabeledPolynomial<Number>> = Times { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
-        if (ring.numberIsZero { left.isZero() }) zero
+        if (left.isZero()) zero
         else LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(right mapsTo 1U) mapsTo left,
         )
     }
     
     override val numberPlusVariable: Plus<Number, LabeledPolynomial.Variable, LabeledPolynomial<Number>> = Plus { left, right ->
-        if (ring.numberIsZero { left.isZero() }) LabeledPolynomial.fromUnsafe(
+        localContexts(ring, equality)
+        if (left.isZero()) LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(right mapsTo 1U) mapsTo ring.one,
         )
         else LabeledPolynomial.fromUnsafe(
@@ -790,7 +819,8 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val numberMinusVariable: Minus<Number, LabeledPolynomial.Variable, LabeledPolynomial<Number>> = Minus { left, right ->
-        if (ring.numberIsZero { left.isZero() }) LabeledPolynomial.fromUnsafe(
+        localContexts(ring, equality)
+        if (left.isZero()) LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(right mapsTo 1U) mapsTo ring.numberUnaryMinus { -ring.one },
         )
         else LabeledPolynomial.fromUnsafe(
@@ -799,16 +829,18 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val numberTimesVariable: Times<Number, LabeledPolynomial.Variable, LabeledPolynomial<Number>> = Times { left, right ->
-        if (ring.numberIsZero { left.isZero() }) zero
+        localContexts(ring, equality)
+        if (left.isZero()) zero
         else LabeledPolynomial.fromUnsafe(
             LabeledPolynomial.MonomialSignature.fromUnsafe(right mapsTo 1U) mapsTo left,
         )
     }
     
     override val numberPlusInt: Plus<LabeledPolynomial<Number>, Int, LabeledPolynomial<Number>> = Plus { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
         when {
-            ring.numberIsZero { right.isZero() } -> left
+            right.isZero() -> left
             left.coefficients.isEmpty() -> LabeledPolynomial.fromUnsafe(unitSignature mapsTo right)
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
@@ -820,7 +852,7 @@ private open class LabeledPolynomialSpace<Number>(
                     if (unitSignature !in this) this[unitSignature] = right
                     else {
                         val newValue = ring.numberPlusNumber { this[unitSignature] + right }
-                        if (ring.numberIsZero { newValue.isZero() }) this[unitSignature] = newValue
+                        if (newValue.isZero()) this[unitSignature] = newValue
                         else this.remove(unitSignature)
                     }
                 }
@@ -828,9 +860,10 @@ private open class LabeledPolynomialSpace<Number>(
         }
     }
     override val numberMinusInt: Minus<LabeledPolynomial<Number>, Int, LabeledPolynomial<Number>> = Minus { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
         when {
-            ring.numberIsZero { right.isZero() } -> left
+            right.isZero() -> left
             left.coefficients.isEmpty() -> LabeledPolynomial.fromUnsafe(unitSignature mapsTo right)
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
@@ -842,7 +875,7 @@ private open class LabeledPolynomialSpace<Number>(
                     if (unitSignature !in this) this[unitSignature] = ring.numberUnaryMinus { -right }
                     else {
                         val newValue = ring.numberMinusNumber { this[unitSignature] - right }
-                        if (ring.numberIsZero { newValue.isZero() }) this[unitSignature] = newValue
+                        if (newValue.isZero()) this[unitSignature] = newValue
                         else this.remove(unitSignature)
                     }
                 }
@@ -850,10 +883,11 @@ private open class LabeledPolynomialSpace<Number>(
         }
     }
     override val numberTimesInt: Times<LabeledPolynomial<Number>, Int, LabeledPolynomial<Number>> = Times { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
         when {
-            ring.numberIsZero { right.isZero() } -> zero
-            ring.numberIsOne { right.isOne() } -> left
+            right.isZero() -> zero
+            right.isOne() -> left
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
                     keyEquality = LabeledPolynomial.MonomialSignature.equality(),
@@ -861,16 +895,17 @@ private open class LabeledPolynomialSpace<Number>(
                     keyOrder = defaultLabeledPolynomialMonomialSignatureOrder,
                 ) {
                     left.coefficients.mapValuesTo(this) { (value) -> ring.numberTimesNumber { value * right } }
-                    removeAllThat { _, value -> ring.numberIsZero { value.isZero() } }
+                    removeAllThat { _, value -> value.isZero() }
                 }
             )
         }
     }
     
     override val numberPlusUInt: Plus<LabeledPolynomial<Number>, UInt, LabeledPolynomial<Number>> = Plus { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
         when {
-            ring.numberIsZero { right.isZero() } -> left
+            right.isZero() -> left
             left.coefficients.isEmpty() -> LabeledPolynomial.fromUnsafe(unitSignature mapsTo right)
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
@@ -882,7 +917,7 @@ private open class LabeledPolynomialSpace<Number>(
                     if (unitSignature !in this) this[unitSignature] = right
                     else {
                         val newValue = ring.numberPlusNumber { this[unitSignature] + right }
-                        if (ring.numberIsZero { newValue.isZero() }) this[unitSignature] = newValue
+                        if (newValue.isZero()) this[unitSignature] = newValue
                         else this.remove(unitSignature)
                     }
                 }
@@ -890,9 +925,10 @@ private open class LabeledPolynomialSpace<Number>(
         }
     }
     override val numberMinusUInt: Minus<LabeledPolynomial<Number>, UInt, LabeledPolynomial<Number>> = Minus { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
         when {
-            ring.numberIsZero { right.isZero() } -> left
+            right.isZero() -> left
             left.coefficients.isEmpty() -> LabeledPolynomial.fromUnsafe(unitSignature mapsTo right)
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
@@ -904,7 +940,7 @@ private open class LabeledPolynomialSpace<Number>(
                     if (unitSignature !in this) this[unitSignature] = ring.numberUnaryMinus { -right }
                     else {
                         val newValue = ring.numberMinusNumber { this[unitSignature] - right }
-                        if (ring.numberIsZero { newValue.isZero() }) this[unitSignature] = newValue
+                        if (newValue.isZero()) this[unitSignature] = newValue
                         else this.remove(unitSignature)
                     }
                 }
@@ -912,10 +948,11 @@ private open class LabeledPolynomialSpace<Number>(
         }
     }
     override val numberTimesUInt: Times<LabeledPolynomial<Number>, UInt, LabeledPolynomial<Number>> = Times { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
         when {
-            ring.numberIsZero { right.isZero() } -> zero
-            ring.numberIsOne { right.isOne() } -> left
+            right.isZero() -> zero
+            right.isOne() -> left
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
                     keyEquality = LabeledPolynomial.MonomialSignature.equality(),
@@ -923,16 +960,17 @@ private open class LabeledPolynomialSpace<Number>(
                     keyOrder = defaultLabeledPolynomialMonomialSignatureOrder,
                 ) {
                     left.coefficients.mapValuesTo(this) { (value) -> ring.numberTimesNumber { value * right } }
-                    removeAllThat { _, value -> ring.numberIsZero { value.isZero() } }
+                    removeAllThat { _, value -> value.isZero() }
                 }
             )
         }
     }
     
     override val numberPlusLong: Plus<LabeledPolynomial<Number>, Long, LabeledPolynomial<Number>> = Plus { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
         when {
-            ring.numberIsZero { right.isZero() } -> left
+            right.isZero() -> left
             left.coefficients.isEmpty() -> LabeledPolynomial.fromUnsafe(unitSignature mapsTo right)
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
@@ -944,7 +982,7 @@ private open class LabeledPolynomialSpace<Number>(
                     if (unitSignature !in this) this[unitSignature] = right
                     else {
                         val newValue = ring.numberPlusNumber { this[unitSignature] + right }
-                        if (ring.numberIsZero { newValue.isZero() }) this[unitSignature] = newValue
+                        if (newValue.isZero()) this[unitSignature] = newValue
                         else this.remove(unitSignature)
                     }
                 }
@@ -952,9 +990,10 @@ private open class LabeledPolynomialSpace<Number>(
         }
     }
     override val numberMinusLong: Minus<LabeledPolynomial<Number>, Long, LabeledPolynomial<Number>> = Minus { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
         when {
-            ring.numberIsZero { right.isZero() } -> left
+            right.isZero() -> left
             left.coefficients.isEmpty() -> LabeledPolynomial.fromUnsafe(unitSignature mapsTo right)
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
@@ -966,7 +1005,7 @@ private open class LabeledPolynomialSpace<Number>(
                     if (unitSignature !in this) this[unitSignature] = ring.numberUnaryMinus { -right }
                     else {
                         val newValue = ring.numberMinusNumber { this[unitSignature] - right }
-                        if (ring.numberIsZero { newValue.isZero() }) this[unitSignature] = newValue
+                        if (newValue.isZero()) this[unitSignature] = newValue
                         else this.remove(unitSignature)
                     }
                 }
@@ -974,10 +1013,11 @@ private open class LabeledPolynomialSpace<Number>(
         }
     }
     override val numberTimesLong: Times<LabeledPolynomial<Number>, Long, LabeledPolynomial<Number>> = Times { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
         when {
-            ring.numberIsZero { right.isZero() } -> zero
-            ring.numberIsOne { right.isOne() } -> left
+            right.isZero() -> zero
+            right.isOne() -> left
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
                     keyEquality = LabeledPolynomial.MonomialSignature.equality(),
@@ -985,16 +1025,17 @@ private open class LabeledPolynomialSpace<Number>(
                     keyOrder = defaultLabeledPolynomialMonomialSignatureOrder,
                 ) {
                     left.coefficients.mapValuesTo(this) { (value) -> ring.numberTimesNumber { value * right } }
-                    removeAllThat { _, value -> ring.numberIsZero { value.isZero() } }
+                    removeAllThat { _, value -> value.isZero() }
                 }
             )
         }
     }
     
     override val numberPlusULong: Plus<LabeledPolynomial<Number>, ULong, LabeledPolynomial<Number>> = Plus { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
         when {
-            ring.numberIsZero { right.isZero() } -> left
+            right.isZero() -> left
             left.coefficients.isEmpty() -> LabeledPolynomial.fromUnsafe(unitSignature mapsTo right)
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
@@ -1006,7 +1047,7 @@ private open class LabeledPolynomialSpace<Number>(
                     if (unitSignature !in this) this[unitSignature] = right
                     else {
                         val newValue = ring.numberPlusNumber { this[unitSignature] + right }
-                        if (ring.numberIsZero { newValue.isZero() }) this[unitSignature] = newValue
+                        if (newValue.isZero()) this[unitSignature] = newValue
                         else this.remove(unitSignature)
                     }
                 }
@@ -1014,9 +1055,10 @@ private open class LabeledPolynomialSpace<Number>(
         }
     }
     override val numberMinusULong: Minus<LabeledPolynomial<Number>, ULong, LabeledPolynomial<Number>> = Minus { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
         when {
-            ring.numberIsZero { right.isZero() } -> left
+            right.isZero() -> left
             left.coefficients.isEmpty() -> LabeledPolynomial.fromUnsafe(unitSignature mapsTo right)
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
@@ -1028,7 +1070,7 @@ private open class LabeledPolynomialSpace<Number>(
                     if (unitSignature !in this) this[unitSignature] = ring.numberUnaryMinus { -right }
                     else {
                         val newValue = ring.numberMinusNumber { this[unitSignature] - right }
-                        if (ring.numberIsZero { newValue.isZero() }) this[unitSignature] = newValue
+                        if (newValue.isZero()) this[unitSignature] = newValue
                         else this.remove(unitSignature)
                     }
                 }
@@ -1036,10 +1078,11 @@ private open class LabeledPolynomialSpace<Number>(
         }
     }
     override val numberTimesULong: Times<LabeledPolynomial<Number>, ULong, LabeledPolynomial<Number>> = Times { left, right ->
+        localContexts(ring, equality)
         val right = ring.valueOf(right)
         when {
-            ring.numberIsZero { right.isZero() } -> zero
-            ring.numberIsOne { right.isOne() } -> left
+            right.isZero() -> zero
+            right.isOne() -> left
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
                     keyEquality = LabeledPolynomial.MonomialSignature.equality(),
@@ -1047,15 +1090,16 @@ private open class LabeledPolynomialSpace<Number>(
                     keyOrder = defaultLabeledPolynomialMonomialSignatureOrder,
                 ) {
                     left.coefficients.mapValuesTo(this) { (value) -> ring.numberTimesNumber { value * right } }
-                    removeAllThat { _, value -> ring.numberIsZero { value.isZero() } }
+                    removeAllThat { _, value -> value.isZero() }
                 }
             )
         }
     }
     
     override val vectorPlusNumber: Plus<LabeledPolynomial<Number>, Number, LabeledPolynomial<Number>> = Plus { left, right ->
+        localContexts(ring, equality)
         when {
-            ring.numberIsZero { right.isZero() } -> left
+            right.isZero() -> left
             left.coefficients.isEmpty() -> LabeledPolynomial.fromUnsafe(unitSignature mapsTo right)
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
@@ -1067,7 +1111,7 @@ private open class LabeledPolynomialSpace<Number>(
                     if (unitSignature !in this) this[unitSignature] = right
                     else {
                         val newValue = ring.numberPlusNumber { this[unitSignature] + right }
-                        if (ring.numberIsZero { newValue.isZero() }) this[unitSignature] = newValue
+                        if (newValue.isZero()) this[unitSignature] = newValue
                         else this.remove(unitSignature)
                     }
                 }
@@ -1075,8 +1119,9 @@ private open class LabeledPolynomialSpace<Number>(
         }
     }
     override val vectorMinusNumber: Minus<LabeledPolynomial<Number>, Number, LabeledPolynomial<Number>> = Minus { left, right ->
+        localContexts(ring, equality)
         when {
-            ring.numberIsZero { right.isZero() } -> left
+            right.isZero() -> left
             left.coefficients.isEmpty() -> LabeledPolynomial.fromUnsafe(unitSignature mapsTo right)
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
@@ -1088,7 +1133,7 @@ private open class LabeledPolynomialSpace<Number>(
                     if (unitSignature !in this) this[unitSignature] = ring.numberUnaryMinus { -right }
                     else {
                         val newValue = ring.numberMinusNumber { this[unitSignature] - right }
-                        if (ring.numberIsZero { newValue.isZero() }) this[unitSignature] = newValue
+                        if (newValue.isZero()) this[unitSignature] = newValue
                         else this.remove(unitSignature)
                     }
                 }
@@ -1096,9 +1141,10 @@ private open class LabeledPolynomialSpace<Number>(
         }
     }
     override val vectorTimesNumber: Times<LabeledPolynomial<Number>, Number, LabeledPolynomial<Number>> = Times { left, right ->
+        localContexts(ring, equality)
         when {
-            ring.numberIsZero { right.isZero() } -> zero
-            ring.numberIsOne { right.isOne() } -> left
+            right.isZero() -> zero
+            right.isOne() -> left
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
                     keyEquality = LabeledPolynomial.MonomialSignature.equality(),
@@ -1106,16 +1152,17 @@ private open class LabeledPolynomialSpace<Number>(
                     keyOrder = defaultLabeledPolynomialMonomialSignatureOrder,
                 ) {
                     left.coefficients.mapValuesTo(this) { (value) -> ring.numberTimesNumber { value * right } }
-                    removeAllThat { _, value -> ring.numberIsZero { value.isZero() } }
+                    removeAllThat { _, value -> value.isZero() }
                 }
             )
         }
     }
     
     override val intPlusNumber: Plus<Int, LabeledPolynomial<Number>, LabeledPolynomial<Number>> = Plus { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
         when {
-            ring.numberIsZero { left.isZero() } -> right
+            left.isZero() -> right
             right.coefficients.isEmpty() -> LabeledPolynomial.fromUnsafe(unitSignature mapsTo left)
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
@@ -1127,7 +1174,7 @@ private open class LabeledPolynomialSpace<Number>(
                     if (unitSignature !in this) this[unitSignature] = left
                     else {
                         val newValue = ring.numberPlusNumber { left + this[unitSignature] }
-                        if (ring.numberIsZero { newValue.isZero() }) this[unitSignature] = newValue
+                        if (newValue.isZero()) this[unitSignature] = newValue
                         else this.remove(unitSignature)
                     }
                 }
@@ -1135,9 +1182,10 @@ private open class LabeledPolynomialSpace<Number>(
         }
     }
     override val intMinusNumber: Minus<Int, LabeledPolynomial<Number>, LabeledPolynomial<Number>> = Minus { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
         when {
-            ring.numberIsZero { left.isZero() } -> right
+            left.isZero() -> right
             right.coefficients.isEmpty() -> LabeledPolynomial.fromUnsafe(unitSignature mapsTo left)
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
@@ -1149,7 +1197,7 @@ private open class LabeledPolynomialSpace<Number>(
                     if (unitSignature !in this) this[unitSignature] = ring.numberUnaryMinus { -left }
                     else {
                         val newValue = ring.numberMinusNumber { left - this[unitSignature] }
-                        if (ring.numberIsZero { newValue.isZero() }) this[unitSignature] = newValue
+                        if (newValue.isZero()) this[unitSignature] = newValue
                         else this.remove(unitSignature)
                     }
                 }
@@ -1157,10 +1205,11 @@ private open class LabeledPolynomialSpace<Number>(
         }
     }
     override val intTimesNumber: Times<Int, LabeledPolynomial<Number>, LabeledPolynomial<Number>> = Times { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
         when {
-            ring.numberIsZero { left.isZero() } -> zero
-            ring.numberIsOne { left.isOne() } -> right
+            left.isZero() -> zero
+            left.isOne() -> right
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
                     keyEquality = LabeledPolynomial.MonomialSignature.equality(),
@@ -1168,16 +1217,17 @@ private open class LabeledPolynomialSpace<Number>(
                     keyOrder = defaultLabeledPolynomialMonomialSignatureOrder,
                 ) {
                     right.coefficients.mapValuesTo(this) { (value) -> ring.numberTimesNumber { left * value } }
-                    removeAllThat { _, value -> ring.numberIsZero { value.isZero() } }
+                    removeAllThat { _, value -> value.isZero() }
                 }
             )
         }
     }
     
     override val uIntPlusNumber: Plus<UInt, LabeledPolynomial<Number>, LabeledPolynomial<Number>> = Plus { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
         when {
-            ring.numberIsZero { left.isZero() } -> right
+            left.isZero() -> right
             right.coefficients.isEmpty() -> LabeledPolynomial.fromUnsafe(unitSignature mapsTo left)
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
@@ -1189,7 +1239,7 @@ private open class LabeledPolynomialSpace<Number>(
                     if (unitSignature !in this) this[unitSignature] = left
                     else {
                         val newValue = ring.numberPlusNumber { left + this[unitSignature] }
-                        if (ring.numberIsZero { newValue.isZero() }) this[unitSignature] = newValue
+                        if (newValue.isZero()) this[unitSignature] = newValue
                         else this.remove(unitSignature)
                     }
                 }
@@ -1197,9 +1247,10 @@ private open class LabeledPolynomialSpace<Number>(
         }
     }
     override val uIntMinusNumber: Minus<UInt, LabeledPolynomial<Number>, LabeledPolynomial<Number>> = Minus { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
         when {
-            ring.numberIsZero { left.isZero() } -> right
+            left.isZero() -> right
             right.coefficients.isEmpty() -> LabeledPolynomial.fromUnsafe(unitSignature mapsTo left)
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
@@ -1211,7 +1262,7 @@ private open class LabeledPolynomialSpace<Number>(
                     if (unitSignature !in this) this[unitSignature] = ring.numberUnaryMinus { -left }
                     else {
                         val newValue = ring.numberMinusNumber { left - this[unitSignature] }
-                        if (ring.numberIsZero { newValue.isZero() }) this[unitSignature] = newValue
+                        if (newValue.isZero()) this[unitSignature] = newValue
                         else this.remove(unitSignature)
                     }
                 }
@@ -1219,10 +1270,11 @@ private open class LabeledPolynomialSpace<Number>(
         }
     }
     override val uIntTimesNumber: Times<UInt, LabeledPolynomial<Number>, LabeledPolynomial<Number>> = Times { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
         when {
-            ring.numberIsZero { left.isZero() } -> zero
-            ring.numberIsOne { left.isOne() } -> right
+            left.isZero() -> zero
+            left.isOne() -> right
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
                     keyEquality = LabeledPolynomial.MonomialSignature.equality(),
@@ -1230,16 +1282,17 @@ private open class LabeledPolynomialSpace<Number>(
                     keyOrder = defaultLabeledPolynomialMonomialSignatureOrder,
                 ) {
                     right.coefficients.mapValuesTo(this) { (value) -> ring.numberTimesNumber { left * value } }
-                    removeAllThat { _, value -> ring.numberIsZero { value.isZero() } }
+                    removeAllThat { _, value -> value.isZero() }
                 }
             )
         }
     }
     
     override val longPlusNumber: Plus<Long, LabeledPolynomial<Number>, LabeledPolynomial<Number>> = Plus { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
         when {
-            ring.numberIsZero { left.isZero() } -> right
+            left.isZero() -> right
             right.coefficients.isEmpty() -> LabeledPolynomial.fromUnsafe(unitSignature mapsTo left)
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
@@ -1251,7 +1304,7 @@ private open class LabeledPolynomialSpace<Number>(
                     if (unitSignature !in this) this[unitSignature] = left
                     else {
                         val newValue = ring.numberPlusNumber { left + this[unitSignature] }
-                        if (ring.numberIsZero { newValue.isZero() }) this[unitSignature] = newValue
+                        if (newValue.isZero()) this[unitSignature] = newValue
                         else this.remove(unitSignature)
                     }
                 }
@@ -1259,9 +1312,10 @@ private open class LabeledPolynomialSpace<Number>(
         }
     }
     override val longMinusNumber: Minus<Long, LabeledPolynomial<Number>, LabeledPolynomial<Number>> = Minus { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
         when {
-            ring.numberIsZero { left.isZero() } -> right
+            left.isZero() -> right
             right.coefficients.isEmpty() -> LabeledPolynomial.fromUnsafe(unitSignature mapsTo left)
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
@@ -1273,7 +1327,7 @@ private open class LabeledPolynomialSpace<Number>(
                     if (unitSignature !in this) this[unitSignature] = ring.numberUnaryMinus { -left }
                     else {
                         val newValue = ring.numberMinusNumber { left - this[unitSignature] }
-                        if (ring.numberIsZero { newValue.isZero() }) this[unitSignature] = newValue
+                        if (newValue.isZero()) this[unitSignature] = newValue
                         else this.remove(unitSignature)
                     }
                 }
@@ -1281,10 +1335,11 @@ private open class LabeledPolynomialSpace<Number>(
         }
     }
     override val longTimesNumber: Times<Long, LabeledPolynomial<Number>, LabeledPolynomial<Number>> = Times { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
         when {
-            ring.numberIsZero { left.isZero() } -> zero
-            ring.numberIsOne { left.isOne() } -> right
+            left.isZero() -> zero
+            left.isOne() -> right
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
                     keyEquality = LabeledPolynomial.MonomialSignature.equality(),
@@ -1292,16 +1347,17 @@ private open class LabeledPolynomialSpace<Number>(
                     keyOrder = defaultLabeledPolynomialMonomialSignatureOrder,
                 ) {
                     right.coefficients.mapValuesTo(this) { (value) -> ring.numberTimesNumber { left * value } }
-                    removeAllThat { _, value -> ring.numberIsZero { value.isZero() } }
+                    removeAllThat { _, value -> value.isZero() }
                 }
             )
         }
     }
     
     override val uLongPlusNumber: Plus<ULong, LabeledPolynomial<Number>, LabeledPolynomial<Number>> = Plus { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
         when {
-            ring.numberIsZero { left.isZero() } -> right
+            left.isZero() -> right
             right.coefficients.isEmpty() -> LabeledPolynomial.fromUnsafe(unitSignature mapsTo left)
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
@@ -1313,7 +1369,7 @@ private open class LabeledPolynomialSpace<Number>(
                     if (unitSignature !in this) this[unitSignature] = left
                     else {
                         val newValue = ring.numberPlusNumber { left + this[unitSignature] }
-                        if (ring.numberIsZero { newValue.isZero() }) this[unitSignature] = newValue
+                        if (newValue.isZero()) this[unitSignature] = newValue
                         else this.remove(unitSignature)
                     }
                 }
@@ -1321,9 +1377,10 @@ private open class LabeledPolynomialSpace<Number>(
         }
     }
     override val uLongMinusNumber: Minus<ULong, LabeledPolynomial<Number>, LabeledPolynomial<Number>> = Minus { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
         when {
-            ring.numberIsZero { left.isZero() } -> right
+            left.isZero() -> right
             right.coefficients.isEmpty() -> LabeledPolynomial.fromUnsafe(unitSignature mapsTo left)
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
@@ -1335,7 +1392,7 @@ private open class LabeledPolynomialSpace<Number>(
                     if (unitSignature !in this) this[unitSignature] = ring.numberUnaryMinus { -left }
                     else {
                         val newValue = ring.numberMinusNumber { left - this[unitSignature] }
-                        if (ring.numberIsZero { newValue.isZero() }) this[unitSignature] = newValue
+                        if (newValue.isZero()) this[unitSignature] = newValue
                         else this.remove(unitSignature)
                     }
                 }
@@ -1343,10 +1400,11 @@ private open class LabeledPolynomialSpace<Number>(
         }
     }
     override val uLongTimesNumber: Times<ULong, LabeledPolynomial<Number>, LabeledPolynomial<Number>> = Times { left, right ->
+        localContexts(ring, equality)
         val left = ring.valueOf(left)
         when {
-            ring.numberIsZero { left.isZero() } -> zero
-            ring.numberIsOne { left.isOne() } -> right
+            left.isZero() -> zero
+            left.isOne() -> right
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
                     keyEquality = LabeledPolynomial.MonomialSignature.equality(),
@@ -1354,15 +1412,16 @@ private open class LabeledPolynomialSpace<Number>(
                     keyOrder = defaultLabeledPolynomialMonomialSignatureOrder,
                 ) {
                     right.coefficients.mapValuesTo(this) { (value) -> ring.numberTimesNumber { left * value } }
-                    removeAllThat { _, value -> ring.numberIsZero { value.isZero() } }
+                    removeAllThat { _, value -> value.isZero() }
                 }
             )
         }
     }
     
     override val numberPlusVector: Plus<Number, LabeledPolynomial<Number>, LabeledPolynomial<Number>> = Plus { left, right ->
+        localContexts(ring, equality)
         when {
-            ring.numberIsZero { left.isZero() } -> right
+            left.isZero() -> right
             right.coefficients.isEmpty() -> LabeledPolynomial.fromUnsafe(unitSignature mapsTo left)
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
@@ -1374,7 +1433,7 @@ private open class LabeledPolynomialSpace<Number>(
                     if (unitSignature !in this) this[unitSignature] = left
                     else {
                         val newValue = ring.numberPlusNumber { left + this[unitSignature] }
-                        if (ring.numberIsZero { newValue.isZero() }) this[unitSignature] = newValue
+                        if (newValue.isZero()) this[unitSignature] = newValue
                         else this.remove(unitSignature)
                     }
                 }
@@ -1382,8 +1441,9 @@ private open class LabeledPolynomialSpace<Number>(
         }
     }
     override val numberMinusVector: Minus<Number, LabeledPolynomial<Number>, LabeledPolynomial<Number>> = Minus { left, right ->
+        localContexts(ring, equality)
         when {
-            ring.numberIsZero { left.isZero() } -> right
+            left.isZero() -> right
             right.coefficients.isEmpty() -> LabeledPolynomial.fromUnsafe(unitSignature mapsTo left)
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
@@ -1395,7 +1455,7 @@ private open class LabeledPolynomialSpace<Number>(
                     if (unitSignature !in this) this[unitSignature] = ring.numberUnaryMinus { -left }
                     else {
                         val newValue = ring.numberMinusNumber { left - this[unitSignature] }
-                        if (ring.numberIsZero { newValue.isZero() }) this[unitSignature] = newValue
+                        if (newValue.isZero()) this[unitSignature] = newValue
                         else this.remove(unitSignature)
                     }
                 }
@@ -1403,9 +1463,10 @@ private open class LabeledPolynomialSpace<Number>(
         }
     }
     override val numberTimesVector: Times<Number, LabeledPolynomial<Number>, LabeledPolynomial<Number>> = Times { left, right ->
+        localContexts(ring, equality)
         when {
-            ring.numberIsZero { left.isZero() } -> zero
-            ring.numberIsOne { left.isOne() } -> right
+            left.isZero() -> zero
+            left.isOne() -> right
             else -> LabeledPolynomial.fromUnsafe(
                 KoneMap.build(
                     keyEquality = LabeledPolynomial.MonomialSignature.equality(),
@@ -1413,7 +1474,7 @@ private open class LabeledPolynomialSpace<Number>(
                     keyOrder = defaultLabeledPolynomialMonomialSignatureOrder,
                 ) {
                     right.coefficients.mapValuesTo(this) { (value) -> ring.numberTimesNumber { left * value } }
-                    removeAllThat { _, value -> ring.numberIsZero { value.isZero() } }
+                    removeAllThat { _, value -> value.isZero() }
                 }
             )
         }
@@ -1455,6 +1516,7 @@ private open class LabeledPolynomialSpace<Number>(
     }
     
     override val variablePlusPolynomial: Plus<LabeledPolynomial.Variable, LabeledPolynomial<Number>, LabeledPolynomial<Number>> = Plus { left, right ->
+        localContexts(ring, equality)
         LabeledPolynomial.fromUnsafe(
             KoneMap.build(
                 keyEquality = LabeledPolynomial.MonomialSignature.equality(),
@@ -1464,11 +1526,12 @@ private open class LabeledPolynomialSpace<Number>(
                 val leftSignature = LabeledPolynomial.MonomialSignature.fromUnsafe(left mapsTo 1u)
                 this[leftSignature] = ring.one
                 right.coefficients.mapValuesTo(this, { it.value }) { _, currentValue, newValue -> ring.numberPlusNumber { currentValue + newValue } }
-                if (ring.numberIsZero { this[leftSignature].isZero() }) remove(leftSignature)
+                if (this[leftSignature].isZero()) remove(leftSignature)
             }
         )
     }
     override val variableMinusPolynomial: Minus<LabeledPolynomial.Variable, LabeledPolynomial<Number>, LabeledPolynomial<Number>> = Minus { left, right ->
+        localContexts(ring, equality)
         LabeledPolynomial.fromUnsafe(
             KoneMap.build(
                 keyEquality = LabeledPolynomial.MonomialSignature.equality(),
@@ -1478,7 +1541,7 @@ private open class LabeledPolynomialSpace<Number>(
                 val leftSignature = LabeledPolynomial.MonomialSignature.fromUnsafe(left mapsTo 1u)
                 this[leftSignature] = ring.one
                 right.coefficients.mapValuesTo(this, { ring.numberUnaryMinus { -it.value } }) { _, oldValue, newValue -> ring.numberMinusNumber { oldValue - newValue } }
-                if (ring.numberIsZero { this[leftSignature].isZero() }) remove(leftSignature)
+                if (this[leftSignature].isZero()) remove(leftSignature)
             }
         )
     }
@@ -1504,6 +1567,7 @@ private open class LabeledPolynomialSpace<Number>(
     }
     
     override val polynomialPlusVariable: Plus<LabeledPolynomial<Number>, LabeledPolynomial.Variable, LabeledPolynomial<Number>> = Plus { left, right ->
+        localContexts(ring, equality)
         LabeledPolynomial.fromUnsafe(
             KoneMap.build(
                 keyEquality = LabeledPolynomial.MonomialSignature.equality(),
@@ -1513,11 +1577,12 @@ private open class LabeledPolynomialSpace<Number>(
                 val rightSignature = LabeledPolynomial.MonomialSignature.fromUnsafe(right mapsTo 1u)
                 this[rightSignature] = ring.one
                 left.coefficients.mapValuesTo(this, { it.value }) { _, currentValue, newValue -> ring.numberPlusNumber { newValue + currentValue } }
-                if (ring.numberIsZero { this[rightSignature].isZero() }) remove(rightSignature)
+                if (this[rightSignature].isZero()) remove(rightSignature)
             }
         )
     }
     override val polynomialMinusVariable: Minus<LabeledPolynomial<Number>, LabeledPolynomial.Variable, LabeledPolynomial<Number>> = Minus { left, right ->
+        localContexts(ring, equality)
         LabeledPolynomial.fromUnsafe(
             KoneMap.build(
                 keyEquality = LabeledPolynomial.MonomialSignature.equality(),
@@ -1527,11 +1592,12 @@ private open class LabeledPolynomialSpace<Number>(
                 val rightSignature = LabeledPolynomial.MonomialSignature.fromUnsafe(right mapsTo 1u)
                 this[rightSignature] = ring.numberUnaryMinus { -ring.one }
                 left.coefficients.mapValuesTo(this, { it.value }) { _, currentValue, newValue -> ring.numberPlusNumber { newValue + currentValue } }
-                if (ring.numberIsZero { this[rightSignature].isZero() }) remove(rightSignature)
+                if (this[rightSignature].isZero()) remove(rightSignature)
             }
         )
     }
     override val polynomialTimesVariable: Times<LabeledPolynomial<Number>, LabeledPolynomial.Variable, LabeledPolynomial<Number>> = Times { left, right ->
+        localContexts(ring, equality)
         LabeledPolynomial.fromUnsafe(
             left.coefficients.mapKeys(
                 keyEquality = LabeledPolynomial.MonomialSignature.equality(),
@@ -1562,6 +1628,7 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val numberPlusNumber: Plus<LabeledPolynomial<Number>, LabeledPolynomial<Number>, LabeledPolynomial<Number>> = Plus { left, right ->
+        localContexts(ring, equality)
         LabeledPolynomial.fromUnsafe(
             KoneMap.build(
                 keyEquality = LabeledPolynomial.MonomialSignature.equality(),
@@ -1575,7 +1642,7 @@ private open class LabeledPolynomialSpace<Number>(
                         this[key] = value
                     } else {
                         val oldValue = ring.numberPlusNumber { node.value + value }
-                        if (ring.numberIsZero { oldValue.isZero() }) node.remove()
+                        if (oldValue.isZero()) node.remove()
                         else node.value = oldValue
                     }
                 }
@@ -1583,6 +1650,7 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val numberMinusNumber: Minus<LabeledPolynomial<Number>, LabeledPolynomial<Number>, LabeledPolynomial<Number>> = Minus { left, right ->
+        localContexts(ring, equality)
         LabeledPolynomial.fromUnsafe(
             KoneMap.build(
                 keyEquality = LabeledPolynomial.MonomialSignature.equality(),
@@ -1596,7 +1664,7 @@ private open class LabeledPolynomialSpace<Number>(
                         this[key] = ring.numberUnaryMinus { -value }
                     } else {
                         val oldValue = ring.numberMinusNumber { node.value - value }
-                        if (ring.numberIsZero { oldValue.isZero() }) node.remove()
+                        if (oldValue.isZero()) node.remove()
                         else node.value = oldValue
                     }
                 }
@@ -1604,6 +1672,7 @@ private open class LabeledPolynomialSpace<Number>(
         )
     }
     override val numberTimesNumber: Times<LabeledPolynomial<Number>, LabeledPolynomial<Number>, LabeledPolynomial<Number>> = Times { left, right ->
+        localContexts(ring, equality)
         LabeledPolynomial.fromUnsafe(
             KoneMap.build(
                 left.coefficients.size * right.coefficients.size,
@@ -1626,7 +1695,7 @@ private open class LabeledPolynomialSpace<Number>(
                         this.setOrChange(degrees, { coefficient }, { ring.numberPlusNumber { it + coefficient } })
                     }
                 }
-                removeAllThat { _, value -> ring.numberIsZero { value.isZero() } }
+                removeAllThat { _, value -> value.isZero() }
             }
         )
     }
@@ -1674,8 +1743,10 @@ private open class LabeledPolynomialSpace<Number>(
 
 public fun <Number> LabeledPolynomial.Companion.polynomialAlgebra(
     ring: CommutativeRing<Number>,
+    equality: Equality<Number>,
 ): PolynomialAlgebra<Number, LabeledPolynomial.Variable, LabeledPolynomial<Number>> = LabeledPolynomialSpace(
-    ring = ring
+    ring = ring,
+    equality = equality,
 )
 
 // TODO: Remove the top-level functions wrapper when KT-73135 will be fixed
@@ -1686,6 +1757,7 @@ public object LabeledPolynomialSuppliableTopLevelFunctions {
         val koneContextRegistry = koneContextRegistry.get()
         return polynomialAlgebra(
             ring = koneContextRegistry[CommutativeRing.Key<Number>()],
+            equality = koneContextRegistry[Equality.Key<Number>()]
         )
     }
     
@@ -1693,10 +1765,12 @@ public object LabeledPolynomialSuppliableTopLevelFunctions {
     context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
     public fun <@Supply Number> LabeledPolynomial.Companion.setPolynomialAlgebra(
         ring: CommutativeRing<Number>,
+        equality: Equality<Number>,
     ) {
         PolynomialAlgebra.Key<Number, LabeledPolynomial.Variable, LabeledPolynomial<Number>>().withImpliedUsingFirst correspondsTo RegisteredValueProvider.cached {
             polynomialAlgebra(
                 ring = ring,
+                equality = equality,
             )
         }
     }

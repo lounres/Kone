@@ -14,12 +14,14 @@ import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
 
 
 private class HyperbolicSineOverInputComputerViaDefaultForComplexNumbers<Number>(
     private val field: Field<Number>,
+    private val complexNumbersEquality: Equality<ComplexNumber<Number>>,
     private val complexNumbersFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
     private val cosineComputer: CosineComputer<Number>,
     private val sineComputer: SineComputer<Number>,
@@ -29,6 +31,7 @@ private class HyperbolicSineOverInputComputerViaDefaultForComplexNumbers<Number>
     override fun ComplexNumber<Number>.sinhOverThis(): ComplexNumber<Number> {
         KoneContext.localUnwrap(
             field,
+            complexNumbersEquality,
             complexNumbersFieldExtension,
             cosineComputer,
             sineComputer,
@@ -47,6 +50,7 @@ private class HyperbolicSineOverInputComputerViaDefaultForComplexNumbers<Number>
 
 public fun <Number> HyperbolicSineOverInputComputer.Companion.viaDefaultForComplexNumbers(
     field: Field<Number>,
+    complexNumbersEquality: Equality<ComplexNumber<Number>>,
     complexNumbersFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
     cosineComputer: CosineComputer<Number>,
     sineComputer: SineComputer<Number>,
@@ -54,6 +58,7 @@ public fun <Number> HyperbolicSineOverInputComputer.Companion.viaDefaultForCompl
     hyperbolicSineComputer: HyperbolicSineComputer<Number>,
 ): HyperbolicSineOverInputComputer<ComplexNumber<Number>> = HyperbolicSineOverInputComputerViaDefaultForComplexNumbers(
     field = field,
+    complexNumbersEquality = complexNumbersEquality,
     complexNumbersFieldExtension = complexNumbersFieldExtension,
     cosineComputer = cosineComputer,
     sineComputer = sineComputer,
@@ -69,6 +74,7 @@ public object HyperbolicSineOverInputComputerDefaultForComplexNumbersSuppliableT
         val koneContextRegistry = koneContextRegistry.get()
         return viaDefaultForComplexNumbers<Number>(
             field = koneContextRegistry[Field.Key<Number>()],
+            complexNumbersEquality = koneContextRegistry[Equality.Key<ComplexNumber<Number>>()],
             complexNumbersFieldExtension = koneContextRegistry[FieldExtension.Key<Number, ComplexNumber<Number>>()],
             cosineComputer = koneContextRegistry[CosineComputer.Key<Number>()],
             sineComputer = koneContextRegistry[SineComputer.Key<Number>()],
@@ -81,6 +87,7 @@ public object HyperbolicSineOverInputComputerDefaultForComplexNumbersSuppliableT
     context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
     public fun <@Supply Number> HyperbolicSineOverInputComputer.Companion.setViaDefaultForComplexNumbers(
         field: Field<Number>,
+        complexNumbersEquality: Equality<ComplexNumber<Number>>,
         complexNumbersFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
         cosineComputer: CosineComputer<Number>,
         sineComputer: SineComputer<Number>,
@@ -90,6 +97,7 @@ public object HyperbolicSineOverInputComputerDefaultForComplexNumbersSuppliableT
         HyperbolicSineOverInputComputer.Key<ComplexNumber<Number>>() correspondsTo RegisteredValueProvider.cached {
             viaDefaultForComplexNumbers<Number>(
                 field = field,
+                complexNumbersEquality = complexNumbersEquality,
                 complexNumbersFieldExtension = complexNumbersFieldExtension,
                 cosineComputer = cosineComputer,
                 sineComputer = sineComputer,

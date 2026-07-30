@@ -97,8 +97,6 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
     
     // region Equality
     override fun UBigLong.equalsTo(other: UBigLong): Boolean = this.magnitude contentEquals other.magnitude
-    override val numberIsZero: IsZero<UBigLong> = IsZero { it.magnitude.isEmpty() }
-    override val numberIsOne: IsOne<UBigLong> = IsOne { it.magnitude.let { it.size == 1u && it[0u] == 1uL } }
     // endregion
     
     // region Conversion
@@ -408,7 +406,7 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
     
     // region Bitwise operations
     public infix fun UBigLong.shr(bitCount: UInt): UBigLong {
-        if (numberIsZero { this.isZero() }) return zero
+        if (this.isZero()) return zero
         if (bitCount == 0u) return this
 
         val fullShifts = bitCount / ULONG_BIT_SIZE
@@ -436,7 +434,7 @@ public object UBigLongContext: Reification<UBigLong>, Equality<UBigLong>, Order<
         }
     }
     public infix fun UBigLong.shl(bitCount: UInt): UBigLong {
-        if (numberIsZero { this.isZero() }) return zero
+        if (this.isZero()) return zero
         if (bitCount == 0u) return this
         
         val fullShifts = bitCount / ULONG_BIT_SIZE
