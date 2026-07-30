@@ -61,7 +61,18 @@ public fun TestConfigurationBuilder.commonTestRunnerConfiguration(
         +JvmEnvironmentConfigurationDirectives.FULL_JDK
         TestPhaseDirectives.LATEST_PHASE_IN_PIPELINE with TestPhase.BACKEND
         TestPhaseDirectives.RUN_PIPELINE_TILL with runPipelineTillPhase
-        LanguageSettingsDirectives.LANGUAGE + "+EnableDfaWarningsInK2"
+        LanguageSettingsDirectives.LANGUAGE with listOf(
+            "+EnableDfaWarningsInK2",
+            
+            "+DataClassCopyRespectsConstructorVisibility",
+            "+ContextSensitiveResolutionUsingExpectedType",
+//            "+return-value-checker=full",
+            "+LocalTypeAliases",
+            "+NameBasedDestructuring",
+            "+CollectionLiterals",
+            "+AllowReturnsResultOfContract",
+            "+CompanionBlocksAndExtensions",
+        )
         +CodegenTestDirectives.IGNORE_DEXING
     }
     
