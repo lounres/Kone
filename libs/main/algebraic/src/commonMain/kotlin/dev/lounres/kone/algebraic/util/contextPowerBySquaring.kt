@@ -32,6 +32,12 @@ import dev.lounres.kone.contexts.localContexts
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
  *
+ * @param ring The ring context providing addition and subtraction operations.
+ * @receiver The element to which [one][Semiring.one] multiplied by [other] is added.
+ * @param other The integer multiplier.
+ * @param Number The type of elements of the ring.
+ * @return The result of adding [one][Semiring.one] multiplied by [other] to [this].
+ *
  * @usesMathJax
  */
 context(ring: Ring<Number>)
@@ -60,6 +66,12 @@ public infix fun <Number> Number.doublingPlus(other: Int): Number {
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ *
+ * @param ring The ring context providing addition and subtraction operations.
+ * @receiver The element to which [one][Semiring.one] multiplied by [other] is subtracted.
+ * @param other The integer multiplier.
+ * @param Number The type of elements of the ring.
+ * @return The result of subtracting [one][Semiring.one] multiplied by [other] from [this].
  *
  * @usesMathJax
  */
@@ -91,6 +103,12 @@ public infix fun <Number> Number.doublingMinus(other: Int): Number {
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
  *
+ * @param group The group context providing addition and negation operations.
+ * @receiver The element to multiply by [other].
+ * @param other The integer multiplier.
+ * @param Number The type of elements of the group.
+ * @return The product of [this] and [other] computed via the doubling algorithm.
+ *
  * @usesMathJax
  */
 context(group: Group<Number>)
@@ -119,6 +137,12 @@ public infix fun <Number> Number.doublingTimes(other: Int): Number {
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
  *
+ * @param ring The semiring context providing addition operations.
+ * @receiver The element to which [one][Semiring.one] multiplied by [other] is added.
+ * @param other The non-negative integer multiplier.
+ * @param Number The type of elements of the semiring.
+ * @return The result of adding [one][Semiring.one] multiplied by [other] to [this].
+ *
  * @usesMathJax
  */
 context(ring: Semiring<Number>)
@@ -144,6 +168,12 @@ public infix fun <Number> Number.doublingPlus(other: UInt): Number {
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
  *
+ * @param ring The ring context providing addition and negation operations.
+ * @receiver The element from which [one][Semiring.one] multiplied by [other] is subtracted.
+ * @param other The non-negative integer multiplier.
+ * @param Number The type of elements of the ring.
+ * @return The result of subtracting [one][Semiring.one] multiplied by [other] from [this].
+ *
  * @usesMathJax
  */
 context(ring: Ring<Number>)
@@ -168,6 +198,12 @@ public infix fun <Number> Number.doublingMinus(other: UInt): Number {
  * `(this + this).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ *
+ * @param monoid The monoid context providing the zero element and addition operations.
+ * @receiver The element to multiply by [other].
+ * @param other The non-negative integer multiplier.
+ * @param Number The type of elements of the monoid.
+ * @return The product of [this] and [other] computed via the doubling algorithm.
  *
  * @usesMathJax
  */
@@ -202,6 +238,12 @@ public infix fun <Number> Number.doublingTimes(other: UInt): Number {
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
  *
+ * @param ring The ring context providing addition and subtraction operations.
+ * @receiver The element to which [one][Semiring.one] multiplied by [other] is added.
+ * @param other The integer multiplier.
+ * @param Number The type of elements of the ring.
+ * @return The result of adding [one][Semiring.one] multiplied by [other] to [this].
+ *
  * @usesMathJax
  */
 context(ring: Ring<Number>)
@@ -230,6 +272,12 @@ public infix fun <Number> Number.doublingPlus(other: Long): Number {
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ *
+ * @param ring The ring context providing addition and subtraction operations.
+ * @receiver The element to which [one][Semiring.one] multiplied by [other] is subtracted.
+ * @param other The integer multiplier.
+ * @param Number The type of elements of the ring.
+ * @return The result of subtracting [one][Semiring.one] multiplied by [other] from [this].
  *
  * @usesMathJax
  */
@@ -261,6 +309,12 @@ public infix fun <Number> Number.doublingMinus(other: Long): Number {
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
  *
+ * @param group The group context providing addition and negation operations.
+ * @receiver The element to multiply by [other].
+ * @param other The integer multiplier.
+ * @param Number The type of elements of the group.
+ * @return The product of [this] and [other] computed via the doubling algorithm.
+ *
  * @usesMathJax
  */
 context(group: Group<Number>)
@@ -289,6 +343,12 @@ public infix fun <Number> Number.doublingTimes(other: Long): Number {
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
  *
+ * @param ring The semiring context providing addition operations.
+ * @receiver The element to which [one][Semiring.one] multiplied by [other] is added.
+ * @param other The non-negative integer multiplier.
+ * @param Number The type of elements of the semiring.
+ * @return The result of adding [one][Semiring.one] multiplied by [other] to [this].
+ *
  * @usesMathJax
  */
 context(ring: Semiring<Number>)
@@ -314,6 +374,12 @@ public infix fun <Number> Number.doublingPlus(other: ULong): Number {
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
  *
+ * @param ring The ring context providing addition and negation operations.
+ * @receiver The element from which [one][Semiring.one] multiplied by [other] is subtracted.
+ * @param other The non-negative integer multiplier.
+ * @param Number The type of elements of the ring.
+ * @return The result of subtracting [one][Semiring.one] multiplied by [other] from [this].
+ *
  * @usesMathJax
  */
 context(ring: Ring<Number>)
@@ -338,6 +404,12 @@ public infix fun <Number> Number.doublingMinus(other: ULong): Number {
  * `(this + this).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{other}))\) times.
+ *
+ * @param monoid The monoid context providing the zero element and addition operations.
+ * @receiver The element to multiply by [other].
+ * @param other The non-negative integer multiplier.
+ * @param Number The type of elements of the monoid.
+ * @return The product of [this] and [other] computed via the doubling algorithm.
  *
  * @usesMathJax
  */
@@ -371,6 +443,12 @@ public infix fun <Number> Number.doublingTimes(other: ULong): Number {
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
  *
+ * @param ring The ring context providing addition and subtraction operations.
+ * @receiver The integer multiplier.
+ * @param other The element to which [one][Semiring.one] multiplied by [this] is added.
+ * @param Number The type of elements of the ring.
+ * @return The result of adding [one][Semiring.one] multiplied by [this] to [other].
+ *
  * @usesMathJax
  */
 context(ring: Ring<Number>)
@@ -399,6 +477,12 @@ public infix fun <Number> Int.doublingPlus(other: Number): Number {
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ *
+ * @param ring The ring context providing addition and subtraction operations.
+ * @receiver The integer multiplier.
+ * @param other The element to which [one][Semiring.one] multiplied by [this] is added.
+ * @param Number The type of elements of the ring.
+ * @return The result of subtracting [one][Semiring.one] multiplied by [this] from [other].
  *
  * @usesMathJax
  */
@@ -430,6 +514,12 @@ public infix fun <Number> Int.doublingMinus(other: Number): Number {
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
  *
+ * @param group The group context providing addition and negation operations.
+ * @receiver The integer multiplier.
+ * @param other The element to multiply by [this].
+ * @param Number The type of elements of the group.
+ * @return The product of [other] and [this] computed via the doubling algorithm.
+ *
  * @usesMathJax
  */
 context(group: Group<Number>)
@@ -458,6 +548,12 @@ public infix fun <Number> Int.doublingTimes(other: Number): Number {
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
  *
+ * @param ring The semiring context providing addition operations.
+ * @receiver The non-negative integer multiplier.
+ * @param other The element to which [one][Semiring.one] multiplied by [this] is added.
+ * @param Number The type of elements of the semiring.
+ * @return The result of adding [one][Semiring.one] multiplied by [this] to [other].
+ *
  * @usesMathJax
  */
 context(ring: Semiring<Number>)
@@ -483,6 +579,12 @@ public infix fun <Number> UInt.doublingPlus(other: Number): Number {
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
  *
+ * @param ring The ring context providing addition and negation operations.
+ * @receiver The non-negative integer multiplier.
+ * @param other The element to which [one][Semiring.one] multiplied by [this] is added.
+ * @param Number The type of elements of the ring.
+ * @return The result of subtracting [one][Semiring.one] multiplied by [this] from [other].
+ *
  * @usesMathJax
  */
 context(ring: Ring<Number>)
@@ -507,6 +609,12 @@ public infix fun <Number> UInt.doublingMinus(other: Number): Number {
  * `(other + other).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ *
+ * @param monoid The monoid context providing the zero element and addition operations.
+ * @receiver The non-negative integer multiplier.
+ * @param other The element to multiply by [this].
+ * @param Number The type of elements of the monoid.
+ * @return The product of [other] and [this] computed via the doubling algorithm.
  *
  * @usesMathJax
  */
@@ -540,6 +648,12 @@ public infix fun <Number> UInt.doublingTimes(other: Number): Number {
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
  *
+ * @param ring The ring context providing addition and subtraction operations.
+ * @receiver The integer multiplier.
+ * @param other The element to which [one][Semiring.one] multiplied by [this] is added.
+ * @param Number The type of elements of the ring.
+ * @return The result of adding [one][Semiring.one] multiplied by [this] to [other].
+ *
  * @usesMathJax
  */
 context(ring: Ring<Number>)
@@ -568,6 +682,12 @@ public infix fun <Number> Long.doublingPlus(other: Number): Number {
  * `(one + one).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ *
+ * @param ring The ring context providing addition and subtraction operations.
+ * @receiver The integer multiplier.
+ * @param other The element to which [one][Semiring.one] multiplied by [this] is added.
+ * @param Number The type of elements of the ring.
+ * @return The result of subtracting [one][Semiring.one] multiplied by [this] from [other].
  *
  * @usesMathJax
  */
@@ -599,6 +719,12 @@ public infix fun <Number> Long.doublingMinus(other: Number): Number {
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
  *
+ * @param group The group context providing addition and negation operations.
+ * @receiver The integer multiplier.
+ * @param other The element to multiply by [this].
+ * @param Number The type of elements of the group.
+ * @return The product of [other] and [this] computed via the doubling algorithm.
+ *
  * @usesMathJax
  */
 context(group: Group<Number>)
@@ -627,6 +753,12 @@ public infix fun <Number> Long.doublingTimes(other: Number): Number {
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
  *
+ * @param ring The semiring context providing addition operations.
+ * @receiver The non-negative integer multiplier.
+ * @param other The element to which [one][Semiring.one] multiplied by [this] is added.
+ * @param Number The type of elements of the semiring.
+ * @return The result of adding [one][Semiring.one] multiplied by [this] to [other].
+ *
  * @usesMathJax
  */
 context(ring: Semiring<Number>)
@@ -652,6 +784,12 @@ public infix fun <Number> ULong.doublingPlus(other: Number): Number {
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
  *
+ * @param ring The ring context providing addition and negation operations.
+ * @receiver The non-negative integer multiplier.
+ * @param other The element to which [one][Semiring.one] multiplied by [this] is added.
+ * @param Number The type of elements of the ring.
+ * @return The result of subtracting [one][Semiring.one] multiplied by [this] from [other].
+ *
  * @usesMathJax
  */
 context(ring: Ring<Number>)
@@ -676,6 +814,12 @@ public infix fun <Number> ULong.doublingMinus(other: Number): Number {
  * `(other + other).let { it + it }` that uses 2 calls of `+` instead of three.
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{this}))\) times.
+ *
+ * @param monoid The monoid context providing the zero element and addition operations.
+ * @receiver The non-negative integer multiplier.
+ * @param other The element to multiply by [this].
+ * @param Number The type of elements of the monoid.
+ * @return The product of [other] and [this] computed via the doubling algorithm.
  *
  * @usesMathJax
  */
@@ -710,6 +854,12 @@ public infix fun <Number> ULong.doublingTimes(other: Number): Number {
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{exponent}))\) times.
  *
+ * @param field The field context providing multiplication and reciprocal operations.
+ * @receiver The base to raise to the power of [exponent].
+ * @param exponent The integer exponent.
+ * @param Number The type of elements of the field.
+ * @return The result of raising [this] to the power of [exponent].
+ *
  * @usesMathJax
  */
 context(field: Field<Number>)
@@ -734,6 +884,12 @@ public infix fun <Number> Number.squaringPower(exponent: Int): Number {
  * `(this * this).let { it * it }` that uses 2 calls of `*` instead of three.
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{exponent}))\) times.
+ *
+ * @param ring The semiring context providing multiplication operations.
+ * @receiver The base to raise to the power of [exponent].
+ * @param exponent The non-negative integer exponent.
+ * @param Number The type of elements of the semiring.
+ * @return The result of raising [this] to the power of [exponent].
  *
  * @usesMathJax
  */
@@ -765,6 +921,12 @@ public infix fun <Number> Number.squaringPower(exponent: UInt): Number {
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{exponent}))\) times.
  *
+ * @param field The field context providing multiplication and reciprocal operations.
+ * @receiver The base to raise to the power of [exponent].
+ * @param exponent The integer exponent.
+ * @param Number The type of elements of the field.
+ * @return The result of raising [this] to the power of [exponent].
+ *
  * @usesMathJax
  */
 context(field: Field<Number>)
@@ -789,6 +951,12 @@ public infix fun <Number> Number.squaringPower(exponent: Long): Number {
  * `(this * this).let { it * it }` that uses 2 calls of `*` instead of three.
  *
  * So one can say that [plus][Semiring.plus] is used \(O(\log(\mathrm{exponent}))\) times.
+ *
+ * @param ring The semiring context providing multiplication operations.
+ * @receiver The base to raise to the power of [exponent].
+ * @param exponent The non-negative integer exponent.
+ * @param Number The type of elements of the semiring.
+ * @return The result of raising [this] to the power of [exponent].
  *
  * @usesMathJax
  */
