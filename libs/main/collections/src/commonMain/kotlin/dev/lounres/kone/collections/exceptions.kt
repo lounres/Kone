@@ -16,8 +16,14 @@ import dev.lounres.kone.collections.map.KoneMap
 public fun indexOutOfBoundsException(index: UInt, size: UInt): Nothing =
     throw IndexOutOfBoundsException("Index $index is out of bounds for length $size")
 
+/**
+ * Represents an exception that is thrown when a user tries to access an element of an empty collection.
+ */
 public class ElementAccessInEmptyCollectionException(message: String = "Cannot access the element of the empty collection") : NoSuchElementException(message)
 
+/**
+ * Throws [ElementAccessInEmptyCollectionException] with message describing that the heap is empty.
+ */
 public fun accessExtremumOfEmptyHeapException(): Nothing =
     throw ElementAccessInEmptyCollectionException("Cannot access the extremum because the heap is empty")
 
@@ -71,8 +77,14 @@ public class NoCorrespondingNodeException(message: String = "There is no corresp
 public fun noCorrespondingNodeException(message: String = "There is no corresponding node"): Nothing =
     throw NoCorrespondingNodeException(message)
 
+/**
+ * Default message for set node not found exceptions.
+ */
 public const val NO_CORRESPONDING_SET_NODE_MESSAGE : String = "There is no node in the set corresponding to the provided element"
 
+/**
+ * Throws [NoCorrespondingNodeException] with the default set node message.
+ */
 public fun noCorrespondingSetNodeException(): Nothing = noCorrespondingNodeException(NO_CORRESPONDING_SET_NODE_MESSAGE)
 
 /**
@@ -86,8 +98,14 @@ public class NoMatchingKeyException(message: String = "There is no value for req
 public fun noMatchingKeyException(key: Any?): Nothing =
     throw NoMatchingKeyException("There is no value for key $key")
 
+/**
+ * Represents an exception that is thrown when a user tries to access an element of an empty deque.
+ */
 public class EmptyDequeAccessException(message: String = "There is no elements in empty deque") : NoSuchElementException(message)
 
+/**
+ * Throws [EmptyDequeAccessException] with the default message.
+ */
 public fun emptyDequeAccessException(): Nothing = throw EmptyDequeAccessException()
 
 /**

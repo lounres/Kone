@@ -6,6 +6,9 @@
 package dev.lounres.kone.collections
 
 
+/**
+ * Marks that the annotated interface is delicate to inherit and requires reading its contracts carefully.
+ */
 @Target(AnnotationTarget.CLASS)
 @RequiresOptIn(
     level = RequiresOptIn.Level.WARNING,
@@ -13,6 +16,9 @@ package dev.lounres.kone.collections
 )
 public annotation class DelicateCollectionsInheritanceAPI
 
+/**
+ * Marks that the annotated constructor or builder function is delicate to use and requires reading its contracts carefully.
+ */
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CONSTRUCTOR)
 @RequiresOptIn(
     level = RequiresOptIn.Level.WARNING,
