@@ -23,6 +23,7 @@ import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.leq
 import dev.lounres.kone.scope
@@ -35,6 +36,7 @@ private class SchurDecompositionComputerViaGolubVanLoan<Number, Matrix : MDList2
     private val tolerance: Number,
     private val matrixFactory: MatrixFactory<Number, Matrix>,
     private val numberField: Field<Number>,
+    private val numberEquality: Equality<Number>,
     private val numberOrder: Order<Number>,
     private val positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
     private val matrixCategoryOverField: MatrixCategoryOverField<Number, Matrix>,
@@ -59,6 +61,7 @@ private class SchurDecompositionComputerViaGolubVanLoan<Number, Matrix : MDList2
         scope {
             KoneContext.localUnwrap(
                 numberField,
+                numberEquality,
                 numberOrder,
                 positiveSquareRootComputer,
                 matrixCategoryOverField,
@@ -256,6 +259,7 @@ public fun <Number, Matrix : MDList2<Number>> SchurDecompositionComputer.Compani
     tolerance: Number,
     matrixFactory: MatrixFactory<Number, Matrix>,
     numberField: Field<Number>,
+    numberEquality: Equality<Number>,
     numberOrder: Order<Number>,
     positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
     matrixCategoryOverField: MatrixCategoryOverField<Number, Matrix>,
@@ -266,6 +270,7 @@ public fun <Number, Matrix : MDList2<Number>> SchurDecompositionComputer.Compani
     tolerance = tolerance,
     matrixFactory = matrixFactory,
     numberField = numberField,
+    numberEquality = numberEquality,
     numberOrder = numberOrder,
     positiveSquareRootComputer = positiveSquareRootComputer,
     matrixCategoryOverField = matrixCategoryOverField,
@@ -288,6 +293,9 @@ public object SchurDecompositionComputerGolubVanLoanSuppliableTopLevelFunctions 
                 "SchurDecompositionComputer.viaGolubVanLoan<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
             },
             numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
+                "SchurDecompositionComputer.viaGolubVanLoan<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            numberEquality = koneContextRegistry.requestFor(Equality.Key<Number>()) {
                 "SchurDecompositionComputer.viaGolubVanLoan<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
             },
             numberOrder = koneContextRegistry.requestFor(Order.Key<Number>()) {
@@ -317,6 +325,7 @@ public object SchurDecompositionComputerGolubVanLoanSuppliableTopLevelFunctions 
         tolerance: Number,
         matrixFactory: MatrixFactory<Number, Matrix>,
         numberField: Field<Number>,
+        numberEquality: Equality<Number>,
         numberOrder: Order<Number>,
         positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
         matrixCategoryOverField: MatrixCategoryOverField<Number, Matrix>,
@@ -329,6 +338,7 @@ public object SchurDecompositionComputerGolubVanLoanSuppliableTopLevelFunctions 
                 tolerance = tolerance,
                 matrixFactory = matrixFactory,
                 numberField = numberField,
+                numberEquality = numberEquality,
                 numberOrder = numberOrder,
                 positiveSquareRootComputer = positiveSquareRootComputer,
                 matrixCategoryOverField = matrixCategoryOverField,
@@ -357,6 +367,7 @@ public object SchurDecompositionComputerGolubVanLoanSuppliableTopLevelFunctions 
         tolerance: Number,
         matrixFactory: MatrixFactory<Number, MatrixWithProperties<Number, Matrix>>,
         numberField: Field<Number>,
+        numberEquality: Equality<Number>,
         numberOrder: Order<Number>,
         positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
         matrixCategoryOverField: MatrixCategoryOverField<Number, MatrixWithProperties<Number, Matrix>>,
@@ -369,6 +380,7 @@ public object SchurDecompositionComputerGolubVanLoanSuppliableTopLevelFunctions 
                 tolerance = tolerance,
                 matrixFactory = matrixFactory,
                 numberField = numberField,
+                numberEquality = numberEquality,
                 numberOrder = numberOrder,
                 positiveSquareRootComputer = positiveSquareRootComputer,
                 matrixCategoryOverField = matrixCategoryOverField,

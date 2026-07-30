@@ -27,17 +27,6 @@ private class MDList2Algebra<Number>(
     override val one: MDList2<Number> = MDList2.generate(dimension, dimension) { row, column -> if (row == column) ring.one else ring.zero }
     // endregion
     
-    // region Equality
-    override val numberIsZero: IsZero<MDList2<Number>> = IsZero {
-        require(it.rowNumber == dimension && it.columnNumber == dimension) { TODO() }
-        it.all { value -> ring.numberIsZero { value.isZero() } }
-    }
-    override val numberIsOne: IsOne<MDList2<Number>> = IsOne {
-        require(it.rowNumber == dimension && it.columnNumber == dimension) { TODO() }
-        it.allIndexed { rowIndex, columnIndex, value -> if (rowIndex == columnIndex) ring.numberIsOne { value.isOne() } else ring.numberIsZero { value.isZero() } }
-    }
-    // endregion
-    
     // region Integers conversion
     override fun valueOf(arg: UInt): MDList2<Number> {
         val scalar = ring.valueOf(arg)

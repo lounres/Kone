@@ -18,6 +18,7 @@ import dev.lounres.kone.computationalGeometry.EuclideanVectorSpaceOverRing
 import dev.lounres.kone.computationalGeometry.dot
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.localUnwrap
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.repeat
 
 
@@ -63,14 +64,14 @@ internal fun <Number, Vector> GramSchmidtOrthogonalizationIntermediateState<Numb
     product *= currentNorm
 }
 
-context(_: Ring<Number>, euclideanSpace: EuclideanVectorSpaceOverRing<Number, Vector>)
+context(_: Ring<Number>, equality: Equality<Vector>, euclideanSpace: EuclideanVectorSpaceOverRing<Number, Vector>)
 internal fun <Number, Vector> GramSchmidtOrthogonalizationIntermediateState<Number, Vector>.gramSchmidtOrthogonalizationStep(newVector: Vector) {
     KoneContext.localUnwrap(euclideanSpace)
     val orthogonalizedVector = gramSchmidtOrthogonalizationUsage(newVector)
     if (orthogonalizedVector.isNotZero()) gramSchmidtOrthogonalizationExtension(orthogonalizedVector)
 }
 
-context(ring: Ring<Number>, _: EuclideanVectorSpaceOverRing<Number, Vector>)
+context(ring: Ring<Number>, equality: Equality<Vector>, _: EuclideanVectorSpaceOverRing<Number, Vector>)
 internal fun <Number, Vector> KoneList<Vector>.gramSchmidtOrthogonalization(): KoneList<Vector> {
     val result = GramSchmidtOrthogonalizationIntermediateState<Number, Vector>(
         orthogonalizedBasis = KoneArrayFixedCapacityList(size),

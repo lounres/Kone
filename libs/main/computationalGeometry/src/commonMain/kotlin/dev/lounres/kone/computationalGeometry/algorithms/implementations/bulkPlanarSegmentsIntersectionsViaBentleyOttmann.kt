@@ -74,6 +74,7 @@ private fun removeIntersectionFor(sSegmentNode: SegmentNodeForBentleyOttmann<*, 
  */
 private class BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann<Number, Vector, Point>(
     private val numberField: Field<Number>,
+    private val numberEquality: Equality<Number>,
     private val numberOrder: Order<Number>,
     private val euclideanSpace: AffineSpaceOverField<Number, Vector, Point>,
 ) : BulkPlanarSegmentsIntersectionsOverFieldComputer<Number, Vector, Point> {
@@ -112,7 +113,7 @@ private class BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann<
         basis: VectorSpaceBasis.Finite<Number, Vector>,
         intersectionComputer: SegmentBulkIntersectionOverFieldComputer<Number, Vector, Point>,
     ): KoneSequence<BulkPlanarSegmentsIntersectionsOverFieldComputer.IntersectionResult<Number, Vector, Point>> {
-        KoneContext.localUnwrap(numberOrder, numberField, euclideanSpace)
+        KoneContext.localUnwrap(numberEquality, numberOrder, numberField, euclideanSpace)
         localContexts(intersectionComputer)
         
         val pointOrder = Order<Point> { left, right ->
@@ -281,11 +282,13 @@ private class BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann<
 
 public fun <Number, Vector, Point> BulkPlanarSegmentsIntersectionsOverFieldComputer.Companion.bentleyOttmann(
     numberField: Field<Number>,
+    numberEquality: Equality<Number>,
     numberOrder: Order<Number>,
     euclideanSpace: AffineSpaceOverField<Number, Vector, Point>,
 ): BulkPlanarSegmentsIntersectionsOverFieldComputer<Number, Vector, Point> =
     BulkPlanarSegmentsIntersectionsOverFieldComputerViaBentleyOttmann(
         numberField = numberField,
+        numberEquality = numberEquality,
         numberOrder = numberOrder,
         euclideanSpace = euclideanSpace,
     )
@@ -299,6 +302,7 @@ public object BulkPlanarSegmentsIntersectionsOverFieldBentleyOttmannSuppliableTo
             val koneContextRegistry = koneContextRegistry.get()
             bentleyOttmann(
                 numberField = koneContextRegistry[Field.Key<Number>()],
+                numberEquality = koneContextRegistry[Equality.Key<Number>()],
                 numberOrder = koneContextRegistry[Order.Key<Number>()],
                 euclideanSpace = koneContextRegistry[EuclideanSpaceOverField.Key<Number, Vector, Point>()],
             )

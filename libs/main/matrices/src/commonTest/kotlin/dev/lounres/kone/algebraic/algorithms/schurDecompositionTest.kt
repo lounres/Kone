@@ -7,6 +7,7 @@ package dev.lounres.kone.algebraic.algorithms
 
 import de.infix.testBalloon.framework.core.testSuite
 import dev.lounres.kone.algebraic.*
+import dev.lounres.kone.algebraic.ComplexNumberEqualitySuppliableTopLevelFunctions.setEquality
 import dev.lounres.kone.algebraic.ComplexNumberFieldExtensionOverSuppliableTopLevelFunctions.setFieldExtensionOver
 import dev.lounres.kone.algebraic.MatrixCategoryOverFieldViaDefaultSuppliableTopLevelFunctions.setViaDefault
 import dev.lounres.kone.algebraic.MatrixFactoryViaDefaultSuppliableTopLevelFunctions.setViaDefault
@@ -34,14 +35,16 @@ import dev.lounres.kone.contexts.buildWithProvider
 import dev.lounres.kone.contexts.koneLocalUnwrap
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Order
 
 
 val SchurDecompositionImplementationsTests by testSuite {
     testSuite("real case") {
         typealias Number = Double
+        typealias Matrix = MDList2<Number>
 
-        val inputs = KoneList.of<MDList2<Double>>(
+        val inputs = KoneList.of<Matrix>(
             MDList2.of(
                 rowNumber = 2u,
                 columnNumber = 2u,
@@ -112,14 +115,15 @@ val SchurDecompositionImplementationsTests by testSuite {
                 name = "via Golub and Van Loan",
                 koneContextRegistry = KoneContextRegistry.buildWithProvider {
                     Number.setSafeField()
+                    Number.setSafeEquality()
                     Number.setSafeOrder()
                     PositiveSquareRootComputer.setViaDefaultForDouble()
                     MatrixFactory.setViaDefault<Number>()
-                    MatrixCategoryOverField.setViaDefault<Number, MDList2<Number>>()
-                    MatrixProductComputer.setViaDefault<Number, MDList2<Number>>()
-                    TransposeMatrixComputer.setViaDefault<Number, MDList2<Number>>()
-                    HessenbergDecompositionComputer.setViaHouseholder<Number, MDList2<Number>>()
-                    SchurDecompositionComputer.setViaGolubVanLoan<Number, MDList2<Number>>(tolerance = 1E-10)
+                    MatrixCategoryOverField.setViaDefault<Number, Matrix>()
+                    MatrixProductComputer.setViaDefault<Number, Matrix>()
+                    TransposeMatrixComputer.setViaDefault<Number, Matrix>()
+                    HessenbergDecompositionComputer.setViaHouseholder<Number, Matrix>()
+                    SchurDecompositionComputer.setViaGolubVanLoan<Number, Matrix>(tolerance = 1E-10)
                 }
             )
         )
@@ -127,11 +131,12 @@ val SchurDecompositionImplementationsTests by testSuite {
         for ((name, koneContextRegistry) in algorithms) testSuite(name) {
             koneContextRegistry.koneLocalUnwrap(
                 Field.Key<Number>(),
+                Equality.Key<Number>(),
                 Order.Key<Number>(),
-                MatrixCategoryOverField.Key<Number, MDList2<Number>>(),
-                MatrixProductComputer.Key<Number, MDList2<Number>>(),
-                TransposeMatrixComputer.Key<Number, MDList2<Number>>(),
-                SchurDecompositionComputer.Key<Number, MDList2<Number>>(),
+                MatrixCategoryOverField.Key<Number, Matrix>(),
+                MatrixProductComputer.Key<Number, Matrix>(),
+                TransposeMatrixComputer.Key<Number, Matrix>(),
+                SchurDecompositionComputer.Key<Number, Matrix>(),
             )
             for ((val index, val input = value) in inputs.withIndex()) test("input #$index") {
                 AssertionScope.withClue(
@@ -185,8 +190,10 @@ val SchurDecompositionImplementationsTests by testSuite {
 
     testSuite("complex case") {
         typealias Number = Double
+        typealias CNumber = ComplexNumber<Number>
+        typealias Matrix = MDList2<CNumber>
 
-        val inputs = KoneList.of<MDList2<ComplexNumber<Number>>>(
+        val inputs = KoneList.of<Matrix>(
             MDList2.of(
                 rowNumber = 2u,
                 columnNumber = 2u,
@@ -282,15 +289,17 @@ val SchurDecompositionImplementationsTests by testSuite {
                 koneContextRegistry = KoneContextRegistry.buildWithProvider {
                     Number.setSafeField()
                     ComplexNumber.setFieldExtensionOver<Number>()
+                    Number.setSafeEquality()
                     Number.setSafeOrder()
+                    ComplexNumber.setEquality<Number>()
                     PositiveSquareRootComputer.setViaDefaultForDouble()
                     SquareRootsComputer.setViaDefaultForComplexNumbers<Number>()
-                    MatrixFactory.setViaDefault<ComplexNumber<Number>>()
-                    MatrixCategoryOverField.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>()
-                    MatrixProductComputer.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>()
-                    ConjugateTransposeMatrixComputer.setViaDefault<Number, MDList2<ComplexNumber<Number>>>()
-                    HessenbergDecompositionComputer.setViaHouseholderForComplexNumbers<Number, MDList2<ComplexNumber<Number>>>()
-                    SchurDecompositionComputer.setViaGolubVanLoanForComplexNumbers<Number, MDList2<ComplexNumber<Number>>>(tolerance = 1E-17)
+                    MatrixFactory.setViaDefault<CNumber>()
+                    MatrixCategoryOverField.setViaDefault<CNumber, Matrix>()
+                    MatrixProductComputer.setViaDefault<CNumber, Matrix>()
+                    ConjugateTransposeMatrixComputer.setViaDefault<Number, Matrix>()
+                    HessenbergDecompositionComputer.setViaHouseholderForComplexNumbers<Number, Matrix>()
+                    SchurDecompositionComputer.setViaGolubVanLoanForComplexNumbers<Number, Matrix>(tolerance = 1E-17)
                 }
             )
         )
@@ -300,11 +309,12 @@ val SchurDecompositionImplementationsTests by testSuite {
                 Field.Key<Number>(),
                 Order.Key<Number>(),
                 PositiveSquareRootComputer.Key<Number>(),
-                FieldExtension.Key<Number, ComplexNumber<Number>>(),
-                MatrixCategoryOverField.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(),
-                MatrixProductComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(),
-                ConjugateTransposeMatrixComputer.Key<Number, MDList2<ComplexNumber<Number>>>(),
-                SchurDecompositionComputer.Key<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>(),
+                Equality.Key<CNumber>(),
+                FieldExtension.Key<Number, CNumber>(),
+                MatrixCategoryOverField.Key<CNumber, Matrix>(),
+                MatrixProductComputer.Key<CNumber, Matrix>(),
+                ConjugateTransposeMatrixComputer.Key<Number, Matrix>(),
+                SchurDecompositionComputer.Key<CNumber, Matrix>(),
             )
             for ((val index, val input = value) in inputs.withIndex()) test("input #$index") {
                 AssertionScope.withClue(

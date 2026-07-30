@@ -72,7 +72,7 @@ private fun <
  *
  * Принимает размерность подпространства, фасету искомой выпуклой оболочки и другие точки в подпространстве, не лежащие в этой фасете.
  */
-context(ring: Ring<Number>, _: Order<Number>, euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>)
+context(ring: Ring<Number>, _: Order<Number>, equality: Equality<Vector>, euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>)
 private fun <
     Number,
     Vector,
@@ -207,7 +207,7 @@ private data class WrappingResult<Number, Vector, Point>(
     val orthogonalizationState: GramSchmidtOrthogonalizationIntermediateState<Number, Vector>,
 )
 
-context(ring: Ring<Number>, _: Order<Number>, euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>)
+context(ring: Ring<Number>, _: Order<Number>, equality: Equality<Vector>, euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>)
 private fun <
     Number,
     Vector,
@@ -287,7 +287,7 @@ private fun <
     }
 }
 
-context(ring: Ring<Number>, _: Order<Number>, euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>)
+context(ring: Ring<Number>, _: Order<Number>, equality: Equality<Vector>, euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>)
 private fun <
     Number,
     Vector,
@@ -344,6 +344,7 @@ private fun <
 private class ConvexHullOverRingViaGiftWrappingComputer<Number, Vector, @Supply Point>(
     private val ring: Ring<Number>,
     private val order: Order<Number>,
+    private val equality: Equality<Vector>,
     private val euclideanSpaceOverRing: EuclideanSpaceOverRing<Number, Vector, Point>,
 ) : ConvexHullOverRingComputer<Number, Vector, Point> {
     override fun KoneIterable<Point>.convexHull(
@@ -351,7 +352,7 @@ private class ConvexHullOverRingViaGiftWrappingComputer<Number, Vector, @Supply 
     ): Polytope {
         require(this.isNotEmpty()) { "Can't construct convex hull of an empty vertices collection." }
         val positionKey = Position<Point>()
-        KoneContext.localUnwrap(ring, order, euclideanSpaceOverRing)
+        KoneContext.localUnwrap(ring, order, equality, euclideanSpaceOverRing)
         return giftWrappingFull(
             positionKey = positionKey,
             basis = basis,
@@ -374,11 +375,13 @@ public object ConvexHullOverRingComputerGiftWrappingSuppliableTopLevelFunctions 
     public fun <Number, Vector, @Supply Point> ConvexHullOverRingComputer.Companion.giftWrapping(
         ring: Ring<Number>,
         order: Order<Number>,
+        equality: Equality<Vector>,
         euclideanSpaceOverRing: EuclideanSpaceOverRing<Number, Vector, Point>,
     ) : ConvexHullOverRingComputer<Number, Vector, Point> =
         ConvexHullOverRingViaGiftWrappingComputer(
             ring = ring,
             order = order,
+            equality = equality,
             euclideanSpaceOverRing = euclideanSpaceOverRing,
         )
     
@@ -390,6 +393,7 @@ public object ConvexHullOverRingComputerGiftWrappingSuppliableTopLevelFunctions 
             giftWrapping(
                 ring = koneContextRegistry[Ring.Key<Number>()],
                 order = koneContextRegistry[Order.Key<Number>()],
+                equality = koneContextRegistry[Equality.Key<Vector>()],
                 euclideanSpaceOverRing = koneContextRegistry[EuclideanSpaceOverRing.Key<Number, Vector, Point>()],
             )
         }

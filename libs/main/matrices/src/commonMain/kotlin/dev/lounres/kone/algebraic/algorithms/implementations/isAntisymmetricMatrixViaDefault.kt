@@ -22,16 +22,18 @@ import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
 import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 private class IsAntisymmetricMatrixCheckerViaDefault<Number, Matrix : MDList2<Number>>(
+    private val numberEquality: Equality<Number>,
     private val numberRing: CommutativeRing<Number>,
 ) : IsAntisymmetricMatrixChecker<Number, Matrix> {
     override fun Matrix.isAntisymmetric(): Boolean {
-        KoneContext.localUnwrap(numberRing)
+        KoneContext.localUnwrap(numberEquality, numberRing)
         if (rowNumber != columnNumber) return false
         for (row in 0u ..< rowNumber) if (this[row, row].isNotZero()) return false
         for (row in 1u ..< rowNumber) for (column in 0u ..< row) {
@@ -42,8 +44,10 @@ private class IsAntisymmetricMatrixCheckerViaDefault<Number, Matrix : MDList2<Nu
 }
 
 public fun <Number, Matrix : MDList2<Number>> IsAntisymmetricMatrixChecker.Companion.viaDefault(
+    numberEquality: Equality<Number>,
     numberRing: CommutativeRing<Number>,
 ): IsAntisymmetricMatrixChecker<Number, Matrix> = IsAntisymmetricMatrixCheckerViaDefault(
+    numberEquality = numberEquality,
     numberRing = numberRing,
 )
 
@@ -54,6 +58,9 @@ public object IsAntisymmetricMatrixCheckerDefaultSuppliableTopLevelFunctions {
     public fun <@Supply Number, Matrix : MDList2<Number>> IsAntisymmetricMatrixChecker.Companion.viaDefault(): IsAntisymmetricMatrixChecker<Number, Matrix> {
         val koneContextRegistry = koneContextRegistry.get()
         return viaDefault(
+            numberEquality = koneContextRegistry.requestFor(Equality.Key<Number>()) {
+                "IsAntisymmetricMatrixChecker.viaDefault<${suppliedTypeOf<Number>()}, ?>"
+            },
             numberRing = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) {
                 "IsAntisymmetricMatrixChecker.viaDefault<${suppliedTypeOf<Number>()}, ?>"
             },
@@ -63,10 +70,12 @@ public object IsAntisymmetricMatrixCheckerDefaultSuppliableTopLevelFunctions {
     @Suppliable
     context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
     public fun <@Supply Number, @Supply Matrix : MDList2<Number>> IsAntisymmetricMatrixChecker.Companion.setViaDefault(
+        numberEquality: Equality<Number>,
         numberRing: CommutativeRing<Number>,
     ) {
         IsAntisymmetricMatrixChecker.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
             viaDefault<Number, Matrix>(
+                numberEquality = numberEquality,
                 numberRing = numberRing,
             )
         }
@@ -82,10 +91,12 @@ public object IsAntisymmetricMatrixCheckerDefaultSuppliableTopLevelFunctions {
     
     context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
     public fun <Number, Matrix : MDList2<Number>> IsAntisymmetricMatrixChecker.Companion.useViaDefault(
+        numberEquality: Equality<Number>,
         numberRing: CommutativeRing<Number>,
     ) {
         IsAntisymmetricMatrixKey correspondsTo RegisteredValueProvider.cached {
             val isAntisymmetricMatrixChecker = viaDefault<Number, MatrixWithProperties<Number, Matrix>>(
+                numberEquality = numberEquality,
                 numberRing = numberRing,
             )
             isAntisymmetricMatrixChecker { matrix.get().isAntisymmetric() }

@@ -29,6 +29,7 @@ import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
@@ -38,6 +39,7 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 private class QRDecompositionComputerViaHouseholder<Number, Matrix : MDList2<Number>>(
     private val matrixFactory: MatrixFactory<Number, Matrix>,
     private val numberField: Field<Number>,
+    private val numberEquality: Equality<Number>,
     private val numberOrder: Order<Number>,
     private val positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
     private val matrixCategoryOverField: MatrixCategoryOverField<Number, Matrix>,
@@ -63,6 +65,7 @@ private class QRDecompositionComputerViaHouseholder<Number, Matrix : MDList2<Num
         
         KoneContext.localUnwrap(
             numberField,
+            numberEquality,
             numberOrder,
             positiveSquareRootComputer,
             matrixCategoryOverField,
@@ -123,6 +126,7 @@ private class QRDecompositionComputerViaHouseholder<Number, Matrix : MDList2<Num
 public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.viaHouseholder(
     matrixFactory: MatrixFactory<Number, Matrix>,
     numberField: Field<Number>,
+    numberEquality: Equality<Number>,
     numberOrder: Order<Number>,
     positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
     matrixCategoryOverField: MatrixCategoryOverField<Number, Matrix>,
@@ -131,6 +135,7 @@ public fun <Number, Matrix : MDList2<Number>> QRDecompositionComputer.Companion.
 ): QRDecompositionComputer<Number, Matrix> = QRDecompositionComputerViaHouseholder(
     matrixFactory = matrixFactory,
     numberField = numberField,
+    numberEquality = numberEquality,
     numberOrder = numberOrder,
     positiveSquareRootComputer = positiveSquareRootComputer,
     matrixCategoryOverField = matrixCategoryOverField,
@@ -149,6 +154,9 @@ public object QRDecompositionComputerHouseholderSuppliableTopLevelFunctions {
                 "QRDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
             },
             numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
+                "QRDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            numberEquality = koneContextRegistry.requestFor(Equality.Key<Number>()) {
                 "QRDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
             },
             numberOrder = koneContextRegistry.requestFor(Order.Key<Number>()) {
@@ -174,6 +182,7 @@ public object QRDecompositionComputerHouseholderSuppliableTopLevelFunctions {
     public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.setViaHouseholder(
         matrixFactory: MatrixFactory<Number, Matrix>,
         numberField: Field<Number>,
+        numberEquality: Equality<Number>,
         numberOrder: Order<Number>,
         positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
         matrixCategoryOverField: MatrixCategoryOverField<Number, Matrix>,
@@ -184,6 +193,7 @@ public object QRDecompositionComputerHouseholderSuppliableTopLevelFunctions {
             viaHouseholder(
                 matrixFactory = matrixFactory,
                 numberField = numberField,
+                numberEquality = numberEquality,
                 numberOrder = numberOrder,
                 positiveSquareRootComputer = positiveSquareRootComputer,
                 matrixCategoryOverField = matrixCategoryOverField,
@@ -206,6 +216,7 @@ public object QRDecompositionComputerHouseholderSuppliableTopLevelFunctions {
     public fun <@Supply Number, @Supply Matrix : MDList2<Number>> QRDecompositionComputer.Companion.useViaHouseholder(
         matrixFactory: MatrixFactory<Number, MatrixWithProperties<Number, Matrix>>,
         numberField: Field<Number>,
+        numberEquality: Equality<Number>,
         numberOrder: Order<Number>,
         positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
         matrixCategoryOverField: MatrixCategoryOverField<Number, MatrixWithProperties<Number, Matrix>>,
@@ -216,6 +227,7 @@ public object QRDecompositionComputerHouseholderSuppliableTopLevelFunctions {
             val qrDecompositionComputer = viaHouseholder(
                 matrixFactory = matrixFactory,
                 numberField = numberField,
+                numberEquality = numberEquality,
                 numberOrder = numberOrder,
                 positiveSquareRootComputer = positiveSquareRootComputer,
                 matrixCategoryOverField = matrixCategoryOverField,

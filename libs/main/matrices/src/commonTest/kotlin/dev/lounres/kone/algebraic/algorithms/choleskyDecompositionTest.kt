@@ -7,6 +7,7 @@ package dev.lounres.kone.algebraic.algorithms
 
 import de.infix.testBalloon.framework.core.testSuite
 import dev.lounres.kone.algebraic.*
+import dev.lounres.kone.algebraic.ComplexNumberEqualitySuppliableTopLevelFunctions.setEquality
 import dev.lounres.kone.algebraic.ComplexNumberFieldExtensionOverSuppliableTopLevelFunctions.setFieldExtensionOver
 import dev.lounres.kone.algebraic.MatrixCategoryOverFieldViaDefaultSuppliableTopLevelFunctions.setViaDefault
 import dev.lounres.kone.algebraic.MatrixFactoryViaDefaultSuppliableTopLevelFunctions.setViaDefault
@@ -34,6 +35,7 @@ import dev.lounres.kone.contexts.buildWithProvider
 import dev.lounres.kone.contexts.koneLocalUnwrap
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.of
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Order
 
 
@@ -74,6 +76,7 @@ val CholeskyDecompositionImplementationsTests by testSuite {
                 name = "via Cholesky",
                 koneContextRegistry = KoneContextRegistry.buildWithProvider {
                     Number.setSafeField()
+                    Number.setSafeEquality()
                     Number.setSafeOrder()
                     PositiveSquareRootComputer.setViaDefaultForDouble()
                     MatrixFactory.setViaDefault<Number>()
@@ -87,6 +90,7 @@ val CholeskyDecompositionImplementationsTests by testSuite {
                 name = "via Cholesky and Banachiewicz",
                 koneContextRegistry = KoneContextRegistry.buildWithProvider {
                     Number.setSafeField()
+                    Number.setSafeEquality()
                     Number.setSafeOrder()
                     PositiveSquareRootComputer.setViaDefaultForDouble()
                     MatrixFactory.setViaDefault<Number>()
@@ -100,6 +104,7 @@ val CholeskyDecompositionImplementationsTests by testSuite {
                 name = "via Cholesky and Crout",
                 koneContextRegistry = KoneContextRegistry.buildWithProvider {
                     Number.setSafeField()
+                    Number.setSafeEquality()
                     Number.setSafeOrder()
                     PositiveSquareRootComputer.setViaDefaultForDouble()
                     MatrixFactory.setViaDefault<Number>()
@@ -114,6 +119,7 @@ val CholeskyDecompositionImplementationsTests by testSuite {
         for ((name, koneContextRegistry) in algorithms) testSuite(name) {
             koneContextRegistry.koneLocalUnwrap(
                 Field.Key<Number>(),
+                Equality.Key<Number>(),
                 Order.Key<Number>(),
                 MatrixProductComputer.Key<Number, Matrix>(),
                 TransposeMatrixComputer.Key<Number, Matrix>(),
@@ -209,8 +215,10 @@ val CholeskyDecompositionImplementationsTests by testSuite {
                 name = "via Cholesky",
                 koneContextRegistry = KoneContextRegistry.buildWithProvider {
                     Number.setSafeField()
+                    Number.setSafeEquality()
                     Number.setSafeOrder()
                     ComplexNumber.setFieldExtensionOver<Number>()
+                    ComplexNumber.setEquality<Number>()
                     PositiveSquareRootComputer.setViaDefaultForDouble()
                     MatrixFactory.setViaDefault<CNumber>()
                     MatrixCategoryOverField.setViaDefault<CNumber, Matrix>()
@@ -223,8 +231,10 @@ val CholeskyDecompositionImplementationsTests by testSuite {
                 name = "via Cholesky and Banachiewicz",
                 koneContextRegistry = KoneContextRegistry.buildWithProvider {
                     Number.setSafeField()
+                    Number.setSafeEquality()
                     Number.setSafeOrder()
                     ComplexNumber.setFieldExtensionOver<Number>()
+                    ComplexNumber.setEquality<Number>()
                     PositiveSquareRootComputer.setViaDefaultForDouble()
                     MatrixFactory.setViaDefault<CNumber>()
                     MatrixCategoryOverField.setViaDefault<CNumber, Matrix>()
@@ -237,8 +247,10 @@ val CholeskyDecompositionImplementationsTests by testSuite {
                 name = "via Cholesky and Crout",
                 koneContextRegistry = KoneContextRegistry.buildWithProvider {
                     Number.setSafeField()
+                    Number.setSafeEquality()
                     Number.setSafeOrder()
                     ComplexNumber.setFieldExtensionOver<Number>()
+                    ComplexNumber.setEquality<Number>()
                     PositiveSquareRootComputer.setViaDefaultForDouble()
                     MatrixFactory.setViaDefault<CNumber>()
                     MatrixCategoryOverField.setViaDefault<CNumber, Matrix>()
@@ -253,6 +265,7 @@ val CholeskyDecompositionImplementationsTests by testSuite {
             koneContextRegistry.koneLocalUnwrap(
                 Field.Key<Number>(),
                 Order.Key<Number>(),
+                Equality.Key<CNumber>(),
                 FieldExtension.Key<Number, CNumber>(),
                 PositiveSquareRootComputer.Key<Number>(),
                 MatrixProductComputer.Key<CNumber, Matrix>(),

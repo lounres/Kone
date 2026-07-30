@@ -7,6 +7,7 @@ package dev.lounres.kone.algebraic.algorithms
 
 import de.infix.testBalloon.framework.core.testSuite
 import dev.lounres.kone.algebraic.*
+import dev.lounres.kone.algebraic.ComplexNumberEqualitySuppliableTopLevelFunctions.setEquality
 import dev.lounres.kone.algebraic.ComplexNumberFieldExtensionOverSuppliableTopLevelFunctions.setFieldExtensionOver
 import dev.lounres.kone.algebraic.MatrixCategoryOverFieldViaDefaultSuppliableTopLevelFunctions.setViaDefault
 import dev.lounres.kone.algebraic.MatrixFactoryViaDefaultSuppliableTopLevelFunctions.setViaDefault
@@ -489,8 +490,10 @@ val ScalarBasedMatrixFunctionApplierImplementationsTests by testSuite {
                 koneContextRegistry = KoneContextRegistry.buildWithProvider {
                     val koneContextRegistry by lazy { contextOf<KoneContextRegistry.Provider>().get() }
                     Number.setSafeField()
+                    Number.setSafeEquality()
                     Number.setSafeOrder()
                     ComplexNumber.setFieldExtensionOver<Number>()
+                    ComplexNumber.setEquality<Number>()
                     PositiveSquareRootComputer.setViaDefaultForDouble()
                     SquareRootsComputer.setViaDefaultForComplexNumbers<Number>()
                     MatrixFactory.setViaDefault<ComplexNumber<Number>>()

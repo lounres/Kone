@@ -26,6 +26,7 @@ import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.scope
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
@@ -33,12 +34,13 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 private class DeterminantComputerViaGaussianElimination<Number, Matrix : MDList2<Number>>(
+    private val equality: Equality<Number>,
     private val field: Field<Number>,
 ) : DeterminantComputer<Number, Matrix> {
     override fun Matrix.determinant(): Number {
         require(rowNumber == columnNumber) { "Cannot compute determinant of matrix with non-equal numbers of rows and columns." }
         
-        KoneContext.localUnwrap(field)
+        KoneContext.localUnwrap(equality, field)
         
         val n = rowNumber
         val source = SettableMDList2.generate(rowNumber = n, columnNumber = n) { row, column -> this[row, column] }
@@ -79,8 +81,10 @@ private class DeterminantComputerViaGaussianElimination<Number, Matrix : MDList2
 }
 
 public fun <Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.viaGaussianElimination(
+    equality: Equality<Number>,
     field: Field<Number>,
 ): DeterminantComputer<Number, Matrix> = DeterminantComputerViaGaussianElimination(
+    equality = equality,
     field = field,
 )
 
@@ -91,6 +95,9 @@ public object DeterminantComputerGaussianEliminationSuppliableTopLevelFunctions 
     public fun <@Supply Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.viaGaussianElimination(): DeterminantComputer<Number, Matrix> {
         val koneContextRegistry = koneContextRegistry.get()
         return viaGaussianElimination(
+            equality = koneContextRegistry.requestFor(Equality.Key<Number>()) {
+                "DeterminantComputer.viaGaussianElimination<${suppliedTypeOf<Number>()}, ?>"
+            },
             field = koneContextRegistry.requestFor(Field.Key<Number>()) {
                 "DeterminantComputer.viaGaussianElimination<${suppliedTypeOf<Number>()}, ?>"
             },
@@ -100,10 +107,12 @@ public object DeterminantComputerGaussianEliminationSuppliableTopLevelFunctions 
     @Suppliable
     context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
     public fun <@Supply Number, @Supply Matrix : MDList2<Number>> DeterminantComputer.Companion.setViaGaussianElimination(
+        equality: Equality<Number>,
         field: Field<Number>,
     ) {
         DeterminantComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
             viaGaussianElimination<Number, Matrix>(
+                equality = equality,
                 field = field,
             )
         }
@@ -120,10 +129,12 @@ public object DeterminantComputerGaussianEliminationSuppliableTopLevelFunctions 
     @Suppliable
     context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
     public fun <@Supply Number, Matrix : MDList2<Number>> DeterminantComputer.Companion.useViaGaussianElimination(
+        equality: Equality<Number>,
         field: Field<Number>,
     ) {
         DeterminantKey<Number>() correspondsTo RegisteredValueProvider.cached {
             val determinantComputer = viaGaussianElimination<Number, MatrixWithProperties<Number, Matrix>>(
+                equality = equality,
                 field = field,
             )
             determinantComputer { matrix.get().determinant() }

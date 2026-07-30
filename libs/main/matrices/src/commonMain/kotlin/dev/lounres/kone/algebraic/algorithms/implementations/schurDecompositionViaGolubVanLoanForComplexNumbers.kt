@@ -25,6 +25,7 @@ import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.leq
 import dev.lounres.kone.scope
@@ -39,6 +40,7 @@ private class SchurDecompositionComputerViaGolubVanLoanForComplexNumbers<Number,
     private val numberField: Field<Number>,
     private val complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
     private val numberOrder: Order<Number>,
+    private val complexNumberEquality: Equality<ComplexNumber<Number>>,
     private val positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
     private val complexNumberSquareRootComputer: SquareRootsComputer<ComplexNumber<Number>>,
     private val matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, Matrix>,
@@ -58,6 +60,7 @@ private class SchurDecompositionComputerViaGolubVanLoanForComplexNumbers<Number,
         KoneContext.localUnwrap(
             numberField,
             complexNumberFieldExtension,
+            complexNumberEquality,
             numberOrder,
             positiveSquareRootComputer,
             complexNumberSquareRootComputer,
@@ -328,6 +331,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionC
     numberField: Field<Number>,
     complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
     numberOrder: Order<Number>,
+    complexNumberEquality: Equality<ComplexNumber<Number>>,
     positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
     complexNumberSquareRootComputer: SquareRootsComputer<ComplexNumber<Number>>,
     matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, Matrix>,
@@ -340,6 +344,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> SchurDecompositionC
     numberField = numberField,
     complexNumberFieldExtension = complexNumberFieldExtension,
     numberOrder = numberOrder,
+    complexNumberEquality = complexNumberEquality,
     positiveSquareRootComputer = positiveSquareRootComputer,
     complexNumberSquareRootComputer = complexNumberSquareRootComputer,
     matrixCategoryOverField = matrixCategoryOverField,
@@ -368,6 +373,9 @@ public object SchurDecompositionComputerGolubVanLoanForComplexNumbersSuppliableT
                 "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
             },
             numberOrder = koneContextRegistry.requestFor(Order.Key<Number>()) {
+                "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            complexNumberEquality = koneContextRegistry.requestFor(Equality.Key<ComplexNumber<Number>>()) {
                 "SchurDecompositionComputer.viaGolubVanLoanForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
             },
             positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
@@ -399,6 +407,7 @@ public object SchurDecompositionComputerGolubVanLoanForComplexNumbersSuppliableT
         numberField: Field<Number>,
         complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
         numberOrder: Order<Number>,
+        complexNumberEquality: Equality<ComplexNumber<Number>>,
         positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
         complexNumberSquareRootComputer: SquareRootsComputer<ComplexNumber<Number>>,
         matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, Matrix>,
@@ -413,6 +422,7 @@ public object SchurDecompositionComputerGolubVanLoanForComplexNumbersSuppliableT
                 numberField = numberField,
                 complexNumberFieldExtension = complexNumberFieldExtension,
                 numberOrder = numberOrder,
+                complexNumberEquality = complexNumberEquality,
                 positiveSquareRootComputer = positiveSquareRootComputer,
                 complexNumberSquareRootComputer = complexNumberSquareRootComputer,
                 matrixCategoryOverField = matrixCategoryOverField,
@@ -443,6 +453,7 @@ public object SchurDecompositionComputerGolubVanLoanForComplexNumbersSuppliableT
         numberField: Field<Number>,
         complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
         numberOrder: Order<Number>,
+        complexNumberEquality: Equality<ComplexNumber<Number>>,
         positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
         complexNumberSquareRootComputer: SquareRootsComputer<ComplexNumber<Number>>,
         matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
@@ -457,6 +468,7 @@ public object SchurDecompositionComputerGolubVanLoanForComplexNumbersSuppliableT
                 numberField = numberField,
                 complexNumberFieldExtension = complexNumberFieldExtension,
                 numberOrder = numberOrder,
+                complexNumberEquality = complexNumberEquality,
                 positiveSquareRootComputer = positiveSquareRootComputer,
                 complexNumberSquareRootComputer = complexNumberSquareRootComputer,
                 matrixCategoryOverField = matrixCategoryOverField,

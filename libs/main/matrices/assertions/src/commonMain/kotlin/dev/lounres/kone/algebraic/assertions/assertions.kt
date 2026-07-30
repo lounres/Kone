@@ -21,6 +21,7 @@ import dev.lounres.kone.multidimensionalCollections.rowIndices
 import dev.lounres.kone.multidimensionalCollections.utils.any
 import dev.lounres.kone.multidimensionalCollections.utils.anyIndexed
 import dev.lounres.kone.multidimensionalCollections.utils.forEachIndexed
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.lt
 import dev.lounres.kone.repeat
@@ -441,7 +442,7 @@ public fun <Number> Expect<MDList2<ComplexNumber<Number>>>.toBeUnitMatrixWithTol
     }
 }
 
-context(_: AssertionScope, ring: CommutativeRing<Number>)
+context(_: AssertionScope, equality: Equality<Number>, ring: CommutativeRing<Number>)
 public fun <Number> Expect<MDList2<Number>>.toBeDiagonalMatrix() {
     val value = this.exposeValue()
     
@@ -509,7 +510,7 @@ public fun <Number> Expect<MDList2<Number>>.toBeDiagonalMatrix() {
     }
 }
 
-context(_: AssertionScope, ring: CommutativeRing<Number>)
+context(_: AssertionScope, equality: Equality<Number>, ring: CommutativeRing<Number>)
 public fun <Number> Expect<MDList2<Number>>.toBeUpperTriangularMatrix() {
     val value = this.exposeValue()
     
@@ -577,7 +578,7 @@ public fun <Number> Expect<MDList2<Number>>.toBeUpperTriangularMatrix() {
     }
 }
 
-context(_: AssertionScope, ring: CommutativeRing<Number>)
+context(_: AssertionScope, equality: Equality<Number>, ring: CommutativeRing<Number>)
 public fun <Number> Expect<MDList2<Number>>.toBeLowerTriangularMatrix() {
     val value = this.exposeValue()
     
@@ -645,7 +646,7 @@ public fun <Number> Expect<MDList2<Number>>.toBeLowerTriangularMatrix() {
     }
 }
 
-context(_: AssertionScope, ring: CommutativeRing<Number>)
+context(_: AssertionScope, equality: Equality<Number>, ring: CommutativeRing<Number>)
 public fun <Number> Expect<MDList2<Number>>.toBeUpperUnitriangularMatrix() {
     val value = this.exposeValue()
     
@@ -713,7 +714,7 @@ public fun <Number> Expect<MDList2<Number>>.toBeUpperUnitriangularMatrix() {
     }
 }
 
-context(_: AssertionScope, ring: CommutativeRing<Number>)
+context(_: AssertionScope, equality: Equality<Number>, ring: CommutativeRing<Number>)
 public fun <Number> Expect<MDList2<Number>>.toBeLowerUniriangularMatrix() {
     val value = this.exposeValue()
     
@@ -781,7 +782,7 @@ public fun <Number> Expect<MDList2<Number>>.toBeLowerUniriangularMatrix() {
     }
 }
 
-context(_: AssertionScope, ring: CommutativeRing<Number>)
+context(_: AssertionScope, equality: Equality<Number>, ring: CommutativeRing<Number>)
 public fun <Number> Expect<MDList2<Number>>.toBeUpperHessenbergMatrix() {
     val value = this.exposeValue()
     
@@ -849,7 +850,7 @@ public fun <Number> Expect<MDList2<Number>>.toBeUpperHessenbergMatrix() {
     }
 }
 
-context(_: AssertionScope, ring: CommutativeRing<Number>)
+context(_: AssertionScope, equality: Equality<Number>, ring: CommutativeRing<Number>)
 public fun <Number> Expect<MDList2<Number>>.toBeQuasiUpperTriangularMatrix() {
     val value = this.exposeValue()
     

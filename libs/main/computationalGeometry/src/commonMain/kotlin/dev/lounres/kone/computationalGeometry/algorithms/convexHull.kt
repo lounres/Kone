@@ -22,6 +22,7 @@ import dev.lounres.kone.computationalGeometry.polytopes.Polytope
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
@@ -48,13 +49,13 @@ public fun <Number, Vector, Point> KoneIterable<Point>.convexHull(
     this@convexHull.convexHull(basis)
 }
 
-context(_: Ring<Number>, _: Order<Number>, _: EuclideanSpaceOverRing<Number, Vector, Point>, convexHullComputer: ConvexHullOverRingComputer<Number, Vector, Point>)
+context(_: Ring<Number>, _: Order<Number>, equality: Equality<Vector>, _: EuclideanSpaceOverRing<Number, Vector, Point>, convexHullComputer: ConvexHullOverRingComputer<Number, Vector, Point>)
 public fun <Number, Vector, Point> KoneIterable<Point>.convexHull(): Polytope = convexHull(
     basis = pointsetBasis(),
 )
 
 // TODO: Move somewhere
-context(ring: Ring<Number>, euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>)
+context(ring: Ring<Number>, equality: Equality<Vector>, euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>)
 internal fun <Number, Vector, Point> KoneIterable<Point>.pointsetBasis(): ModuleBasis.Finite<Number, Vector> {
     KoneContext.localUnwrap(ring, euclideanSpace)
     

@@ -12,6 +12,7 @@ import dev.lounres.kone.computationalGeometry.EuclideanSpaceOverRing
 import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstruction
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
 import dev.lounres.kone.suppliedTypes.suppliedTypeOf
@@ -37,6 +38,6 @@ public fun <Number, Vector, Point> KoneIterable<Point>.delaunayTriangulation(
     this@delaunayTriangulation.delaunayTriangulation(basis)
 }
 
-context(_: Ring<Number>, _: EuclideanSpaceOverRing<Number, Vector, Point>, delaunayTriangulationComputer: DelaunayTriangulationOverRingComputer<Number, Vector, Point>)
+context(_: Ring<Number>, equality: Equality<Vector>, _: EuclideanSpaceOverRing<Number, Vector, Point>, delaunayTriangulationComputer: DelaunayTriangulationOverRingComputer<Number, Vector, Point>)
 public fun <Number, Vector, Point> KoneIterable<Point>.delaunayTriangulation(): PolytopicConstruction =
     delaunayTriangulation(pointsetBasis())

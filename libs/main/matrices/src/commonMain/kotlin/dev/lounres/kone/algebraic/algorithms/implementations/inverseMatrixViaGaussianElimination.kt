@@ -18,6 +18,7 @@ import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.multidimensionalCollections.SettableMDList2
 import dev.lounres.kone.multidimensionalCollections.generate
 import dev.lounres.kone.registry.*
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.scope
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
@@ -26,10 +27,11 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 private class InverseMatrixComputerViaGaussianElimination<Number, Matrix : MDList2<Number>>(
     private val matrixFactory: MatrixFactory<Number, Matrix>,
+    private val equality: Equality<Number>,
     private val field: Field<Number>,
 ) : InverseMatrixComputer<Number, Matrix> {
     override fun Matrix.invert(): Matrix? {
-        KoneContext.localUnwrap(field)
+        KoneContext.localUnwrap(equality, field)
         
         if (rowNumber != columnNumber) return null
         
@@ -88,9 +90,11 @@ private class InverseMatrixComputerViaGaussianElimination<Number, Matrix : MDLis
 
 public fun <Number, Matrix : MDList2<Number>> InverseMatrixComputer.Companion.viaGaussianElimination(
     matrixFactory: MatrixFactory<Number, Matrix>,
+    equality: Equality<Number>,
     field: Field<Number>,
 ): InverseMatrixComputer<Number, Matrix> = InverseMatrixComputerViaGaussianElimination(
     matrixFactory = matrixFactory,
+    equality = equality,
     field = field,
 )
 
@@ -104,6 +108,9 @@ public object InverseMatrixComputerGaussianEliminationSuppliableTopLevelFunction
             matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
                 "InverseMatrixComputer.viaGaussianElimination<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
             },
+            equality = koneContextRegistry.requestFor(Equality.Key<Number>()) {
+                "InverseMatrixComputer.viaGaussianElimination<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
             field = koneContextRegistry.requestFor(Field.Key<Number>()) {
                 "InverseMatrixComputer.viaGaussianElimination<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
             },
@@ -114,11 +121,13 @@ public object InverseMatrixComputerGaussianEliminationSuppliableTopLevelFunction
     context(_: MutableOwnedProviderRegistry<KoneContextRegistry>)
     public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.setViaGaussianElimination(
         matrixFactory: MatrixFactory<Number, Matrix>,
+        equality: Equality<Number>,
         field: Field<Number>,
     ) {
         InverseMatrixComputer.Key<Number, Matrix>() correspondsTo RegisteredValueProvider.cached {
             viaGaussianElimination<Number, Matrix>(
                 matrixFactory = matrixFactory,
+                equality = equality,
                 field = field,
             )
         }
@@ -136,10 +145,11 @@ public object InverseMatrixComputerGaussianEliminationSuppliableTopLevelFunction
     context(_: MutableOwnedProviderRegistry<MatrixWithProperties<Number, Matrix>>, matrix: MatrixWithProperties.Provider<Number, Matrix>)
     public fun <@Supply Number, @Supply Matrix : MDList2<Number>> InverseMatrixComputer.Companion.useViaGaussianElimination(
         matrixFactory: MatrixFactory<Number, MatrixWithProperties<Number, Matrix>>,
+        equality: Equality<Number>,
         field: Field<Number>,
     ) {
         InverseMatrixKey<Number, MatrixWithProperties<Number, Matrix>>() correspondsTo RegisteredValueProvider.cached {
-            val inverseMatrixComputer = viaGaussianElimination(matrixFactory = matrixFactory, field = field)
+            val inverseMatrixComputer = viaGaussianElimination(matrixFactory = matrixFactory, equality = equality, field = field)
             inverseMatrixComputer {
                 matrix.get().invert()
             }

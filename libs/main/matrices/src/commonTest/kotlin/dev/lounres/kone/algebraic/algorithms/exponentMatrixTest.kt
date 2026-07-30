@@ -7,6 +7,7 @@ package dev.lounres.kone.algebraic.algorithms
 
 import de.infix.testBalloon.framework.core.testSuite
 import dev.lounres.kone.algebraic.*
+import dev.lounres.kone.algebraic.ComplexNumberEqualitySuppliableTopLevelFunctions.setEquality
 import dev.lounres.kone.algebraic.ComplexNumberFieldExtensionOverSuppliableTopLevelFunctions.setFieldExtensionOver
 import dev.lounres.kone.algebraic.MatrixCategoryOverFieldViaDefaultSuppliableTopLevelFunctions.setViaDefault
 import dev.lounres.kone.algebraic.MatrixFactoryViaDefaultSuppliableTopLevelFunctions.setViaDefault
@@ -198,10 +199,12 @@ val ExponentMatrixTests by testSuite {
     
     testSuite("complex case") {
         typealias Number = Double
+        typealias CNumber = ComplexNumber<Number>
+        typealias Matrix = MDList2<CNumber>
         
         data class TestData(
-            val input: MDList2<ComplexNumber<Number>>,
-            val exponentOutput: MDList2<ComplexNumber<Number>>,
+            val input: Matrix,
+            val exponentOutput: Matrix,
         )
         
         val inputs = KoneList.of<TestData>(
@@ -405,8 +408,10 @@ val ExponentMatrixTests by testSuite {
                 name = "via Schur and Parlett using scaling and squaring",
                 koneContextRegistry = KoneContextRegistry.buildWithProvider {
                     Number.setSafeField()
+                    Number.setSafeEquality()
                     Number.setSafeOrder()
                     ComplexNumber.setFieldExtensionOver<Number>()
+                    ComplexNumber.setEquality<Number>()
                     PositiveSquareRootComputer.setViaDefaultForDouble()
                     SquareRootsComputer.setViaDefaultForComplexNumbers<Number>()
                     ExponentComputer.setViaDefaultForDouble()
@@ -416,15 +421,15 @@ val ExponentMatrixTests by testSuite {
                     HyperbolicSineComputer.setViaDefaultForDouble()
                     ExponentComputer.setViaDefaultForComplexNumbers<Number>()
                     HyperbolicSineOverInputComputer.setViaDefaultForComplexNumbers<Number>()
-                    MatrixFactory.setViaDefault<ComplexNumber<Number>>()
-                    MatrixCategoryOverField.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>()
-                    MatrixProductComputer.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>()
-                    IsDiagonalMatrixChecker.setViaDefault<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>()
-                    InverseMatrixComputer.setViaGaussianElimination<ComplexNumber<Number>, MDList2<ComplexNumber<Number>>>()
-                    ConjugateTransposeMatrixComputer.setViaDefault<Number, MDList2<ComplexNumber<Number>>>()
-                    HessenbergDecompositionComputer.setViaHouseholderForComplexNumbers<Number, MDList2<ComplexNumber<Number>>>()
-                    SchurDecompositionComputer.setViaGolubVanLoanForComplexNumbers<Number, MDList2<ComplexNumber<Number>>>(tolerance = 1E-17)
-                    ExponentComputer.setViaSchurParlettUsingScalingAndSquaring<MDList2<ComplexNumber<Number>>>(blockingParameter = 0.1)
+                    MatrixFactory.setViaDefault<CNumber>()
+                    MatrixCategoryOverField.setViaDefault<CNumber, Matrix>()
+                    MatrixProductComputer.setViaDefault<CNumber, Matrix>()
+                    IsDiagonalMatrixChecker.setViaDefault<CNumber, Matrix>()
+                    InverseMatrixComputer.setViaGaussianElimination<CNumber, Matrix>()
+                    ConjugateTransposeMatrixComputer.setViaDefault<Number, Matrix>()
+                    HessenbergDecompositionComputer.setViaHouseholderForComplexNumbers<Number, Matrix>()
+                    SchurDecompositionComputer.setViaGolubVanLoanForComplexNumbers<Number, Matrix>(tolerance = 1E-17)
+                    ExponentComputer.setViaSchurParlettUsingScalingAndSquaring<Matrix>(blockingParameter = 0.1)
                 }
             )
         )
@@ -434,8 +439,8 @@ val ExponentMatrixTests by testSuite {
                 Field.Key<Number>(),
                 Order.Key<Number>(),
                 PositiveSquareRootComputer.Key<Number>(),
-                FieldExtension.Key<Number, ComplexNumber<Number>>(),
-                ExponentComputer.Key<MDList2<ComplexNumber<Number>>>(),
+                FieldExtension.Key<Number, CNumber>(),
+                ExponentComputer.Key<Matrix>(),
             )
             for ((index, input = value) in inputs.withIndex()) test("input #$index") {
                 val (input, exponentOutput) = input

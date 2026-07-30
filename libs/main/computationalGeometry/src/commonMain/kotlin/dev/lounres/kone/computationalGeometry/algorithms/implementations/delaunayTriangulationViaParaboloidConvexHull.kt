@@ -31,6 +31,7 @@ import dev.lounres.kone.computationalGeometry.polytopes.*
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contexts.localContexts
 import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
@@ -60,12 +61,6 @@ private class ParaboloidEuclideanSpaceOverRing<Number, Vector, Point>(
         vector = initialEuclideanSpaceOverRing.zero,
         extraCoordinate = ring.zero
     )
-    // endregion
-    
-    // region Equality
-    override val numberIsZero: IsZero<ParaboloidVector<Number, Vector>> = IsZero {
-        ring.numberIsZero { it.extraCoordinate.isZero() } && initialEuclideanSpaceOverRing.numberIsZero { it.vector.isZero() }
-    }
     // endregion
     
     // region Vector-Int operations
@@ -214,18 +209,25 @@ private class ParaboloidEuclideanSpaceOverRing<Number, Vector, Point>(
 @Suppliable
 private class DelaunayTriangulationOverRingComputerViaConvexHull<@Supply Number, Vector, @Supply Point>(
     private val ring: Ring<Number>,
+    private val equality: Equality<Number>,
     private val order: Order<Number>,
+    private val vectorEquality: Equality<Vector>,
     private val euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>,
 ) : DelaunayTriangulationOverRingComputer<Number, Vector, Point> {
     private val positionKey = Position<Point>()
     private val paraboloidPositionKey = Position<ParaboloidPoint<Number, Point>>()
     
+    private val paraboloidEquality = Equality<ParaboloidVector<Number, Vector>> { left, right ->
+        localContexts(equality, vectorEquality)
+        left.vector eq right.vector && left.extraCoordinate eq right.extraCoordinate
+    }
     private val paraboloidEuclideanSpaceOverRing = ParaboloidEuclideanSpaceOverRing(ring, euclideanSpace)
     
     private val paraboloidConvexHullOverRingComputer =
         ConvexHullOverRingComputer.giftWrapping(
             ring = ring,
             order = order,
+            equality = paraboloidEquality,
             euclideanSpaceOverRing = paraboloidEuclideanSpaceOverRing,
         )
     
@@ -233,7 +235,7 @@ private class DelaunayTriangulationOverRingComputerViaConvexHull<@Supply Number,
         basis: ModuleBasis.Finite<Number, Vector>
     ): PolytopicConstruction {
         require(this.isNotEmpty()) { "Can't construct Delaunay triangulation of an empty vertices collection." }
-        KoneContext.localUnwrap(ring, order, euclideanSpace, paraboloidEuclideanSpaceOverRing, paraboloidConvexHullOverRingComputer)
+        KoneContext.localUnwrap(ring, order, euclideanSpace, paraboloidEquality, paraboloidEuclideanSpaceOverRing, paraboloidConvexHullOverRingComputer)
         
         val verticesDimension: UInt = basis.size
         
@@ -356,12 +358,16 @@ public object DelaunayTriangulationOverRingComputerConvexHullSuppliableTopLevelF
     @Suppliable
     public fun <@Supply Number, Vector, @Supply Point> DelaunayTriangulationOverRingComputer.Companion.convexHull(
         ring: Ring<Number>,
+        equality: Equality<Number>,
         order: Order<Number>,
+        vectorEquality: Equality<Vector>,
         euclideanSpace: EuclideanSpaceOverRing<Number, Vector, Point>,
     ): DelaunayTriangulationOverRingComputer<Number, Vector, Point> =
         DelaunayTriangulationOverRingComputerViaConvexHull(
             ring = ring,
+            equality = equality,
             order = order,
+            vectorEquality = vectorEquality,
             euclideanSpace = euclideanSpace,
         )
     
@@ -372,7 +378,9 @@ public object DelaunayTriangulationOverRingComputerConvexHullSuppliableTopLevelF
             val koneContextRegistry = koneContextRegistry.get()
             convexHull(
                 ring = koneContextRegistry[Ring.Key<Number>()],
+                equality = koneContextRegistry[Equality.Key<Number>()],
                 order = koneContextRegistry[Order.Key<Number>()],
+                vectorEquality = koneContextRegistry[Equality.Key<Vector>()],
                 euclideanSpace = koneContextRegistry[EuclideanSpaceOverRing.Key<Number, Vector, Point>()],
             )
         }

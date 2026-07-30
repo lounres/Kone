@@ -78,12 +78,6 @@ public class EuclideanSpace2OverRing<Number>(
     override val zero: Vector2<Number> = Vector2(MDList1.generate(2u) { ring.zero })
     // endregion
     
-    // region Equality
-    override val numberIsZero: IsZero<Vector2<Number>> = IsZero {
-        it.content.all { ring.numberIsZero { it.isZero() } }
-    }
-    // endregion
-    
     // region Vector-Int operations
     override val numberTimesInt: Times<Vector2<Number>, Int, Vector2<Number>> = Times { left, right ->
         Vector2(left.content.map { ring.numberTimesInt { it * right } })
@@ -204,12 +198,6 @@ public class EuclideanSpace2OverField<Number>(
 ) : EuclideanSpaceOverField<Number, Vector2<Number>, Point2<Number>> {
     // region Constants
     override val zero: Vector2<Number> = Vector2(MDList1.generate(2u) { field.zero })
-    // endregion
-    
-    // region Equality
-    override val numberIsZero: IsZero<Vector2<Number>> = IsZero {
-        it.content.all { field.numberIsZero { it.isZero() } }
-    }
     // endregion
     
     // region Vector-Int operations

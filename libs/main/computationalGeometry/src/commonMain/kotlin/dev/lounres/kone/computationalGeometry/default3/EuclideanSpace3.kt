@@ -80,12 +80,6 @@ public class EuclideanSpace3OverRing<Number>(
     override val zero: Vector3<Number> = Vector3(MDList1.generate(3u) { ring.zero })
     // endregion
     
-    // region Equality
-    override val numberIsZero: IsZero<Vector3<Number>> = IsZero {
-        it.content.all { ring.numberIsZero { it.isZero() } }
-    }
-    // endregion
-    
     // region Vector-Int operations
     override val numberTimesInt: Times<Vector3<Number>, Int, Vector3<Number>> = Times { left, right ->
         Vector3(left.content.map { ring.numberTimesInt { it * right } })
@@ -206,12 +200,6 @@ public class EuclideanSpace3OverField<Number>(
 ) : EuclideanSpaceOverField<Number, Vector3<Number>, Point3<Number>> {
     // region Constants
     override val zero: Vector3<Number> = Vector3(MDList1.generate(3u) { field.zero })
-    // endregion
-    
-    // region Equality
-    override val numberIsZero: IsZero<Vector3<Number>> = IsZero {
-        it.content.all { field.numberIsZero { it.isZero() } }
-    }
     // endregion
     
     // region Vector-Int operations

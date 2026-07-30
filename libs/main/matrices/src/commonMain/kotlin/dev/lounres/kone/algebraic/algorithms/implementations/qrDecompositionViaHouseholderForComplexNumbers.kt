@@ -29,6 +29,7 @@ import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
@@ -39,6 +40,7 @@ private class QRDecompositionComputerViaHouseholderForComplexNumbers<Number, Mat
     private val matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
     private val numberField: Field<Number>,
     private val complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
+    private val numberEquality: Equality<Number>,
     private val numberOrder: Order<Number>,
     private val positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
     private val matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, Matrix>,
@@ -65,6 +67,7 @@ private class QRDecompositionComputerViaHouseholderForComplexNumbers<Number, Mat
         KoneContext.localUnwrap(
             numberField,
             complexNumberFieldExtension,
+            numberEquality,
             numberOrder,
             positiveSquareRootComputer,
             matrixCategoryOverField,
@@ -126,6 +129,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComp
     matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
     numberField: Field<Number>,
     complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
+    numberEquality: Equality<Number>,
     numberOrder: Order<Number>,
     positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
     matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, Matrix>,
@@ -135,6 +139,7 @@ public fun <Number, Matrix : MDList2<ComplexNumber<Number>>> QRDecompositionComp
     matrixFactory = matrixFactory,
     numberField = numberField,
     complexNumberFieldExtension = complexNumberFieldExtension,
+    numberEquality = numberEquality,
     numberOrder = numberOrder,
     positiveSquareRootComputer = positiveSquareRootComputer,
     matrixCategoryOverField = matrixCategoryOverField,
@@ -156,6 +161,9 @@ public object QRDecompositionComputerHouseholderForComplexNumbersSuppliableTopLe
                 "QRDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
             },
             complexNumberFieldExtension = koneContextRegistry.requestFor(FieldExtension.Key<Number, ComplexNumber<Number>>()) {
+                "QRDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+            },
+            numberEquality = koneContextRegistry.requestFor(Equality.Key<Number>()) {
                 "QRDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
             },
             numberOrder = koneContextRegistry.requestFor(Order.Key<Number>()) {
@@ -182,6 +190,7 @@ public object QRDecompositionComputerHouseholderForComplexNumbersSuppliableTopLe
         matrixFactory: MatrixFactory<ComplexNumber<Number>, Matrix>,
         numberField: Field<Number>,
         complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
+        numberEquality: Equality<Number>,
         numberOrder: Order<Number>,
         positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
         matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, Matrix>,
@@ -193,6 +202,7 @@ public object QRDecompositionComputerHouseholderForComplexNumbersSuppliableTopLe
                 matrixFactory = matrixFactory,
                 numberField = numberField,
                 complexNumberFieldExtension = complexNumberFieldExtension,
+                numberEquality = numberEquality,
                 numberOrder = numberOrder,
                 positiveSquareRootComputer = positiveSquareRootComputer,
                 matrixCategoryOverField = matrixCategoryOverField,
@@ -216,6 +226,7 @@ public object QRDecompositionComputerHouseholderForComplexNumbersSuppliableTopLe
         matrixFactory: MatrixFactory<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
         numberField: Field<Number>,
         complexNumberFieldExtension: FieldExtension<Number, ComplexNumber<Number>>,
+        numberEquality: Equality<Number>,
         numberOrder: Order<Number>,
         positiveSquareRootComputer: PositiveSquareRootComputer<Number>,
         matrixCategoryOverField: MatrixCategoryOverField<ComplexNumber<Number>, MatrixWithProperties<ComplexNumber<Number>, Matrix>>,
@@ -227,6 +238,7 @@ public object QRDecompositionComputerHouseholderForComplexNumbersSuppliableTopLe
                 matrixFactory = matrixFactory,
                 numberField = numberField,
                 complexNumberFieldExtension = complexNumberFieldExtension,
+                numberEquality = numberEquality,
                 numberOrder = numberOrder,
                 positiveSquareRootComputer = positiveSquareRootComputer,
                 matrixCategoryOverField = matrixCategoryOverField,
