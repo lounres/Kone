@@ -32,11 +32,6 @@ private data object SafeLongContext: Reification<Long>, Equality<Long>, Order<Lo
     override fun reifyOrNull(element: Any?): Long? = element as? Long
     override fun reify(element: Any?): Long = element as? Long ?: reificationException()
     // endregion
-    
-    // region Equality
-    override val numberIsZero: IsZero<Long> = IsZero { it == 0L }
-    override val numberIsOne: IsOne<Long> = IsOne { it == 1L }
-    // endregion
 
     // region Order
     override fun Long.compareWith(other: Long): ComparisonResult = this.compareTo(other).asComparisonResult()
@@ -525,14 +520,6 @@ private data object SafeDoubleContext: Reification<Double>, Equality<Double>, Or
         this.validate()
         other.validate()
         return this == other
-    }
-    override val numberIsZero: IsZero<Double> = IsZero {
-        it.validate()
-        it == 0.0
-    }
-    override val numberIsOne: IsOne<Double> = IsOne {
-        it.validate()
-        it == 1.0
     }
     // endregion
     

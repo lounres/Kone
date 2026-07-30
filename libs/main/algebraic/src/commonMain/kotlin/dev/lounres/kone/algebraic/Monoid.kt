@@ -28,16 +28,6 @@ public interface Monoid<Number> : Semigroup<Number> {
     public val zero: Number
     // endregion
     
-    // region Equality
-    /**
-     * The check on being zero element operation on a [Number].
-     *
-     * @return The check context represented as [IsZero] instance.
-     */
-    @KoneContextInclude
-    public val numberIsZero: IsZero<Number>
-    // endregion
-    
     // region Number-UInt operations
     /**
      * The multiplication operation on a [Number] and an [UInt].
@@ -97,7 +87,6 @@ public interface Monoid<Number> : Semigroup<Number> {
     public class Key<@Supply Number> : SuppliedTypeRegistryKey<Monoid<Number>>() {
         override val impliedKeys: ImpliedKeysRegistry<Monoid<Number>> by lazy {
             ImpliedKeysRegistry {
-                IsZero.Key<Number>() implies { it.numberIsZero }
                 Times.Key<Number, UInt, Number>() implies { it.numberTimesUInt }
                 Times.Key<Number, ULong, Number>() implies { it.numberTimesULong }
                 Times.Key<UInt, Number, Number>() implies { it.uIntTimesNumber }

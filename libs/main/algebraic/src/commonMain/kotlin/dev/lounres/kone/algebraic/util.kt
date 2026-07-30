@@ -7,14 +7,29 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.ComparisonResult
+import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.asKotlinComparisonResult
 import dev.lounres.kone.relations.compareWith
+import dev.lounres.kone.relations.eq
 import dev.lounres.kone.relations.geq
 import dev.lounres.kone.relations.gt
 import dev.lounres.kone.relations.leq
 import dev.lounres.kone.relations.lt
+import dev.lounres.kone.relations.neq
 
+
+context(monoid: Monoid<Number>, equality: Equality<Number>)
+public fun <Number> Number.isZero(): Boolean = this eq monoid.zero
+
+context(monoid: Monoid<Number>, equality: Equality<Number>)
+public fun <Number> Number.isNotZero(): Boolean = this neq monoid.zero
+
+context(semiring: Semiring<Number>, equality: Equality<Number>)
+public fun <Number> Number.isOne(): Boolean = this eq semiring.one
+
+context(semiring: Semiring<Number>, equality: Equality<Number>)
+public fun <Number> Number.isNotOne(): Boolean = this neq semiring.one
 
 /**
  * Checks if [this] number is positive in the ordered semiring.

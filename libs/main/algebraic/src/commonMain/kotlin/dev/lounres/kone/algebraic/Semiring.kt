@@ -34,23 +34,6 @@ public interface Semiring<Number> : CommutativeMonoid<Number> {
     public val one: Number
     // endregion
     
-    // region Equality
-    /**
-     * The check on being zero element operation on a [Number].
-     *
-     * @return The check context represented as [IsZero] instance.
-     */
-    @KoneContextInclude
-    public override val numberIsZero: IsZero<Number>
-    /**
-     * The check on being unit element operation on a [Number].
-     *
-     * @return The check context represented as [IsOne] instance.
-     */
-    @KoneContextInclude
-    public val numberIsOne: IsOne<Number>
-    // endregion
-    
     // region Integers conversion
     /**
      * Converts instance of [UInt] to an element of the [Semiring] it is equal to.
@@ -204,7 +187,6 @@ public interface Semiring<Number> : CommutativeMonoid<Number> {
     public class Key<@Supply Number> : SuppliedTypeRegistryKey<Semiring<Number>>() {
         override val impliedKeys: ImpliedKeysRegistry<Semiring<Number>> by lazy {
             ImpliedKeysRegistry {
-                IsOne.Key<Number>() implies { it.numberIsOne }
                 Times.Key<Number, Number, Number>() implies { it.numberTimesNumber }
                 Power.Key<Number, UInt, Number>() implies { it.powerNumberUInt }
                 Power.Key<Number, ULong, Number>() implies { it.powerNumberULong }

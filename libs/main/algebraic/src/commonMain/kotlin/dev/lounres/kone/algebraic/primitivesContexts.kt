@@ -31,11 +31,6 @@ private data object ByteContext: Reification<Byte>, Equality<Byte>, Order<Byte>,
     override fun reify(element: Any?): Byte = element as? Byte ?: reificationException()
     // endregion
     
-    // region Equality
-    override val numberIsZero: IsZero<Byte> = IsZero { it == zero }
-    override val numberIsOne: IsOne<Byte> = IsOne { it == one }
-    // endregion
-    
     // region Order
     override fun Byte.compareWith(other: Byte): ComparisonResult = this.compareTo(other).asComparisonResult()
     // endregion
@@ -363,11 +358,6 @@ private data object ShortContext: Reification<Short>, Equality<Short>, Order<Sho
     override fun reifyMaybe(element: Any?): Maybe<Short> = if (element is Short) Some(element) else None
     override fun reifyOrNull(element: Any?): Short? = element as? Short
     override fun reify(element: Any?): Short = element as? Short ?: reificationException()
-    // endregion
-    
-    // region Equality
-    override val numberIsZero: IsZero<Short> = IsZero { it == zero }
-    override val numberIsOne: IsOne<Short> = IsOne { it == one }
     // endregion
     
     // region Order
@@ -699,11 +689,6 @@ private data object IntContext: Reification<Int>, Equality<Int>, Order<Int>, Has
     override fun reify(element: Any?): Int = element as? Int ?: reificationException()
     // endregion
     
-    // region Equality
-    override val numberIsZero: IsZero<Int> = IsZero { it == zero }
-    override val numberIsOne: IsOne<Int> = IsOne { it == one }
-    // endregion
-    
     // region Order
     override fun Int.compareWith(other: Int): ComparisonResult = this.compareTo(other).asComparisonResult()
     // endregion
@@ -1031,11 +1016,6 @@ private data object LongContext: Reification<Long>, Equality<Long>, Order<Long>,
     override fun reifyMaybe(element: Any?): Maybe<Long> = if (element is Long) Some(element) else None
     override fun reifyOrNull(element: Any?): Long? = element as? Long
     override fun reify(element: Any?): Long = element as? Long ?: reificationException()
-    // endregion
-    
-    // region Equality
-    override val numberIsZero: IsZero<Long> = IsZero { it == zero }
-    override val numberIsOne: IsOne<Long> = IsOne { it == one }
     // endregion
     
     // region Order
@@ -1367,11 +1347,6 @@ private data object UByteContext: Reification<UByte>, Equality<UByte>, Order<UBy
     override fun reify(element: Any?): UByte = element as? UByte ?: reificationException()
     // endregion
     
-    // region Equality
-    override val numberIsZero: IsZero<UByte> = IsZero { it == zero }
-    override val numberIsOne: IsOne<UByte> = IsOne { it == one }
-    // endregion
-    
     // region Order
     override fun UByte.compareWith(other: UByte): ComparisonResult = this.compareTo(other).asComparisonResult()
     // endregion
@@ -1601,11 +1576,6 @@ private data object UShortContext: Reification<UShort>, Equality<UShort>, Order<
     override fun reifyMaybe(element: Any?): Maybe<UShort> = if (element is UShort) Some(element) else None
     override fun reifyOrNull(element: Any?): UShort? = element as? UShort
     override fun reify(element: Any?): UShort = element as? UShort ?: reificationException()
-    // endregion
-    
-    // region Equality
-    override val numberIsZero: IsZero<UShort> = IsZero { it == zero }
-    override val numberIsOne: IsOne<UShort> = IsOne { it == one }
     // endregion
     
     // region Order
@@ -1839,11 +1809,6 @@ private data object UIntContext: Reification<UInt>, Equality<UInt>, Order<UInt>,
     override fun reify(element: Any?): UInt = element as? UInt ?: reificationException()
     // endregion
     
-    // region Equality
-    override val numberIsZero: IsZero<UInt> = IsZero { it == zero }
-    override val numberIsOne: IsOne<UInt> = IsOne { it == one }
-    // endregion
-    
     // region Order
     override fun UInt.compareWith(other: UInt): ComparisonResult = this.compareTo(other).asComparisonResult()
     // endregion
@@ -2073,11 +2038,6 @@ private data object ULongContext: Reification<ULong>, Equality<ULong>, Order<ULo
     override fun reifyMaybe(element: Any?): Maybe<ULong> = if (element is ULong) Some(element) else None
     override fun reifyOrNull(element: Any?): ULong? = element as? ULong
     override fun reify(element: Any?): ULong = element as? ULong ?: reificationException()
-    // endregion
-    
-    // region Equality
-    override val numberIsZero: IsZero<ULong> = IsZero { it == zero }
-    override val numberIsOne: IsOne<ULong> = IsOne { it == one }
     // endregion
     
     // region Order
@@ -2318,12 +2278,6 @@ private data object DoubleContext: Reification<Double>, Equality<Double>, Order<
     // region Constants
     override val zero: Double get() = 0.0
     override val one: Double get() = 1.0
-    // endregion
-    
-    // region Equality
-    override fun Double.equalsTo(other: Double): Boolean = this == other
-    override val numberIsZero: IsZero<Double> = IsZero { it == 0.0 }
-    override val numberIsOne: IsOne<Double> = IsOne { it == 1.0 }
     // endregion
 
     // region Conversion
@@ -2640,9 +2594,6 @@ private data object FloatContext: Reification<Float>, Equality<Float>, Order<Flo
     
     // region Equality
     override fun Float.equalsTo(other: Float): Boolean = this == other
-    override val numberIsZero: IsZero<Float> = IsZero { it == 0f }
-    override val numberIsOne: IsOne<Float> = IsOne { it == 1f }
-    // endregion
     
     // region Conversion
     override fun valueOf(arg: Int): Float = arg.toFloat()
