@@ -265,6 +265,7 @@ stal {
                         "-Xname-based-destructuring=complete",
                         "-Xcollection-literals",
                         "-Xallow-returns-result-of",
+//                        "-Xcompanion-blocks-and-extensions",
                     )
                     optIn.addAll(
                         listOf(
@@ -303,6 +304,7 @@ stal {
                         "-Xname-based-destructuring=complete",
                         "-Xcollection-literals",
                         "-Xallow-returns-result-of",
+//                        "-Xcompanion-blocks-and-extensions",
                     )
                     optIn.set(
                         listOf(

@@ -71,7 +71,7 @@ public fun TestConfigurationBuilder.commonTestRunnerConfiguration(
             "+NameBasedDestructuring",
             "+CollectionLiterals",
             "+AllowReturnsResultOfContract",
-            "+CompanionBlocksAndExtensions",
+//            "+CompanionBlocksAndExtensions",
         )
         +CodegenTestDirectives.IGNORE_DEXING
     }

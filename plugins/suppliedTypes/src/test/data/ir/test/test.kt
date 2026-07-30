@@ -1,5 +1,3 @@
-// SUPPRESS_WARNINGS: PRE_RELEASE_CLASS
-
 // MODULE: foo
 // FILE: IntX.kt
 
