@@ -25,9 +25,6 @@ private data object BigIntegerContext : Reification<BigInteger>, Equality<BigInt
     override fun reify(element: Any?): BigInteger = element as? BigInteger ?: reificationException()
     // endregion
     
-    override val numberIsZero: IsZero<BigInteger> = IsZero { it == BigInteger.ZERO }
-    override val numberIsOne: IsOne<BigInteger> = IsOne { it == BigInteger.ONE }
-    
     override fun BigInteger.compareWith(other: BigInteger): ComparisonResult = this.compareTo(other).asComparisonResult()
 
     override val zero: BigInteger = BigInteger.ZERO
