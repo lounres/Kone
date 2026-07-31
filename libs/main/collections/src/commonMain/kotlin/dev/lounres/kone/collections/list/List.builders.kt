@@ -348,42 +348,78 @@ public fun <Element> KoneMutableList.Companion.fill(size: UInt, element: Element
 public fun <Element> KoneMutableNoddedList.Companion.fill(size: UInt, element: Element): KoneMutableNoddedList<Element> =
     KoneArrayResizableNoddedList.generate(size) { element }
 
+/**
+ * Returns an empty list.
+ */
 public fun <Element> KoneList.Companion.of(): KoneList<Element> = KoneList.empty()
 
+/**
+ * Returns a singleton list containing the given [element].
+ */
 public fun <Element> KoneList.Companion.of(element: Element): KoneList<Element> = KoneSingletonSettableList(element)
 
+/**
+ * Returns a list containing the given [elements].
+ */
 @Suppress("UNCHECKED_CAST")
 public fun <Element> KoneList.Companion.of(vararg elements: Element): KoneList<Element> =
     KoneArraySettableList(KoneMutableArray(elements as Array<Any?>))
 
+/**
+ * Returns an empty nodded list.
+ */
 public fun <Element> KoneNoddedList.Companion.of(): KoneNoddedList<Element> = KoneNoddedList.empty()
 
+/**
+ * Returns a singleton nodded list containing the given [element].
+ */
 public fun <Element> KoneNoddedList.Companion.of(element: Element): KoneNoddedList<Element> =
     KoneSingletonSettableNoddedList(element)
 
+/**
+ * Returns a nodded list containing the given [elements].
+ */
 @Suppress("UNCHECKED_CAST")
 public fun <Element> KoneNoddedList.Companion.of(vararg elements: Element): KoneNoddedList<Element> =
     KoneArraySettableNoddedList.generate(elements.size.toUInt()) { elements[it.toInt()] }
 
+/**
+ * Returns a settable list containing the given [elements].
+ */
 @Suppress("UNCHECKED_CAST")
 public fun <Element> KoneSettableList.Companion.of(vararg elements: Element): KoneSettableList<Element> =
     if (elements.isEmpty()) KoneSettableList.empty()
     else KoneArraySettableList(KoneMutableArray(elements as Array<Any?>))
 
+/**
+ * Returns a settable nodded list containing the given [elements].
+ */
 @Suppress("UNCHECKED_CAST")
 public fun <Element> KoneSettableNoddedList.Companion.of(vararg elements: Element): KoneSettableNoddedList<Element> =
     if (elements.isEmpty()) KoneSettableNoddedList.empty()
     else KoneArraySettableNoddedList.generate(elements.size.toUInt()) { elements[it.toInt()] }
 
+/**
+ * Returns an empty mutable list.
+ */
 public fun <Element> KoneMutableList.Companion.of(): KoneMutableList<Element> =
     KoneArrayResizableList()
 
+/**
+ * Returns a mutable list containing the given [elements].
+ */
 public fun <Element> KoneMutableList.Companion.of(vararg elements: Element): KoneMutableList<Element> =
     KoneArrayResizableList.generate(elements.size.toUInt()) { elements[it.toInt()] }
 
+/**
+ * Returns an empty mutable nodded list.
+ */
 public fun <Element> KoneMutableNoddedList.Companion.of(): KoneMutableNoddedList<Element> =
     KoneArrayResizableNoddedList()
 
+/**
+ * Returns a mutable nodded list containing the given [elements].
+ */
 public fun <Element> KoneMutableNoddedList.Companion.of(vararg elements: Element): KoneMutableNoddedList<Element> =
     KoneArrayResizableNoddedList.generate(elements.size.toUInt()) { elements[it.toInt()] }
 
