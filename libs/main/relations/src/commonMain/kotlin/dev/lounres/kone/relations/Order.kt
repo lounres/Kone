@@ -9,6 +9,9 @@ package dev.lounres.kone.relations
 
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.maybe.Maybe
+import dev.lounres.kone.maybe.None
+import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.registry.*
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
@@ -421,13 +424,13 @@ public fun <Target, Element> Order.Companion.byOrdered(vararg selectors: (Target
  * In the resulting order:
  * - Two null values are considered equal
  * - A null value is considered less than any non-null value
- * - Two non-null values are compared using this order context
+ * - Two non-null values are compared using [this] order context
  *
  * @param Element The non-nullable element type for which to create the nullable order context.
  * @receiver The order context for non-nullable elements.
  * @return An [Order] instance where null is treated as the minimum value.
  */
-public val <Element: Any> Order<Element>.withNullAsLeast: Order<Element?> get() = Order<Element?> { left, right ->
+public val <Element: Any> Order<Element>.withNullAsLeast: Order<Element?> get() = Order { left, right ->
     when {
         left == null && right == null -> Equal
         left == null -> LeftIsLessThanRight
@@ -442,13 +445,13 @@ public val <Element: Any> Order<Element>.withNullAsLeast: Order<Element?> get() 
  * In the resulting order:
  * - Two null values are considered equal
  * - A null value is considered greater than any non-null value
- * - Two non-null values are compared using this order context
+ * - Two non-null values are compared using [this] order context
  *
  * @param Element The non-nullable element type for which to create the nullable order context.
  * @receiver The order context for non-nullable elements.
  * @return An [Order] instance where null is treated as the maximum value.
  */
-public val <Element: Any> Order<Element>.withNullAsGreatest: Order<Element?> get() = Order<Element?> { left, right ->
+public val <Element: Any> Order<Element>.withNullAsGreatest: Order<Element?> get() = Order { left, right ->
     when {
         left == null && right == null -> Equal
         left == null -> LeftIsGreaterThanRight
@@ -463,7 +466,7 @@ public val <Element: Any> Order<Element>.withNullAsGreatest: Order<Element?> get
  * In the resulting comparator:
  * - Two null values are considered equal
  * - A null value is considered less than any non-null value
- * - Two non-null values are compared using this comparator
+ * - Two non-null values are compared using [this] comparator
  *
  * @param Element The non-nullable element type for which to create the nullable comparator.
  * @receiver The comparator for non-nullable elements.
@@ -484,7 +487,7 @@ public val <Element: Any> Comparator<Element>.withNullAsLeast: Comparator<Elemen
  * In the resulting comparator:
  * - Two null values are considered equal
  * - A null value is considered greater than any non-null value
- * - Two non-null values are compared using this comparator
+ * - Two non-null values are compared using [this] comparator
  *
  * @param Element The non-nullable element type for which to create the nullable comparator.
  * @receiver The comparator for non-nullable elements.
@@ -496,6 +499,94 @@ public val <Element: Any> Comparator<Element>.withNullAsGreatest: Comparator<Ele
         left == null -> LeftIsGreaterThanRight
         right == null -> LeftIsLessThanRight
         else -> this.compare(left, right)
+    }
+}
+
+/**
+ * Returns an [Order] context for elements wrapped in [Maybe] where [None] is considered the least value.
+ *
+ * In the resulting order:
+ * - Two [None] values are considered equal.
+ * - A [None] value is considered less than any initial value wrapped in [Some].
+ * - Two non-[None] values are compared using [this] order context and their inner values.
+ *
+ * @param Element The element type for which to create the [Maybe] order context.
+ * @receiver The order context for initial elements.
+ * @return An [Order] instance where [None] is treated as the minimum value
+ * and [Some] values are treated as their inner initial values.
+ */
+public val <Element> Order<Element>.withNoneAsLeast: Order<Maybe<Element>> get() = Order { left, right ->
+    when {
+        left === None && right === None -> Equal
+        left === None -> LeftIsLessThanRight
+        right === None -> LeftIsGreaterThanRight
+        else -> with(this) { (left as Some).value compareWith (right as Some).value }
+    }
+}
+
+/**
+ * Returns an [Order] context for elements wrapped in [Maybe] where [None] is considered the greatest value.
+ *
+ * In the resulting order:
+ * - Two [None] values are considered equal.
+ * - A [None] value is considered greater than any initial value wrapped in [Some].
+ * - Two non-[None] values are compared using [this] order context and their inner values.
+ *
+ * @param Element The element type for which to create the [Maybe] order context.
+ * @receiver The order context for initial elements.
+ * @return An [Order] instance where [None] is treated as the maximum value
+ * and [Some] values are treated as their inner initial values.
+ */
+public val <Element: Any> Order<Element>.withNoneAsGreatest: Order<Maybe<Element>> get() = Order { left, right ->
+    when {
+        left === None && right === None -> Equal
+        left === None -> LeftIsGreaterThanRight
+        right === None -> LeftIsLessThanRight
+        else -> with(this) { (left as Some).value compareWith (right as Some).value }
+    }
+}
+
+/**
+ * Returns a [Comparator] for elements wrapped in [Maybe] where [None] is considered the least value.
+ *
+ * In the resulting comparator:
+ * - Two [None] values are considered equal.
+ * - A [None] value is considered less than any initial value wrapped in [Some].
+ * - Two non-[None] values are compared using [this] comparator and their inner values.
+ *
+ * @param Element The element type for which to create the [Maybe] comparator.
+ * @receiver The comparator for initial elements.
+ * @return A [Comparator] instance where [None] is treated as the minimum value
+ * and [Some] values are treated as their inner initial values.
+ */
+public val <Element: Any> Comparator<Element>.withNoneAsLeast: Comparator<Maybe<Element>> get() = Comparator { left, right ->
+    when {
+        left === None && right === None -> Equal
+        left === None -> LeftIsLessThanRight
+        right === None -> LeftIsGreaterThanRight
+        else -> this.compare((left as Some).value, (right as Some).value)
+    }
+}
+
+/**
+ * Returns a [Comparator] for nullable elements where `null` is considered the greatest value.
+ *
+ * In the resulting comparator:
+ * - Two null values are considered equal
+ * - A null value is considered greater than any non-null value
+ * - Two non-null values are compared using this comparator
+ *
+ * @param Element The element type for which to create the [Maybe] comparator.
+ * @receiver The comparator for initial elements.
+ * @return A [Comparator] instance where [None] is treated as the maximum value
+ * and [Some] values are treated as their inner initial values.
+ */
+public val <Element: Any> Comparator<Element>.withNoneAsGreatest: Comparator<Maybe<Element>> get() = Comparator { left, right ->
+    when {
+        left === None && right === None -> Equal
+        left === None -> LeftIsGreaterThanRight
+        right === None -> LeftIsLessThanRight
+        else -> this.compare((left as Some).value, (right as Some).value)
     }
 }
 

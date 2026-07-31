@@ -30,5 +30,12 @@ internal class KoneListEquality<Element>(val elementEquality: Equality<Element>)
     }
 }
 
+/**
+ * Returns an [Equality] instance for [KoneList] based on the given [elementEquality].
+ *
+ * @param Element The element type.
+ * @param elementEquality The equality strategy for elements.
+ * @return An equality for lists.
+ */
 public fun <Element> KoneList.Companion.equality(elementEquality: Equality<Element> = Equality.defaultFor()): Equality<KoneList<Element>> =
     KoneListEquality(elementEquality)

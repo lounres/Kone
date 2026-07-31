@@ -26,5 +26,12 @@ internal open class KoneListHashing<Element>(open val elementHashing: Hashing<El
     }
 }
 
+/**
+ * Returns a [Hashing] instance for [KoneList] based on the given [elementHashing].
+ *
+ * @param Element The element type.
+ * @param elementHashing The hashing strategy for elements.
+ * @return A hashing for lists.
+ */
 public fun <Element> KoneList.Companion.hashing(elementHashing: Hashing<Element> = Hashing.defaultFor()): Hashing<KoneList<Element>> =
     KoneListHashing(elementHashing)
