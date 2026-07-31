@@ -278,6 +278,17 @@ public interface KoneNoddedList<out Element> : KoneList<Element> {
      * Returns node that corresponds to the place with the provided [index].
      */
     public fun getNode(index: UInt): KoneListNode<Element>
+    /**
+     * Returns element that is placed at the provided [index].
+     *
+     * For each index from `0` to [size] exclusive there is exactly one corresponding element.
+     *
+     * If index is at least [size], [IndexOutOfBoundsException] is thrown.
+     *
+     * Default implementation calls [getNode] and retrieves its node's [element][KoneListNode.element].
+     *
+     * @throws IndexOutOfBoundsException when index is not less than [size].
+     */
     override fun get(index: UInt): Element = getNode(index).element
     
     override fun iterator(): KoneNoddedListIterator<Element>
@@ -326,6 +337,14 @@ public interface KoneMutableNoddedList<Element> : KoneSettableNoddedList<Element
      * And this operation adds a place with index [size] and puts the value in it.
      */
     public fun addNode(element: Element): KoneMutableListNode<Element>
+    /**
+     * Adds provided [element] at the end of the ordered collection.
+     *
+     * For each index from `0` to [size] there is exactly one corresponding place for a value.
+     * And this operation adds a place with index [size] and puts the value in it.
+     *
+     * Default implementation just calls [addNode].
+     */
     override fun add(element: Element) {
         val _ = addNode(element)
     }
@@ -346,6 +365,23 @@ public interface KoneMutableNoddedList<Element> : KoneSettableNoddedList<Element
      * @throws IndexOutOfBoundsException when index is greater than [size].
      */
     public fun addNodeAt(index: UInt, element: Element): KoneMutableListNode<Element>
+    /**
+     * Adds provided [element] before element with index [index].
+     *
+     * For each index from `0` to [size] there is exactly one corresponding place for a value.
+     * And this operation:
+     * - for each place with index at least [index] increases its index by one,
+     * - adds a place with index [index],
+     * - and puts the value in the added place.
+     *
+     * When [index] is equal to [size] the element is added at the end.
+     *
+     * If [index] is greater than [size], [IndexOutOfBoundsException] is thrown.
+     *
+     * Default implementation just calls [addNodeAt].
+     *
+     * @throws IndexOutOfBoundsException when index is greater than [size].
+     */
     override fun addAt(index: UInt, element: Element) {
         val _ = addNodeAt(index, element)
     }
