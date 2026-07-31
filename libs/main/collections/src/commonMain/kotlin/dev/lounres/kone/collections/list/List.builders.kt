@@ -36,18 +36,27 @@ import kotlin.experimental.ExperimentalTypeInference
  */
 public fun <Element> KoneList.Companion.empty(): KoneList<Element> = KoneEmptySettableNoddedList
 
+/**
+ * Returns empty nodded list.
+ */
 public fun <Element> KoneNoddedList.Companion.empty(): KoneNoddedList<Element> = KoneEmptySettableNoddedList
 
+/**
+ * Returns empty settable list.
+ */
 @Suppress("UNCHECKED_CAST")
 public fun <Element> KoneSettableList.Companion.empty(): KoneSettableList<Element> = KoneEmptySettableNoddedList as KoneSettableList<Element>
 
+/**
+ * Returns empty settable nodded list.
+ */
 @Suppress("UNCHECKED_CAST")
 public fun <Element> KoneSettableNoddedList.Companion.empty(): KoneSettableNoddedList<Element> = KoneEmptySettableNoddedList as KoneSettableNoddedList<Element>
 
 /**
  * Returns a list of provided [size] of elements produced by the [initializer].
  *
- * The element with index `i` (from `0` to [size] exclusive) is `initializer(index)`.
+ * The element with index `index` (from `0` to [size] exclusive) is `initializer(index)`.
  * All [initializer] invocations are computed consecutively on values from `0` to [size] exclusive
  * in their order starting with `0`.
  */
@@ -55,14 +64,35 @@ public inline fun <Element> KoneList.Companion.generate(size: UInt, initializer:
     if (size == 0u) KoneList.empty()
     else KoneArraySettableList.generate(size, initializer)
 
+/**
+ * Returns a list of elements over the provided [indices] range produced by the [initializer].
+ *
+ * The element with index `index` (from [indices] range) is `initializer(index)`.
+ * All [initializer] invocations are computed consecutively on values in the range
+ * in their order starting with the first.
+ */
 public inline fun <Element> KoneList.Companion.generate(indices: UIntRange, initializer: (index: UInt) -> Element): KoneList<Element> =
     if (indices.isEmpty()) KoneList.empty()
     else KoneArraySettableList.generate(indices, initializer)
 
+/**
+ * Returns a nodded list of provided [size] of elements produced by the [initializer].
+ *
+ * The element with index `index` (from `0` to [size] exclusive) is `initializer(index)`.
+ * All [initializer] invocations are computed consecutively on values from `0` to [size] exclusive
+ * in their order starting with `0`.
+ */
 public inline fun <Element> KoneNoddedList.Companion.generate(size: UInt, initializer: (index: UInt) -> Element): KoneNoddedList<Element> =
     if (size == 0u) KoneNoddedList.empty()
     else KoneArraySettableNoddedList.generate(size, initializer)
 
+/**
+ * Returns a nodded list of elements over the provided [indices] range produced by the [initializer].
+ *
+ * The element with index `index` (from [indices] range) is `initializer(index)`.
+ * All [initializer] invocations are computed consecutively on values in the range
+ * in their order starting with the first.
+ */
 public inline fun <Element> KoneNoddedList.Companion.generate(indices: UIntRange, initializer: (index: UInt) -> Element): KoneNoddedList<Element> =
     if (indices.isEmpty()) KoneNoddedList.empty()
     else KoneArraySettableNoddedList.generate(indices, initializer)
@@ -70,7 +100,7 @@ public inline fun <Element> KoneNoddedList.Companion.generate(indices: UIntRange
 /**
  * Returns a settable list of provided [size] of elements produced by the [initializer].
  *
- * The element with index `i` (from `0` to [size] exclusive) is `initializer(index)`.
+ * The element with index `index` (from `0` to [size] exclusive) is `initializer(index)`.
  * All [initializer] invocations are computed consecutively on values from `0` to [size] exclusive
  * in their order starting with `0`.
  */
@@ -78,14 +108,35 @@ public inline fun <Element> KoneSettableList.Companion.generate(size: UInt, init
     if (size == 0u) KoneSettableList.empty()
     else KoneArraySettableList.generate(size, initializer)
 
+/**
+ * Returns a settable list of elements over the provided [indices] range produced by the [initializer].
+ *
+ * The element with index `index` (from [indices] range) is `initializer(index)`.
+ * All [initializer] invocations are computed consecutively on values in the range
+ * in their order starting with the first.
+ */
 public inline fun <Element> KoneSettableList.Companion.generate(indices: UIntRange, initializer: (index: UInt) -> Element): KoneSettableList<Element> =
     if (indices.isEmpty()) KoneSettableList.empty()
     else KoneArraySettableList.generate(indices, initializer)
 
+/**
+ * Returns a settable nodded list of provided [size] of elements produced by the [initializer].
+ *
+ * The element with index `index` (from `0` to [size] exclusive) is `initializer(index)`.
+ * All [initializer] invocations are computed consecutively on values from `0` to [size] exclusive
+ * in their order starting with `0`.
+ */
 public inline fun <Element> KoneSettableNoddedList.Companion.generate(size: UInt, initializer: (index: UInt) -> Element): KoneSettableNoddedList<Element> =
     if (size == 0u) KoneSettableNoddedList.empty()
     else KoneArraySettableNoddedList.generate(size, initializer)
 
+/**
+ * Returns a settable nodded list of elements over the provided [indices] range produced by the [initializer].
+ *
+ * The element with index `index` (from [indices] range) is `initializer(index)`.
+ * All [initializer] invocations are computed consecutively on values in the range
+ * in their order starting with the first.
+ */
 public inline fun <Element> KoneSettableNoddedList.Companion.generate(indices: UIntRange, initializer: (index: UInt) -> Element): KoneSettableNoddedList<Element> =
     if (indices.isEmpty()) KoneSettableNoddedList.empty()
     else KoneArraySettableNoddedList.generate(indices, initializer)
@@ -93,19 +144,40 @@ public inline fun <Element> KoneSettableNoddedList.Companion.generate(indices: U
 /**
  * Returns a mutable list of provided [size] of elements produced by the [initializer].
  *
- * The element with index `i` (from `0` to [size] exclusive) is `initializer(index)`.
+ * The element with index `index` (from `0` to [size] exclusive) is `initializer(index)`.
  * All [initializer] invocations are computed consecutively on values from `0` to [size] exclusive
  * in their order starting with `0`.
  */
 public inline fun <Element> KoneMutableList.Companion.generate(size: UInt, initializer: (index: UInt) -> Element): KoneMutableList<Element> =
     KoneArrayResizableList.generate(size, initializer)
 
+/**
+ * Returns a mutable list of elements over the provided [indices] range produced by the [initializer].
+ *
+ * The element with index `index` (from [indices] range) is `initializer(index)`.
+ * All [initializer] invocations are computed consecutively on values in the range
+ * in their order starting with the first.
+ */
 public inline fun <Element> KoneMutableList.Companion.generate(indices: UIntRange, initializer: (index: UInt) -> Element): KoneMutableList<Element> =
     KoneArrayResizableList.generate(indices, initializer)
 
+/**
+ * Returns a mutable nodded list of provided [size] of elements produced by the [initializer].
+ *
+ * The element with index `index` (from `0` to [size] exclusive) is `initializer(index)`.
+ * All [initializer] invocations are computed consecutively on values from `0` to [size] exclusive
+ * in their order starting with `0`.
+ */
 public inline fun <Element> KoneMutableNoddedList.Companion.generate(size: UInt, initializer: (index: UInt) -> Element): KoneMutableNoddedList<Element> =
     KoneArrayResizableNoddedList.generate(size, initializer)
 
+/**
+ * Returns a mutable nodded list of elements over the provided [indices] range produced by the [initializer].
+ *
+ * The element with index `index` (from [indices] range) is `initializer(index)`.
+ * All [initializer] invocations are computed consecutively on values in the range
+ * in their order starting with the first.
+ */
 public inline fun <Element> KoneMutableNoddedList.Companion.generate(indices: UIntRange, initializer: (index: UInt) -> Element): KoneMutableNoddedList<Element> =
     KoneArrayResizableNoddedList.generate(indices, initializer)
 
