@@ -423,6 +423,9 @@ public fun <Element> KoneMutableNoddedList.Companion.of(): KoneMutableNoddedList
 public fun <Element> KoneMutableNoddedList.Companion.of(vararg elements: Element): KoneMutableNoddedList<Element> =
     KoneArrayResizableNoddedList.generate(elements.size.toUInt()) { elements[it.toInt()] }
 
+/**
+ * Converts this iterator to a [KoneMutableList].
+ */
 public fun <Element> KoneIterator<Element>.toKoneMutableList(): KoneMutableList<Element> =
     KoneArrayGrowableList<Element>().apply {
         while (hasNext()) add(getAndMoveNext())
@@ -430,14 +433,23 @@ public fun <Element> KoneIterator<Element>.toKoneMutableList(): KoneMutableList<
         KoneMutableList.generate(it.size) { index -> it[index] }
     }
 
+/**
+ * Converts this iterable to a [KoneMutableList].
+ */
 public fun <Element> KoneIterable<Element>.toKoneMutableList(): KoneMutableList<Element> {
     val iterator = iterator()
     return KoneMutableList.generate(size) { iterator.getAndMoveNext() }
 }
 
+/**
+ * Converts this sequence to a [KoneMutableList].
+ */
 public fun <Element> KoneSequence<Element>.toKoneMutableList(): KoneMutableList<Element> =
     iterator().toKoneMutableList()
 
+/**
+ * Converts this iterator to a [KoneMutableNoddedList].
+ */
 public fun <Element> KoneIterator<Element>.toKoneMutableNoddedList(): KoneMutableNoddedList<Element> =
     KoneArrayGrowableList<Element>().apply {
         while (hasNext()) add(getAndMoveNext())
@@ -445,14 +457,23 @@ public fun <Element> KoneIterator<Element>.toKoneMutableNoddedList(): KoneMutabl
         KoneMutableNoddedList.generate(it.size) { index -> it[index] }
     }
 
+/**
+ * Converts this iterable to a [KoneMutableNoddedList].
+ */
 public fun <Element> KoneIterable<Element>.toKoneMutableNoddedList(): KoneMutableNoddedList<Element> {
     val iterator = iterator()
     return KoneMutableNoddedList.generate(size) { iterator.getAndMoveNext() }
 }
 
+/**
+ * Converts this sequence to a [KoneMutableNoddedList].
+ */
 public fun <Element> KoneSequence<Element>.toKoneMutableNoddedList(): KoneMutableNoddedList<Element> =
     iterator().toKoneMutableNoddedList()
 
+/**
+ * Converts this iterator to a [KoneSettableList].
+ */
 public fun <Element> KoneIterator<Element>.toKoneSettableList(): KoneSettableList<Element> =
     KoneArrayGrowableList<Element>().apply {
         while (hasNext()) add(getAndMoveNext())
@@ -460,14 +481,23 @@ public fun <Element> KoneIterator<Element>.toKoneSettableList(): KoneSettableLis
         KoneSettableList.generate(it.size) { index -> it[index] }
     }
 
+/**
+ * Converts this iterable to a [KoneSettableList].
+ */
 public fun <Element> KoneIterable<Element>.toKoneSettableList(): KoneSettableList<Element> {
     val iterator = iterator()
     return KoneSettableList.generate(size) { iterator.getAndMoveNext() }
 }
 
+/**
+ * Converts this sequence to a [KoneSettableList].
+ */
 public fun <Element> KoneSequence<Element>.toKoneSettableList(): KoneSettableList<Element> =
     iterator().toKoneSettableList()
 
+/**
+ * Converts this iterator to a [KoneSettableNoddedList].
+ */
 public fun <Element> KoneIterator<Element>.toKoneSettableNoddedList(): KoneSettableNoddedList<Element> =
     KoneArrayGrowableList<Element>().apply {
         while (hasNext()) add(getAndMoveNext())
@@ -475,35 +505,59 @@ public fun <Element> KoneIterator<Element>.toKoneSettableNoddedList(): KoneSetta
         KoneSettableNoddedList.generate(it.size) { index -> it[index] }
     }
 
+/**
+ * Converts this iterable to a [KoneSettableNoddedList].
+ */
 public fun <Element> KoneIterable<Element>.toKoneSettableNoddedList(): KoneSettableNoddedList<Element> {
     val iterator = iterator()
     return KoneSettableNoddedList.generate(size) { iterator.getAndMoveNext() }
 }
 
+/**
+ * Converts this sequence to a [KoneSettableNoddedList].
+ */
 public fun <Element> KoneSequence<Element>.toKoneSettableNoddedList(): KoneSettableNoddedList<Element> =
     iterator().toKoneSettableNoddedList()
 
+/**
+ * Converts this iterator to a [KoneList].
+ */
 public fun <Element> KoneIterator<Element>.toKoneList(): KoneList<Element> =
     KoneArrayGrowableList<Element>().apply {
         while (hasNext()) add(getAndMoveNext())
     }.toOptimizedList()
 
+/**
+ * Converts this iterable to a [KoneList].
+ */
 public fun <Element> KoneIterable<Element>.toKoneList(): KoneList<Element> =
     if (size == 0u) KoneList.empty()
     else this.toKoneMutableList().toOptimizedList()
 
+/**
+ * Converts this sequence to a [KoneList].
+ */
 public fun <Element> KoneSequence<Element>.toKoneList(): KoneList<Element> =
     iterator().toKoneList()
 
+/**
+ * Converts this iterator to a [KoneNoddedList].
+ */
 public fun <Element> KoneIterator<Element>.toKoneNoddedList(): KoneNoddedList<Element> =
     KoneArrayGrowableList<Element>().apply {
         while (hasNext()) add(getAndMoveNext())
     }.toOptimizedNoddedList()
 
+/**
+ * Converts this iterable to a [KoneNoddedList].
+ */
 public fun <Element> KoneIterable<Element>.toKoneNoddedList(): KoneNoddedList<Element> =
     if (size == 0u) KoneNoddedList.empty()
     else this.toKoneMutableList().toOptimizedNoddedList()
 
+/**
+ * Converts this sequence to a [KoneNoddedList].
+ */
 public fun <Element> KoneSequence<Element>.toKoneNoddedList(): KoneNoddedList<Element> =
     iterator().toKoneNoddedList()
 
