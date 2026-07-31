@@ -26,7 +26,6 @@ import dev.lounres.kone.collections.utils.toOptimizedList
 import dev.lounres.kone.collections.utils.toOptimizedNoddedList
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
-import kotlin.experimental.ExperimentalTypeInference
 
 
 // TODO: Add builders for nodded lists
@@ -309,25 +308,43 @@ public inline fun <Element> KoneMutableNoddedList.Companion.induce(size: UInt, i
 public inline fun <Element> KoneMutableNoddedList.Companion.induce(indices: UIntRange, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneMutableNoddedList<Element> =
     KoneArrayResizableNoddedList.induce(indices, initialElement, inducer)
 
+/**
+ * Returns a list of provided [size] filled with the given [element].
+ */
 public fun <Element> KoneList.Companion.fill(size: UInt, element: Element): KoneList<Element> =
     if (size == 0u) KoneList.empty()
     else KoneArraySettableList.generate(size) { element }
 
+/**
+ * Returns a nodded list of provided [size] filled with the given [element].
+ */
 public fun <Element> KoneNoddedList.Companion.fill(size: UInt, element: Element): KoneNoddedList<Element> =
     if (size == 0u) KoneNoddedList.empty()
     else KoneArraySettableNoddedList.generate(size) { element }
 
+/**
+ * Returns a settable list of provided [size] filled with the given [element].
+ */
 public fun <Element> KoneSettableList.Companion.fill(size: UInt, element: Element): KoneSettableList<Element> =
     if (size == 0u) KoneSettableList.empty()
     else KoneArraySettableList.generate(size) { element }
 
+/**
+ * Returns a settable nodded list of provided [size] filled with the given [element].
+ */
 public fun <Element> KoneSettableNoddedList.Companion.fill(size: UInt, element: Element): KoneSettableNoddedList<Element> =
     if (size == 0u) KoneSettableNoddedList.empty()
     else KoneArraySettableNoddedList.generate(size) { element }
 
+/**
+ * Returns a mutable list of provided [size] filled with the given [element].
+ */
 public fun <Element> KoneMutableList.Companion.fill(size: UInt, element: Element): KoneMutableList<Element> =
     KoneArrayResizableList.generate(size) { element }
 
+/**
+ * Returns a mutable nodded list of provided [size] filled with the given [element].
+ */
 public fun <Element> KoneMutableNoddedList.Companion.fill(size: UInt, element: Element): KoneMutableNoddedList<Element> =
     KoneArrayResizableNoddedList.generate(size) { element }
 
