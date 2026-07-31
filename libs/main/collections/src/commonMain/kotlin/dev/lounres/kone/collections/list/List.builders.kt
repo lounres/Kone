@@ -370,6 +370,11 @@ public fun <Element> KoneIterable<Element>.toKoneNoddedList(): KoneNoddedList<El
 public fun <Element> KoneSequence<Element>.toKoneNoddedList(): KoneNoddedList<Element> =
     iterator().toKoneNoddedList()
 
+/**
+ * A builder for constructing [KoneList] instances using a builder DSL.
+ *
+ * @param Element The element type of the list.
+ */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneListBuilder<Element> @PublishedApi internal constructor(result: KoneMutableList<Element>) : KoneMutableList<Element> {
     private var result: KoneMutableList<Element>? = result
@@ -439,6 +444,11 @@ public class KoneListBuilder<Element> @PublishedApi internal constructor(result:
         return result.iteratorFrom(index)
     }
     
+    /**
+     * Adds the given [element] to the builder.
+     *
+     * @receiver The element to add.
+     */
     public operator fun Element.unaryPlus() {
         val result = result ?: error("This KoneList builder is already used")
         result.add(this)
@@ -451,18 +461,36 @@ public class KoneListBuilder<Element> @PublishedApi internal constructor(result:
     }
 }
 
-@OptIn(ExperimentalTypeInference::class)
+/**
+ * Builds a [KoneList] using the provided [builderAction] DSL.
+ *
+ * @param Element The element type of the list.
+ * @param builderAction The builder DSL action.
+ * @return The built list.
+ */
 public inline fun <Element> KoneList.Companion.build(builderAction: KoneListBuilder<Element>.() -> Unit): KoneList<Element> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
     return KoneListBuilder(KoneMutableList.of<Element>()).apply(builderAction).build().toOptimizedList()
 }
 
-@OptIn(ExperimentalTypeInference::class)
+/**
+ * Builds a [KoneList] with the given [initialCapacity] using the provided [builderAction] DSL.
+ *
+ * @param Element The element type of the list.
+ * @param initialCapacity The initial capacity of the underlying storage.
+ * @param builderAction The builder DSL action.
+ * @return The built list.
+ */
 public inline fun <Element> KoneList.Companion.build(initialCapacity: UInt, builderAction: KoneListBuilder<Element>.() -> Unit): KoneList<Element> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
     return KoneListBuilder(KoneArrayGrowableList<Element>(initialCapacity)).apply(builderAction).build().toOptimizedList()
 }
 
+/**
+ * A builder for constructing [KoneNoddedList] instances using a builder DSL.
+ *
+ * @param Element The element type of the list.
+ */
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneNoddedListBuilder<Element> @PublishedApi internal constructor(result: KoneMutableNoddedList<Element>) : KoneMutableNoddedList<Element> {
     private var result: KoneMutableNoddedList<Element>? = result
@@ -547,14 +575,14 @@ public class KoneNoddedListBuilder<Element> @PublishedApi internal constructor(r
         return result.iteratorFrom(index)
     }
     
+    /**
+     * Adds the given [element] to the builder.
+     *
+     * @receiver The element to add.
+     */
     public operator fun Element.unaryPlus() {
         val result = result ?: error("This KoneList builder is already used")
         result.add(this)
-    }
-    
-    public operator fun KoneIterable<Element>.unaryPlus() {
-        val result = result ?: error("This KoneList builder is already used")
-        result.addAllFrom(this)
     }
     
     @PublishedApi
@@ -564,13 +592,26 @@ public class KoneNoddedListBuilder<Element> @PublishedApi internal constructor(r
     }
 }
 
-@OptIn(ExperimentalTypeInference::class)
+/**
+ * Builds a [KoneNoddedList] using the provided [builderAction] DSL.
+ *
+ * @param Element The element type of the list.
+ * @param builderAction The builder DSL action.
+ * @return The built list.
+ */
 public inline fun <Element> KoneNoddedList.Companion.build(builderAction: KoneNoddedListBuilder<Element>.() -> Unit): KoneNoddedList<Element> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
     return KoneNoddedListBuilder(KoneMutableNoddedList.of<Element>()).apply(builderAction).build().toOptimizedNoddedList()
 }
 
-@OptIn(ExperimentalTypeInference::class)
+/**
+ * Builds a [KoneNoddedList] with the given [initialCapacity] using the provided [builderAction] DSL.
+ *
+ * @param Element The element type of the list.
+ * @param initialCapacity The initial capacity of the underlying storage.
+ * @param builderAction The builder DSL action.
+ * @return The built list.
+ */
 public inline fun <Element> KoneNoddedList.Companion.build(initialCapacity: UInt, builderAction: KoneNoddedListBuilder<Element>.() -> Unit): KoneNoddedList<Element> {
     contract { callsInPlace(builderAction, InvocationKind.EXACTLY_ONCE) }
     return KoneNoddedListBuilder(KoneArrayGrowableNoddedList<Element>(initialCapacity)).apply(builderAction).build().toOptimizedNoddedList()
