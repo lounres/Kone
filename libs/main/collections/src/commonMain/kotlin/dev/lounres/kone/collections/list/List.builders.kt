@@ -181,47 +181,131 @@ public inline fun <Element> KoneMutableNoddedList.Companion.generate(size: UInt,
 public inline fun <Element> KoneMutableNoddedList.Companion.generate(indices: UIntRange, initializer: (index: UInt) -> Element): KoneMutableNoddedList<Element> =
     KoneArrayResizableNoddedList.generate(indices, initializer)
 
+/**
+ * Returns a list of provided [size] where each next element is computed from the previous one.
+ *
+ * The first element is [initialElement].
+ * For each next index `i` from `1` to [size] exclusive, the element is `inducer(i, previousElement)`.
+ * All [inducer] invocations are computed consecutively in the order of indices starting with `1`.
+ */
 public inline fun <Element> KoneList.Companion.induce(size: UInt, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneList<Element> =
     if (size == 0u) KoneList.empty()
     else KoneArraySettableList.induce(size, initialElement, inducer)
 
+/**
+ * Returns a list of elements over the provided [indices] range where each next element is computed from the previous one.
+ *
+ * The first element is [initialElement].
+ * For each next index `i` in the [indices] range after the first, the element is `inducer(i, previousElement)`.
+ * All [inducer] invocations are computed consecutively in the order of indices.
+ */
 public inline fun <Element> KoneList.Companion.induce(indices: UIntRange, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneList<Element> =
     if (indices.isEmpty()) KoneList.empty()
     else KoneArraySettableList.induce(indices, initialElement, inducer)
 
+/**
+ * Returns a nodded list of provided [size] where each next element is computed from the previous one.
+ *
+ * The first element is [initialElement].
+ * For each next index `i` from `1` to [size] exclusive, the element is `inducer(i, previousElement)`.
+ * All [inducer] invocations are computed consecutively in the order of indices starting with `1`.
+ */
 public inline fun <Element> KoneNoddedList.Companion.induce(size: UInt, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneNoddedList<Element> =
     if (size == 0u) KoneNoddedList.empty()
     else KoneArraySettableNoddedList.induce(size, initialElement, inducer)
 
+/**
+ * Returns a nodded list of elements over the provided [indices] range where each next element is computed from the previous one.
+ *
+ * The first element is [initialElement].
+ * For each next index `i` in the [indices] range after the first, the element is `inducer(i, previousElement)`.
+ * All [inducer] invocations are computed consecutively in the order of indices.
+ */
 public inline fun <Element> KoneNoddedList.Companion.induce(indices: UIntRange, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneNoddedList<Element> =
     if (indices.isEmpty()) KoneNoddedList.empty()
     else KoneArraySettableNoddedList.induce(indices, initialElement, inducer)
 
+/**
+ * Returns a settable list of provided [size] where each next element is computed from the previous one.
+ *
+ * The first element is [initialElement].
+ * For each next index `i` from `1` to [size] exclusive, the element is `inducer(i, previousElement)`.
+ * All [inducer] invocations are computed consecutively in the order of indices starting with `1`.
+ */
 public inline fun <Element> KoneSettableList.Companion.induce(size: UInt, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneSettableList<Element> =
     if (size == 0u) KoneSettableList.empty()
     else KoneArraySettableList.induce(size, initialElement, inducer)
 
+/**
+ * Returns a settable list of elements over the provided [indices] range where each next element is computed from the previous one.
+ *
+ * The first element is [initialElement].
+ * For each next index `i` in the [indices] range after the first, the element is `inducer(i, previousElement)`.
+ * All [inducer] invocations are computed consecutively in the order of indices.
+ */
 public inline fun <Element> KoneSettableList.Companion.induce(indices: UIntRange, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneSettableList<Element> =
     if (indices.isEmpty()) KoneSettableList.empty()
     else KoneArraySettableList.induce(indices, initialElement, inducer)
 
+/**
+ * Returns a settable nodded list of provided [size] where each next element is computed from the previous one.
+ *
+ * The first element is [initialElement].
+ * For each next index `i` from `1` to [size] exclusive, the element is `inducer(i, previousElement)`.
+ * All [inducer] invocations are computed consecutively in the order of indices starting with `1`.
+ */
 public inline fun <Element> KoneSettableNoddedList.Companion.induce(size: UInt, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneSettableNoddedList<Element> =
     if (size == 0u) KoneSettableNoddedList.empty()
     else KoneArraySettableNoddedList.induce(size, initialElement, inducer)
 
+/**
+ * Returns a settable nodded list of elements over the provided [indices] range where each next element is computed from the previous one.
+ *
+ * The first element is [initialElement].
+ * For each next index `i` in the [indices] range after the first, the element is `inducer(i, previousElement)`.
+ * All [inducer] invocations are computed consecutively in the order of indices.
+ */
 public inline fun <Element> KoneSettableNoddedList.Companion.induce(indices: UIntRange, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneSettableNoddedList<Element> =
     if (indices.isEmpty()) KoneSettableNoddedList.empty()
     else KoneArraySettableNoddedList.induce(indices, initialElement, inducer)
 
+/**
+ * Returns a mutable list of provided [size] where each next element is computed from the previous one.
+ *
+ * The first element is [initialElement].
+ * For each next index `i` from `1` to [size] exclusive, the element is `inducer(i, previousElement)`.
+ * All [inducer] invocations are computed consecutively in the order of indices starting with `1`.
+ */
 public inline fun <Element> KoneMutableList.Companion.induce(size: UInt, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneMutableList<Element> =
     KoneArrayResizableList.induce(size, initialElement, inducer)
 
+/**
+ * Returns a mutable list of elements over the provided [indices] range where each next element is computed from the previous one.
+ *
+ * The first element is [initialElement].
+ * For each next index `i` in the [indices] range after the first, the element is `inducer(i, previousElement)`.
+ * All [inducer] invocations are computed consecutively in the order of indices.
+ */
 public inline fun <Element> KoneMutableList.Companion.induce(indices: UIntRange, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneMutableList<Element> =
     KoneArrayResizableList.induce(indices, initialElement, inducer)
 
+/**
+ * Returns a mutable nodded list of provided [size] where each next element is computed from the previous one.
+ *
+ * The first element is [initialElement].
+ * For each next index `i` from `1` to [size] exclusive, the element is `inducer(i, previousElement)`.
+ * All [inducer] invocations are computed consecutively in the order of indices starting with `1`.
+ */
 public inline fun <Element> KoneMutableNoddedList.Companion.induce(size: UInt, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneMutableNoddedList<Element> =
     KoneArrayResizableNoddedList.induce(size, initialElement, inducer)
 
+/**
+ * Returns a mutable nodded list of elements over the provided [indices] range where each next element is computed from the previous one.
+ *
+ * The first element is [initialElement].
+ * For each next index `i` in the [indices] range after the first, the element is `inducer(i, previousElement)`.
+ * All [inducer] invocations are computed consecutively in the order of indices.
+ */
 public inline fun <Element> KoneMutableNoddedList.Companion.induce(indices: UIntRange, initialElement: Element, inducer: (index: UInt, previous: Element) -> Element): KoneMutableNoddedList<Element> =
     KoneArrayResizableNoddedList.induce(indices, initialElement, inducer)
 
