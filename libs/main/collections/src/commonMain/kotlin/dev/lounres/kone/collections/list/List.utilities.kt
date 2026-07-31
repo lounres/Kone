@@ -29,6 +29,12 @@ public fun <Element> KoneList<Element>.getMaybe(index: UInt): Maybe<Element> = i
  */
 public fun <Element> KoneList<Element>.getOrElse(index: UInt, block: () -> Element): Element = if (index < size) this[index] else block()
 
+/**
+ * Adds provided [elements] at the end of the ordered collection.
+ *
+ * For each index from `0` to [size][KoneMutableList.size] there is exactly one corresponding place for a value.
+ * And this operation adds places with indices from `size` to `size + elements.size` exclusive and puts the values in it.
+ */
 public fun <Element> KoneMutableList<Element>.addAllFrom(elements: KoneIterator<Element>) {
     while (elements.hasNext()) add(elements.getAndMoveNext())
 }
@@ -44,10 +50,31 @@ public fun <Element> KoneMutableList<Element>.addAllFrom(elements: KoneIterable<
     addSeveral(elements.size) { iterator.getAndMoveNext() }
 }
 
+/**
+ * Adds provided [elements] at the end of the ordered collection.
+ *
+ * For each index from `0` to [size][KoneMutableList.size] there is exactly one corresponding place for a value.
+ * And this operation adds places with indices from `size` to `size + elements.size` exclusive and puts the values in it.
+ */
 public fun <Element> KoneMutableList<Element>.addAllFrom(elements: KoneSequence<Element>) {
     addAllFrom(elements.iterator())
 }
 
+/**
+ * Adds provided [elements] before element with index [index].
+ *
+ * For each index from `0` to [size][KoneMutableList.size] there is exactly one corresponding place for a value.
+ * And this operation:
+ * - for each place with index at least [index] increases its index by `elements.size`,
+ * - adds places with indices from [index] to `index + elements.size`,
+ * - and puts the values in the added places.
+ *
+ * When [index] is equal to [size][KoneMutableList.size] the element is added at the end.
+ *
+ * If [index] is greater than [size][KoneMutableList.size], [IndexOutOfBoundsException] is thrown.
+ *
+ * @throws IndexOutOfBoundsException when index is greater than [size][KoneMutableList.size].
+ */
 public fun <Element> KoneMutableList<Element>.addAllFromAt(index: UInt, elements: KoneIterator<Element>) {
     var index = index
     while (elements.hasNext()) addAt(index++, elements.getAndMoveNext())
@@ -73,6 +100,21 @@ public fun <Element> KoneMutableList<Element>.addAllFromAt(index: UInt, elements
     addSeveralAt(index, elements.size) { iterator.getAndMoveNext() }
 }
 
+/**
+ * Adds provided [elements] before element with index [index].
+ *
+ * For each index from `0` to [size][KoneMutableList.size] there is exactly one corresponding place for a value.
+ * And this operation:
+ * - for each place with index at least [index] increases its index by `elements.size`,
+ * - adds places with indices from [index] to `index + elements.size`,
+ * - and puts the values in the added places.
+ *
+ * When [index] is equal to [size][KoneMutableList.size] the element is added at the end.
+ *
+ * If [index] is greater than [size][KoneMutableList.size], [IndexOutOfBoundsException] is thrown.
+ *
+ * @throws IndexOutOfBoundsException when index is greater than [size][KoneMutableList.size].
+ */
 public fun <Element> KoneMutableList<Element>.addAllFromAt(index: UInt, elements: KoneSequence<Element>) {
     addAllFromAt(index, elements.iterator())
 }
