@@ -32,5 +32,12 @@ internal class KoneListReification<Element>(
         else reificationException()
 }
 
+/**
+ * Returns a [Reification] instance for [KoneList] based on the given [elementReification].
+ *
+ * @param Element The element type.
+ * @param elementReification The reification strategy for elements.
+ * @return A reification for lists.
+ */
 public fun <Element> KoneList.Companion.reification(elementReification: Reification<Element>): Reification<KoneList<Element>> =
     KoneListReification(elementReification)
