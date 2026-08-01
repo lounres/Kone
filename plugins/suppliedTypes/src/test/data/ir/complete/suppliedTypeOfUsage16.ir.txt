@@ -85,7 +85,7 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage16.kt
                   VAR IR_TEMPORARY_VARIABLE name:tmp_3 type:dev.lounres.kone.suppliedTypes.SuppliedType.Regular [val]
                     CONSTRUCTOR_CALL 'public constructor <init> (fullyQualifiedName: kotlin.String, typeArguments: kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedProjection>, isNullable: kotlin.Boolean) declared in dev.lounres.kone.suppliedTypes.SuppliedType.Regular' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
                       ARG fullyQualifiedName: CONST String type=kotlin.String value="kotlin.String"
-                      ARG typeArguments: CALL 'public final fun listOf <T> (vararg elements: T of kotlin.collections.listOf): kotlin.collections.List<T of kotlin.collections.listOf> declared in kotlin.collections' type=kotlin.collections.List<T of kotlin.collections.listOf> origin=null
+                      ARG typeArguments: CALL 'public final fun listOf <T> (vararg elements: T of kotlin.collections.listOf): kotlin.collections.List<T of kotlin.collections.listOf> declared in kotlin.collections' type=kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedProjection> origin=null
                         TYPE_ARG T: dev.lounres.kone.suppliedTypes.SuppliedProjection
                         ARG elements: VARARG type=kotlin.Array<dev.lounres.kone.suppliedTypes.SuppliedProjection> varargElementType=dev.lounres.kone.suppliedTypes.SuppliedProjection
                       ARG isNullable: CONST Boolean type=kotlin.Boolean value=true

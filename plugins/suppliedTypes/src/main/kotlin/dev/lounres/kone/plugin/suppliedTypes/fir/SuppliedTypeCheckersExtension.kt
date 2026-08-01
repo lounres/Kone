@@ -68,7 +68,7 @@ import org.jetbrains.kotlin.fir.types.toConeTypeProjection
 import org.jetbrains.kotlin.fir.types.unwrapLowerBound
 
 
-class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckersExtension(session) {
+class SuppliedTypeCheckersExtension(session: FirSession, val forbidTopLevel: Boolean = true) : FirAdditionalCheckersExtension(session) {
     companion object {
         context(context: CheckerContext)
         private val FirTypeParameterSymbol.isSupply: Boolean get() = hasAnnotation(supplyAnnotationClassId, context.session)
@@ -82,10 +82,10 @@ class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckers
         private val FirConstructorSymbol.isSupplianceProvided: Boolean get() = hasAnnotation(supplianceProvidedAnnotationClassId, context.session)
     }
     
-    override val declarationCheckers: DeclarationCheckers get() = SuppliedTypeDeclarationCheckers
+    override val declarationCheckers: DeclarationCheckers get() = SuppliedTypeDeclarationCheckers(forbidTopLevel = forbidTopLevel)
     override val expressionCheckers: ExpressionCheckers get() = SuppliedTypeExpressionCheckers
     
-    object SuppliedTypeDeclarationCheckers : DeclarationCheckers() {
+    class SuppliedTypeDeclarationCheckers(forbidTopLevel: Boolean = true) : DeclarationCheckers() {
         override val classCheckers: Set<FirClassChecker> = setOf(
             SuppliabilityInheritanceChecker,
         )
@@ -93,8 +93,8 @@ class SuppliedTypeCheckersExtension(session: FirSession) : FirAdditionalCheckers
             ClassSuppliedTypeParametersChecker,
             UselessSuppliedTypeParametersChecker,
         )
-        override val namedFunctionCheckers: Set<FirNamedFunctionChecker> = setOf(
-            SuppliableTopLevelFunctionProhibitingChecker,
+        override val namedFunctionCheckers: Set<FirNamedFunctionChecker> = setOfNotNull(
+            SuppliableTopLevelFunctionProhibitingChecker.takeIf { forbidTopLevel },
         )
     }
     

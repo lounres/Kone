@@ -19,7 +19,7 @@ FILE fqName:foo.bar fileName:/classifier2.kt
           public abstract fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass
         BLOCK_BODY
           RETURN type=kotlin.Nothing from='public open fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Baz'
-            CALL 'public abstract fun getValue (thisRef: T of kotlin.properties.ReadWriteProperty, property: kotlin.reflect.KProperty<*>): V of kotlin.properties.ReadWriteProperty declared in kotlin.properties.ReadWriteProperty' type=V of kotlin.properties.ReadWriteProperty origin=null
+            CALL 'public abstract fun getValue (thisRef: T of kotlin.properties.ReadWriteProperty, property: kotlin.reflect.KProperty<*>): V of kotlin.properties.ReadWriteProperty declared in kotlin.properties.ReadWriteProperty' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
               ARG <this>: GET_FIELD 'FIELD PROPERTY_DELEGATE name:suppliedTypesStorage$delegate type:kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> visibility:private [final] declared in foo.bar.Baz' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
                 receiver: GET_VAR '<this>: foo.bar.Baz<Gee of foo.bar.Baz> declared in foo.bar.Baz.<get-suppliedTypesStorage>' type=foo.bar.Baz<Gee of foo.bar.Baz> origin=null
               ARG thisRef: GET_VAR '<this>: foo.bar.Baz<Gee of foo.bar.Baz> declared in foo.bar.Baz.<get-suppliedTypesStorage>' type=foo.bar.Baz<Gee of foo.bar.Baz> origin=null
@@ -53,11 +53,11 @@ FILE fqName:foo.bar fileName:/classifier2.kt
           GET_VAR '$suppliedTypeParameterFor_Gee: dev.lounres.kone.suppliedTypes.SuppliedType declared in foo.bar.Baz.<init>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
         CALL 'public abstract fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in dev.lounres.kone.suppliedTypes.SuppliableClass' type=kotlin.Unit origin=null
           ARG <this>: GET_VAR '<this>: foo.bar.Baz<Gee of foo.bar.Baz> declared in foo.bar.Baz' type=foo.bar.Baz<Gee of foo.bar.Baz> origin=null
-          ARG <set-?>: CALL 'public final fun mapOf <K, V> (vararg pairs: kotlin.Pair<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf>): kotlin.collections.Map<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf> declared in kotlin.collections' type=kotlin.collections.Map<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf> origin=null
+          ARG <set-?>: CALL 'public final fun mapOf <K, V> (vararg pairs: kotlin.Pair<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf>): kotlin.collections.Map<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf> declared in kotlin.collections' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
             TYPE_ARG K: kotlin.String
             TYPE_ARG V: kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>
             ARG pairs: VARARG type=kotlin.Array<kotlin.Pair<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> varargElementType=kotlin.Pair<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>
-              CONSTRUCTOR_CALL 'public constructor <init> (first: A of kotlin.Pair, second: B of kotlin.Pair) declared in kotlin.Pair' type=kotlin.Pair<A of kotlin.Pair, B of kotlin.Pair> origin=null
+              CONSTRUCTOR_CALL 'public constructor <init> (first: A of kotlin.Pair, second: B of kotlin.Pair) declared in kotlin.Pair' type=kotlin.Pair<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
                 TYPE_ARG (of class) A: kotlin.String
                 TYPE_ARG (of class) B: kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>
                 ARG first: CONST String type=kotlin.String value="foo.bar.Baz"
@@ -99,11 +99,11 @@ FILE fqName:foo.bar fileName:/classifier2.kt
           GET_VAR '$suppliedTypeParameterFor_Gee: dev.lounres.kone.suppliedTypes.SuppliedType declared in foo.bar.Baz.<init>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
         CALL 'public abstract fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in dev.lounres.kone.suppliedTypes.SuppliableClass' type=kotlin.Unit origin=null
           ARG <this>: GET_VAR '<this>: foo.bar.Baz<Gee of foo.bar.Baz> declared in foo.bar.Baz' type=foo.bar.Baz<Gee of foo.bar.Baz> origin=null
-          ARG <set-?>: CALL 'public final fun mapOf <K, V> (vararg pairs: kotlin.Pair<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf>): kotlin.collections.Map<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf> declared in kotlin.collections' type=kotlin.collections.Map<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf> origin=null
+          ARG <set-?>: CALL 'public final fun mapOf <K, V> (vararg pairs: kotlin.Pair<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf>): kotlin.collections.Map<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf> declared in kotlin.collections' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
             TYPE_ARG K: kotlin.String
             TYPE_ARG V: kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>
             ARG pairs: VARARG type=kotlin.Array<kotlin.Pair<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> varargElementType=kotlin.Pair<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>
-              CONSTRUCTOR_CALL 'public constructor <init> (first: A of kotlin.Pair, second: B of kotlin.Pair) declared in kotlin.Pair' type=kotlin.Pair<A of kotlin.Pair, B of kotlin.Pair> origin=null
+              CONSTRUCTOR_CALL 'public constructor <init> (first: A of kotlin.Pair, second: B of kotlin.Pair) declared in kotlin.Pair' type=kotlin.Pair<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
                 TYPE_ARG (of class) A: kotlin.String
                 TYPE_ARG (of class) B: kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>
                 ARG first: CONST String type=kotlin.String value="foo.bar.Baz"
@@ -141,11 +141,11 @@ FILE fqName:foo.bar fileName:/classifier2.kt
           GET_VAR '$suppliedTypeParameterFor_Gee: dev.lounres.kone.suppliedTypes.SuppliedType declared in foo.bar.Baz.<init>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
         CALL 'public abstract fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in dev.lounres.kone.suppliedTypes.SuppliableClass' type=kotlin.Unit origin=null
           ARG <this>: GET_VAR '<this>: foo.bar.Baz<Gee of foo.bar.Baz> declared in foo.bar.Baz' type=foo.bar.Baz<Gee of foo.bar.Baz> origin=null
-          ARG <set-?>: CALL 'public final fun mapOf <K, V> (vararg pairs: kotlin.Pair<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf>): kotlin.collections.Map<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf> declared in kotlin.collections' type=kotlin.collections.Map<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf> origin=null
+          ARG <set-?>: CALL 'public final fun mapOf <K, V> (vararg pairs: kotlin.Pair<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf>): kotlin.collections.Map<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf> declared in kotlin.collections' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
             TYPE_ARG K: kotlin.String
             TYPE_ARG V: kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>
             ARG pairs: VARARG type=kotlin.Array<kotlin.Pair<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> varargElementType=kotlin.Pair<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>
-              CONSTRUCTOR_CALL 'public constructor <init> (first: A of kotlin.Pair, second: B of kotlin.Pair) declared in kotlin.Pair' type=kotlin.Pair<A of kotlin.Pair, B of kotlin.Pair> origin=null
+              CONSTRUCTOR_CALL 'public constructor <init> (first: A of kotlin.Pair, second: B of kotlin.Pair) declared in kotlin.Pair' type=kotlin.Pair<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
                 TYPE_ARG (of class) A: kotlin.String
                 TYPE_ARG (of class) B: kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>
                 ARG first: CONST String type=kotlin.String value="foo.bar.Baz"

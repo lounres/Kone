@@ -20,6 +20,7 @@ import org.jetbrains.kotlin.ir.symbols.IrTypeParameterSymbol
 import org.jetbrains.kotlin.ir.types.IrSimpleType
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.defaultType
+import org.jetbrains.kotlin.ir.types.withNullability
 import org.jetbrains.kotlin.ir.visitors.IrTransformer
 
 
@@ -85,10 +86,12 @@ class SuppliedTypeOfSubstitutionTransformer(
                                                     arguments[0] = irGet(dispatchReceiver)
                                                 }
                                                 arguments[1] = irString(fqNameString)
+                                                type = irRuntimeReferences.listOfSuppliedTypeIrType.withNullability(true)
                                             },
                                             type = irRuntimeReferences.listOfSuppliedTypeIrType
                                         )
                                         arguments[1] = irInt(i)
+                                        type = irRuntimeReferences.suppliedTypeIrType
                                     }
                                 )
                             }
@@ -123,10 +126,12 @@ class SuppliedTypeOfSubstitutionTransformer(
                                                     arguments[0] = irGet(dispatchReceiver)
                                                 }
                                                 arguments[1] = irString(fqNameString)
+                                                type = irRuntimeReferences.listOfSuppliedTypeIrType.withNullability(true)
                                             },
                                             type = irRuntimeReferences.listOfSuppliedTypeIrType
                                         )
                                         arguments[1] = irInt(i)
+                                        type = irRuntimeReferences.suppliedTypeIrType
                                     }
                                 )
                             }
@@ -222,6 +227,7 @@ class SuppliedTypeOfSubstitutionTransformer(
                     
                     +irCall(irRuntimeReferences.runIrSimpleFunctionSymbol).apply {
                         arguments[0] = suppliedScope.transform(this@SuppliedTypeOfSubstitutionTransformer, data)
+                        type = expression.type
                     }
                 }
             }

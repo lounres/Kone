@@ -136,6 +136,7 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
     val noSuppliedTypeParameterInClassStubIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(noSuppliedTypeParameterInClassStubSingletonClassId)
     val suppliedProjectionIrType: IrSimpleType = suppliedProjectionIrClassSymbol.defaultType
     val listOfSuppliedTypeIrType = listIrClassSymbol.createType(hasQuestionMark = false, arguments = listOf(suppliedTypeIrType))
+    val listOfSuppliedProjectionIrType = listIrClassSymbol.createType(hasQuestionMark = false, arguments = listOf(suppliedProjectionIrType))
     val mapOfStringAndListOfSuppliedTypeIrType = mapIrClassSymbol.createType(hasQuestionMark = false, arguments = listOf(pluginContext.irBuiltIns.stringType, listOfSuppliedTypeIrType))
     val suppliedTypesStoragePropertyReturnIrType: IrType = readWritePropertyIrClassSymbol.createType(
         hasQuestionMark = false,

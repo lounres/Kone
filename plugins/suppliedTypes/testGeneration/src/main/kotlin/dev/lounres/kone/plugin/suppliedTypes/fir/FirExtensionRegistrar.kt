@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.plugin.suppliedTypes.fir
 
+import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.extensions.FirExtensionRegistrar
 
 
@@ -19,7 +20,7 @@ class DeclarationExtensionRegistrar : FirExtensionRegistrar() {
 
 class DiagnosticExtensionRegistrar : FirExtensionRegistrar() {
     override fun ExtensionRegistrarContext.configurePlugin() {
-        +::SuppliedTypeCheckersExtension
+        +{ session: FirSession -> SuppliedTypeCheckersExtension(session, false) }
         
         registerDiagnosticContainers(SuppliedTypeCheckersExtension.Errors)
     }

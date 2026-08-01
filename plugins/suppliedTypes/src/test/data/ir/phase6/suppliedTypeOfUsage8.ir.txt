@@ -19,7 +19,7 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage8.kt
           public abstract fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass
         BLOCK_BODY
           RETURN type=kotlin.Nothing from='public open fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Foo'
-            CALL 'public abstract fun getValue (thisRef: T of kotlin.properties.ReadWriteProperty, property: kotlin.reflect.KProperty<*>): V of kotlin.properties.ReadWriteProperty declared in kotlin.properties.ReadWriteProperty' type=V of kotlin.properties.ReadWriteProperty origin=null
+            CALL 'public abstract fun getValue (thisRef: T of kotlin.properties.ReadWriteProperty, property: kotlin.reflect.KProperty<*>): V of kotlin.properties.ReadWriteProperty declared in kotlin.properties.ReadWriteProperty' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
               ARG <this>: GET_FIELD 'FIELD PROPERTY_DELEGATE name:suppliedTypesStorage$delegate type:kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> visibility:private [final] declared in <root>.Foo' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
                 receiver: GET_VAR '<this>: <root>.Foo<T of <root>.Foo> declared in <root>.Foo.<get-suppliedTypesStorage>' type=<root>.Foo<T of <root>.Foo> origin=null
               ARG thisRef: GET_VAR '<this>: <root>.Foo<T of <root>.Foo> declared in <root>.Foo.<get-suppliedTypesStorage>' type=<root>.Foo<T of <root>.Foo> origin=null
@@ -53,11 +53,11 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage8.kt
           GET_VAR '$suppliedTypeParameterFor_T: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.Foo.<init>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
         CALL 'public abstract fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in dev.lounres.kone.suppliedTypes.SuppliableClass' type=kotlin.Unit origin=null
           ARG <this>: GET_VAR '<this>: <root>.Foo<T of <root>.Foo> declared in <root>.Foo' type=<root>.Foo<T of <root>.Foo> origin=null
-          ARG <set-?>: CALL 'public final fun mapOf <K, V> (vararg pairs: kotlin.Pair<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf>): kotlin.collections.Map<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf> declared in kotlin.collections' type=kotlin.collections.Map<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf> origin=null
+          ARG <set-?>: CALL 'public final fun mapOf <K, V> (vararg pairs: kotlin.Pair<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf>): kotlin.collections.Map<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf> declared in kotlin.collections' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
             TYPE_ARG K: kotlin.String
             TYPE_ARG V: kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>
             ARG pairs: VARARG type=kotlin.Array<kotlin.Pair<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> varargElementType=kotlin.Pair<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>
-              CONSTRUCTOR_CALL 'public constructor <init> (first: A of kotlin.Pair, second: B of kotlin.Pair) declared in kotlin.Pair' type=kotlin.Pair<A of kotlin.Pair, B of kotlin.Pair> origin=null
+              CONSTRUCTOR_CALL 'public constructor <init> (first: A of kotlin.Pair, second: B of kotlin.Pair) declared in kotlin.Pair' type=kotlin.Pair<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
                 TYPE_ARG (of class) A: kotlin.String
                 TYPE_ARG (of class) B: kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>
                 ARG first: CONST String type=kotlin.String value="Foo"
@@ -106,7 +106,7 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage8.kt
           BRANCH
             if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
               ARG arg0: CALL 'public final fun foo (): kotlin.String declared in <root>.Foo' type=kotlin.String origin=null
-                ARG <this>: CONSTRUCTOR_CALL 'public constructor <init> ($suppliedTypeParameterFor_T: dev.lounres.kone.suppliedTypes.SuppliedType) declared in <root>.Foo' type=<root>.Foo<T of <root>.Foo> origin=null
+                ARG <this>: CONSTRUCTOR_CALL 'public constructor <init> ($suppliedTypeParameterFor_T: dev.lounres.kone.suppliedTypes.SuppliedType) declared in <root>.Foo' type=<root>.Foo<kotlin.String> origin=null
                   TYPE_ARG (of class) T: kotlin.String
                   ARG $suppliedTypeParameterFor_T: CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
                     TYPE_ARG T: kotlin.String

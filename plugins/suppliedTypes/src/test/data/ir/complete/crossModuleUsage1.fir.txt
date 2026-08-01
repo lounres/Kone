@@ -1,4 +1,3 @@
-Module: foo
 FILE: IntX.kt
     context(<unused var>: R|kotlin/collections/List<kotlin/String>|)
     @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final fun <@R|dev/lounres/kone/suppliedTypes/Supply|() T> R|kotlin/Int|.foo(): R|kotlin/collections/Set<T>| {
@@ -14,21 +13,4 @@ FILE: LongX.kt
             R|kotlin/io/println|(R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|T|>())
         }
         )
-    }
-Module: bar
-FILE: module_bar_crossModuleUsage1.kt
-    public final fun box(): R|kotlin/String| {
-        lval result: R|kotlin/collections/Set<kotlin/Double>| = R|kotlin/context|<R|kotlin/collections/List<kotlin/String>|, R|kotlin/collections/Set<kotlin/Double>|>(R|kotlin/collections/listOf|<R|kotlin/String|>(vararg(String(compile), String(me), String(please))), <L> = context(<unused var>: R|kotlin/collections/List<kotlin/String>|) context@fun <anonymous>(): R|kotlin/collections/Set<kotlin/Double>| <inline=Inline, kind=EXACTLY_ONCE>  {
-            ^ context(R|<local>/<unused var>|) Int(57).R|/foo|<R|kotlin/Double|>()
-        }
-        )
-        ^box when () {
-            ===(R|<local>/result|, R|kotlin/collections/emptySet|<R|kotlin/Double|>()) ->  {
-                String(OK)
-            }
-            else ->  {
-                String(INCORRECT)
-            }
-        }
-
     }

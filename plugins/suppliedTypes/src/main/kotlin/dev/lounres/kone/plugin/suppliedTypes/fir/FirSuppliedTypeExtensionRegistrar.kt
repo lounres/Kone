@@ -5,16 +5,17 @@
 
 package dev.lounres.kone.plugin.suppliedTypes.fir
 
+import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.extensions.FirExtensionRegistrar
 
 
-class FirSuppliedTypeExtensionRegistrar : FirExtensionRegistrar() {
+class FirSuppliedTypeExtensionRegistrar(val forbidTopLevel: Boolean = true) : FirExtensionRegistrar() {
     override fun ExtensionRegistrarContext.configurePlugin() {
         +::SuppliedClassSupertypeGenerationExtension
         +::SuppliedTypesStoragePropertyGenerationExtension
 //        +::SuppliableFunctionsDuplicatesGenerationExtension
 //        +::SuppliableConstructorsDuplicatesGenerationExtension
-        +::SuppliedTypeCheckersExtension
+        +{ session: FirSession -> SuppliedTypeCheckersExtension(session, forbidTopLevel) }
         
         registerDiagnosticContainers(SuppliedTypeCheckersExtension.Errors)
     }

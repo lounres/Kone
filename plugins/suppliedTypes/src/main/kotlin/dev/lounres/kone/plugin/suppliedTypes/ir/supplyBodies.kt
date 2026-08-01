@@ -157,9 +157,11 @@ fun supplyConstructorsBodies(
                                             values = suppliedTypes.map { irGet(it) }
                                         )
                                     }
+                                    type = irRuntimeReferences.pairOfStringAndListOfSuppliedTypeIrType
                                 }
                             },
                         )
+                        type = irRuntimeReferences.mapOfStringAndListOfSuppliedTypeIrType
                     }
                 }
                 
@@ -238,9 +240,11 @@ class SuppliableSingletonsSuppliedTypesStorageInitializerTransformer(
                                                     values = suppliedTypes.map { irGet(it) }
                                                 )
                                             }
+                                            type = irRuntimeReferences.pairOfStringAndListOfSuppliedTypeIrType
                                         }
                                     },
                                 )
+                                type = irRuntimeReferences.mapOfStringAndListOfSuppliedTypeIrType
                             }
                         }
                         

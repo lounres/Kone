@@ -1,4 +1,3 @@
-Module: foo
 FILE fqName:<root> fileName:/IntX.kt
   FUN name:foo visibility:public modality:FINAL returnType:kotlin.collections.Set<T of <root>.foo>
     TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
@@ -83,46 +82,3 @@ FILE fqName:<root> fileName:/LongX.kt
                     VAR IR_TEMPORARY_VARIABLE name:tmp_0 type:dev.lounres.kone.suppliedTypes.SuppliedType [val]
                       GET_VAR '$suppliedTypeParameterFor_T: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.foo' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
                     GET_VAR 'val tmp_0: dev.lounres.kone.suppliedTypes.SuppliedType declared in <root>.foo.<anonymous>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
-Module: bar
-FILE fqName:<root> fileName:/module_bar_crossModuleUsage1.kt
-  FUN name:box visibility:public modality:FINAL returnType:kotlin.String
-    BLOCK_BODY
-      VAR name:result type:kotlin.collections.Set<kotlin.Double> [val]
-        CALL 'public final fun context <T, R> (with: T of kotlin.context, block: @[ContextFunctionTypeParams(count = 1)] kotlin.Function1<T of kotlin.context, R of kotlin.context>): R of kotlin.context declared in kotlin' type=kotlin.collections.Set<kotlin.Double> origin=null
-          TYPE_ARG T: kotlin.collections.List<kotlin.String>
-          TYPE_ARG R: kotlin.collections.Set<kotlin.Double>
-          ARG with: CALL 'public final fun listOf <T> (vararg elements: T of kotlin.collections.listOf): kotlin.collections.List<T of kotlin.collections.listOf> declared in kotlin.collections' type=kotlin.collections.List<kotlin.String> origin=null
-            TYPE_ARG T: kotlin.String
-            ARG elements: VARARG type=kotlin.Array<out kotlin.String> varargElementType=kotlin.String
-              CONST String type=kotlin.String value="compile"
-              CONST String type=kotlin.String value="me"
-              CONST String type=kotlin.String value="please"
-          ARG block: FUN_EXPR type=kotlin.Function1<kotlin.collections.List<kotlin.String>, kotlin.collections.Set<kotlin.Double>> origin=LAMBDA
-            FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL returnType:kotlin.collections.Set<kotlin.Double>
-              VALUE_PARAMETER UNDERSCORE_PARAMETER kind:Context name:$context-List index:0 type:kotlin.collections.List<kotlin.String>
-              BLOCK_BODY
-                RETURN type=kotlin.Nothing from='local final fun <anonymous> ($context-List: kotlin.collections.List<kotlin.String>): kotlin.collections.Set<kotlin.Double> declared in <root>.box'
-                  CALL 'public final fun foo <T> ($context-List: kotlin.collections.List<kotlin.String>, <this>: kotlin.Int, $suppliedTypeParameterFor_T: dev.lounres.kone.suppliedTypes.SuppliedType): kotlin.collections.Set<T of <root>.foo> declared in <root>' type=kotlin.collections.Set<T of <root>.foo> origin=null
-                    TYPE_ARG T: kotlin.Double
-                    ARG $context-List: GET_VAR '$context-List: kotlin.collections.List<kotlin.String> declared in <root>.box.<anonymous>' type=kotlin.collections.List<kotlin.String> origin=null
-                    ARG <this>: CONST Int type=kotlin.Int value=57
-                    ARG $suppliedTypeParameterFor_T: BLOCK type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
-                      VAR IR_TEMPORARY_VARIABLE name:tmp_0 type:dev.lounres.kone.suppliedTypes.SuppliedType.Regular [val]
-                        CONSTRUCTOR_CALL 'public constructor <init> (fullyQualifiedName: kotlin.String, typeArguments: kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedProjection>, isNullable: kotlin.Boolean) declared in dev.lounres.kone.suppliedTypes.SuppliedType.Regular' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
-                          ARG fullyQualifiedName: CONST String type=kotlin.String value="kotlin.Double"
-                          ARG typeArguments: CALL 'public final fun listOf <T> (vararg elements: T of kotlin.collections.listOf): kotlin.collections.List<T of kotlin.collections.listOf> declared in kotlin.collections' type=kotlin.collections.List<T of kotlin.collections.listOf> origin=null
-                            TYPE_ARG T: dev.lounres.kone.suppliedTypes.SuppliedProjection
-                            ARG elements: VARARG type=kotlin.Array<dev.lounres.kone.suppliedTypes.SuppliedProjection> varargElementType=dev.lounres.kone.suppliedTypes.SuppliedProjection
-                          ARG isNullable: CONST Boolean type=kotlin.Boolean value=false
-                      GET_VAR 'val tmp_0: dev.lounres.kone.suppliedTypes.SuppliedType.Regular declared in <root>.box.<anonymous>' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
-      RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in <root>'
-        WHEN type=kotlin.String origin=IF
-          BRANCH
-            if: CALL 'public final fun EQEQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQEQ
-              ARG arg0: GET_VAR 'val result: kotlin.collections.Set<kotlin.Double> declared in <root>.box' type=kotlin.collections.Set<kotlin.Double> origin=null
-              ARG arg1: CALL 'public final fun emptySet <T> (): kotlin.collections.Set<T of kotlin.collections.emptySet> declared in kotlin.collections' type=kotlin.collections.Set<kotlin.Double> origin=null
-                TYPE_ARG T: kotlin.Double
-            then: CONST String type=kotlin.String value="OK"
-          BRANCH
-            if: CONST Boolean type=kotlin.Boolean value=true
-            then: CONST String type=kotlin.String value="INCORRECT"

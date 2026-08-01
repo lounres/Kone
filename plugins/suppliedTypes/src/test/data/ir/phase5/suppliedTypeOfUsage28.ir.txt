@@ -43,7 +43,7 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage28.kt
           public abstract fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass
         BLOCK_BODY
           RETURN type=kotlin.Nothing from='public open fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in <root>.Foo'
-            CALL 'public abstract fun getValue (thisRef: T of kotlin.properties.ReadWriteProperty, property: kotlin.reflect.KProperty<*>): V of kotlin.properties.ReadWriteProperty declared in kotlin.properties.ReadWriteProperty' type=V of kotlin.properties.ReadWriteProperty origin=null
+            CALL 'public abstract fun getValue (thisRef: T of kotlin.properties.ReadWriteProperty, property: kotlin.reflect.KProperty<*>): V of kotlin.properties.ReadWriteProperty declared in kotlin.properties.ReadWriteProperty' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
               ARG <this>: GET_FIELD 'FIELD PROPERTY_DELEGATE name:suppliedTypesStorage$delegate type:kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> visibility:private [final] declared in <root>.Foo' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
                 receiver: GET_VAR '<this>: <root>.Foo<T of <root>.Foo> declared in <root>.Foo.<get-suppliedTypesStorage>' type=<root>.Foo<T of <root>.Foo> origin=null
               ARG thisRef: GET_VAR '<this>: <root>.Foo<T of <root>.Foo> declared in <root>.Foo.<get-suppliedTypesStorage>' type=<root>.Foo<T of <root>.Foo> origin=null
@@ -101,7 +101,7 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage28.kt
           BRANCH
             if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
               ARG arg0: CALL 'public final fun <get-foo> (): kotlin.String declared in <root>.Foo' type=kotlin.String origin=GET_PROPERTY
-                ARG <this>: CONSTRUCTOR_CALL 'public constructor <init> ($suppliedTypeParameterFor_T: dev.lounres.kone.suppliedTypes.SuppliedType) declared in <root>.Foo' type=<root>.Foo<T of <root>.Foo> origin=null
+                ARG <this>: CONSTRUCTOR_CALL 'public constructor <init> ($suppliedTypeParameterFor_T: dev.lounres.kone.suppliedTypes.SuppliedType) declared in <root>.Foo' type=<root>.Foo<kotlin.String> origin=null
                   TYPE_ARG (of class) T: kotlin.String
                   ARG $suppliedTypeParameterFor_T: CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
                     TYPE_ARG T: kotlin.String

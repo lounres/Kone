@@ -53,6 +53,7 @@ class SuppliedTypesStorageAccessorsTransformer(
                             )/*.apply {
                                 arguments[0] = irGet(getter.parameters[0])
                             }*/
+                            type = irRuntimeReferences.mapOfStringAndListOfSuppliedTypeIrType
                         }
                     )
                 }

@@ -54,7 +54,7 @@ class FirCompleteExtensionRegistrarConfigurator(testServices: TestServices) : En
     ) {
 //        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
         
-        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
+        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar(false))
     }
 }
 
@@ -75,7 +75,7 @@ class IrPartialExtensionRegistrarConfigurator(
     ) {
 //        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
 
-        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
+        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar(false))
         IrGenerationExtension.registerExtension(
             SuppliedTypeIrGenerationExtension(
                 lastPhase = lastPhase
@@ -91,7 +91,7 @@ class CompleteExtensionRegistrarConfigurator(testServices: TestServices) : Envir
     ) {
 //        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
         
-        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
+        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar(false))
         IrGenerationExtension.registerExtension(SuppliedTypeIrGenerationExtension())
     }
 }

@@ -32,11 +32,6 @@ class SuppliedTypesBuilder(
 ) {
     private val declarationFinder = pluginContext.finderForBuiltins()
     
-    private val listOfIrSimpleFunction: IrSimpleFunctionSymbol =
-        declarationFinder.referenceFunctionThatOrFail(CallableId(FqName("kotlin.collections"), Name.identifier("listOf"))) { symbol ->
-            val parameters = symbol.owner.parameters
-            parameters.size == 1 && parameters[0].isVararg
-        }
     private val kVarianceIrClass = declarationFinder.referenceClassOrFail(ClassId(FqName("kotlin.reflect"), FqName("KVariance"), false)).owner
     private val kVarianceIrEnumEntries = kVarianceIrClass.declarations.filterIsInstance<IrEnumEntry>()
     private val kVarianceINVARIANTIrEnumEntry = kVarianceIrEnumEntries.single { it.name == Name.identifier("INVARIANT") }
@@ -94,9 +89,10 @@ class SuppliedTypesBuilder(
                                     emptyList(),
                                 ).apply {
                                     arguments[0] = irString(fullyQualifiedName)
-                                    arguments[1] = irCall(listOfIrSimpleFunction).also {
+                                    arguments[1] = irCall(irRuntimeReferences.listOfIrSimpleFunction).also {
                                         it.typeArguments[0] = irRuntimeReferences.suppliedProjectionIrType
                                         it.arguments[0] = irVararg(irRuntimeReferences.suppliedProjectionIrType, typeArguments)
+                                        it.type = irRuntimeReferences.listOfSuppliedProjectionIrType
                                     }
                                     arguments[2] = irBoolean(isNullable)
                                 }
@@ -138,9 +134,10 @@ class SuppliedTypesBuilder(
                                     emptyList(),
                                 ).apply {
                                     arguments[0] = irString(fullyQualifiedName)
-                                    arguments[1] = irCall(listOfIrSimpleFunction).also {
+                                    arguments[1] = irCall(irRuntimeReferences.listOfIrSimpleFunction).also {
                                         it.typeArguments[0] = irRuntimeReferences.suppliedProjectionIrType
                                         it.arguments[0] = irVararg(irRuntimeReferences.suppliedProjectionIrType, typeArguments)
+                                        it.type = irRuntimeReferences.listOfSuppliedProjectionIrType
                                     }
                                     arguments[2] = irBoolean(isNullable)
                                 }
