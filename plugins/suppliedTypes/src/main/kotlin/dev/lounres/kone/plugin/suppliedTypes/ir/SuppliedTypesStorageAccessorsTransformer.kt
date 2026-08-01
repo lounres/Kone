@@ -28,6 +28,15 @@ class SuppliedTypesStorageAccessorsTransformer(
             val delegate = suppliedTypesStorageProperty.backingField!!
             val getter = suppliedTypesStorageProperty.getter!!
             val setter = suppliedTypesStorageProperty.setter!!
+            delegate.initializer = DeclarationIrBuilder(
+                generatorContext = pluginContext,
+                symbol = delegate.symbol,
+            ).run {
+                irExprBody(
+                    irCall(irRuntimeReferences.suppliedTypesStorageDelegateIrSimpleFunctionSymbol)
+                )
+            }
+            delegate.type = irRuntimeReferences.readWritePropertyOfNullableAnyAndMapOfStringAndListOfSuppliedTypeIrType
             getter.body = DeclarationIrBuilder(
                 generatorContext = pluginContext,
                 symbol = getter.symbol,

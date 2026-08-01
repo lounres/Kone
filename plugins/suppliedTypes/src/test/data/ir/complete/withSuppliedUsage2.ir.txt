@@ -95,7 +95,7 @@ FILE fqName:<root> fileName:/withSuppliedUsage2.kt
                                     ARG type: GET_VAR 'val tmp_2: dev.lounres.kone.suppliedTypes.SuppliedType.Regular declared in <root>.foo.<anonymous>' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
                               ARG isNullable: CONST Boolean type=kotlin.Boolean value=false
                           GET_VAR 'val tmp_3: dev.lounres.kone.suppliedTypes.SuppliedType.Regular declared in <root>.foo.<anonymous>' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
-                BLOCK type=R of kotlin.run origin=null
+                BLOCK type=kotlin.Unit origin=null
                   VAR IR_TEMPORARY_VARIABLE name:tmp_4 type:dev.lounres.kone.suppliedTypes.SuppliedType.Regular [val]
                     BLOCK type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
                       VAR IR_TEMPORARY_VARIABLE name:tmp_5 type:dev.lounres.kone.suppliedTypes.SuppliedType.Regular [val]
@@ -106,7 +106,7 @@ FILE fqName:<root> fileName:/withSuppliedUsage2.kt
                             ARG elements: VARARG type=kotlin.Array<dev.lounres.kone.suppliedTypes.SuppliedProjection> varargElementType=dev.lounres.kone.suppliedTypes.SuppliedProjection
                           ARG isNullable: CONST Boolean type=kotlin.Boolean value=false
                       GET_VAR 'val tmp_5: dev.lounres.kone.suppliedTypes.SuppliedType.Regular declared in <root>.foo.<anonymous>' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
-                  CALL 'public final fun run <R> (block: kotlin.Function0<R of kotlin.run>): R of kotlin.run declared in kotlin' type=R of kotlin.run origin=null
+                  CALL 'public final fun run <R> (block: kotlin.Function0<R of kotlin.run>): R of kotlin.run declared in kotlin' type=kotlin.Unit origin=null
                     TYPE_ARG R: <none>
                     ARG block: FUN_EXPR type=kotlin.Function0<kotlin.Unit> origin=LAMBDA
                       FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL returnType:kotlin.Unit
