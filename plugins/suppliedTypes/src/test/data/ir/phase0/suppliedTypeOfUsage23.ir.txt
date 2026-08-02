@@ -6,21 +6,19 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage23.kt
     TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
       annotations:
         Supply
-    PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliedTypesStoragePropertyGenerationExtension.Key] name:suppliedTypesStorage visibility:public modality:OPEN [delegated,var]
+    PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliedTypesStoragePropertyGenerationExtension.Key] name:suppliedTypesStorage visibility:public modality:OPEN [var]
       overridden:
         public abstract suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass
-      FIELD PROPERTY_DELEGATE name:suppliedTypesStorage$delegate type:kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> visibility:private [final]
-        EXPRESSION_BODY
-          CALL 'public final fun suppliedTypesStorageDelegate (): kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> declared in dev.lounres.kone.suppliedTypes' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
-      FUN DELEGATED_PROPERTY_ACCESSOR name:<get-suppliedTypesStorage> visibility:public modality:OPEN returnType:kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>
+      FIELD PROPERTY_BACKING_FIELD name:suppliedTypesStorage type:kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> visibility:private
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-suppliedTypesStorage> visibility:public modality:OPEN returnType:kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>
         VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Foo<T of <root>.Foo>
-        correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliedTypesStoragePropertyGenerationExtension.Key] name:suppliedTypesStorage visibility:public modality:OPEN [delegated,var]
+        correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliedTypesStoragePropertyGenerationExtension.Key] name:suppliedTypesStorage visibility:public modality:OPEN [var]
         overridden:
           public abstract fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass
-      FUN DELEGATED_PROPERTY_ACCESSOR name:<set-suppliedTypesStorage> visibility:public modality:OPEN returnType:kotlin.Unit
+      FUN GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliedTypesStoragePropertyGenerationExtension.Key] name:<set-suppliedTypesStorage> visibility:public modality:OPEN returnType:kotlin.Unit
         VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Foo<T of <root>.Foo>
         VALUE_PARAMETER kind:Regular name:<set-?> index:1 type:kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>
-        correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliedTypesStoragePropertyGenerationExtension.Key] name:suppliedTypesStorage visibility:public modality:OPEN [delegated,var]
+        correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliedTypesStoragePropertyGenerationExtension.Key] name:suppliedTypesStorage visibility:public modality:OPEN [var]
         overridden:
           public abstract fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in dev.lounres.kone.suppliedTypes.SuppliableClass
     CONSTRUCTOR visibility:public returnType:<root>.Foo<T of <root>.Foo> [primary]

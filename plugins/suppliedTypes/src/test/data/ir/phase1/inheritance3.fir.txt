@@ -4,7 +4,7 @@ FILE: inheritance3.kt
             super<R|kotlin/Any|>()
         }
 
-        public open var suppliedTypesStorage: R|kotlin/collections/Map<kotlin/String, kotlin/collections/List<dev/lounres/kone/suppliedTypes/SuppliedType>>|by R|dev/lounres/kone/suppliedTypes/suppliedTypesStorageDelegate|()
+        public open var suppliedTypesStorage: R|kotlin/collections/Map<kotlin/String, kotlin/collections/List<dev/lounres/kone/suppliedTypes/SuppliedType>>|
 
     }
     @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final class Bar<@R|dev/lounres/kone/suppliedTypes/Supply|() U> : R|Foo<kotlin/collections/Map<out U, *>>|, R|dev/lounres/kone/suppliedTypes/SuppliableClass| {
@@ -12,6 +12,6 @@ FILE: inheritance3.kt
             super<R|Foo<kotlin/collections/Map<out U, *>>|>()
         }
 
-        public open var suppliedTypesStorage: R|kotlin/collections/Map<kotlin/String, kotlin/collections/List<dev/lounres/kone/suppliedTypes/SuppliedType>>|by R|dev/lounres/kone/suppliedTypes/suppliedTypesStorageDelegate|()
+        public open var suppliedTypesStorage: R|kotlin/collections/Map<kotlin/String, kotlin/collections/List<dev/lounres/kone/suppliedTypes/SuppliedType>>|
 
     }

@@ -8,7 +8,7 @@ FILE: suppliedTypeOfUsage23.kt
             ^foo R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|T & Any|>().R|kotlin/Any.toString|()
         }
 
-        public open var suppliedTypesStorage: R|kotlin/collections/Map<kotlin/String, kotlin/collections/List<dev/lounres/kone/suppliedTypes/SuppliedType>>|by R|dev/lounres/kone/suppliedTypes/suppliedTypesStorageDelegate|()
+        public open var suppliedTypesStorage: R|kotlin/collections/Map<kotlin/String, kotlin/collections/List<dev/lounres/kone/suppliedTypes/SuppliedType>>|
 
     }
     public final fun box(): R|kotlin/String| {

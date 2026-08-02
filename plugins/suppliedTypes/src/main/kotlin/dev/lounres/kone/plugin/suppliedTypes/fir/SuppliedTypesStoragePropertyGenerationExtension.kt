@@ -15,7 +15,6 @@ import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.declarations.builder.buildProperty
 import org.jetbrains.kotlin.fir.declarations.impl.FirResolvedDeclarationStatusImpl
 import org.jetbrains.kotlin.fir.declarations.origin
-import org.jetbrains.kotlin.fir.expressions.builder.buildFunctionCall
 import org.jetbrains.kotlin.fir.extensions.FirDeclarationGenerationExtension
 import org.jetbrains.kotlin.fir.extensions.FirDeclarationPredicateRegistrar
 import org.jetbrains.kotlin.fir.extensions.MemberGenerationContext
@@ -70,10 +69,6 @@ class SuppliedTypesStoragePropertyGenerationExtension(session: FirSession) : Fir
                 }
                 dispatchReceiverType = classSymbol.defaultType()
                 name = internalSuppliedTypesStoragePropertyName
-                delegate = buildFunctionCall {
-                    calleeReference = suppliedTypesStorageDelegateFirResolvedNamedReference
-                    coneTypeOrNull = suppliedTypesStorageDelegateFirNamedFunctionSymbol.resolvedReturnType
-                }
                 isVar = true
                 val suppliedTypesStoragePropertySymbol = FirRegularPropertySymbol(callableId)
                 symbol = suppliedTypesStoragePropertySymbol

@@ -12,7 +12,7 @@ FILE: suppliedTypeOfUsage28.kt
                 ^ this@R|/Foo|.D|/Foo.foo|.R|kotlin/getValue|<R|kotlin/String|>(this@R|/Foo|, ::R|/Foo.foo|)
             }
 
-        public open var suppliedTypesStorage: R|kotlin/collections/Map<kotlin/String, kotlin/collections/List<dev/lounres/kone/suppliedTypes/SuppliedType>>|by R|dev/lounres/kone/suppliedTypes/suppliedTypesStorageDelegate|()
+        public open var suppliedTypesStorage: R|kotlin/collections/Map<kotlin/String, kotlin/collections/List<dev/lounres/kone/suppliedTypes/SuppliedType>>|
 
     }
     public final fun box(): R|kotlin/String| {

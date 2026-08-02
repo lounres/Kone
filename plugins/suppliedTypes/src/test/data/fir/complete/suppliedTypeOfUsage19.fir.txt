@@ -10,7 +10,7 @@ FILE: suppliedTypeOfUsage19.kt
             super<R|kotlin/Any|>()
         }
 
-        public open var suppliedTypesStorage: R|kotlin/collections/Map<kotlin/String, kotlin/collections/List<dev/lounres/kone/suppliedTypes/SuppliedType>>|by R|dev/lounres/kone/suppliedTypes/suppliedTypesStorageDelegate|()
+        public open var suppliedTypesStorage: R|kotlin/collections/Map<kotlin/String, kotlin/collections/List<dev/lounres/kone/suppliedTypes/SuppliedType>>|
 
     }
     public final fun box(): R|kotlin/String| {

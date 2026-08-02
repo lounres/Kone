@@ -25,18 +25,18 @@ class SuppliedTypesStorageAccessorsTransformer(
     override fun visitClass(declaration: IrClass): IrStatement {
         if (declaration.isSuppliable && declaration.kind in listOf<ClassKind>(CLASS, OBJECT)) {
             val suppliedTypesStorageProperty = declaration.symbol.referencePropertyThatOrFail(internalSuppliedTypesStoragePropertyName).owner
-            val delegate = suppliedTypesStorageProperty.backingField!!
+            val backingField = suppliedTypesStorageProperty.backingField!!
             val getter = suppliedTypesStorageProperty.getter!!
             val setter = suppliedTypesStorageProperty.setter!!
-            delegate.initializer = DeclarationIrBuilder(
+            backingField.initializer = DeclarationIrBuilder(
                 generatorContext = pluginContext,
-                symbol = delegate.symbol,
+                symbol = backingField.symbol,
             ).run {
                 irExprBody(
                     irCall(irRuntimeReferences.suppliedTypesStorageDelegateIrSimpleFunctionSymbol)
                 )
             }
-            delegate.type = irRuntimeReferences.readWritePropertyOfNullableAnyAndMapOfStringAndListOfSuppliedTypeIrType
+            backingField.type = irRuntimeReferences.readWritePropertyOfNullableAnyAndMapOfStringAndListOfSuppliedTypeIrType
             getter.body = DeclarationIrBuilder(
                 generatorContext = pluginContext,
                 symbol = getter.symbol,
@@ -46,7 +46,7 @@ class SuppliedTypesStorageAccessorsTransformer(
                         irCall(irRuntimeReferences.readWritePropertyGetValueIrSimpleFunctionSymbol).apply {
                             arguments[0] = irGetField(
                                 receiver = irGet(getter.parameters[0]),
-                                field = delegate
+                                field = backingField
                             )
                             arguments[1] = irGet(getter.parameters[0])
                             arguments[2] = IrPropertyReferenceImpl(
@@ -75,7 +75,7 @@ class SuppliedTypesStorageAccessorsTransformer(
                     +irCall(irRuntimeReferences.readWritePropertySetValueIrSimpleFunctionSymbol).apply {
                         arguments[0] = irGetField(
                             receiver = irGet(setter.parameters[0]),
-                            field = delegate
+                            field = backingField
                         )
                         arguments[1] = irGet(setter.parameters[0])
                         arguments[2] = IrPropertyReferenceImpl(
