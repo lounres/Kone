@@ -37,7 +37,8 @@ inline fun DeclarationFinder.referenceFunctionThatOrFail(callableId: CallableId,
     findFunctions(callableId)
         .also {
             val filtered = it.filter(predicate)
-            if (filtered.size != 1) error("${filtered.size}!!!\n${filtered.joinToString(separator = "") { "  $it\n" }}") }
+            if (filtered.size != 1) error("${filtered.size}!!!\n${filtered.joinToString(separator = "") { "  $it\n" }}")
+        }
         .singleOrNull(predicate) ?: couldNotFindCorrespondingCallable(callableId)
 inline fun IrClassSymbol.referenceFunctionThatOrFail(name: Name, predicate: (IrSimpleFunctionSymbol) -> Boolean = { true }): IrSimpleFunctionSymbol =
     owner.declarations.asSequence().filterIsInstance<IrSimpleFunction>().map { it.symbol }.singleOrNull { it.owner.name == name && predicate(it) } ?: couldNotFindCorrespondingFunctionInClass(owner.classIdOrFail, name)
