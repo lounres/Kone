@@ -14,6 +14,7 @@ import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.descriptors.Visibilities
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.containingClassForStaticMemberAttr
+import org.jetbrains.kotlin.fir.declarations.builder.buildConstructedClassTypeParameterRef
 import org.jetbrains.kotlin.fir.declarations.builder.buildNamedFunction
 import org.jetbrains.kotlin.fir.declarations.builder.buildPrimaryConstructor
 import org.jetbrains.kotlin.fir.declarations.builder.buildProperty
@@ -140,34 +141,11 @@ class ContextKeyGenerationExtension(session: FirSession) : FirDeclarationGenerat
                 resolvePhase = BODY_RESOLVE
                 moduleData = session.moduleData
                 origin = Key.origin
-                val constructorSymbol = FirConstructorSymbol(classSymbol.classId)
-                val newTypeParameters = classSymbol.typeParameterSymbols.map {
-                    buildTypeParameter {
-                        resolvePhase = BODY_RESOLVE
-                        moduleData = session.moduleData
-                        origin = Key.origin
-                        this.name = it.name
-                        symbol = FirTypeParameterSymbol()
-                        containingDeclarationSymbol = constructorSymbol
-                        variance = it.variance
-                        isReified = it.isReified
-                        annotations += supplyAnnotation()
+                typeParameters += classSymbol.typeParameterSymbols.map {
+                    buildConstructedClassTypeParameterRef {
+                        symbol = it
                     }
                 }
-                val substitutor = substitutorByMap(
-                    substitution = classSymbol.typeParameterSymbols.zip(newTypeParameters.map { it.symbol.defaultType }).toMap(),
-                    useSiteSession = session
-                )
-                newTypeParameters.forEachIndexed { index, newTypeParameter ->
-                    newTypeParameter.replaceBounds(
-                        classSymbol.typeParameterSymbols[index].resolvedBounds.map {
-                            buildResolvedTypeRef {
-                                coneType = substitutor.substituteOrSelf(it.coneType)
-                            }
-                        }
-                    )
-                }
-                typeParameters += newTypeParameters
                 status = FirResolvedDeclarationStatusImpl(
                     visibility = Visibilities.Public,
                     modality = Modality.FINAL,
@@ -177,24 +155,7 @@ class ContextKeyGenerationExtension(session: FirSession) : FirDeclarationGenerat
                 returnTypeRef = buildResolvedTypeRef {
                     coneType = classSymbol.defaultType()
                 }
-                symbol = constructorSymbol
-//                delegatedConstructor = buildDelegatedConstructorCall {
-//                    argumentList = FirEmptyArgumentList
-//                    constructedTypeRef = buildResolvedTypeRef {
-//                        coneType = suppliedTypeRegistryKeyClassLikeSymbol.constructType(
-//                            typeArguments = arrayOf(
-//                                parent.constructType(
-//                                    typeArguments = newTypeParameters.map { it.symbol.defaultType }.toTypedArray()
-//                                )
-//                            )
-//                        )
-//                    }
-//                    calleeReference = buildResolvedNamedReference {
-//                        name = suppliedTypeRegistryKeyClassLikeSymbol.name
-//                        resolvedSymbol = suppliedTypeRegistryKeyClassLikeSymbol.constructors(session).first { it.isPrimary }
-//                    }
-//                    isThis = false
-//                }
+                symbol = FirConstructorSymbol(classSymbol.classId)
             }.apply {
                 containingClassForStaticMemberAttr = classSymbol.toLookupTag()
             }.symbol

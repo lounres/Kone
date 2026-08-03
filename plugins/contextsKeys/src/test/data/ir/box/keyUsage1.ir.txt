@@ -11,8 +11,8 @@ FILE fqName:foo.bar fileName:/keyUsage1.kt
                 CALL 'public final fun correspondsTo <T> (registry: dev.lounres.kone.registry.MutableProviderRegistry, <this>: dev.lounres.kone.registry.RegistryKey<in T of dev.lounres.kone.registry.correspondsTo>, provider: dev.lounres.kone.registry.RegisteredValueProvider<T of dev.lounres.kone.registry.correspondsTo>): kotlin.Unit declared in dev.lounres.kone.registry' type=kotlin.Unit origin=null
                   TYPE_ARG T: kotlin.Nothing
                   ARG registry: GET_VAR '$this$build: @[KoneContextRegistryBuilderDsl] dev.lounres.kone.registry.MutableOwnedProviderRegistry<dev.lounres.kone.contexts.KoneContextRegistry> declared in foo.bar.koneContextRegistry.<anonymous>' type=@[KoneContextRegistryBuilderDsl] dev.lounres.kone.registry.MutableOwnedProviderRegistry<dev.lounres.kone.contexts.KoneContextRegistry> origin=IMPLICIT_ARGUMENT
-                  ARG <this>: CONSTRUCTOR_CALL 'public constructor <init> <Element> ($suppliedTypeParameterFor_Element: dev.lounres.kone.suppliedTypes.SuppliedType) declared in foo.bar.Equality.Key' type=foo.bar.Equality.Key<kotlin.Int> origin=null
-                    TYPE_ARG Element: kotlin.Int
+                  ARG <this>: CONSTRUCTOR_CALL 'public constructor <init> ($suppliedTypeParameterFor_Element: dev.lounres.kone.suppliedTypes.SuppliedType) declared in foo.bar.Equality.Key' type=foo.bar.Equality.Key<kotlin.Int> origin=null
+                    TYPE_ARG (of class) Element: kotlin.Int
                     ARG $suppliedTypeParameterFor_Element: BLOCK type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
                       VAR IR_TEMPORARY_VARIABLE name:tmp_0 type:dev.lounres.kone.suppliedTypes.SuppliedType.Regular [val]
                         CONSTRUCTOR_CALL 'public constructor <init> (fullyQualifiedName: kotlin.String, typeArguments: kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedProjection>, isNullable: kotlin.Boolean) declared in dev.lounres.kone.suppliedTypes.SuppliedType.Regular' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
@@ -102,9 +102,6 @@ FILE fqName:foo.bar fileName:/keyUsage1.kt
               ARG property: PROPERTY_REFERENCE 'public final suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Equality.Key' field=null getter='public final fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Equality.Key' setter='public final fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in foo.bar.Equality.Key' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
               ARG value: GET_VAR '<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Equality.Key.<set-suppliedTypesStorage>' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
       CONSTRUCTOR GENERATED[dev.lounres.kone.plugin.contextsKeys.fir.ContextKeyGenerationExtension.Key] visibility:public returnType:foo.bar.Equality.Key<Element of foo.bar.Equality.Key>
-        TYPE_PARAMETER GENERATED[dev.lounres.kone.plugin.contextsKeys.fir.ContextKeyGenerationExtension.Key] name:Element index:0 variance:in superTypes:[kotlin.Any?] reified:false
-          annotations:
-            Supply
         VALUE_PARAMETER kind:Regular name:$suppliedTypeParameterFor_Element index:0 type:dev.lounres.kone.suppliedTypes.SuppliedType
           annotations:
             SupplianceProvided
@@ -114,7 +111,7 @@ FILE fqName:foo.bar fileName:/keyUsage1.kt
         annotations:
           SupplianceProvided
         BLOCK_BODY
-          DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> <Element> () declared in foo.bar.Equality.Key'
+          DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in foo.bar.Equality.Key'
             TYPE_ARG Element: Element of foo.bar.Equality.Key
           VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:dev.lounres.kone.suppliedTypes.SuppliedType [val]
             GET_VAR '$suppliedTypeParameterFor_Element: dev.lounres.kone.suppliedTypes.SuppliedType declared in foo.bar.Equality.Key.<init>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
@@ -153,12 +150,10 @@ FILE fqName:foo.bar fileName:/keyUsage1.kt
           CALL 'public open fun afterSuppliance (): kotlin.Unit declared in dev.lounres.kone.suppliedTypes.SuppliableClass' type=kotlin.Unit origin=null
             ARG <this>: GET_VAR '<this>: foo.bar.Equality.Key<Element of foo.bar.Equality.Key> declared in foo.bar.Equality.Key' type=foo.bar.Equality.Key<Element of foo.bar.Equality.Key> origin=null
       CONSTRUCTOR GENERATED[dev.lounres.kone.plugin.contextsKeys.fir.ContextKeyGenerationExtension.Key] visibility:public returnType:foo.bar.Equality.Key<Element of foo.bar.Equality.Key> [primary]
-        TYPE_PARAMETER GENERATED[dev.lounres.kone.plugin.contextsKeys.fir.ContextKeyGenerationExtension.Key] name:Element index:0 variance:in superTypes:[kotlin.Any?] reified:false
-          annotations:
-            Supply
         BLOCK_BODY
           DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in dev.lounres.kone.registry.SuppliedTypeRegistryKey'
-            TYPE_ARG T: foo.bar.Equality<Element of foo.bar.Equality.Key.<init>>
+            TYPE_ARG T: foo.bar.Equality
+          INSTANCE_INITIALIZER_CALL classDescriptor='CLASS GENERATED[dev.lounres.kone.plugin.contextsKeys.fir.ContextKeyGenerationExtension.Key] CLASS name:Key modality:FINAL visibility:public superTypes:[dev.lounres.kone.registry.SuppliedTypeRegistryKey<foo.bar.Equality<Element of foo.bar.Equality.Key>>]' type=kotlin.Unit
       FUN FAKE_OVERRIDE name:afterSuppliance visibility:public modality:OPEN returnType:kotlin.Unit [fake_override]
         VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:dev.lounres.kone.suppliedTypes.SuppliableClass
         overridden:

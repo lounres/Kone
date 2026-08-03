@@ -36,12 +36,11 @@ class ContextsKeysConstructorsFillingIrTransformer(
             val containingClass = constructedClass.parent as? IrClass ?: return@scope
             if (!containingClass.isGenerateKey) return@scope
             check(declaration.body == null) { TODO() }
-            declaration.typeParameters = emptyList()
-            val containingClassTypeParameters = containingClass.typeParameters
+            val constructorTypeParameters = declaration.typeParameters
             declaration.body = DeclarationIrBuilder(pluginContext, declaration.symbol).run {
                 irBlockBody {
                     +irDelegatingConstructorCall(irRuntimeReferences.suppliedTypesRegistryKeyPrimaryConstructorIrConstructor).apply {
-                        typeArguments[0] = containingClass.typeWith(containingClassTypeParameters.map { it.defaultType })
+                        typeArguments[0] = containingClass.typeWith(constructorTypeParameters.map { it.defaultType })
                     }
                     +IrInstanceInitializerCallImpl(
                         startOffset = UNDEFINED_OFFSET,
