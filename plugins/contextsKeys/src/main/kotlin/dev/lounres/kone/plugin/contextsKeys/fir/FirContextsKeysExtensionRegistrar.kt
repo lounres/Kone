@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.fir.extensions.FirExtensionRegistrar
 class FirContextsKeysExtensionRegistrar : FirExtensionRegistrar() {
     override fun ExtensionRegistrarContext.configurePlugin() {
         +::ContextKeyGenerationExtension
+        +::ContextKeySuperTypeGenerationExtension
         
 //        registerDiagnosticContainers(SuppliedTypeCheckersExtension.Errors)
     }

@@ -95,19 +95,6 @@ class ContextKeyGenerationExtension(session: FirSession) : FirDeclarationGenerat
                     annotations += supplyAnnotation()
                 }
             }
-            val substitutor = substitutorByMap(
-                substitution = owner.typeParameterSymbols.zip(newTypeParameters.map { it.symbol.defaultType }).toMap(),
-                useSiteSession = session
-            )
-            newTypeParameters.forEachIndexed { index, newTypeParameter ->
-                newTypeParameter.replaceBounds(
-                    owner.typeParameterSymbols[index].resolvedBounds.map {
-                        buildResolvedTypeRef {
-                            coneType = substitutor.substituteOrSelf(it.coneType)
-                        }
-                    }
-                )
-            }
             typeParameters += newTypeParameters
             status = FirResolvedDeclarationStatusImpl(
                 visibility = Visibilities.Public,
@@ -119,15 +106,6 @@ class ContextKeyGenerationExtension(session: FirSession) : FirDeclarationGenerat
             annotations += suppliableAnnotation()
             this.name = name
             symbol = classSymbol
-            superTypeRefs += buildResolvedTypeRef {
-                coneType = suppliedTypeRegistryKeyClassLikeSymbol.constructType(
-                    typeArguments = arrayOf(
-                        owner.constructType(
-                            typeArguments = newTypeParameters.map { it.symbol.defaultType }.toTypedArray()
-                        )
-                    )
-                )
-            }
         }.symbol
     }
     
