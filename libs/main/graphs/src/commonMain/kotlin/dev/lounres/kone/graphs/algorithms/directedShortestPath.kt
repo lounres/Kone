@@ -6,13 +6,10 @@
 package dev.lounres.kone.graphs.algorithms
 
 import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.graphs.Hypergraph
 import dev.lounres.kone.graphs.HypergraphVertex
 import dev.lounres.kone.graphs.Path
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 public fun interface HypergraphDirectedShortestPathWithFixedEndsProvider<out Weight> {
@@ -40,45 +37,33 @@ public fun <Weight> HypergraphDirectedShortestPathWithoutFixedEndsProvider<Weigh
     start: HypergraphVertex
 ): HypergraphDirectedShortestPathWithFixedStartProvider<Weight> = HypergraphDirectedShortestPathWithFixedStartProvider { this[start, it] }
 
+@GenerateKoneContextKey
 public fun interface HypergraphDirectedShortestPathWithFixedEndsComputer<out Weight> : KoneContext {
     public fun Hypergraph.directedShortestPathWithFixedEndsProvider(start: HypergraphVertex, end: HypergraphVertex): HypergraphDirectedShortestPathWithFixedEndsProvider<Weight>
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Weight> : SuppliedTypeRegistryKey<HypergraphDirectedShortestPathWithFixedEndsComputer<Weight>>() {
-        override fun toString(): String = "dev.lounres.kone.graphs.algorithms.HypergraphDirectedShortestPathWithFixedEndsComputer.Key<${suppliedTypeOf<Weight>()}>"
-    }
 }
 
 context(computer: HypergraphDirectedShortestPathWithFixedEndsComputer<Weight>)
 public fun <Weight> Hypergraph.directedShortestPathWithFixedEndsProvider(start: HypergraphVertex, end: HypergraphVertex): HypergraphDirectedShortestPathWithFixedEndsProvider<Weight> =
     with(computer){ this@directedShortestPathWithFixedEndsProvider.directedShortestPathWithFixedEndsProvider(start, end) }
-    
+
+@GenerateKoneContextKey
 public fun interface HypergraphDirectedShortestPathWithFixedStartComputer<out Weight> : KoneContext {
     public fun Hypergraph.directedShortestPathWithFixedStartProvider(start: HypergraphVertex): HypergraphDirectedShortestPathWithFixedStartProvider<Weight>
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Weight> : SuppliedTypeRegistryKey<HypergraphDirectedShortestPathWithFixedStartComputer<Weight>>() {
-        override fun toString(): String = "dev.lounres.kone.graphs.algorithms.HypergraphDirectedShortestPathWithFixedStartComputer.Key<${suppliedTypeOf<Weight>()}>"
-    }
 }
 
 context(computer: HypergraphDirectedShortestPathWithFixedStartComputer<Weight>)
 public fun <Weight> Hypergraph.directedShortestPathWithFixedStartProvider(start: HypergraphVertex): HypergraphDirectedShortestPathWithFixedStartProvider<Weight> =
     with(computer){ this@directedShortestPathWithFixedStartProvider.directedShortestPathWithFixedStartProvider(start) }
 
+@GenerateKoneContextKey
 public fun interface HypergraphDirectedShortestPathWithoutFixedEndsComputer<out Weight> : KoneContext {
     public fun Hypergraph.directedShortestPathWithoutFixedEndsProvider(): HypergraphDirectedShortestPathWithoutFixedEndsProvider<Weight>
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Weight> : SuppliedTypeRegistryKey<HypergraphDirectedShortestPathWithoutFixedEndsComputer<Weight>>() {
-        override fun toString(): String = "dev.lounres.kone.graphs.algorithms.HypergraphDirectedShortestPathWithoutFixedEndsComputer.Key<${suppliedTypeOf<Weight>()}>"
-    }
 }
 
 context(computer: HypergraphDirectedShortestPathWithoutFixedEndsComputer<Weight>)

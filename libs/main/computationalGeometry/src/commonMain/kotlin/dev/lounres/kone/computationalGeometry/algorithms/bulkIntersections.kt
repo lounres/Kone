@@ -10,10 +10,7 @@ import dev.lounres.kone.collections.iterables.KoneSequence
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.computationalGeometry.curves.Segment
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 
 
 public fun interface BulkIntersectionComputer<in Target, out Result> {
@@ -26,6 +23,7 @@ public typealias SegmentBulkIntersectionOverFieldComputer<Number, Vector, Point>
 public fun <Target, Result> IntersectionComputer<Target, Target, Result>.asBulkIntersectionComputer(): BulkIntersectionComputer<Target, Result> =
     { _, left, _, right -> intersect(left, right) }
 
+@GenerateKoneContextKey
 public fun interface BulkPlanarSegmentsIntersectionsOverFieldComputer<Number, Vector, Point> : KoneContext {
     public fun KoneList<Segment<Vector, Point>>.intersections(
         basis: VectorSpaceBasis.Finite<Number, Vector>,
@@ -41,11 +39,6 @@ public fun interface BulkPlanarSegmentsIntersectionsOverFieldComputer<Number, Ve
     )
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number, @Supply Vector, @Supply Point> : SuppliedTypeRegistryKey<BulkPlanarSegmentsIntersectionsOverFieldComputer<Number, Vector, Point>>() {
-        override fun toString(): String = "dev.lounres.kone.computationalGeometry.algorithms.BulkPlanarSegmentsIntersectionsOverFieldComputer.Key<$${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}, ${suppliedTypeOf<Point>()}>"
-    }
 }
 
 context(bulkIntersectionsComputer: BulkPlanarSegmentsIntersectionsOverFieldComputer<Number, Vector, Point>)

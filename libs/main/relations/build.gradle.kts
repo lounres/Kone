@@ -2,6 +2,7 @@ import dev.lounres.kone.buildSrc.dsl.konePlugins
 
 konePlugins {
     +"suppliedTypes"
+    +"contextsKeys"
 }
 
 kotlin {

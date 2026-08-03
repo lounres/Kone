@@ -11,24 +11,17 @@ import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.computationalGeometry.EuclideanSpaceOverRing
 import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstruction
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
+@GenerateKoneContextKey
 public fun interface DelaunayTriangulationOverRingComputer<in Number, Vector, in Point> : KoneContext {
     public fun KoneIterable<Point>.delaunayTriangulation(
         basis: ModuleBasis.Finite<Number, Vector>,
     ): PolytopicConstruction
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number, @Supply Vector, @Supply Point> : SuppliedTypeRegistryKey<DelaunayTriangulationOverRingComputer<Number, Vector, Point>>() {
-        override fun toString(): String = "dev.lounres.kone.computationalGeometry.algorithms.DelaunayTriangulationOverRingComputer.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}, ${suppliedTypeOf<Point>()}>"
-    }
 }
 
 context(delaunayTriangulationComputer: DelaunayTriangulationOverRingComputer<Number, Vector, Point>)

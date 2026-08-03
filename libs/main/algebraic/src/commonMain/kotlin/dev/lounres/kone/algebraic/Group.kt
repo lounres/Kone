@@ -7,12 +7,7 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.algebraic.util.doublingTimes
 import dev.lounres.kone.contexts.KoneContextInclude
-import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.Registry
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 
 
 /**
@@ -20,6 +15,7 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
  *
  * @param Number The type of elements of the group.
  */
+@GenerateKoneContextKey
 public interface Group<Number> : Monoid<Number> {
     // region Number-Int operations
     /**
@@ -87,27 +83,6 @@ public interface Group<Number> : Monoid<Number> {
     // endregion
     
     public companion object;
-    
-    /**
-     * Registry key for [Group] interface in [Registry].
-     *
-     * @param Number The type of elements of the group.
-     */
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<Group<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<Group<Number>> by lazy {
-            ImpliedKeysRegistry {
-                UnaryMinus.Key<Number, Number>() implies { it.numberUnaryMinus }
-                Minus.Key<Number, Number, Number>() implies { it.numberMinusNumber }
-                Times.Key<Number, Int, Number>() implies { it.numberTimesInt }
-                Times.Key<Number, Long, Number>() implies { it.numberTimesLong }
-                Times.Key<Int, Number, Number>() implies { it.intTimesNumber }
-                Times.Key<Long, Number, Number>() implies { it.longTimesNumber }
-                Monoid.Key<Number>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.algebraic.Group.Key<${suppliedTypeOf<Number>()}>"
-    }
 }
 
 /**
@@ -115,24 +90,9 @@ public interface Group<Number> : Monoid<Number> {
  *
  * @param Number The type of elements of the group.
  */
+@GenerateKoneContextKey
 public interface CommutativeGroup<Number> : Group<Number>, CommutativeMonoid<Number> {
     public companion object;
-    
-    /**
-     * Registry key for [CommutativeGroup] interface in [Registry].
-     *
-     * @param Number The type of elements of the commutative group.
-     */
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<CommutativeGroup<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<CommutativeGroup<Number>> by lazy {
-            ImpliedKeysRegistry {
-                Group.Key<Number>().impliesSame()
-                CommutativeMonoid.Key<Number>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.algebraic.Group.Key<${suppliedTypeOf<Number>()}>"
-    }
 }
 
 /**

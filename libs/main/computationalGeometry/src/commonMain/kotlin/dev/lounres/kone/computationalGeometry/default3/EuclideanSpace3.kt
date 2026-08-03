@@ -17,13 +17,15 @@ import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.contexts.localUnwrap
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.multidimensionalCollections.*
-import dev.lounres.kone.multidimensionalCollections.utils.all
 import dev.lounres.kone.multidimensionalCollections.utils.map
-import dev.lounres.kone.registry.*
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
+import dev.lounres.kone.registry.RegisteredValueProvider
+import dev.lounres.kone.registry.cached
+import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 
@@ -73,6 +75,7 @@ public fun <Number> Point3(x: Number, y: Number, z: Number): Point3<Number> =
         }
     )
 
+@GenerateKoneContextKey
 public class EuclideanSpace3OverRing<Number>(
     private val ring: Ring<Number>,
 ) : EuclideanSpaceOverRing<Number, Vector3<Number>, Point3<Number>> {
@@ -171,16 +174,6 @@ public class EuclideanSpace3OverRing<Number>(
     }
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<EuclideanSpace3OverRing<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<EuclideanSpace3OverRing<Number>> by lazy {
-            ImpliedKeysRegistry {
-                EuclideanSpaceOverRing.Key<Number, Vector3<Number>, Point3<Number>>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.computationalGeometry.default3.EuclideanSpace3OverRing.Key<${suppliedTypeOf<Number>()}>"
-    }
 }
 
 // TODO: Remove the checker when KT-73135 will be fixed
@@ -195,6 +188,7 @@ public object EuclideanSpace3OverRingForSuppliableTopLevelFunctions {
     }
 }
 
+@GenerateKoneContextKey
 public class EuclideanSpace3OverField<Number>(
     private val field: Field<Number>,
 ) : EuclideanSpaceOverField<Number, Vector3<Number>, Point3<Number>> {
@@ -307,16 +301,6 @@ public class EuclideanSpace3OverField<Number>(
     }
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<EuclideanSpace3OverField<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<EuclideanSpace3OverField<Number>> by lazy {
-            ImpliedKeysRegistry {
-                EuclideanSpaceOverField.Key<Number, Vector3<Number>, Point3<Number>>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.computationalGeometry.default3.EuclideanSpace3OverField.Key<${suppliedTypeOf<Number>()}>"
-    }
 }
 
 // TODO: Remove the checker when KT-73135 will be fixed

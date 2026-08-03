@@ -6,8 +6,8 @@
 package dev.lounres.kone.algebraic.algorithms
 
 import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.maybe.Maybe
-import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
@@ -19,32 +19,19 @@ public class LogarithmKey<@Supply Number> : SuppliedTypeRegistryKey<Maybe<Number
     override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.LogarithmKey<${suppliedTypeOf<Number>()}>"
 }
 
+@GenerateKoneContextKey
 public fun interface LogarithmComputer<Number> : KoneContext {
     public fun Number.logarithm(): Number
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<LogarithmComputer<Number>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.LogarithmComputer.Key<${suppliedTypeOf<Number>()}>"
-    }
 }
 
+@GenerateKoneContextKey
 public interface LogarithmSoftComputer<Number> : LogarithmComputer<Number> {
     public fun Number.logarithmOrNull(): Number?
     public fun Number.logarithmMaybe(): Maybe<Number>
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<LogarithmSoftComputer<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<LogarithmSoftComputer<Number>> by lazy {
-            ImpliedKeysRegistry {
-                LogarithmComputer.Key<Number>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.LogarithmSoftComputer.Key<${suppliedTypeOf<Number>()}>"
-    }
 }
 
 context(logarithmComputer: LogarithmComputer<Number>)

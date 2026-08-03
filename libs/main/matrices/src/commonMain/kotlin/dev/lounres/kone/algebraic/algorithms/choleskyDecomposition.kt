@@ -6,6 +6,7 @@
 package dev.lounres.kone.algebraic.algorithms
 
 import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
@@ -24,15 +25,11 @@ public data class CholeskyDecomposition<out Number, out Matrix : MDList2<Number>
     }
 }
 
+@GenerateKoneContextKey
 public fun interface CholeskyDecompositionComputer<out Number, Matrix : MDList2<Number>> : KoneContext {
     public fun Matrix.choleskyDecomposition(): CholeskyDecomposition<Number, Matrix>
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number, @Supply Matrix : MDList2<Number>> : SuppliedTypeRegistryKey<CholeskyDecompositionComputer<Number, Matrix>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.CholeskyDecompositionComputer.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-    }
 }
 
 context(choleskyDecompositionComputer: CholeskyDecompositionComputer<Number, Matrix>)

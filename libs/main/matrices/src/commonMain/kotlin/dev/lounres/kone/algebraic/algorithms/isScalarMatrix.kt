@@ -6,27 +6,20 @@
 package dev.lounres.kone.algebraic.algorithms
 
 import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.RegistryKey
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 public data object IsScalarMatrixKey : RegistryKey<Boolean> {
     override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.IsScalarMatrixKey"
 }
 
+@GenerateKoneContextKey
 public fun interface IsScalarMatrixChecker<out Number, in Matrix : MDList2<Number>> : KoneContext {
     public fun Matrix.isScalar(): Boolean
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number, @Supply Matrix : MDList2<Number>> : SuppliedTypeRegistryKey<IsScalarMatrixChecker<Number, Matrix>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.IsScalarMatrixChecker.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-    }
 }
 
 context(isScalarMatrixChecker: IsScalarMatrixChecker<Number, Matrix>)

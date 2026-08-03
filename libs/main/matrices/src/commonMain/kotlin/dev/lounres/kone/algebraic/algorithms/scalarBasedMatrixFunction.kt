@@ -8,6 +8,7 @@ package dev.lounres.kone.algebraic.algorithms
 import dev.lounres.kone.algebraic.ComplexNumber
 import dev.lounres.kone.collections.iterables.KoneIterable
 import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
@@ -58,15 +59,11 @@ public class ScalarBaseForMatrixLogarithmWithComplexNumberConvexHullBoundKey<@Su
     override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ScalarBaseForMatrixLogarithmWithComplexNumberConvexHullBoundKey<${suppliedTypeOf<Number>()}>"
 }
 
+@GenerateKoneContextKey
 public fun interface ScalarBasedMatrixFunctionApplier<Number, Matrix : MDList2<Number>, in Function: ScalarBaseForMatrixFunction<Number>> : KoneContext {
     public fun Matrix.after(function: Function): Matrix
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number, @Supply Matrix : MDList2<Number>, @Supply Function: ScalarBaseForMatrixFunction<Number>> : SuppliedTypeRegistryKey<ScalarBasedMatrixFunctionApplier<Number, Matrix, Function>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ScalarBasedMatrixFunctionApplier.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
-    }
 }
 
 context(scalarBasedMatrixFunctionApplier: ScalarBasedMatrixFunctionApplier<Number, Matrix, Function>)

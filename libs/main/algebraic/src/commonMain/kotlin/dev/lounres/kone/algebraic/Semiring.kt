@@ -9,12 +9,7 @@ import dev.lounres.kone.algebraic.util.doublingTimes
 import dev.lounres.kone.algebraic.util.squaringPower
 import dev.lounres.kone.contexts.KoneContextInclude
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.Registry
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 
 
 /**
@@ -22,6 +17,7 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
  *
  * @param Number The type of elements of the group.
  */
+@GenerateKoneContextKey
 public interface Semiring<Number> : CommutativeMonoid<Number> {
     // region Constants
     /**
@@ -177,28 +173,6 @@ public interface Semiring<Number> : CommutativeMonoid<Number> {
     // endregion
     
     public companion object;
-    
-    /**
-     * Registry key for [Semiring] interface in [Registry].
-     *
-     * @param Number The type of elements of the semiring.
-     */
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<Semiring<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<Semiring<Number>> by lazy {
-            ImpliedKeysRegistry {
-                Times.Key<Number, Number, Number>() implies { it.numberTimesNumber }
-                Power.Key<Number, UInt, Number>() implies { it.powerNumberUInt }
-                Power.Key<Number, ULong, Number>() implies { it.powerNumberULong }
-                Plus.Key<Number, UInt, Number>() implies { it.numberPlusUInt }
-                Plus.Key<Number, ULong, Number>() implies { it.numberPlusULong }
-                Plus.Key<UInt, Number, Number>() implies { it.uIntPlusNumber }
-                Plus.Key<ULong, Number, Number>() implies { it.uLongPlusNumber }
-                CommutativeMonoid.Key<Number>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.algebraic.Semiring.Key<${suppliedTypeOf<Number>()}>"
-    }
 }
 
 /**
@@ -206,23 +180,9 @@ public interface Semiring<Number> : CommutativeMonoid<Number> {
  *
  * @param Number The type of elements of the group.
  */
+@GenerateKoneContextKey
 public interface CommutativeSemiring<Number> : Semiring<Number> {
     public companion object;
-    
-    /**
-     * Registry key for [CommutativeSemiring] interface in [Registry].
-     *
-     * @param Number The type of elements of the commutative semiring.
-     */
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<CommutativeSemiring<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<CommutativeSemiring<Number>> by lazy {
-            ImpliedKeysRegistry {
-                Semiring.Key<Number>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.algebraic.CommutativeSemiring.Key<${suppliedTypeOf<Number>()}>"
-    }
 }
 
 // TODO: Think about replacing with "extended" commutative monoid.

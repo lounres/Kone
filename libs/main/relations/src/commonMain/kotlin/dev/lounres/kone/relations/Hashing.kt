@@ -7,10 +7,10 @@ package dev.lounres.kone.relations
 
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.registry.*
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 /**
@@ -26,6 +26,7 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
  *
  * @param Element The type of elements for which this hashing context is defined.
  */
+@GenerateKoneContextKey
 public interface Hashing<in Element> : KoneContext {
     /**
      * Computes hash code of [this] element.
@@ -40,19 +41,6 @@ public interface Hashing<in Element> : KoneContext {
      * for creating [Hashing] instances.
      */
     public companion object;
-    
-    /**
-     * Registry key for [Hashing] interface in [KoneContextRegistry].
-     *
-     * This key is used to register and retrieve [Hashing] instances for specific types
-     * in the context registry.
-     *
-     * @param Element The type of elements for which this hashing context is registered.
-     */
-    @Suppliable
-    public class Key<@Supply Element> : SuppliedTypeRegistryKey<Hashing<Element>>() {
-        override fun toString(): String = "dev.lounres.kone.relations.Hashing.Key<${suppliedTypeOf<Element>()}>"
-    }
 }
 
 

@@ -6,6 +6,7 @@
 package dev.lounres.kone.algebraic.algorithms
 
 import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
@@ -17,15 +18,11 @@ public class HyperbolicSineOverInputKey<@Supply Number> : SuppliedTypeRegistryKe
     override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.HyperbolicSineOverInputKey<${suppliedTypeOf<Number>()}>"
 }
 
+@GenerateKoneContextKey
 public fun interface HyperbolicSineOverInputComputer<Number> : KoneContext {
     public fun Number.sinhOverThis(): Number
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<HyperbolicSineOverInputComputer<Number>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.HyperbolicSineOverInputComputer.Key<${suppliedTypeOf<Number>()}>"
-    }
 }
 
 context(hyperbolicSineOverInputComputer: HyperbolicSineOverInputComputer<Number>)

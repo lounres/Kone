@@ -9,13 +9,13 @@ package dev.lounres.kone.relations
 
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.registry.*
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 /**
  * Describes a context that checks if the element lays in specific domain.
@@ -25,6 +25,7 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
  * For example, it is needed for covariant sets/maps.
  * Without it, methods like `KoneSet.contains` cannot be covariant.
  */
+@GenerateKoneContextKey
 public interface Reification<out Element> : KoneContext {
     /**
      * Checks if the [element] lays in described by this instance domain.
@@ -67,19 +68,6 @@ public interface Reification<out Element> : KoneContext {
      * for creating [Reification] instances.
      */
     public companion object;
-    
-    /**
-     * Registry key for [Reification] interface in [KoneContextRegistry].
-     *
-     * This key is used to register and retrieve [Reification] instances for specific types
-     * in the context registry.
-     *
-     * @param Element The type of elements for which this reification context is registered.
-     */
-    @Suppliable
-    public class Key<@Supply Element> : SuppliedTypeRegistryKey<Reification<Element>>() {
-        override fun toString(): String = "dev.lounres.kone.relations.Reification.Key<${suppliedTypeOf<Element>()}>"
-    }
 }
 
 /**

@@ -6,6 +6,7 @@
 package dev.lounres.kone.algebraic.algorithms
 
 import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
@@ -18,17 +19,13 @@ public class PositiveSquareRootKey<@Supply Number> : SuppliedTypeRegistryKey<May
     override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.PositiveSquareRootKey<${suppliedTypeOf<Number>()}>"
 }
 
+@GenerateKoneContextKey
 public interface PositiveSquareRootComputer<Number> : KoneContext {
     public fun Number.positiveSquareRoot(): Number
     public fun Number.positiveSquareRootOrNull(): Number?
     public fun Number.positiveSquareRootMaybe(): Maybe<Number>
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<PositiveSquareRootComputer<Number>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.PositiveSquareRootComputer.Key<${suppliedTypeOf<Number>()}>"
-    }
 }
 
 context(positiveSquareRootComputer: PositiveSquareRootComputer<Number>)

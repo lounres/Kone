@@ -6,19 +6,12 @@
 package dev.lounres.kone.computationalGeometry
 
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 
 
+@GenerateKoneContextKey
 public interface Dot<in Left, in Right, out Result> : KoneContext {
     public infix fun Left.dot(other: Right): Result
-    
-    @Suppliable
-    public class Key<@Supply Left, @Supply Right, @Supply Result> : SuppliedTypeRegistryKey<Dot<Left, Right, Result>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.Dot.Key<${suppliedTypeOf<Left>()}, ${suppliedTypeOf<Right>()}, ${suppliedTypeOf<Result>()}>"
-    }
 }
 
 public inline fun <Left, Right, Result> Dot(crossinline block: (left: Left, right: Right) -> Result): Dot<Left, Right, Result> = object : Dot<Left, Right, Result> {

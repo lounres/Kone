@@ -9,13 +9,10 @@ import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextInclude
-import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 
 
+@GenerateKoneContextKey
 public interface PolynomialAlgebra<Number, Variable, Polynomial> : CommutativeAlgebra<Number, Polynomial> {
     @KoneContextInclude
     public val variablePlusInt: Plus<Variable, Int, Polynomial>
@@ -122,16 +119,6 @@ public interface PolynomialAlgebra<Number, Variable, Polynomial> : CommutativeAl
         public fun Polynomial.degreeBy(variable: Variable): UInt
         public val Polynomial.degrees: KoneMap<Variable, UInt>
         public val Polynomial.degree: UInt get() = degreeBy(variables)
-    }
-    
-    @Suppliable
-    public class Key<@Supply Number, @Supply Variable, @Supply Polynomial> : SuppliedTypeRegistryKey<PolynomialAlgebra<Number, Variable, Polynomial>>() {
-        override val impliedKeys: ImpliedKeysRegistry<PolynomialAlgebra<Number, Variable, Polynomial>> by lazy {
-            ImpliedKeysRegistry {
-                CommutativeAlgebra.Key<Number, Polynomial>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.algebraic.PolynomialAlgebra.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Variable>()}, ${suppliedTypeOf<Polynomial>()}>"
     }
 }
 

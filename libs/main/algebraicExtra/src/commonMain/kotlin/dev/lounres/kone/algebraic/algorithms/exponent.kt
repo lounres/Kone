@@ -6,6 +6,7 @@
 package dev.lounres.kone.algebraic.algorithms
 
 import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
@@ -17,15 +18,11 @@ public class ExponentKey<@Supply Number> : SuppliedTypeRegistryKey<Number>() {
     override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ExponentKey<${suppliedTypeOf<Number>()}>"
 }
 
+@GenerateKoneContextKey
 public fun interface ExponentComputer<Number> : KoneContext {
     public fun Number.exponent(): Number
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<ExponentComputer<Number>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ExponentComputer.Key<${suppliedTypeOf<Number>()}>"
-    }
 }
 
 context(exponentComputer: ExponentComputer<Number>)

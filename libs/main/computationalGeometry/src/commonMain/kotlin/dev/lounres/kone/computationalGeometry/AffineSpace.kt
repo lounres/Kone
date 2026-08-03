@@ -5,21 +5,20 @@
 
 package dev.lounres.kone.computationalGeometry
 
-import dev.lounres.kone.algebraic.Minus
-import dev.lounres.kone.algebraic.Module
-import dev.lounres.kone.algebraic.Plus
-import dev.lounres.kone.algebraic.VectorSpace
-import dev.lounres.kone.algebraic.minus
-import dev.lounres.kone.algebraic.plus
+import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.contexts.KoneContextInclude
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.registry.*
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
+import dev.lounres.kone.registry.RegisteredValueProvider
+import dev.lounres.kone.registry.cached
+import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
+@GenerateKoneContextKey
 public interface AffineSpaceOverRing<Number, Vector, Point> : Module<Number, Vector> {
     @KoneContextInclude
     public val pointPlusVector: Plus<Point, Vector, Point>
@@ -31,31 +30,11 @@ public interface AffineSpaceOverRing<Number, Vector, Point> : Module<Number, Vec
     public val pointMinusPoint: Minus<Point, Point, Vector>
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number, @Supply Vector, @Supply Point> : SuppliedTypeRegistryKey<AffineSpaceOverRing<Number, Vector, Point>>() {
-        override val impliedKeys: ImpliedKeysRegistry<AffineSpaceOverRing<Number, Vector, Point>> by lazy {
-            ImpliedKeysRegistry {
-                Module.Key<Number, Vector>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.computationalGeometry.AffineSpaceOverRing.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}, ${suppliedTypeOf<Point>()}>"
-    }
 }
 
+@GenerateKoneContextKey
 public interface AffineSpaceOverField<Number, Vector, Point> : VectorSpace<Number, Vector>, AffineSpaceOverRing<Number, Vector, Point> {
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number, @Supply Vector, @Supply Point> : SuppliedTypeRegistryKey<AffineSpaceOverField<Number, Vector, Point>>() {
-        override val impliedKeys: ImpliedKeysRegistry<AffineSpaceOverField<Number, Vector, Point>> by lazy {
-            ImpliedKeysRegistry {
-                VectorSpace.Key<Number, Vector>().impliesSame()
-                AffineSpaceOverRing.Key<Number, Vector, Point>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.computationalGeometry.AffineSpaceOverField.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}, ${suppliedTypeOf<Point>()}>"
-    }
 }
 
 private class AffineSpaceOverFieldViaVectorSpace<Number, Vector>(

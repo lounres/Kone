@@ -7,14 +7,11 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.contexts.KoneContextInclude
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 
 
 // unital, associative
+@GenerateKoneContextKey
 public interface Algebra<Number, Vector> : Module<Number, Vector>, Ring<Vector> {
     // region Number conversion
     public fun valueOf(arg: Number): Vector
@@ -39,30 +36,9 @@ public interface Algebra<Number, Vector> : Module<Number, Vector>, Ring<Vector> 
     // endregion
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number, @Supply Vector> : SuppliedTypeRegistryKey<Algebra<Number, Vector>>() {
-        override val impliedKeys: ImpliedKeysRegistry<Algebra<Number, Vector>> by lazy {
-            ImpliedKeysRegistry {
-                Module.Key<Number, Vector>().impliesSame()
-                Ring.Key<Vector>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.algebraic.Algebra.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}>"
-    }
 }
 
+@GenerateKoneContextKey
 public interface CommutativeAlgebra<Number, Vector> : Algebra<Number, Vector>, CommutativeRing<Vector> {
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number, @Supply Vector> : SuppliedTypeRegistryKey<CommutativeAlgebra<Number, Vector>>() {
-        override val impliedKeys: ImpliedKeysRegistry<CommutativeAlgebra<Number, Vector>> by lazy {
-            ImpliedKeysRegistry {
-                Algebra.Key<Number, Vector>().impliesSame()
-                CommutativeRing.Key<Vector>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.algebraic.CommutativeAlgebra.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}>"
-    }
 }

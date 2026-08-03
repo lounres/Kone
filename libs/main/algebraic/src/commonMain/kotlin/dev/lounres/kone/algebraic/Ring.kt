@@ -8,12 +8,7 @@ package dev.lounres.kone.algebraic
 import dev.lounres.kone.algebraic.util.doublingTimes
 import dev.lounres.kone.contexts.KoneContextInclude
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.Registry
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 
 
 /**
@@ -21,6 +16,7 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
  *
  * @param Number The type of elements of the ring.
  */
+@GenerateKoneContextKey
 public interface Ring<Number> : Semiring<Number>, CommutativeGroup<Number> {
     // region Integers conversion
     /**
@@ -301,22 +297,6 @@ public interface Ring<Number> : Semiring<Number>, CommutativeGroup<Number> {
     // endregion
     
     public companion object;
-    
-    /**
-     * Registry key for [Ring] interface in [Registry].
-     *
-     * @param Number The type of elements of the ring.
-     */
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<Ring<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<Ring<Number>> by lazy {
-            ImpliedKeysRegistry {
-                Semigroup.Key<Number>().impliesSame()
-                CommutativeGroup.Key<Number>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.algebraic.Ring.Key<${suppliedTypeOf<Number>()}>"
-    }
 }
 
 /**
@@ -324,22 +304,7 @@ public interface Ring<Number> : Semiring<Number>, CommutativeGroup<Number> {
  *
  * @param Number The type of elements of the ring.
  */
+@GenerateKoneContextKey
 public interface CommutativeRing<Number> : Ring<Number>, CommutativeSemiring<Number> {
     public companion object;
-    
-    /**
-     * Registry key for [CommutativeRing] interface in [Registry].
-     *
-     * @param Number The type of elements of the commutative ring.
-     */
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<CommutativeRing<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<CommutativeRing<Number>> by lazy {
-            ImpliedKeysRegistry {
-                Ring.Key<Number>().impliesSame()
-                CommutativeSemiring.Key<Number>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.algebraic.CommutativeRing.Key<${suppliedTypeOf<Number>()}>"
-    }
 }

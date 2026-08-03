@@ -9,13 +9,13 @@ package dev.lounres.kone.relations
 
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.registry.*
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 import kotlin.jvm.JvmField
 import kotlin.Comparator as KotlinStdlibComparator
 import kotlin.ranges.ClosedRange as KotlinClosedRange
@@ -52,6 +52,7 @@ public enum class ComparisonResult(@JvmField internal val kotlinComparisonResult
  *
  * @param Element The type of elements for which this order context is defined.
  */
+@GenerateKoneContextKey
 public interface Order<in Element> : KoneContext {
     /**
      * Compares [this] and [other] elements.
@@ -67,19 +68,6 @@ public interface Order<in Element> : KoneContext {
      * and constants for creating [Order] instances.
      */
     public companion object;
-    
-    /**
-     * Registry key for [Order] interface in [KoneContextRegistry].
-     *
-     * This key is used to register and retrieve [Order] instances for specific types
-     * in the context registry.
-     *
-     * @param Element The type of elements for which this order context is registered.
-     */
-    @Suppliable
-    public class Key<@Supply Element> : SuppliedTypeRegistryKey<Order<Element>>() {
-        override fun toString(): String = "dev.lounres.kone.relations.Order.Key<${suppliedTypeOf<Element>()}>"
-    }
 }
 
 /**

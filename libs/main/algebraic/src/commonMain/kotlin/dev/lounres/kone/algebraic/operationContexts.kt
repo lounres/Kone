@@ -6,11 +6,7 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.registry.Registry
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 
 
 /**
@@ -19,6 +15,7 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
  * @param Input The type of the operand.
  * @param Result The type of the result.
  */
+@GenerateKoneContextKey
 public interface UnaryPlus<in Input, out Result> : KoneContext {
     /**
      * Applies unary plus to [this] element.
@@ -27,17 +24,6 @@ public interface UnaryPlus<in Input, out Result> : KoneContext {
      * @return The result of unary plus.
      */
     public operator fun Input.unaryPlus(): Result
-    
-    /**
-     * Registry key for [UnaryPlus] interface in [Registry].
-     *
-     * @param Input The type of the operand.
-     * @param Result The type of the result.
-     */
-    @Suppliable
-    public class Key<@Supply Input, @Supply Result> : SuppliedTypeRegistryKey<UnaryPlus<Input, Result>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.UnaryPlus.Key<${suppliedTypeOf<Input>()}, ${suppliedTypeOf<Result>()}>"
-    }
 }
 
 /**
@@ -70,6 +56,7 @@ public operator fun <Input, Result> Input.unaryPlus(): Result = with(unaryPlus) 
  * @param Input The type of the operand.
  * @param Result The type of the result.
  */
+@GenerateKoneContextKey
 public interface UnaryMinus<in Input, out Result> : KoneContext {
     /**
      * Applies unary minus (negation) to [this] element.
@@ -78,17 +65,6 @@ public interface UnaryMinus<in Input, out Result> : KoneContext {
      * @return The negated value.
      */
     public operator fun Input.unaryMinus(): Result
-    
-    /**
-     * Registry key for [UnaryMinus] interface in [Registry].
-     *
-     * @param Input The type of the operand.
-     * @param Result The type of the result.
-     */
-    @Suppliable
-    public class Key<@Supply Input, @Supply Result> : SuppliedTypeRegistryKey<UnaryMinus<Input, Result>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.UnaryMinus.Key<${suppliedTypeOf<Input>()}, ${suppliedTypeOf<Result>()}>"
-    }
 }
 
 /**
@@ -122,6 +98,7 @@ public operator fun <Input, Result> Input.unaryMinus(): Result = with(unaryMinus
  * @param Right The type of the right operand.
  * @param Result The type of the result.
  */
+@GenerateKoneContextKey
 public interface Plus<in Left, in Right, out Result> : KoneContext {
     /**
      * Adds [other] to [this] element.
@@ -131,18 +108,6 @@ public interface Plus<in Left, in Right, out Result> : KoneContext {
      * @return The sum of [this] and [other].
      */
     public operator fun Left.plus(other: Right): Result
-    
-    /**
-     * Registry key for [Plus] interface in [Registry].
-     *
-     * @param Left The type of the left operand.
-     * @param Right The type of the right operand.
-     * @param Result The type of the result.
-     */
-    @Suppliable
-    public class Key<@Supply Left, @Supply Right, @Supply Result> : SuppliedTypeRegistryKey<Plus<Left, Right, Result>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.Plus.Key<${suppliedTypeOf<Left>()}, ${suppliedTypeOf<Right>()}, ${suppliedTypeOf<Result>()}>"
-    }
 }
 
 /**
@@ -179,6 +144,7 @@ public operator fun <Left, Right, Result> Left.plus(other: Right): Result = with
  * @param Right The type of the right operand.
  * @param Result The type of the result.
  */
+@GenerateKoneContextKey
 public interface Minus<in Left, in Right, out Result> : KoneContext {
     /**
      * Subtracts [other] from [this] element.
@@ -188,18 +154,6 @@ public interface Minus<in Left, in Right, out Result> : KoneContext {
      * @return The difference of [this] and [other].
      */
     public operator fun Left.minus(other: Right): Result
-    
-    /**
-     * Registry key for [Minus] interface in [Registry].
-     *
-     * @param Left The type of the left operand.
-     * @param Right The type of the right operand.
-     * @param Result The type of the result.
-     */
-    @Suppliable
-    public class Key<@Supply Left, @Supply Right, @Supply Result> : SuppliedTypeRegistryKey<Minus<Left, Right, Result>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.Minus.Key<${suppliedTypeOf<Left>()}, ${suppliedTypeOf<Right>()}, ${suppliedTypeOf<Result>()}>"
-    }
 }
 
 /**
@@ -236,6 +190,7 @@ public operator fun <Left, Right, Result> Left.minus(other: Right): Result = wit
  * @param Right The type of the right operand.
  * @param Result The type of the result.
  */
+@GenerateKoneContextKey
 public interface Times<in Left, in Right, out Result> : KoneContext {
     /**
      * Multiplies [this] element by [other].
@@ -245,18 +200,6 @@ public interface Times<in Left, in Right, out Result> : KoneContext {
      * @return The product of [this] and [other].
      */
     public operator fun Left.times(other: Right): Result
-    
-    /**
-     * Registry key for [Times] interface in [Registry].
-     *
-     * @param Left The type of the left operand.
-     * @param Right The type of the right operand.
-     * @param Result The type of the result.
-     */
-    @Suppliable
-    public class Key<@Supply Left, @Supply Right, @Supply Result> : SuppliedTypeRegistryKey<Times<Left, Right, Result>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.Times.Key<${suppliedTypeOf<Left>()}, ${suppliedTypeOf<Right>()}, ${suppliedTypeOf<Result>()}>"
-    }
 }
 
 /**
@@ -293,6 +236,7 @@ public operator fun <Left, Right, Result> Left.times(other: Right): Result = wit
  * @param Right The type of the right operand (divisor).
  * @param Result The type of the result (quotient).
  */
+@GenerateKoneContextKey
 public interface Divide<in Left, in Right, out Result> : KoneContext {
     /**
      * Divides [this] element by [other].
@@ -302,18 +246,6 @@ public interface Divide<in Left, in Right, out Result> : KoneContext {
      * @return The quotient of [this] divided by [other].
      */
     public operator fun Left.div(other: Right): Result
-    
-    /**
-     * Registry key for [Divide] interface in [Registry].
-     *
-     * @param Left The type of the left operand.
-     * @param Right The type of the right operand.
-     * @param Result The type of the result.
-     */
-    @Suppliable
-    public class Key<@Supply Left, @Supply Right, @Supply Result> : SuppliedTypeRegistryKey<Divide<Left, Right, Result>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.Divide.Key<${suppliedTypeOf<Left>()}, ${suppliedTypeOf<Right>()}, ${suppliedTypeOf<Result>()}>"
-    }
 }
 
 /**
@@ -349,6 +281,7 @@ public operator fun <Left, Right, Result> Left.div(other: Right): Result = with(
  * @param Input The type of the operand.
  * @param Result The type of the result.
  */
+@GenerateKoneContextKey
 public interface Reciprocal<in Input, out Result> : KoneContext {
     /**
      * Computes the reciprocal of [this] element.
@@ -357,18 +290,6 @@ public interface Reciprocal<in Input, out Result> : KoneContext {
      * @return The reciprocal of [this].
      */
     public fun Input.reciprocal(): Result
-    
-    /**
-     * Registry key for [Reciprocal] interface in [Registry].
-     *
-     * @param Left The type of the operand.
-     * @param Right The type of the divisor (unused).
-     * @param Result The type of the result.
-     */
-    @Suppliable
-    public class Key<@Supply Left, @Supply Right, @Supply Result> : SuppliedTypeRegistryKey<Divide<Left, Right, Result>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.Divide.Key<${suppliedTypeOf<Left>()}, ${suppliedTypeOf<Right>()}, ${suppliedTypeOf<Result>()}>"
-    }
 }
 
 /**
@@ -402,6 +323,7 @@ public fun <Input, Result> Input.reciprocal(): Result = with(divide) { this@reci
  * @param Right The type of the right operand (divisor).
  * @param Result The type of the result (remainder).
  */
+@GenerateKoneContextKey
 public interface Remainder<in Left, in Right, out Result> : KoneContext {
     /**
      * Computes the remainder of [this] element divided by [other].
@@ -411,18 +333,6 @@ public interface Remainder<in Left, in Right, out Result> : KoneContext {
      * @return The remainder of [this] divided by [other].
      */
     public operator fun Left.rem(other: Right): Result
-    
-    /**
-     * Registry key for [Remainder] interface in [Registry].
-     *
-     * @param Left The type of the left operand (dividend).
-     * @param Right The type of the right operand (divisor).
-     * @param Result The type of the result (remainder).
-     */
-    @Suppliable
-    public class Key<@Supply Left, @Supply Right, @Supply Result> : SuppliedTypeRegistryKey<Remainder<Left, Right, Result>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.Remainder.Key<${suppliedTypeOf<Left>()}, ${suppliedTypeOf<Right>()}, ${suppliedTypeOf<Result>()}>"
-    }
 }
 
 /**
@@ -459,6 +369,7 @@ public operator fun <Left, Right, Result> Left.rem(other: Right): Result = with(
  * @param Right The type of the right operand (divisor).
  * @param Result The type of the result containing both quotient and remainder.
  */
+@GenerateKoneContextKey
 public interface DivideRemainder<in Left, in Right, out Result> : KoneContext {
     /**
      * Performs Euclidean division of [this] element by [other].
@@ -468,18 +379,6 @@ public interface DivideRemainder<in Left, in Right, out Result> : KoneContext {
      * @return The result of division with remainder.
      */
     public infix fun Left.divrem(other: Right): Result
-    
-    /**
-     * Registry key for [DivideRemainder] interface in [Registry].
-     *
-     * @param Left The type of the left operand (dividend).
-     * @param Right The type of the right operand (divisor).
-     * @param Result The type of the result.
-     */
-    @Suppliable
-    public class Key<@Supply Left, @Supply Right, @Supply Result> : SuppliedTypeRegistryKey<DivideRemainder<Left, Right, Result>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.DivideRemainder.Key<${suppliedTypeOf<Left>()}, ${suppliedTypeOf<Right>()}, ${suppliedTypeOf<Result>()}>"
-    }
 }
 
 /**
@@ -516,6 +415,7 @@ public infix fun <Left, Right, Result> Left.divrem(other: Right): Result = with(
  * @param Exponent The type of the exponent.
  * @param Result The type of the result.
  */
+@GenerateKoneContextKey
 public interface Power<in Base, in Exponent, out Result> : KoneContext {
     /**
      * Raises [base] to the power of [exponent].
@@ -525,18 +425,6 @@ public interface Power<in Base, in Exponent, out Result> : KoneContext {
      * @return The result of [base] raised to [exponent].
      */
     public fun power(base: Base, exponent: Exponent): Result
-    
-    /**
-     * Registry key for [Power] interface in [Registry].
-     *
-     * @param Base The type of the base.
-     * @param Exponent The type of the exponent.
-     * @param Result The type of the result.
-     */
-    @Suppliable
-    public class Key<@Supply Base, @Supply Exponent, @Supply Result> : SuppliedTypeRegistryKey<Power<Base, Exponent, Result>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.Power.Key<${suppliedTypeOf<Base>()}, ${suppliedTypeOf<Exponent>()}, ${suppliedTypeOf<Result>()}>"
-    }
 }
 
 /**

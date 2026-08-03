@@ -8,12 +8,7 @@ package dev.lounres.kone.algebraic
 import dev.lounres.kone.contexts.KoneContextInclude
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.contexts.localContexts
-import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.Registry
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 
 
 /**
@@ -21,6 +16,7 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
  *
  * @param Number The type of elements of the Euclidean semiring.
  */
+@GenerateKoneContextKey
 public interface Field<Number> : CommutativeRing<Number> {
     /**
      * The division operation on elements of type [Number].
@@ -140,19 +136,4 @@ public interface Field<Number> : CommutativeRing<Number> {
         }
     
     public companion object;
-    
-    /**
-     * Registry key for [Field] interface in [Registry].
-     *
-     * @param Number The type of elements of the field.
-     */
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<Field<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<Field<Number>> by lazy {
-            ImpliedKeysRegistry {
-                CommutativeRing.Key<Number>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.algebraic.Field.Key<${suppliedTypeOf<Number>()}>"
-    }
 }

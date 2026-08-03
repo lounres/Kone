@@ -7,15 +7,12 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextInclude
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.multidimensionalCollections.MDList2
-import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 // The underlying ring is commutative
+@GenerateKoneContextKey
 public interface MatrixCategoryOverRing<Number, Matrix: MDList2<Number>> : KoneContext {
     // region Matrix-Int operations
     @KoneContextInclude
@@ -77,13 +74,9 @@ public interface MatrixCategoryOverRing<Number, Matrix: MDList2<Number>> : KoneC
     // endregion
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number, @Supply Matrix : MDList2<Number>> : SuppliedTypeRegistryKey<MatrixCategoryOverRing<Number, Matrix>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.MatrixCategoryOverRing.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-    }
 }
 
+@GenerateKoneContextKey
 public interface MatrixCategoryOverField<Number, Matrix: MDList2<Number>> : MatrixCategoryOverRing<Number, Matrix> {
     // region Matrix-Int operations
     @KoneContextInclude
@@ -111,14 +104,4 @@ public interface MatrixCategoryOverField<Number, Matrix: MDList2<Number>> : Matr
     // endregion
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number, @Supply Matrix : MDList2<Number>> : SuppliedTypeRegistryKey<MatrixCategoryOverField<Number, Matrix>>() {
-        override val impliedKeys: ImpliedKeysRegistry<MatrixCategoryOverField<Number, Matrix>> by lazy {
-            ImpliedKeysRegistry {
-                MatrixCategoryOverRing.Key<Number, Matrix>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.algebraic.MatrixCategoryOverField.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-    }
 }

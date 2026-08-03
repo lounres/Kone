@@ -7,12 +7,7 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.contexts.KoneContextInclude
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.Registry
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import kotlinx.serialization.Serializable
 
 
@@ -43,6 +38,7 @@ public /*value*/ data class EuclideanDivisionResult<Number>(public val quotient:
  *
  * @param Number The type of elements of the Euclidean semiring.
  */
+@GenerateKoneContextKey
 public interface EuclideanSemiring<Number> : CommutativeSemiring<Number> {
     /**
      * The Euclidean division (division with remainder) operation on elements of type [Number] with [EuclideanDivisionResult] as result.
@@ -71,21 +67,6 @@ public interface EuclideanSemiring<Number> : CommutativeSemiring<Number> {
     public val numberRemainderNumber: Remainder<Number, Number, Number> get() = Remainder { left, right -> numberDivideRemainderNumber { left divrem right }.remainder }
     
     public companion object;
-    
-    /**
-     * Registry key for [EuclideanSemiring] interface in [Registry].
-     *
-     * @param Number The type of elements of the Euclidean semiring.
-     */
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<EuclideanSemiring<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<EuclideanSemiring<Number>> by lazy {
-            ImpliedKeysRegistry {
-                CommutativeSemiring.Key<Number>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.algebraic.EuclideanSemiring.Key<${suppliedTypeOf<Number>()}>"
-    }
 }
 
 /**
@@ -99,22 +80,7 @@ public interface EuclideanSemiring<Number> : CommutativeSemiring<Number> {
  *
  * @param Number The type of elements of the Euclidean semiring.
  */
+@GenerateKoneContextKey
 public interface EuclideanRing<Number> : CommutativeRing<Number>, EuclideanSemiring<Number> {
     public companion object;
-    
-    /**
-     * Registry key for [EuclideanRing] interface in [Registry].
-     *
-     * @param Number The type of elements of the Euclidean ring.
-     */
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<EuclideanRing<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<EuclideanRing<Number>> by lazy {
-            ImpliedKeysRegistry {
-                CommutativeRing.Key<Number>().impliesSame()
-                EuclideanSemiring.Key<Number>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.algebraic.CommutativeRing.Key<${suppliedTypeOf<Number>()}>"
-    }
 }

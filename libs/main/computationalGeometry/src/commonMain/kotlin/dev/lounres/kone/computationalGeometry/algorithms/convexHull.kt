@@ -21,25 +21,18 @@ import dev.lounres.kone.computationalGeometry.dot
 import dev.lounres.kone.computationalGeometry.polytopes.Polytope
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.localUnwrap
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Order
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
+@GenerateKoneContextKey
 public fun interface ConvexHullOverRingComputer<in Number, Vector, in Point> : KoneContext {
     public fun KoneIterable<Point>.convexHull(
         basis: ModuleBasis.Finite<Number, Vector>,
     ): Polytope
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number, @Supply Vector, @Supply Point> : SuppliedTypeRegistryKey<ConvexHullOverRingComputer<Number, Vector, Point>>() {
-        override fun toString(): String = "dev.lounres.kone.computationalGeometry.algorithms.ConvexHullOverRingComputer.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}, ${suppliedTypeOf<Point>()}>"
-    }
 }
 
 context(convexHullComputer: ConvexHullOverRingComputer<Number, Vector, Point>)

@@ -6,6 +6,7 @@
 package dev.lounres.kone.algebraic.algorithms
 
 import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
@@ -18,15 +19,11 @@ public class LogarithmOnePlusInputOverInputKey<@Supply Number> : SuppliedTypeReg
     override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.LogarithmOnePlusInputOverInputKey<${suppliedTypeOf<Number>()}>"
 }
 
+@GenerateKoneContextKey
 public fun interface LogarithmOnePlusInputOverInputComputer<Number> : KoneContext {
     public fun Number.logarithmOnePlusThisOverThis(): Number
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<LogarithmOnePlusInputOverInputComputer<Number>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.LogarithmOnePlusInputOverInputComputer.Key<${suppliedTypeOf<Number>()}>"
-    }
 }
 
 //public interface LogarithmOnePlusInputOverInputSoftComputer<Number> : LogarithmOnePlusInputOverInputComputer<Number> {

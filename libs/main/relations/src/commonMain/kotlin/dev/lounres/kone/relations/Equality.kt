@@ -10,12 +10,11 @@ package dev.lounres.kone.relations
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 /**
@@ -31,6 +30,7 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
  *
  * @param Element The type of elements for which this equality context is defined.
  */
+@GenerateKoneContextKey
 public interface Equality<in Element> : KoneContext {
     /**
      * Checks equality of [this] and [other] elements.
@@ -47,19 +47,6 @@ public interface Equality<in Element> : KoneContext {
      * for creating [Equality] instances.
      */
     public companion object;
-    
-    /**
-     * Registry key for [Equality] interface in [KoneContextRegistry].
-     *
-     * This key is used to register and retrieve [Equality] instances for specific types
-     * in the context registry.
-     *
-     * @param Element The type of elements for which this equality context is registered.
-     */
-    @Suppliable
-    public class Key<@Supply Element> : SuppliedTypeRegistryKey<Equality<Element>>() {
-        override fun toString(): String = "dev.lounres.kone.relations.Equality.Key<${suppliedTypeOf<Element>()}>"
-    }
 }
 
 /**

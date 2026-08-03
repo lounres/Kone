@@ -6,10 +6,7 @@
 package dev.lounres.kone.algebraic.algorithms
 
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 
 
 //public class PlanarVectorArgumentKey<Number>(
@@ -20,15 +17,11 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 //    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.PlanarVectorArgumentKey<$numberType>"
 //}
 
+@GenerateKoneContextKey
 public fun interface PlanarVectorArgumentComputer<Number> : KoneContext {
     public fun planarVectorArgument(x: Number, y: Number): Number
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<PlanarVectorArgumentComputer<Number>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.PlanarVectorArgumentComputer.Key<${suppliedTypeOf<Number>()}>"
-    }
 }
 
 context(planarVectorArgumentComputer: PlanarVectorArgumentComputer<Number>)

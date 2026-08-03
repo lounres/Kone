@@ -6,6 +6,7 @@
 package dev.lounres.kone.algebraic.algorithms
 
 import dev.lounres.kone.contexts.KoneContext
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
@@ -18,15 +19,11 @@ public class TransposeMatrixKey<@Supply Number, @Supply Matrix : MDList2<Number>
     override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.TransposeMatrixKey<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
 }
 
+@GenerateKoneContextKey
 public fun interface TransposeMatrixComputer<out Number, Matrix : MDList2<Number>> : KoneContext {
     public fun Matrix.transpose(): Matrix
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number, @Supply Matrix : MDList2<Number>> : SuppliedTypeRegistryKey<TransposeMatrixComputer<Number, Matrix>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.TransposeMatrixComputer.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
-    }
 }
 
 context(transposeMatrixComputer: TransposeMatrixComputer<Number, Matrix>)

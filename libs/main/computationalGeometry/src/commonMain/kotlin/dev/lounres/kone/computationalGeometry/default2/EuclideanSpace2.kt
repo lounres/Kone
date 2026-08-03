@@ -6,7 +6,6 @@
 package dev.lounres.kone.computationalGeometry.default2
 
 import dev.lounres.kone.algebraic.*
-import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.collections.array.KoneDoubleArray
 import dev.lounres.kone.collections.array.of
 import dev.lounres.kone.collections.interop.toKoneList
@@ -18,13 +17,15 @@ import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.contexts.localUnwrap
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.multidimensionalCollections.*
-import dev.lounres.kone.multidimensionalCollections.utils.all
 import dev.lounres.kone.multidimensionalCollections.utils.map
-import dev.lounres.kone.registry.*
+import dev.lounres.kone.registry.MutableOwnedProviderRegistry
+import dev.lounres.kone.registry.RegisteredValueProvider
+import dev.lounres.kone.registry.cached
+import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 
@@ -71,6 +72,7 @@ public fun <Number> Point2(x: Number, y: Number): Point2<Number> =
         }
     )
 
+@GenerateKoneContextKey
 public class EuclideanSpace2OverRing<Number>(
     private val ring: Ring<Number>,
 ) : EuclideanSpaceOverRing<Number, Vector2<Number>, Point2<Number>> {
@@ -169,16 +171,6 @@ public class EuclideanSpace2OverRing<Number>(
     }
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<EuclideanSpace2OverRing<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<EuclideanSpace2OverRing<Number>> by lazy {
-            ImpliedKeysRegistry {
-                EuclideanSpaceOverRing.Key<Number, Vector2<Number>, Point2<Number>>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.computationalGeometry.default2.EuclideanSpace2OverRing.Key<${suppliedTypeOf<Number>()}>"
-    }
 }
 
 // TODO: Remove the checker when KT-73135 will be fixed
@@ -193,6 +185,7 @@ public object EuclideanSpace2OverRingForSuppliableTopLevelFunctions {
     }
 }
 
+@GenerateKoneContextKey
 public class EuclideanSpace2OverField<Number>(
     private val field: Field<Number>,
 ) : EuclideanSpaceOverField<Number, Vector2<Number>, Point2<Number>> {
@@ -305,16 +298,6 @@ public class EuclideanSpace2OverField<Number>(
     }
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<EuclideanSpace2OverField<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<EuclideanSpace2OverField<Number>> by lazy {
-            ImpliedKeysRegistry {
-                EuclideanSpaceOverField.Key<Number, Vector2<Number>, Point2<Number>>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.computationalGeometry.default2.EuclideanSpace2OverField.Key<${suppliedTypeOf<Number>()}>"
-    }
 }
 
 // TODO: Remove the checker when KT-73135 will be fixed

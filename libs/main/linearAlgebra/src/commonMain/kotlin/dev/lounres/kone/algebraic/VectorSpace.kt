@@ -6,13 +6,10 @@
 package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.contexts.KoneContextInclude
-import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 
 
+@GenerateKoneContextKey
 public interface VectorSpace<Number, Vector> : Module<Number, Vector> {
     @KoneContextInclude
     public val vectorDivideNumber: Divide<Vector, Number, Vector>
@@ -27,29 +24,10 @@ public interface VectorSpace<Number, Vector> : Module<Number, Vector> {
     
     public companion object;
     
-    @Suppliable
-    public class Key<@Supply Number, @Supply Vector> : SuppliedTypeRegistryKey<VectorSpace<Number, Vector>>() {
-        override val impliedKeys: ImpliedKeysRegistry<VectorSpace<Number, Vector>> by lazy {
-            ImpliedKeysRegistry {
-                Module.Key<Number, Vector>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.algebraic.VectorSpace.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}>"
-    }
-    
+    @GenerateKoneContextKey
     public interface FiniteDimensional<Number, Vector> : VectorSpace<Number, Vector> {
         public val dimension: UInt
         
         public companion object;
-        
-        @Suppliable
-        public class Key<@Supply Number, @Supply Vector> : SuppliedTypeRegistryKey<FiniteDimensional<Number, Vector>>() {
-            override val impliedKeys: ImpliedKeysRegistry<FiniteDimensional<Number, Vector>> by lazy {
-                ImpliedKeysRegistry {
-                    VectorSpace.Key<Number, Vector>().impliesSame()
-                }
-            }
-            override fun toString(): String = "dev.lounres.kone.algebraic.VectorSpace.FiniteDimensional.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Vector>()}>"
-        }
     }
 }
