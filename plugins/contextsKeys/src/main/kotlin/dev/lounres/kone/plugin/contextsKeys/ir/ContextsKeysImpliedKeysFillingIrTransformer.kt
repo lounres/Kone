@@ -18,7 +18,6 @@ import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
 import org.jetbrains.kotlin.ir.builders.*
-import org.jetbrains.kotlin.ir.builders.declarations.addValueParameter
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrConstructor
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationOrigin
@@ -75,7 +74,6 @@ class ContextsKeysImpliedKeysFillingIrTransformer(
                                 constructedClass.typeParameters.map { it.defaultType }
                             )
                         )
-                        lazy {}
                         arguments[0] = IrFunctionExpressionImpl(
                             startOffset = UNDEFINED_OFFSET,
                             endOffset = UNDEFINED_OFFSET,
@@ -91,7 +89,7 @@ class ContextsKeysImpliedKeysFillingIrTransformer(
                                 endOffset = UNDEFINED_OFFSET,
                                 origin = declarationOrigin,
                                 name = Name.identifier("lazyInitializerLambda"),
-                                visibility = DescriptorVisibilities.DEFAULT_VISIBILITY,
+                                visibility = DescriptorVisibilities.LOCAL,
                                 isInline = false,
                                 isExpect = false,
                                 returnType = irRuntimeReferences.impliedKeysRegistryIrClassSymbol.typeWith(
@@ -135,7 +133,7 @@ class ContextsKeysImpliedKeysFillingIrTransformer(
                                                         endOffset = UNDEFINED_OFFSET,
                                                         origin = declarationOrigin,
                                                         name = Name.identifier("impliedKeysRegistryBuilderLambda"),
-                                                        visibility = DescriptorVisibilities.DEFAULT_VISIBILITY,
+                                                        visibility = DescriptorVisibilities.LOCAL,
                                                         isInline = false,
                                                         isExpect = false,
                                                         returnType = pluginContext.irBuiltIns.unitType,
@@ -236,6 +234,16 @@ class ContextsKeysImpliedKeysFillingIrTransformer(
                                                                                             ?: contextsKeysIrPluginException(TODO())
                                                                                     )
                                                                                 )
+                                                                            type = superKey.typeWith(
+                                                                                superClassTypeArguments.map {
+                                                                                    it.typeOrNull
+                                                                                        ?.substitute(
+                                                                                            containingClass.typeParameters,
+                                                                                            constructedClass.typeParameters.map { it.defaultType },
+                                                                                        )
+                                                                                        ?: contextsKeysIrPluginException(TODO())
+                                                                                },
+                                                                            )
                                                                         }
                                                                     }
                                                                 }
@@ -269,10 +277,17 @@ class ContextsKeysImpliedKeysFillingIrTransformer(
             getter.body = DeclarationIrBuilder(pluginContext, getter.symbol).run {
                 irBlockBody {
                     +irReturn(
-                        irGetField(
-                            receiver = irGet(getter.parameters.first { it.kind == DispatchReceiver }),
-                            field = backingField,
-                        )
+                        irCall(irRuntimeReferences.lazyValueGetterIrSimpleFunction).apply {
+                            arguments[0] = irGetField(
+                                receiver = irGet(getter.parameters.first { it.kind == DispatchReceiver }),
+                                field = backingField,
+                            )
+                            type = irRuntimeReferences.impliedKeysRegistryIrClassSymbol.typeWith(
+                                containingClass.typeWith(
+                                    constructedClass.typeParameters.map { it.defaultType }
+                                )
+                            )
+                        }
                     )
                 }
             }

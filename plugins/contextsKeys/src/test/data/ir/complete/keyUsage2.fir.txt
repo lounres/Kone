@@ -1,0 +1,48 @@
+FILE: keyUsage2.kt
+    package foo.bar
+
+    @R|dev/lounres/kone/contextsKeys/GenerateKoneContextKey|() public abstract interface Context1<in Element> : R|dev/lounres/kone/contexts/KoneContext| {
+        @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final class Key<@R|dev/lounres/kone/suppliedTypes/Supply|() in Element> : R|dev/lounres/kone/registry/SuppliedTypeRegistryKey<foo/bar/Context1<Element>>| {
+            public final fun toString(): R|kotlin/String|
+
+            public final val impliedKeys: R|dev/lounres/kone/registry/ImpliedKeysRegistry<foo/bar/Context1<Element>>|
+
+            public final var suppliedTypesStorage: R|kotlin/collections/Map<kotlin/String, kotlin/collections/List<dev/lounres/kone/suppliedTypes/SuppliedType>>|
+
+            public constructor<@R|dev/lounres/kone/suppliedTypes/Supply|() in Element>(): R|foo/bar/Context1.Key<Element>|
+
+        }
+
+    }
+    @R|dev/lounres/kone/contextsKeys/GenerateKoneContextKey|() public abstract interface Context2<in Element> : R|foo/bar/Context1<Element>| {
+        @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final class Key<@R|dev/lounres/kone/suppliedTypes/Supply|() in Element> : R|dev/lounres/kone/registry/SuppliedTypeRegistryKey<foo/bar/Context2<Element>>| {
+            public final fun toString(): R|kotlin/String|
+
+            public final val impliedKeys: R|dev/lounres/kone/registry/ImpliedKeysRegistry<foo/bar/Context2<Element>>|
+
+            public final var suppliedTypesStorage: R|kotlin/collections/Map<kotlin/String, kotlin/collections/List<dev/lounres/kone/suppliedTypes/SuppliedType>>|
+
+            public constructor<@R|dev/lounres/kone/suppliedTypes/Supply|() in Element>(): R|foo/bar/Context2.Key<Element>|
+
+        }
+
+    }
+    public final val koneContextRegistry: R|dev/lounres/kone/contexts/KoneContextRegistry| = Q|dev/lounres/kone/contexts/KoneContextRegistry|.R|dev/lounres/kone/contexts/build|(<L> = build@fun R|@R|dev/lounres/kone/contexts/KoneContextRegistryBuilderDsl|()  dev/lounres/kone/registry/MutableOwnedProviderRegistry<dev/lounres/kone/contexts/KoneContextRegistry>|.<anonymous>(): R|kotlin/Unit| <inline=Inline, kind=EXACTLY_ONCE>  {
+        context(this@R|special/anonymous|) Q|foo/bar/Context2|.R|foo/bar/Context2.Key|<R|kotlin/Int|>().R|dev/lounres/kone/registry/withImpliedUsingFirst|<R|foo/bar/Context2<kotlin/Int>|>.R|dev/lounres/kone/registry/correspondsTo|<R|kotlin/Nothing|>(SAM(correspondsTo@fun <anonymous>(): R|kotlin/Nothing| <inline=NoInline>  {
+            R|kotlin/TODO|()
+        }
+        ))
+    }
+    )
+        public get(): R|dev/lounres/kone/contexts/KoneContextRegistry|
+    public final fun box(): R|kotlin/String| {
+        ^box when () {
+            ==(R|foo/bar/koneContextRegistry|.R|SubstitutionOverride<dev/lounres/kone/contexts/KoneContextRegistry.asProvidingRegistrationIterable: R|kotlin/collections/Iterable<dev/lounres/kone/registry/ProvidingRegistration<*>>|>|().R|kotlin/collections/toList|<R|dev/lounres/kone/registry/ProvidingRegistration<*>|>().R|SubstitutionOverride<kotlin/collections/List.size: R|kotlin/Int|>|, Int(2)) ->  {
+                String(OK)
+            }
+            else ->  {
+                String(INVALID)
+            }
+        }
+
+    }

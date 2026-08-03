@@ -52,13 +52,13 @@ FILE fqName:foo.bar fileName:/keyUsage1.kt
             CALL 'public final fun lazy <T> (initializer: kotlin.Function0<T of kotlin.lazy>): kotlin.Lazy<T of kotlin.lazy> declared in kotlin' type=kotlin.Lazy<dev.lounres.kone.registry.ImpliedKeysRegistry<foo.bar.Equality<Element of foo.bar.Equality.Key>>> origin=null
               TYPE_ARG T: dev.lounres.kone.registry.ImpliedKeysRegistry<foo.bar.Equality<Element of foo.bar.Equality.Key>>
               ARG initializer: FUN_EXPR type=kotlin.Function0<dev.lounres.kone.registry.ImpliedKeysRegistry<foo.bar.Equality<Element of foo.bar.Equality.Key>>> origin=LAMBDA
-                FUN GENERATED[dev.lounres.kone.plugin.contextsKeys.ir.ContextsKeysImpliedKeysFillingIrTransformer.Key] name:lazyInitializerLambda visibility:public modality:FINAL returnType:dev.lounres.kone.registry.ImpliedKeysRegistry<foo.bar.Equality<Element of foo.bar.Equality.Key>>
+                FUN GENERATED[dev.lounres.kone.plugin.contextsKeys.ir.ContextsKeysImpliedKeysFillingIrTransformer.Key] name:lazyInitializerLambda visibility:local modality:FINAL returnType:dev.lounres.kone.registry.ImpliedKeysRegistry<foo.bar.Equality<Element of foo.bar.Equality.Key>>
                   BLOCK_BODY
-                    RETURN type=kotlin.Nothing from='public final fun lazyInitializerLambda (): dev.lounres.kone.registry.ImpliedKeysRegistry<foo.bar.Equality<Element of foo.bar.Equality.Key>> declared in foo.bar.Equality.Key.impliedKeys'
+                    RETURN type=kotlin.Nothing from='local final fun lazyInitializerLambda (): dev.lounres.kone.registry.ImpliedKeysRegistry<foo.bar.Equality<Element of foo.bar.Equality.Key>> declared in foo.bar.Equality.Key.impliedKeys'
                       CALL 'public final fun ImpliedKeysRegistry <I> (builder: @[ExtensionFunctionType] kotlin.Function1<dev.lounres.kone.registry.ImpliedKeysRegistryBuilder<I of dev.lounres.kone.registry.ImpliedKeysRegistry>, kotlin.Unit>): dev.lounres.kone.registry.ImpliedKeysRegistry<I of dev.lounres.kone.registry.ImpliedKeysRegistry> declared in dev.lounres.kone.registry' type=dev.lounres.kone.registry.ImpliedKeysRegistry<foo.bar.Equality<Element of foo.bar.Equality.Key>> origin=null
                         TYPE_ARG I: foo.bar.Equality<Element of foo.bar.Equality.Key>
                         ARG builder: FUN_EXPR type=kotlin.Function1<dev.lounres.kone.registry.ImpliedKeysRegistryBuilder<foo.bar.Equality<Element of foo.bar.Equality.Key>>, kotlin.Unit> origin=LAMBDA
-                          FUN GENERATED[dev.lounres.kone.plugin.contextsKeys.ir.ContextsKeysImpliedKeysFillingIrTransformer.Key] name:impliedKeysRegistryBuilderLambda visibility:public modality:FINAL returnType:kotlin.Unit
+                          FUN GENERATED[dev.lounres.kone.plugin.contextsKeys.ir.ContextsKeysImpliedKeysFillingIrTransformer.Key] name:impliedKeysRegistryBuilderLambda visibility:local modality:FINAL returnType:kotlin.Unit
                             VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.contextsKeys.ir.ContextsKeysImpliedKeysFillingIrTransformer.Key] kind:ExtensionReceiver name:<this> index:0 type:dev.lounres.kone.registry.ImpliedKeysRegistryBuilder<foo.bar.Equality<Element of foo.bar.Equality.Key>>
                             BLOCK_BODY
         FUN DEFAULT_PROPERTY_ACCESSOR name:<get-impliedKeys> visibility:public modality:FINAL returnType:dev.lounres.kone.registry.ImpliedKeysRegistry<foo.bar.Equality<Element of foo.bar.Equality.Key>>
@@ -68,8 +68,9 @@ FILE fqName:foo.bar fileName:/keyUsage1.kt
             public open fun <get-impliedKeys> (): dev.lounres.kone.registry.ImpliedKeysRegistry<T of dev.lounres.kone.registry.SuppliedTypeRegistryKey> declared in dev.lounres.kone.registry.SuppliedTypeRegistryKey
           BLOCK_BODY
             RETURN type=kotlin.Nothing from='public final fun <get-impliedKeys> (): dev.lounres.kone.registry.ImpliedKeysRegistry<foo.bar.Equality<Element of foo.bar.Equality.Key>> declared in foo.bar.Equality.Key'
-              GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:impliedKeys type:kotlin.Lazy<dev.lounres.kone.registry.ImpliedKeysRegistry<foo.bar.Equality<Element of foo.bar.Equality.Key>>> visibility:private [final]' type=kotlin.Lazy<dev.lounres.kone.registry.ImpliedKeysRegistry<foo.bar.Equality<Element of foo.bar.Equality.Key>>> origin=null
-                receiver: GET_VAR '<this>: foo.bar.Equality.Key<Element of foo.bar.Equality.Key> declared in foo.bar.Equality.Key.<get-impliedKeys>' type=foo.bar.Equality.Key<Element of foo.bar.Equality.Key> origin=null
+              CALL 'public abstract fun <get-value> (): T of kotlin.Lazy declared in kotlin.Lazy' type=dev.lounres.kone.registry.ImpliedKeysRegistry<foo.bar.Equality<Element of foo.bar.Equality.Key>> origin=null
+                ARG <this>: GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:impliedKeys type:kotlin.Lazy<dev.lounres.kone.registry.ImpliedKeysRegistry<foo.bar.Equality<Element of foo.bar.Equality.Key>>> visibility:private [final]' type=kotlin.Lazy<dev.lounres.kone.registry.ImpliedKeysRegistry<foo.bar.Equality<Element of foo.bar.Equality.Key>>> origin=null
+                  receiver: GET_VAR '<this>: foo.bar.Equality.Key<Element of foo.bar.Equality.Key> declared in foo.bar.Equality.Key.<get-impliedKeys>' type=foo.bar.Equality.Key<Element of foo.bar.Equality.Key> origin=null
       PROPERTY GENERATED[dev.lounres.kone.plugin.contextsKeys.fir.ContextKeyGenerationExtension.Key] name:suppliedTypesStorage visibility:public modality:FINAL [var]
         overridden:
           public open suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.registry.SuppliedTypeRegistryKey

@@ -14,7 +14,7 @@ import org.jetbrains.kotlin.config.CompilerConfiguration
 
 @OptIn(ExperimentalCompilerApi::class)
 class ContextsCommandLineProcessor : CommandLineProcessor {
-    override val pluginId: String = "dev.lounres.kone.plugin.suppliedTypes"
+    override val pluginId: String = "dev.lounres.kone.plugin.contexts"
     
     override val pluginOptions: Collection<CliOption> = listOf()
     

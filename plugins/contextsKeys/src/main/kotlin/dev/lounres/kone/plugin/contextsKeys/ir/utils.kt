@@ -91,6 +91,8 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
     val pairIrClassSymbol = finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin"), topLevelName = Name.identifier("Pair")))
     val pairIrConstructorSymbol = pairIrClassSymbol.constructors.single()
     val lazyIrClassSymbol = finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin"), topLevelName = Name.identifier("Lazy")))
+    val lazyValueIrProperty = lazyIrClassSymbol.owner.declarations.first { it is IrProperty && it.name == Name.identifier("value") } as IrProperty
+    val lazyValueGetterIrSimpleFunction = lazyValueIrProperty.getter!!
     val lazyIrSimpleFunction = finder.referenceFunctionThatOrFail(CallableId(packageName = FqName("kotlin"), callableName = Name.identifier("lazy"))) {
         it.owner.parameters.size == 1
     }

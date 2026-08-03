@@ -266,6 +266,9 @@ stal {
                         "-Xcollection-literals",
                         "-Xallow-returns-result-of",
 //                        "-Xcompanion-blocks-and-extensions",
+                        
+                        // Kone compiler plugins order
+                        "-Xcompiler-plugin-order=dev.lounres.kone.plugin.suppliedTypes>dev.lounres.kone.plugin.contextsKeys",
                     )
                     optIn.addAll(
                         listOf(
@@ -305,6 +308,9 @@ stal {
                         "-Xcollection-literals",
                         "-Xallow-returns-result-of",
 //                        "-Xcompanion-blocks-and-extensions",
+                        
+                        // Kone compiler plugins order
+                        "-Xcompiler-plugin-order=dev.lounres.kone.plugin.suppliedTypes>dev.lounres.kone.plugin.contextsKeys",
                     )
                     optIn.set(
                         listOf(
