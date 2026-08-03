@@ -6,13 +6,9 @@
 package dev.lounres.kone.statistics.seriesModels
 
 import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.statistics.KoneSeriesModelDescriber
 import dev.lounres.kone.statistics.KoneSeriesModelGenerator
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 public data class SeasonalAutoregressiveMovingIntegratedAverageModelDescription<Number>(
@@ -33,20 +29,12 @@ public data class SeasonalAutoregressiveMovingIntegratedAverageModelDescription<
     }
 }
 
+@GenerateKoneContextKey
 public fun interface SeasonalAutoregressiveMovingIntegratedAverageModelGenerator<Number> : KoneSeriesModelGenerator<Number, SeasonalAutoregressiveMovingIntegratedAverageModelDescription<Number>> {
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<SeasonalAutoregressiveMovingIntegratedAverageModelGenerator<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<SeasonalAutoregressiveMovingIntegratedAverageModelGenerator<Number>> by lazy {
-            ImpliedKeysRegistry {
-                KoneSeriesModelGenerator.Key<Number, SeasonalAutoregressiveMovingIntegratedAverageModelDescription<Number>>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.statistics.seriesModels.SeasonalAutoregressiveMovingIntegratedAverageModelGenerator.Key<${suppliedTypeOf<Number>()}>"
-    }
 }
 
+@GenerateKoneContextKey
 public interface SeasonalAutoregressiveMovingIntegratedAverageModelDescriber<Number> : KoneSeriesModelDescriber<Number, SeasonalAutoregressiveMovingIntegratedAverageModelDescription<Number>> {
     public val autoregressiveOrder: UInt
     public val integrationOrder: UInt
@@ -57,14 +45,4 @@ public interface SeasonalAutoregressiveMovingIntegratedAverageModelDescriber<Num
     public val seasonalMovingAverageOrder: UInt
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<SeasonalAutoregressiveMovingIntegratedAverageModelDescriber<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<SeasonalAutoregressiveMovingIntegratedAverageModelDescriber<Number>> by lazy {
-            ImpliedKeysRegistry {
-                KoneSeriesModelDescriber.Key<Number, SeasonalAutoregressiveMovingIntegratedAverageModelDescription<Number>>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.statistics.seriesModels.SeasonalAutoregressiveMovingIntegratedAverageModelDescriber.Key<${suppliedTypeOf<Number>()}>"
-    }
 }

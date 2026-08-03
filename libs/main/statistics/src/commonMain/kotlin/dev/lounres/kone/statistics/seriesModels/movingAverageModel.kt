@@ -9,13 +9,9 @@ package dev.lounres.kone.statistics.seriesModels
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
 import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.statistics.KoneSeriesModelDescriber
 import dev.lounres.kone.statistics.KoneSeriesModelGenerator
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 import kotlin.jvm.JvmInline
 
 
@@ -31,32 +27,14 @@ public data class MovingAverageModelDescription<Number>(
     }
 }
 
+@GenerateKoneContextKey
 public fun interface MovingAverageModelGenerator<Number> : KoneSeriesModelGenerator<Number, MovingAverageModelDescription<Number>> {
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<MovingAverageModelGenerator<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<MovingAverageModelGenerator<Number>> by lazy {
-            ImpliedKeysRegistry {
-                KoneSeriesModelGenerator.Key<Number, MovingAverageModelDescription<Number>>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.statistics.seriesModels.MovingAverageModelGenerator.Key<${suppliedTypeOf<Number>()}>"
-    }
 }
 
+@GenerateKoneContextKey
 public interface MovingAverageModelDescriber<Number> : KoneSeriesModelDescriber<Number, MovingAverageModelDescription<Number>> {
     public val order: UInt
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<MovingAverageModelDescriber<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<MovingAverageModelDescriber<Number>> by lazy {
-            ImpliedKeysRegistry {
-                KoneSeriesModelDescriber.Key<Number, MovingAverageModelDescription<Number>>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.statistics.seriesModels.MovingAverageModelDescriber.Key<${suppliedTypeOf<Number>()}>"
-    }
 }

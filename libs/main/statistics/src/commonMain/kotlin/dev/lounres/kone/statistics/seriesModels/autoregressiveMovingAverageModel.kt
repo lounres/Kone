@@ -6,13 +6,9 @@
 package dev.lounres.kone.statistics.seriesModels
 
 import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.statistics.KoneSeriesModelDescriber
 import dev.lounres.kone.statistics.KoneSeriesModelGenerator
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 public data class AutoregressiveMovingAverageModelDescription<Number>(
@@ -27,33 +23,15 @@ public data class AutoregressiveMovingAverageModelDescription<Number>(
     }
 }
 
+@GenerateKoneContextKey
 public fun interface AutoregressiveMovingAverageModelGenerator<Number> : KoneSeriesModelGenerator<Number, AutoregressiveMovingAverageModelDescription<Number>> {
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<AutoregressiveMovingAverageModelGenerator<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<AutoregressiveMovingAverageModelGenerator<Number>> by lazy {
-            ImpliedKeysRegistry {
-                KoneSeriesModelGenerator.Key<Number, AutoregressiveMovingAverageModelDescription<Number>>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.statistics.seriesModels.AutoregressiveMovingAverageModelGenerator.Key<${suppliedTypeOf<Number>()}>"
-    }
 }
 
+@GenerateKoneContextKey
 public interface AutoregressiveMovingAverageModelDescriber<Number> : KoneSeriesModelDescriber<Number, AutoregressiveMovingAverageModelDescription<Number>> {
     public val autoregressiveOrder: UInt
     public val movingAverageOrder: UInt
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<AutoregressiveMovingAverageModelDescriber<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<AutoregressiveMovingAverageModelDescriber<Number>> by lazy {
-            ImpliedKeysRegistry {
-                KoneSeriesModelDescriber.Key<Number, AutoregressiveMovingAverageModelDescription<Number>>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.statistics.seriesModels.AutoregressiveMovingAverageModelDescriber.Key<${suppliedTypeOf<Number>()}>"
-    }
 }

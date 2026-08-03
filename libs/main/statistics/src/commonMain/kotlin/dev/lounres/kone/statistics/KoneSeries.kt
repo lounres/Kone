@@ -9,11 +9,8 @@ import dev.lounres.kone.collections.iterables.KoneSequence
 import dev.lounres.kone.collections.iterables.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.repeat
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 
 
 public fun interface KoneSeries<Element> : KoneSequence<Element> {
@@ -24,29 +21,21 @@ public fun interface KoneSeries<Element> : KoneSequence<Element> {
     }
 }
 
+@GenerateKoneContextKey
 public fun interface KoneSeriesModelGenerator<Element, SeriesModelDescription> : KoneContext {
     public fun SeriesModelDescription.generate(): KoneSeries<Element>
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Element, @Supply SeriesModelDescription> : SuppliedTypeRegistryKey<KoneSeriesModelGenerator<Element, SeriesModelDescription>>() {
-        override fun toString(): String = "dev.lounres.kone.statistics.KoneSeriesModelGenerator.Key<${suppliedTypeOf<Element>()}, ${suppliedTypeOf<SeriesModelDescription>()}>"
-    }
 }
 
 context(model: KoneSeriesModelGenerator<Element, SeriesModelDescription>)
 public fun <Element, SeriesModelDescription> SeriesModelDescription.generate(): KoneSeries<Element> = with(model) { this@generate.generate() }
 
+@GenerateKoneContextKey
 public fun interface KoneSeriesModelDescriber<Element, SeriesModelDescription> : KoneContext {
     public fun KoneList<Element>.describe(): SeriesModelDescription
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Element, @Supply SeriesModelDescription> : SuppliedTypeRegistryKey<KoneSeriesModelDescriber<Element, SeriesModelDescription>>() {
-        override fun toString(): String = "dev.lounres.kone.statistics.KoneSeriesModelDescriber.Key<${suppliedTypeOf<Element>()}, ${suppliedTypeOf<SeriesModelDescription>()}>"
-    }
 }
 
 context(modelDescriber: KoneSeriesModelDescriber<Element, SeriesModelDescription>)

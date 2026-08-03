@@ -9,13 +9,9 @@ package dev.lounres.kone.statistics.seriesModels
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
 import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.registry.ImpliedKeysRegistry
-import dev.lounres.kone.registry.SuppliedTypeRegistryKey
+import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.statistics.KoneSeriesModelDescriber
 import dev.lounres.kone.statistics.KoneSeriesModelGenerator
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
 import kotlin.jvm.JvmInline
 
 
@@ -31,32 +27,14 @@ public data class AutoregressiveModelDescription<Number>(
     }
 }
 
+@GenerateKoneContextKey
 public fun interface AutoregressiveModelGenerator<Number> : KoneSeriesModelGenerator<Number, AutoregressiveModelDescription<Number>> {
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<AutoregressiveModelGenerator<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<AutoregressiveModelGenerator<Number>> by lazy {
-            ImpliedKeysRegistry {
-                KoneSeriesModelGenerator.Key<Number, AutoregressiveModelDescription<Number>>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.statistics.seriesModels.AutoregressiveModelGenerator.Key<${suppliedTypeOf<Number>()}>"
-    }
 }
 
+@GenerateKoneContextKey
 public interface AutoregressiveModelDescriber<Number> : KoneSeriesModelDescriber<Number, AutoregressiveModelDescription<Number>> {
     public val order: UInt
     
     public companion object;
-    
-    @Suppliable
-    public class Key<@Supply Number> : SuppliedTypeRegistryKey<AutoregressiveModelDescriber<Number>>() {
-        override val impliedKeys: ImpliedKeysRegistry<AutoregressiveModelDescriber<Number>> by lazy {
-            ImpliedKeysRegistry {
-                KoneSeriesModelDescriber.Key<Number, AutoregressiveModelDescription<Number>>().impliesSame()
-            }
-        }
-        override fun toString(): String = "dev.lounres.kone.statistics.seriesModels.AutoregressiveModelDescriber.Key<${suppliedTypeOf<Number>()}>"
-    }
 }
