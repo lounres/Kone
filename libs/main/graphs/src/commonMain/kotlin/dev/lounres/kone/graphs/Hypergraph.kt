@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.graphs
 
-import dev.lounres.kone.collections.iterables.contains
+import dev.lounres.kone.collections.iterable.contains
 import dev.lounres.kone.collections.set.KoneMutableReifiedSet
 import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.addAllFrom

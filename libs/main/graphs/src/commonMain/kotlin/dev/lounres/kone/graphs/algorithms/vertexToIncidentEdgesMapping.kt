@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.graphs.algorithms
 
-import dev.lounres.kone.collections.iterables.contains
+import dev.lounres.kone.collections.iterable.contains
 import dev.lounres.kone.collections.map.KoneReifiedMap
 import dev.lounres.kone.collections.map.get
 import dev.lounres.kone.collections.set.KoneMutableReifiedSet

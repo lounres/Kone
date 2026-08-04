@@ -11,7 +11,7 @@ import dev.lounres.kone.collections.heap.HeapNode
 import dev.lounres.kone.collections.heap.implementations.KoneBinaryGCMinimumHeap
 import dev.lounres.kone.collections.heap.isEmpty
 import dev.lounres.kone.collections.heap.isNotEmpty
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.empty
 import dev.lounres.kone.collections.list.generate

@@ -9,7 +9,7 @@ import dev.lounres.kone.algebraic.CommutativeMonoid
 import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.array.generate
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.empty
 import dev.lounres.kone.collections.list.generate
@@ -23,9 +23,12 @@ import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.contexts.localUnwrap
-import dev.lounres.kone.graphs.*
+import dev.lounres.kone.graphs.Hypergraph
 import dev.lounres.kone.graphs.HypergraphEdgeWeightOfTypeSuppliableTopLevelFunctions.weightOfType
+import dev.lounres.kone.graphs.HypergraphVertex
+import dev.lounres.kone.graphs.Path
 import dev.lounres.kone.graphs.algorithms.*
+import dev.lounres.kone.graphs.end
 import dev.lounres.kone.registry.*
 import dev.lounres.kone.relations.*
 import dev.lounres.kone.suppliedTypes.Suppliable

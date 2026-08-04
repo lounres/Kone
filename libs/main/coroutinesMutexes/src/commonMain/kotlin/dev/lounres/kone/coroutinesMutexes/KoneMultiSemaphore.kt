@@ -5,9 +5,9 @@
 
 package dev.lounres.kone.coroutinesMutexes
 
-import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.collections.iterables.isNotEmpty
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterable.isNotEmpty
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.utils.filter
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract

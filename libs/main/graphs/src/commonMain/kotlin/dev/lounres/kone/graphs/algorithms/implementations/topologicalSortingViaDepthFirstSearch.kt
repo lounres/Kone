@@ -7,10 +7,10 @@ package dev.lounres.kone.graphs.algorithms.implementations
 
 import dev.lounres.kone.collections.array.KoneArray
 import dev.lounres.kone.collections.array.of
-import dev.lounres.kone.collections.iterables.KoneIterator
-import dev.lounres.kone.collections.iterables.getAndMoveNext
-import dev.lounres.kone.collections.iterables.isNotEmpty
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterable.isNotEmpty
+import dev.lounres.kone.collections.iterator.KoneIterator
+import dev.lounres.kone.collections.iterator.getAndMoveNext
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.list.lastIndex

@@ -5,22 +5,12 @@
 
 package dev.lounres.kone.collections.progression
 
-import dev.lounres.kone.algebraic.Monoid
-import dev.lounres.kone.algebraic.Semiring
-import dev.lounres.kone.algebraic.Sign
-import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.algebraic.sign
-import dev.lounres.kone.collections.iterables.KoneIterator
-import dev.lounres.kone.collections.iterables.KoneSequence
+import dev.lounres.kone.algebraic.*
+import dev.lounres.kone.collections.iterator.KoneIterator
 import dev.lounres.kone.collections.noNextElementInIteratorException
+import dev.lounres.kone.collections.sequence.KoneSequence
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.relations.ClosedRange
-import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.OpenEndRange
-import dev.lounres.kone.relations.geq
-import dev.lounres.kone.relations.gt
-import dev.lounres.kone.relations.leq
-import dev.lounres.kone.relations.lt
+import dev.lounres.kone.relations.*
 
 
 public infix fun <Number> ClosedRange<Number>.withStep(step: Number): ClosedRangeArithmeticProgression<Number> =

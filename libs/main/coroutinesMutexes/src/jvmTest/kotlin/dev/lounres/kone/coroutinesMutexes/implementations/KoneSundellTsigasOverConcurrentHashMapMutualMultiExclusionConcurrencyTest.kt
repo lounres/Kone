@@ -9,8 +9,8 @@ import dev.lounres.kone.collections.deque.implementations.KoneListBackedDeque
 import dev.lounres.kone.collections.deque.isNotEmpty
 import dev.lounres.kone.collections.deque.popFirst
 import dev.lounres.kone.collections.deque.popLast
-import dev.lounres.kone.collections.iterables.isEmpty
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterable.isEmpty
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.list.remove
@@ -24,11 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.jetbrains.lincheck.datastructures.IntGen
-import org.jetbrains.lincheck.datastructures.ModelCheckingOptions
-import org.jetbrains.lincheck.datastructures.Operation
-import org.jetbrains.lincheck.datastructures.Param
-import org.jetbrains.lincheck.datastructures.StressOptions
+import org.jetbrains.lincheck.datastructures.*
 import kotlin.test.Test
 
 

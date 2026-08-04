@@ -9,9 +9,9 @@ import dev.lounres.kone.algebraic.Monoid
 import dev.lounres.kone.algebraic.Semiring
 import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.collections.iterables.KoneIterator
-import dev.lounres.kone.collections.iterables.KoneSequence
+import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterator.KoneIterator
+import dev.lounres.kone.collections.sequence.KoneSequence
 import dev.lounres.kone.contexts.invoke
 
 

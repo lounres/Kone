@@ -5,8 +5,8 @@
 
 package dev.lounres.kone.graphs.algorithms.implementations
 
-import dev.lounres.kone.collections.iterables.isNotEmpty
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterable.isNotEmpty
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.addAllFrom
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.collections.map.KoneMutableMap
@@ -15,11 +15,13 @@ import dev.lounres.kone.collections.map.of
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.set.build
 import dev.lounres.kone.contexts.KoneContextRegistry
-import dev.lounres.kone.graphs.*
+import dev.lounres.kone.graphs.Hypergraph
+import dev.lounres.kone.graphs.HypergraphVertex
 import dev.lounres.kone.graphs.algorithms.TopologicalSortingComputer
 import dev.lounres.kone.graphs.algorithms.TopologicallySortedVertices
 import dev.lounres.kone.graphs.algorithms.incomingDegreeOf
 import dev.lounres.kone.graphs.algorithms.outgoingIncidentEdgesOf
+import dev.lounres.kone.graphs.end
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.relations.Equality

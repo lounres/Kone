@@ -5,22 +5,13 @@
 
 package dev.lounres.kone.coroutinesMutexes.implementations
 
-import dev.lounres.kone.collections.deque.implementations.KoneListBackedDeque
-import dev.lounres.kone.collections.deque.isNotEmpty
-import dev.lounres.kone.collections.deque.popFirst
-import dev.lounres.kone.collections.deque.popLast
-import dev.lounres.kone.collections.iterables.isEmpty
-import dev.lounres.kone.collections.iterables.isNotEmpty
+import dev.lounres.kone.collections.iterable.isEmpty
+import dev.lounres.kone.collections.iterable.isNotEmpty
 import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.list.of
-import dev.lounres.kone.collections.list.remove
 import dev.lounres.kone.collections.utils.first
-import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.defaultFor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.jetbrains.lincheck.datastructures.ModelCheckingOptions
 import org.jetbrains.lincheck.datastructures.Operation

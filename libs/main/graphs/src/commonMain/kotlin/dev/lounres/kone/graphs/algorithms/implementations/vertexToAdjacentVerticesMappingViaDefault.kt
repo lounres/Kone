@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.graphs.algorithms.implementations
 
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.map.KoneMutableReifiedMap
 import dev.lounres.kone.collections.map.KoneReifiedMap
 import dev.lounres.kone.collections.map.get

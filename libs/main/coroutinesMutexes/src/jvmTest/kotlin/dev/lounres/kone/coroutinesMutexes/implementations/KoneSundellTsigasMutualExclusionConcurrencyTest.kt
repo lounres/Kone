@@ -9,7 +9,7 @@ import dev.lounres.kone.collections.deque.implementations.KoneListBackedDeque
 import dev.lounres.kone.collections.deque.isNotEmpty
 import dev.lounres.kone.collections.deque.popFirst
 import dev.lounres.kone.collections.deque.popLast
-import dev.lounres.kone.collections.iterables.isEmpty
+import dev.lounres.kone.collections.iterable.isEmpty
 import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.list.remove
