@@ -140,7 +140,7 @@ public inline fun <OldValue, NewValue> Expect<OldValue>.using(noinline provider:
 /**
  * Creates an [Expect] assertion using a lazily-evaluated value [provider] function.
  *
- * The value is obtained by calling the provider function only when [exposeValue] is first called.
+ * The value is obtained by calling the provider function only when [Expect.exposeValue] is first called.
  * The value is cached after the first evaluation.
  *
  * @param Value The type of the value being asserted on.
