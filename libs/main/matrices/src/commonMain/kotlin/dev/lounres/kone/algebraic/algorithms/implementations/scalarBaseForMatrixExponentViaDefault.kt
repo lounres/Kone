@@ -6,24 +6,15 @@
 package dev.lounres.kone.algebraic.algorithms.implementations
 
 import dev.lounres.kone.algebraic.ComplexNumber
-import dev.lounres.kone.algebraic.algorithms.ExponentComputer
-import dev.lounres.kone.algebraic.algorithms.ScalarBaseForMatrixExponentKey
-import dev.lounres.kone.algebraic.algorithms.ScalarBaseForMatrixExponentWithComplexNumberConvexHullBoundKey
-import dev.lounres.kone.algebraic.algorithms.ScalarBaseForMatrixFunction
-import dev.lounres.kone.algebraic.algorithms.ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound
-import dev.lounres.kone.algebraic.algorithms.exponent
+import dev.lounres.kone.algebraic.algorithms.*
 import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
-import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterable.KoneIterable
 import dev.lounres.kone.collections.utils.maxOf
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.contexts.localUnwrap
-import dev.lounres.kone.registry.MutableOwnedProviderRegistry
-import dev.lounres.kone.registry.RegisteredValueProvider
-import dev.lounres.kone.registry.cached
-import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.withImpliedUsingFirst
+import dev.lounres.kone.registry.*
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.Supply

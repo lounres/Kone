@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.misc.canvas.common
 
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.set.empty

@@ -7,7 +7,7 @@ package dev.lounres.kone.misc.composeCanvas
 
 import androidx.compose.ui.graphics.Path
 import dev.lounres.kone.algebraic.plus
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.list.of

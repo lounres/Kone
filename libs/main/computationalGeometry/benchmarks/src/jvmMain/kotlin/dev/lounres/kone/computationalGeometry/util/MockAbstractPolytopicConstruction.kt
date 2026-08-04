@@ -5,13 +5,6 @@
 
 package dev.lounres.kone.computationalGeometry.util
 
-import dev.lounres.kone.collections.iterables.next
-import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.collections.map.get
-import dev.lounres.kone.collections.set.KoneSet
-import dev.lounres.kone.relations.Hashing
-import dev.lounres.kone.computationalGeometry.*
-
 
 //@OptIn(DelicatePolytopicConstructionAPI::class)
 //class MockAbstractPolytopicConstruction<N, out NC: Hashing<N>>(

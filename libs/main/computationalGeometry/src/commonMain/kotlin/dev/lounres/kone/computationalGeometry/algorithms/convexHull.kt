@@ -10,9 +10,9 @@ import dev.lounres.kone.algebraic.basis.ModuleBasis
 import dev.lounres.kone.algebraic.basis.ModuleBasisDecomposition
 import dev.lounres.kone.algebraic.minus
 import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.collections.iterables.getAndMoveNext
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterator.getAndMoveNext
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.list.toKoneList
 import dev.lounres.kone.collections.utils.map

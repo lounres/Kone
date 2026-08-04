@@ -26,7 +26,7 @@ import dev.lounres.kone.algebraic.assertions.toBeQuasiUpperTriangularMatrix
 import dev.lounres.kone.algebraic.assertions.toBeUnitMatrixWithTolerance
 import dev.lounres.kone.algebraic.assertions.toBeUpperTriangularMatrix
 import dev.lounres.kone.assertions.*
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.utils.withIndex

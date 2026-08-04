@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.computationalGeometry.polytopes
 
-import dev.lounres.kone.collections.iterables.isNotEmpty
+import dev.lounres.kone.collections.iterable.isNotEmpty
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList

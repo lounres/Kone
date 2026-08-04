@@ -24,7 +24,7 @@ import dev.lounres.kone.algebraic.algorithms.implementations.setViaDefaultForDou
 import dev.lounres.kone.algebraic.algorithms.utils.toMatrixString
 import dev.lounres.kone.algebraic.assertions.*
 import dev.lounres.kone.assertions.*
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.of
 import dev.lounres.kone.collections.utils.withIndex

@@ -8,7 +8,7 @@ package dev.lounres.kone.algebraic.algorithms.implementations
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.algorithms.*
 import dev.lounres.kone.algebraic.algorithms.implementations.utils.requestFor
-import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterable.KoneIterable
 import dev.lounres.kone.collections.utils.maxOf
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.KoneContextRegistry

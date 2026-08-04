@@ -6,8 +6,8 @@
 package dev.lounres.kone.computationalGeometry.algorithms
 
 import dev.lounres.kone.algebraic.basis.VectorSpaceBasis
-import dev.lounres.kone.collections.iterables.KoneSequence
 import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.sequence.KoneSequence
 import dev.lounres.kone.computationalGeometry.curves.Segment
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contextsKeys.GenerateKoneContextKey

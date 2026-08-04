@@ -9,7 +9,7 @@ import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.algebraic.isNotZero
 import dev.lounres.kone.algebraic.minus
 import dev.lounres.kone.algebraic.times
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList

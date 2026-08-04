@@ -9,8 +9,8 @@ import dev.lounres.kone.algebraic.equality
 import dev.lounres.kone.algebraic.hashing
 import dev.lounres.kone.algebraic.monoid
 import dev.lounres.kone.collections.interop.toKoneList
-import dev.lounres.kone.collections.iterables.isNotEmpty
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterable.isNotEmpty
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.generate
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList

@@ -5,9 +5,9 @@
 
 package dev.lounres.kone.statistics
 
-import dev.lounres.kone.collections.iterables.KoneSequence
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.KoneList
+import dev.lounres.kone.collections.sequence.KoneSequence
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.repeat

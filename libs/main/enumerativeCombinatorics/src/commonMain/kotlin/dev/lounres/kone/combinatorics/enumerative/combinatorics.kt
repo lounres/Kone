@@ -5,32 +5,15 @@
 
 package dev.lounres.kone.combinatorics.enumerative
 
-import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.array.KoneArray
-import dev.lounres.kone.collections.array.KoneMutableArray
-import dev.lounres.kone.collections.array.KoneMutableUIntArray
-import dev.lounres.kone.collections.array.KoneUIntArray
-import dev.lounres.kone.collections.array.fill
-import dev.lounres.kone.collections.array.generate
-import dev.lounres.kone.collections.array.toKoneUIntArray
+import dev.lounres.kone.collections.array.*
 import dev.lounres.kone.collections.interop.toKoneList
-import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.collections.iterables.KoneSequence
-import dev.lounres.kone.collections.iterables.build
-import dev.lounres.kone.collections.iterables.isEmpty
-import dev.lounres.kone.collections.iterables.next
-import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.collections.list.KoneMutableList
-import dev.lounres.kone.collections.list.KoneSettableList
-import dev.lounres.kone.collections.list.build
-import dev.lounres.kone.collections.list.empty
-import dev.lounres.kone.collections.list.generate
+import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterable.isEmpty
+import dev.lounres.kone.collections.iterator.next
+import dev.lounres.kone.collections.list.*
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
-import dev.lounres.kone.collections.list.indices
-import dev.lounres.kone.collections.list.lastIndex
-import dev.lounres.kone.collections.list.of
-import dev.lounres.kone.collections.list.toKoneList
-import dev.lounres.kone.collections.list.toKoneSettableList
+import dev.lounres.kone.collections.sequence.KoneSequence
+import dev.lounres.kone.collections.sequence.build
 import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
@@ -68,7 +51,7 @@ public fun <E> cartesianProduct(collections: KoneList<KoneList<E>>): KoneSequenc
         yield(currentElements.toKoneList())
 
         val firstToIncrease = currentIndices.lastIndexThat { k, index -> index != lastIndices[k] }
-        if (firstToIncrease == UInt.MAX_VALUE) return@build
+        if (firstToIncrease == MAX_VALUE) return@build
 
         val newIndex = ++currentIndices[firstToIncrease]
         currentElements[firstToIncrease] = collections[firstToIncrease][newIndex]
@@ -97,7 +80,7 @@ public infix fun <E> KoneList<E>.cartesianPower(power: UInt): KoneSequence<KoneL
             yield(currentElements.toKoneList())
 
             val firstToIncrease = currentIndices.lastIndexThat { _, index -> index != lastIndex }
-            if (firstToIncrease == UInt.MAX_VALUE) return@build
+            if (firstToIncrease == MAX_VALUE) return@build
 
             val newIndex = ++currentIndices[firstToIncrease]
             currentElements[firstToIncrease] = collection[newIndex]
@@ -156,7 +139,7 @@ public fun <E> KoneList<E>.combinations(k: UInt): KoneSequence<KoneList<E>> {
             yield(currentElements.toKoneList())
 
             val firstToIncrease = currentIndices.lastIndexThat { t, index -> index < addition + t }
-            if (firstToIncrease == UInt.MAX_VALUE) return@build
+            if (firstToIncrease == MAX_VALUE) return@build
 
             var index = currentIndices[firstToIncrease]
             for (t in firstToIncrease ..< k) {
@@ -239,12 +222,12 @@ public fun <E> KoneList<E>.permutations(k: UInt = size): KoneSequence<KoneList<E
                 while (references[references[index]] == size + 1u) {
                     removeMark(index)
                     current--
-                    if (current == UInt.MAX_VALUE) break
+                    if (current == MAX_VALUE) break
                     index = currentIndices[current]
                 }
                 current
             }
-            if (firstToIncrease == UInt.MAX_VALUE) return@build
+            if (firstToIncrease == MAX_VALUE) return@build
 
             val newIndex = moveToNextMark(currentIndices[firstToIncrease])
             currentIndices[firstToIncrease] = newIndex
@@ -315,12 +298,12 @@ public fun <E> KoneList<E>.allPermutations(): KoneSequence<KoneList<E>> {
                     removeMark(collectionIndex)
                     currentElements[current] = null
                     current--
-                    if (current == UInt.MAX_VALUE) break
+                    if (current == MAX_VALUE) break
                     collectionIndex = currentIndices[current]
                 }
                 current
             }
-            if (firstToIncrease == UInt.MAX_VALUE) return@build
+            if (firstToIncrease == MAX_VALUE) return@build
 
             val newIndex = moveToNextMark(currentIndices[firstToIncrease])
             currentIndices[firstToIncrease] = newIndex
@@ -429,7 +412,7 @@ public fun <E> KoneList<E>.combinationsWithoutRepetitions(k: UInt, equality: Equ
                         currentCounts[index + 1u] < counts[index + 1u] &&
                         count > 0u
             }
-            if (firstToDecrease == UInt.MAX_VALUE) return@build
+            if (firstToDecrease == MAX_VALUE) return@build
 
             currentCounts[firstToDecrease]--
             restCounts[firstToDecrease]++
@@ -505,7 +488,7 @@ public fun <E> KoneList<E>.allCombinationsWithoutRepetitions(equality: Equality<
             yield(currentElements.take(currentSize) as KoneList<E>)
 
             val firstToIncrease = currentCounts.lastIndexThat { index, count -> count < counts[index] }
-            if (firstToIncrease == UInt.MAX_VALUE) return@build
+            if (firstToIncrease == MAX_VALUE) return@build
 
             currentCounts[firstToIncrease]++
             currentSize++
@@ -588,7 +571,7 @@ public fun <E> KoneList<E>.permutationsWithoutRepetitions(k: UInt = size, equali
 
             val firstToIncrease = scope {
                 var current = k - 1u
-                while (current != UInt.MAX_VALUE) {
+                while (current != MAX_VALUE) {
                     val index = currentIndices[current]
                     removeMarkFrom(index)
                     if (references[index] != size + 1u) break
@@ -596,7 +579,7 @@ public fun <E> KoneList<E>.permutationsWithoutRepetitions(k: UInt = size, equali
                 }
                 current
             }
-            if (firstToIncrease == UInt.MAX_VALUE) return@build
+            if (firstToIncrease == MAX_VALUE) return@build
 
             val newIndex = addMarkAt(currentIndices[firstToIncrease])
             currentIndices[firstToIncrease] = newIndex
@@ -685,7 +668,7 @@ public fun <E> KoneList<E>.allPermutationsWithoutRepetitions(equality: Equality<
 
             val firstToIncrease = scope {
                 var current = size - 1u
-                while (current != UInt.MAX_VALUE) {
+                while (current != MAX_VALUE) {
                     val index = currentIndices[current]
                     removeMarkFrom(index)
                     if (references[index] != size + 1u) break
@@ -693,7 +676,7 @@ public fun <E> KoneList<E>.allPermutationsWithoutRepetitions(equality: Equality<
                 }
                 current
             }
-            if (firstToIncrease == UInt.MAX_VALUE) return@build
+            if (firstToIncrease == MAX_VALUE) return@build
 
             val newIndex = addMarkAt(currentIndices[firstToIncrease])
             currentIndices[firstToIncrease] = newIndex

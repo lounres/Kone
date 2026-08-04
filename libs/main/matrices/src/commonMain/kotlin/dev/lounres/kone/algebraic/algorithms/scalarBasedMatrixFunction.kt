@@ -6,7 +6,7 @@
 package dev.lounres.kone.algebraic.algorithms
 
 import dev.lounres.kone.algebraic.ComplexNumber
-import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterable.KoneIterable
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.multidimensionalCollections.MDList2

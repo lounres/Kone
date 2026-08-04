@@ -14,7 +14,8 @@ import dev.lounres.kone.collections.deque.KoneDeque
 import dev.lounres.kone.collections.deque.implementations.KoneListBackedDeque
 import dev.lounres.kone.collections.deque.isNotEmpty
 import dev.lounres.kone.collections.deque.popFirst
-import dev.lounres.kone.collections.iterables.*
+import dev.lounres.kone.collections.iterable.*
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.*
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedList

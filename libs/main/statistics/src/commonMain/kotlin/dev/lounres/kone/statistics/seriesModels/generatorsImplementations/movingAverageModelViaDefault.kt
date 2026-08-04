@@ -9,7 +9,7 @@ import dev.lounres.kone.algebraic.CommutativeRing
 import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.collections.interop.asKoneSequence
-import dev.lounres.kone.collections.iterables.KoneIterator
+import dev.lounres.kone.collections.iterator.KoneIterator
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.generate
 import dev.lounres.kone.collections.list.getOrElse

@@ -7,14 +7,9 @@ package dev.lounres.kone.algebraic.algorithms.implementations
 
 import dev.lounres.kone.algebraic.*
 import dev.lounres.kone.algebraic.algorithms.*
-import dev.lounres.kone.collections.array.KoneMutableUIntArray
-import dev.lounres.kone.collections.array.KoneUIntArray
-import dev.lounres.kone.collections.array.asKoneUIntArray
-import dev.lounres.kone.collections.array.fill
-import dev.lounres.kone.collections.array.generate
-import dev.lounres.kone.collections.array.induce
+import dev.lounres.kone.collections.array.*
 import dev.lounres.kone.collections.interop.asKoneSequence
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.generate
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList

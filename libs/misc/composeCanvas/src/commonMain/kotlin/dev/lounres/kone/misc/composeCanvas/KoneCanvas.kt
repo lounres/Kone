@@ -24,7 +24,7 @@ import dev.lounres.kone.algebraic.plus
 import dev.lounres.kone.algebraic.times
 import dev.lounres.kone.collections.array.KoneDoubleArray
 import dev.lounres.kone.collections.array.of
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.computationalGeometry.angles.cos
 import dev.lounres.kone.computationalGeometry.angles.degrees
 import dev.lounres.kone.computationalGeometry.angles.plus

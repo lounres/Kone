@@ -7,7 +7,7 @@ package dev.lounres.kone.computationalGeometry.algorithms
 
 import dev.lounres.kone.algebraic.Ring
 import dev.lounres.kone.algebraic.basis.ModuleBasis
-import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterable.KoneIterable
 import dev.lounres.kone.computationalGeometry.EuclideanSpaceOverRing
 import dev.lounres.kone.computationalGeometry.polytopes.PolytopicConstruction
 import dev.lounres.kone.contexts.KoneContext
