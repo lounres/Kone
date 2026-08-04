@@ -11,7 +11,7 @@ import dev.lounres.kone.collections.deque.isEmpty
 import dev.lounres.kone.collections.deque.isNotEmpty
 import dev.lounres.kone.collections.deque.popFirst
 import dev.lounres.kone.collections.deque.popLast
-import dev.lounres.kone.collections.iterables.isNotEmpty
+import dev.lounres.kone.collections.iterable.isNotEmpty
 import dev.lounres.kone.collections.list.KoneMutableListNode
 import dev.lounres.kone.collections.list.implementations.KoneGCLinkedSizedList
 import dev.lounres.kone.collections.list.lastIndex

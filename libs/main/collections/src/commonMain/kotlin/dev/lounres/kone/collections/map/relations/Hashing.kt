@@ -7,7 +7,7 @@
 
 package dev.lounres.kone.collections.map.relations
 
-import dev.lounres.kone.collections.iterables.getAndMoveNext
+import dev.lounres.kone.collections.iterator.getAndMoveNext
 import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.KoneMapEntry
 import dev.lounres.kone.collections.map.iterator

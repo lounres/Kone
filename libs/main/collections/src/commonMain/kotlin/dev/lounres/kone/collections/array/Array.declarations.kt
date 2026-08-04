@@ -7,8 +7,8 @@ package dev.lounres.kone.collections.array
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
 import dev.lounres.kone.collections.indexOutOfBoundsException
-import dev.lounres.kone.collections.iterables.KoneLinearIterator
-import dev.lounres.kone.collections.iterables.KoneSettableLinearIterator
+import dev.lounres.kone.collections.iterator.KoneLinearIterator
+import dev.lounres.kone.collections.iterator.KoneSettableLinearIterator
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneSettableList
 import kotlinx.serialization.Serializable

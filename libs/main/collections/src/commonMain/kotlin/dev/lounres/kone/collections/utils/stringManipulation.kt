@@ -5,10 +5,10 @@
 
 package dev.lounres.kone.collections.utils
 
-import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.collections.iterables.KoneIterator
-import dev.lounres.kone.collections.iterables.KoneSequence
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterator.KoneIterator
+import dev.lounres.kone.collections.iterator.next
+import dev.lounres.kone.collections.sequence.KoneSequence
 
 
 internal fun <E> Appendable.appendElement(element: E, transform: ((E) -> CharSequence)?) {

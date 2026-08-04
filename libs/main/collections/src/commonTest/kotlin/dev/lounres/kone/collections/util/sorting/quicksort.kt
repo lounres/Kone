@@ -5,28 +5,13 @@
 
 package dev.lounres.kone.collections.util.sorting
 
-import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterable.KoneIterable
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneSettableList
-import dev.lounres.kone.collections.utils.sorting.quicksort
-import dev.lounres.kone.collections.utils.sorting.quicksortBy
-import dev.lounres.kone.collections.utils.sorting.quicksortByDescending
-import dev.lounres.kone.collections.utils.sorting.quicksortDescending
-import dev.lounres.kone.collections.utils.sorting.quicksortWith
-import dev.lounres.kone.collections.utils.sorting.quicksortWithBy
-import dev.lounres.kone.collections.utils.sorting.quicksortWithByDescending
-import dev.lounres.kone.collections.utils.sorting.quicksortWithDescending
-import dev.lounres.kone.collections.utils.sorting.quicksorted
-import dev.lounres.kone.collections.utils.sorting.quicksortedBy
-import dev.lounres.kone.collections.utils.sorting.quicksortedByDescending
-import dev.lounres.kone.collections.utils.sorting.quicksortedDescending
-import dev.lounres.kone.collections.utils.sorting.quicksortedWith
-import dev.lounres.kone.collections.utils.sorting.quicksortedWithBy
-import dev.lounres.kone.collections.utils.sorting.quicksortedWithByDescending
-import dev.lounres.kone.collections.utils.sorting.quicksortedWithDescending
+import dev.lounres.kone.collections.utils.sorting.*
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Comparator
 import dev.lounres.kone.relations.Order
-import dev.lounres.kone.contexts.invoke
 
 
 object QuicksortingDescription : SortingDescription {

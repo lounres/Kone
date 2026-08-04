@@ -10,11 +10,11 @@ package dev.lounres.kone.collections.map.relations
 import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.KoneMapEntry
 import dev.lounres.kone.collections.utils.all
-import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.reificationException
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
+import dev.lounres.kone.relations.Reification
+import dev.lounres.kone.relations.reificationException
 
 
 internal class KoneMapEntryReification<Key, Value>(

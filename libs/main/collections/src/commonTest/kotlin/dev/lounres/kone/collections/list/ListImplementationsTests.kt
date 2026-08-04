@@ -6,7 +6,7 @@
 package dev.lounres.kone.collections.list
 
 import dev.lounres.kone.assertions.*
-import dev.lounres.kone.collections.iterables.KoneIterator
+import dev.lounres.kone.collections.iterator.KoneIterator
 import dev.lounres.kone.collections.list.contexts.KoneListProducer
 import dev.lounres.kone.collections.list.implementations.*
 

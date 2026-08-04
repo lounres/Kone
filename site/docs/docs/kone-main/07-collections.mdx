@@ -49,30 +49,30 @@ In each moment (when it does not perform some operation) it has a cursor that po
 (If there are no elements in the collection, the pointer just points nowhere.)
 There are 2 types of operations that iterators can perform: non-mutating and mutating ones.
 Non-mutating operations are:
-- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-iterator/has-next.html">`hasNext`</ApiLink>
+- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterable/-kone-iterator/has-next.html">`hasNext`</ApiLink>
     &mdash; checks if there is next element in the sequence,
-- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-iterator/get-next.html">`getNext`</ApiLink>
+- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterable/-kone-iterator/get-next.html">`getNext`</ApiLink>
     &mdash; returns the next element if there is one,
-- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-iterator/move-next.html">`moveNext`</ApiLink>
+- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterable/-kone-iterator/move-next.html">`moveNext`</ApiLink>
     &mdash; makes cursor jump over the next element if there is one,
-- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-linear-iterator/next-index.html">`nextIndex`</ApiLink>
+- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterable/-kone-linear-iterator/next-index.html">`nextIndex`</ApiLink>
     &mdash; returns index of the next element if the sequence is indexed (in the way that each next element has index one more then previous element) and there is next element,
-- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-reversible-iterator/has-previous.html">`hasPrevious`</ApiLink>,
-    <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-reversible-iterator/get-previous.html">`getPrevious`</ApiLink>,
-    <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-reversible-iterator/move-previous.html">`movePrevious`</ApiLink>,
-    and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-linear-iterator/previous-index.html">`previousIndex`</ApiLink>
+- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterable/-kone-reversible-iterator/has-previous.html">`hasPrevious`</ApiLink>,
+    <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterable/-kone-reversible-iterator/get-previous.html">`getPrevious`</ApiLink>,
+    <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterable/-kone-reversible-iterator/move-previous.html">`movePrevious`</ApiLink>,
+    and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterable/-kone-linear-iterator/previous-index.html">`previousIndex`</ApiLink>
     &mdash; like the three above but in the opposite direction.
 
 Mutating operations are:
-- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-extendable-iterator/add-next.html">`addNext`</ApiLink>
+- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterable/-kone-extendable-iterator/add-next.html">`addNext`</ApiLink>
     &mdash; adds new element in the space the cursor is pointing on and puts cursor before the new element,
-- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-settable-iterator/set-next.html">`setNext`</ApiLink>
+- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterable/-kone-settable-iterator/set-next.html">`setNext`</ApiLink>
     &mdash; changes the next element if there is one,
-- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-removable-iterator/remove-next.html">`removeNext`</ApiLink>
+- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterable/-kone-removable-iterator/remove-next.html">`removeNext`</ApiLink>
     &mdash; removes the next element if there is one, preserves previous element, and makes next element after the next one the next element,
-- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-reversible-extendable-iterator/add-previous.html">`addPrevious`</ApiLink>,
-    <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-reversible-settable-iterator/set-previous.html">`setPrevious`</ApiLink>,
-    and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-reversible-removable-iterator/remove-previous.html">`removePrevious`</ApiLink>
+- <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterable/-kone-reversible-extendable-iterator/add-previous.html">`addPrevious`</ApiLink>,
+    <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterable/-kone-reversible-settable-iterator/set-previous.html">`setPrevious`</ApiLink>,
+    and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterable/-kone-reversible-removable-iterator/remove-previous.html">`removePrevious`</ApiLink>
     &mdash; like the three above but in the opposite direction.
 
 Iterators form an inheritance hierarchy below.
@@ -190,9 +190,9 @@ The three interfaces
 <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-settable-list-iterator/">`KoneSettableListIterator`</ApiLink>,
 and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-mutable-list-iterator/">`KoneMutableListIterator`</ApiLink>
 are actually type aliases to
-<ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-linear-iterator/">`KoneLinearIterator`</ApiLink>,
-<ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-settable-linear-iterator/">`KoneSettableLinearIterator`</ApiLink>,
-and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-mutable-linear-iterator/">`KoneMutableLinearIterator`</ApiLink>.
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterable/-kone-linear-iterator/">`KoneLinearIterator`</ApiLink>,
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterable/-kone-settable-linear-iterator/">`KoneSettableLinearIterator`</ApiLink>,
+and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterable/-kone-mutable-linear-iterator/">`KoneMutableLinearIterator`</ApiLink>.
 The bottom three interfaces
 <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-nodded-list-iterator/">`KoneNoddedListIterator`</ApiLink>,
 <ApiLink to="libs/main/collections/dev.lounres.kone.collections.list/-kone-settable-nodded-list-iterator/">`KoneSettableNoddedListIterator`</ApiLink>,
@@ -293,7 +293,7 @@ See API reference for details.
 Let's notice one more time that "equality" is a contextual concept.
 Thus, the concept "belonging to the collection" is contextual as well, because it uses the equality context.
 That's why "belonging to the list" concept is implemented as
-<ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/contains.html">the following extension function</ApiLink>:
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterable/contains.html">the following extension function</ApiLink>:
 
 ```kotlin
 context(_: Equality<Element>)
@@ -502,10 +502,10 @@ The four interfaces
 <ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-mutable-list-iterator/">`KoneMutableSetIterator`</ApiLink>,
 and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-mutable-linked-list-iterator/">`KoneMutableLinkedSetIterator`</ApiLink>
 are actually type aliases to
-<ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-iterator/">`KoneIterator`</ApiLink>,
-<ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-reversible-iterator/">`KoneReversibleIterator`</ApiLink>,
-<ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-removable-iterator/">`KoneRemovableIterator`</ApiLink>,
-and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterables/-kone-reversible-removable-iterator/">`KoneReversibleRemovableIterator`</ApiLink>.
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterable/-kone-iterator/">`KoneIterator`</ApiLink>,
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterable/-kone-reversible-iterator/">`KoneReversibleIterator`</ApiLink>,
+<ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterable/-kone-removable-iterator/">`KoneRemovableIterator`</ApiLink>,
+and <ApiLink to="libs/main/collections/dev.lounres.kone.collections.iterable/-kone-reversible-removable-iterator/">`KoneReversibleRemovableIterator`</ApiLink>.
 The bottom four interfaces
 <ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-nodded-set-iterator/">`KoneNoddedSetIterator`</ApiLink>,
 <ApiLink to="libs/main/collections/dev.lounres.kone.collections.set/-kone-linked-nodded-set-iterator/">`KoneLinkedNoddedSetIterator`</ApiLink>,

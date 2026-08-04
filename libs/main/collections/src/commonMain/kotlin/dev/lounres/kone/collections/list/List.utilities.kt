@@ -5,15 +5,15 @@
 
 package dev.lounres.kone.collections.list
 
-import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.collections.iterables.KoneIterator
-import dev.lounres.kone.collections.iterables.KoneSequence
-import dev.lounres.kone.collections.iterables.getAndMoveNext
+import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterator.KoneIterator
+import dev.lounres.kone.collections.iterator.getAndMoveNext
+import dev.lounres.kone.collections.sequence.KoneSequence
+import dev.lounres.kone.maybe.Maybe
+import dev.lounres.kone.maybe.None
+import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.neq
-import dev.lounres.kone.maybe.None
-import dev.lounres.kone.maybe.Maybe
-import dev.lounres.kone.maybe.Some
 
 
 /**

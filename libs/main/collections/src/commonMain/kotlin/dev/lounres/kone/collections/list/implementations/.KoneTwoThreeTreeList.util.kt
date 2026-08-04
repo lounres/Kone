@@ -7,7 +7,7 @@ package dev.lounres.kone.collections.list.implementations
 
 import dev.lounres.kone.collections.array.KoneArray
 import dev.lounres.kone.collections.array.generate
-import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
+import dev.lounres.kone.collections.iterable.serializers.KoneIterableSerializerTemplate
 import dev.lounres.kone.collections.list.contexts.KoneResizableMutableNoddedListProducer
 import dev.lounres.kone.collections.list.indices
 import dev.lounres.kone.collections.list.lastIndex

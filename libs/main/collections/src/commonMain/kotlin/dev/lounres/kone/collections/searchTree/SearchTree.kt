@@ -6,8 +6,8 @@
 package dev.lounres.kone.collections.searchTree
 
 import dev.lounres.kone.collections.DetachedNodeException
-import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.collections.iterables.KoneReversibleIterable
+import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterable.KoneReversibleIterable
 import dev.lounres.kone.collections.set.KoneLinkedReifiedSet
 import dev.lounres.kone.collections.set.KoneLinkedSet
 import dev.lounres.kone.collections.set.KoneReifiedSet

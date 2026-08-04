@@ -9,7 +9,7 @@ import dev.lounres.kone.collections.deque.KoneDeque
 import dev.lounres.kone.collections.deque.implementations.KoneListBackedDeque
 import dev.lounres.kone.collections.deque.isNotEmpty
 import dev.lounres.kone.collections.deque.popFirst
-import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterable.KoneIterable
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneSettableList
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableLinkedList
@@ -19,7 +19,6 @@ import dev.lounres.kone.relations.Comparator
 import dev.lounres.kone.relations.ComparisonResult
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.compareTo
-import kotlin.jvm.JvmInline
 
 
 // TODO: Add outer variants: variants that create and use separate list for sorting and just assign result to target

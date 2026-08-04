@@ -11,10 +11,18 @@ import dev.lounres.kone.collections.array.KoneArray
 import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.disposedInstanceException
 import dev.lounres.kone.collections.implementations.*
-import dev.lounres.kone.collections.iterables.*
+import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterable.isEmpty
+import dev.lounres.kone.collections.iterable.isNotEmpty
+import dev.lounres.kone.collections.iterator.KoneIterator
+import dev.lounres.kone.collections.iterator.getAndMoveNext
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.KoneMutableListNode
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedNoddedList
-import dev.lounres.kone.collections.map.*
+import dev.lounres.kone.collections.map.KoneMap
+import dev.lounres.kone.collections.map.KoneMutableMap
+import dev.lounres.kone.collections.map.KoneMutableMapNode
+import dev.lounres.kone.collections.map.KoneMutableReifiedMap
 import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.KoneSet
@@ -25,11 +33,7 @@ import dev.lounres.kone.collections.utils.anyIndexed
 import dev.lounres.kone.collections.utils.firstIndexThat
 import dev.lounres.kone.collections.utils.firstThatOrNull
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.Hashing
-import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.eq
-import dev.lounres.kone.relations.hash
+import dev.lounres.kone.relations.*
 import dev.lounres.kone.scope
 
 

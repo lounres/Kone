@@ -6,8 +6,8 @@
 package dev.lounres.kone.collections.set.implementations
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
-import dev.lounres.kone.collections.iterables.getAndMoveNext
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterator.getAndMoveNext
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.KoneMutableListNode
 import dev.lounres.kone.collections.list.KoneMutableNoddedList
 import dev.lounres.kone.collections.list.KoneMutableNoddedListIterator
@@ -16,12 +16,12 @@ import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.noPreviousElementInIteratorException
 import dev.lounres.kone.collections.set.*
 import dev.lounres.kone.collections.utils.*
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.relations.eq
 import dev.lounres.kone.relations.neq
 import dev.lounres.kone.repeat
-import dev.lounres.kone.contexts.invoke
 
 
 //@Serializable(with = KoneListBackedMutableSetWithContextSerializer::class)

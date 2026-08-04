@@ -7,16 +7,11 @@ package dev.lounres.kone.collections.set
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
 import dev.lounres.kone.collections.NoCorrespondingNodeException
-import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.collections.iterables.KoneRemovableIterable
-import dev.lounres.kone.collections.iterables.KoneReversibleIterable
-import dev.lounres.kone.collections.iterables.KoneReversibleRemovableIterable
-import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.Hashing
-import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.absoluteFor
-import dev.lounres.kone.relations.defaultFor
+import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterable.KoneRemovableIterable
+import dev.lounres.kone.collections.iterable.KoneReversibleIterable
+import dev.lounres.kone.collections.iterable.KoneReversibleRemovableIterable
+import dev.lounres.kone.relations.*
 
 
 // TODO: Add contracts on `toString()`, `equals` and `hashCode`.

@@ -5,25 +5,10 @@
 
 package dev.lounres.kone.collections.util.sorting
 
-import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterable.KoneIterable
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneSettableList
-import dev.lounres.kone.collections.utils.sort
-import dev.lounres.kone.collections.utils.sortBy
-import dev.lounres.kone.collections.utils.sortByDescending
-import dev.lounres.kone.collections.utils.sortDescending
-import dev.lounres.kone.collections.utils.sortWith
-import dev.lounres.kone.collections.utils.sortWithBy
-import dev.lounres.kone.collections.utils.sortWithByDescending
-import dev.lounres.kone.collections.utils.sortWithDescending
-import dev.lounres.kone.collections.utils.sorted
-import dev.lounres.kone.collections.utils.sortedBy
-import dev.lounres.kone.collections.utils.sortedByDescending
-import dev.lounres.kone.collections.utils.sortedDescending
-import dev.lounres.kone.collections.utils.sortedWith
-import dev.lounres.kone.collections.utils.sortedWithBy
-import dev.lounres.kone.collections.utils.sortedWithByDescending
-import dev.lounres.kone.collections.utils.sortedWithDescending
+import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Comparator
 import dev.lounres.kone.relations.Order

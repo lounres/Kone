@@ -5,8 +5,8 @@
 
 package dev.lounres.kone.collections.set.empty
 
-import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.iterables.isEmpty
+import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
+import dev.lounres.kone.collections.iterable.isEmpty
 import dev.lounres.kone.collections.set.KoneNoddedSetIterator
 import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.KoneSet

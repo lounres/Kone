@@ -5,15 +5,21 @@
 
 package dev.lounres.kone.collections.list.implementations
 
-import dev.lounres.kone.collections.iterables.KoneSettableLinearIterator
-import dev.lounres.kone.collections.*
+import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.array.generate
+import dev.lounres.kone.collections.indexOutOfBoundsException
+import dev.lounres.kone.collections.iterator.KoneSettableLinearIterator
+import dev.lounres.kone.collections.iterator.getAndMoveNext
+import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneSettableList
-import dev.lounres.kone.maybe.None
+import dev.lounres.kone.collections.noNextElementInIteratorException
+import dev.lounres.kone.collections.noPreviousElementInIteratorException
 import dev.lounres.kone.maybe.Maybe
+import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.maybe.orElse
+import dev.lounres.kone.repeat
 import kotlinx.serialization.Serializable
 
 

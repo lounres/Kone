@@ -3,15 +3,13 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-@file:OptIn(ExperimentalSerializationApi::class)
-
 package dev.lounres.kone.collections.list.implementations
 
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.implementations.POWERS_OF_2
 import dev.lounres.kone.collections.implementations.powerOf2IndexGreaterOrEqualTo
-import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
+import dev.lounres.kone.collections.iterable.serializers.KoneIterableSerializerTemplate
 import dev.lounres.kone.collections.list.contexts.KoneResizableMutableListProducer
 import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescriptor
 import kotlinx.serialization.ExperimentalSerializationApi

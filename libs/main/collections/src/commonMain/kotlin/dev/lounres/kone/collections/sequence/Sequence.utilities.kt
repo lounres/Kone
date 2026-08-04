@@ -3,8 +3,10 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.iterables
+package dev.lounres.kone.collections.sequence
 
+import dev.lounres.kone.collections.iterator.KoneIterator
+import dev.lounres.kone.collections.iterator.getAndMoveNext
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.noNextElementInIteratorException
 import kotlinx.atomicfu.locks.SynchronizedObject

@@ -5,12 +5,11 @@
 
 package dev.lounres.kone.collections.interop
 
-import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.collections.iterables.KoneIterator
-import dev.lounres.kone.collections.iterables.contains
-import dev.lounres.kone.collections.iterables.getAndMoveNext
-import dev.lounres.kone.collections.iterables.isEmpty
-import dev.lounres.kone.relations.defaultFor
+import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterable.contains
+import dev.lounres.kone.collections.iterable.isEmpty
+import dev.lounres.kone.collections.iterator.KoneIterator
+import dev.lounres.kone.collections.iterator.getAndMoveNext
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
 

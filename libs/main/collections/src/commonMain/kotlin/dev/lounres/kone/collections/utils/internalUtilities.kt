@@ -5,8 +5,8 @@
 
 package dev.lounres.kone.collections.utils
 
+import dev.lounres.kone.collections.iterator.getAndMoveNext
 import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.list.KoneNoddedList
 import dev.lounres.kone.collections.list.empty
 import dev.lounres.kone.collections.list.implementations.KoneArraySettableList

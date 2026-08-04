@@ -9,32 +9,21 @@ import dev.lounres.kone.collections.array.KoneUIntArray
 import dev.lounres.kone.collections.array.empty
 import dev.lounres.kone.collections.array.of
 import dev.lounres.kone.collections.array.toKoneUIntArray
-import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.collections.iterables.KoneIterator
-import dev.lounres.kone.collections.iterables.KoneSequence
-import dev.lounres.kone.collections.iterables.getAndMoveNext
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterator.KoneIterator
+import dev.lounres.kone.collections.iterator.getAndMoveNext
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.empty
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.list.of
+import dev.lounres.kone.collections.sequence.KoneSequence
 import dev.lounres.kone.collections.set.KoneMutableSet
 import dev.lounres.kone.collections.set.of
-import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
-import dev.lounres.kone.relations.Comparator
-import dev.lounres.kone.relations.ComparisonResult
-import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.Hashing
-import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.compareWith
-import dev.lounres.kone.relations.defaultFor
-import dev.lounres.kone.relations.gt
-import dev.lounres.kone.relations.lt
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
+import dev.lounres.kone.relations.*
 
 
 public inline fun <E : Comparable<E>> KoneIterator<E>.minOrElse(default: () -> E): E {

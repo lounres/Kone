@@ -14,6 +14,7 @@ import dev.lounres.kone.relations.ComparisonResult
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.compareWith
 import dev.lounres.kone.relations.withNoneAsLeast
+import kotlin.jvm.JvmName
 
 
 internal class KoneListLexicographicOrder<Element>(
@@ -55,6 +56,7 @@ public fun <Element> KoneList.Companion.lexicographicOrder(elementOrder: Order<M
  * @param elementOrder The order context for elements used to compare corresponding elements of the lists.
  * @return An [Order] instance for lists comparing them lexicographically.
  */
+@JvmName("lexicographicOrderWithNoneAsLeast")
 public fun <Element> KoneList.Companion.lexicographicOrder(elementOrder: Order<Element>): Order<KoneList<Element>> =
     lexicographicOrder(elementOrder.withNoneAsLeast)
 

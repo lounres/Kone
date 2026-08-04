@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.collections.set.implementations
 
-import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
+import dev.lounres.kone.collections.iterable.serializers.KoneIterableSerializerTemplate
 import dev.lounres.kone.collections.set.serializers.KoneSetImplementationDescriptor
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing

@@ -3,18 +3,17 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.iterables
+package dev.lounres.kone.collections.iterator
 
-import dev.lounres.kone.collections.iterables.empty.KoneEmptySettableLinearIterator
+import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterable.isNotEmpty
+import dev.lounres.kone.collections.iterator.empty.KoneEmptySettableLinearIterator
 import dev.lounres.kone.collections.noNextElementInIteratorException
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.coroutines.RestrictsSuspension
+import dev.lounres.kone.collections.sequence.KoneSequence
+import kotlin.coroutines.*
 import kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED
 import kotlin.coroutines.intrinsics.createCoroutineUnintercepted
 import kotlin.coroutines.intrinsics.suspendCoroutineUninterceptedOrReturn
-import kotlin.coroutines.resume
 import kotlin.jvm.JvmInline
 
 

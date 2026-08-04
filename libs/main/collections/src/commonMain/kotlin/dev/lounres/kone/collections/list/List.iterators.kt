@@ -6,9 +6,9 @@
 package dev.lounres.kone.collections.list
 
 import dev.lounres.kone.collections.NoFollowingElementInIteratorException
-import dev.lounres.kone.collections.iterables.KoneLinearIterator
-import dev.lounres.kone.collections.iterables.KoneMutableLinearIterator
-import dev.lounres.kone.collections.iterables.KoneSettableLinearIterator
+import dev.lounres.kone.collections.iterator.KoneLinearIterator
+import dev.lounres.kone.collections.iterator.KoneMutableLinearIterator
+import dev.lounres.kone.collections.iterator.KoneSettableLinearIterator
 
 
 /**

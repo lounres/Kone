@@ -5,12 +5,12 @@
 
 package dev.lounres.kone.collections.list.implementations
 
-import dev.lounres.kone.collections.iterables.KoneIterator
+import dev.lounres.kone.collections.iterator.KoneIterator
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneListValidator
 import dev.lounres.kone.collections.list.ListImplementationDescription
-import dev.lounres.kone.collections.list.implementations.KoneTwoThreeTreeList.Companion.size
 import dev.lounres.kone.collections.list.contexts.KoneListProducer
+import dev.lounres.kone.collections.list.implementations.KoneTwoThreeTreeList.Companion.size
 import kotlin.test.fail
 
 

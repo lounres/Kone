@@ -6,10 +6,10 @@
 package dev.lounres.kone.collections.set
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
-import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.collections.iterables.KoneRemovableIterator
-import dev.lounres.kone.collections.iterables.contains
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterable.contains
+import dev.lounres.kone.collections.iterator.KoneRemovableIterator
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedList
 import dev.lounres.kone.collections.set.empty.KoneEmptyNoddedReifiedSet

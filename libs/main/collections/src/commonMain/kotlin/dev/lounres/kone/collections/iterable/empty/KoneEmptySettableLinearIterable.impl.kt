@@ -3,10 +3,11 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.iterables.empty
+package dev.lounres.kone.collections.iterable.empty
 
-import dev.lounres.kone.collections.iterables.KoneLinearIterable
-import dev.lounres.kone.collections.iterables.KoneLinearIterator
+import dev.lounres.kone.collections.iterable.KoneLinearIterable
+import dev.lounres.kone.collections.iterator.KoneLinearIterator
+import dev.lounres.kone.collections.iterator.empty.KoneEmptySettableLinearIterator
 
 
 internal open class KoneEmptySettableLinearIterableTemplate<out Element> : KoneLinearIterable<Element> {

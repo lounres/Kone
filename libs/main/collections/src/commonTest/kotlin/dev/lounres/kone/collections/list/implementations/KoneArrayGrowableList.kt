@@ -7,13 +7,12 @@ package dev.lounres.kone.collections.list.implementations
 
 import dev.lounres.kone.algebraic.primaryFor
 import dev.lounres.kone.collections.implementations.POWERS_OF_2
-import dev.lounres.kone.collections.iterables.KoneIterator
-import dev.lounres.kone.collections.iterables.contains
+import dev.lounres.kone.collections.iterable.contains
+import dev.lounres.kone.collections.iterator.KoneIterator
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneListValidator
 import dev.lounres.kone.collections.list.ListImplementationDescription
 import dev.lounres.kone.collections.list.contexts.KoneListProducer
-import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.repeat
 import kotlin.test.fail

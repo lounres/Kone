@@ -6,8 +6,8 @@
 package dev.lounres.kone.collections.deque
 
 import dev.lounres.kone.collections.EmptyDequeAccessException
-import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterator.next
 
 
 /**

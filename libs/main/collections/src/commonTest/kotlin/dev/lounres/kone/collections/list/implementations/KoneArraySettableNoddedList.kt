@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.collections.list.implementations
 
-import dev.lounres.kone.collections.iterables.KoneIterator
+import dev.lounres.kone.collections.iterator.KoneIterator
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneListValidator
 import dev.lounres.kone.collections.list.ListImplementationDescription

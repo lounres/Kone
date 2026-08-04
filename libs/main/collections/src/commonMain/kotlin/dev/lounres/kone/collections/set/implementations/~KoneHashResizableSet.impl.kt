@@ -11,7 +11,11 @@ import dev.lounres.kone.collections.array.KoneArray
 import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.disposedInstanceException
 import dev.lounres.kone.collections.implementations.*
-import dev.lounres.kone.collections.iterables.*
+import dev.lounres.kone.collections.iterable.isEmpty
+import dev.lounres.kone.collections.iterable.isNotEmpty
+import dev.lounres.kone.collections.iterator.KoneRemovableIterator
+import dev.lounres.kone.collections.iterator.getAndMoveNext
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedList
 import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.set.KoneMutableReifiedSet

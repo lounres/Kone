@@ -5,20 +5,20 @@
 
 package dev.lounres.kone.collections.set.implementations
 
-import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.iterables.KoneRemovableIterator
-import dev.lounres.kone.collections.iterables.contains
-import dev.lounres.kone.collections.iterables.getAndMoveNext
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
+import dev.lounres.kone.collections.iterable.contains
+import dev.lounres.kone.collections.iterator.KoneRemovableIterator
+import dev.lounres.kone.collections.iterator.getAndMoveNext
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.set.KoneMutableReifiedSet
 import dev.lounres.kone.collections.set.KoneMutableSet
 import dev.lounres.kone.collections.utils.firstIndexOf
 import dev.lounres.kone.collections.utils.iterator
+import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Reification
 import dev.lounres.kone.repeat
-import dev.lounres.kone.contexts.invoke
 
 
 //@Serializable(with = KoneListBackedMutableSetWithContextSerializer::class)

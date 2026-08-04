@@ -3,9 +3,9 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.iterables.empty
+package dev.lounres.kone.collections.iterator.empty
 
-import dev.lounres.kone.collections.iterables.KoneSettableLinearIterator
+import dev.lounres.kone.collections.iterator.KoneSettableLinearIterator
 import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.noPreviousElementInIteratorException
 

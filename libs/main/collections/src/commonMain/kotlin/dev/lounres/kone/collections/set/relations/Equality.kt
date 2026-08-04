@@ -7,7 +7,7 @@
 
 package dev.lounres.kone.collections.set.relations
 
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.set.toKoneSet
 import dev.lounres.kone.contexts.invoke

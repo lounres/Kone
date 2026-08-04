@@ -3,11 +3,11 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.iterables.empty
+package dev.lounres.kone.collections.sequence.empty
 
-import dev.lounres.kone.collections.iterables.KoneIterator
-import dev.lounres.kone.collections.iterables.KoneSequence
-import dev.lounres.kone.collections.iterables.empty
+import dev.lounres.kone.collections.iterator.KoneIterator
+import dev.lounres.kone.collections.iterator.empty
+import dev.lounres.kone.collections.sequence.KoneSequence
 
 
 internal object KoneEmptySequence : KoneSequence<Nothing> {

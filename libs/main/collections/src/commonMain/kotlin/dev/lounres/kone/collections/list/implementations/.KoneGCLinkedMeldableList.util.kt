@@ -6,7 +6,7 @@
 package dev.lounres.kone.collections.list.implementations
 
 import dev.lounres.kone.collections.disposedInstanceException
-import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializerTemplate
+import dev.lounres.kone.collections.iterable.serializers.KoneIterableSerializerTemplate
 import dev.lounres.kone.collections.list.KoneMutableNoddedList
 import dev.lounres.kone.collections.list.contexts.KoneResizableMutableNoddedListProducer
 import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescriptor

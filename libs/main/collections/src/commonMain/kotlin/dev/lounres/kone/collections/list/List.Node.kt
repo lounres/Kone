@@ -6,6 +6,8 @@
 package dev.lounres.kone.collections.list
 
 import dev.lounres.kone.collections.DetachedNodeException
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Hashing
 
 
 /**

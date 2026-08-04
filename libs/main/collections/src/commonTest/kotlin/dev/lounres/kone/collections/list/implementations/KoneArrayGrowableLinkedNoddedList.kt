@@ -8,8 +8,8 @@ package dev.lounres.kone.collections.list.implementations
 import dev.lounres.kone.assertions.AssertionScope
 import dev.lounres.kone.assertions.fail
 import dev.lounres.kone.collections.implementations.POWERS_OF_2
-import dev.lounres.kone.collections.iterables.KoneIterator
-import dev.lounres.kone.collections.iterables.contains
+import dev.lounres.kone.collections.iterable.contains
+import dev.lounres.kone.collections.iterator.KoneIterator
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneListValidator
 import dev.lounres.kone.collections.list.ListImplementationDescription

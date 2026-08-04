@@ -7,8 +7,8 @@ package dev.lounres.kone.collections.map
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
 import dev.lounres.kone.collections.array.KoneArray
-import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableLinkedNoddedListProducer
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedNoddedListProducer
 import dev.lounres.kone.collections.map.empty.KoneEmptyReifiedMap
@@ -20,10 +20,7 @@ import dev.lounres.kone.collections.map.singleton.KoneSingletonMap
 import dev.lounres.kone.collections.map.singleton.KoneSingletonReifiedMap
 import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.KoneSet
-import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.relations.*
-import dev.lounres.kone.suppliedTypes.Suppliable
-import dev.lounres.kone.suppliedTypes.Supply
 import kotlin.contracts.InvocationKind
 
 

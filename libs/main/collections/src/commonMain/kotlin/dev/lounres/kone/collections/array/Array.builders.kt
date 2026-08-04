@@ -7,8 +7,8 @@
 
 package dev.lounres.kone.collections.array
 
-import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.collections.iterables.getAndMoveNext
+import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterator.getAndMoveNext
 
 
 // region General arrays

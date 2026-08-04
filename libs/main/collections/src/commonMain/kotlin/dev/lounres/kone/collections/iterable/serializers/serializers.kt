@@ -3,9 +3,10 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.iterables.serializers
+package dev.lounres.kone.collections.iterable.serializers
 
-import dev.lounres.kone.collections.iterables.*
+import dev.lounres.kone.collections.iterable.*
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableListSerializer
 import dev.lounres.kone.collections.list.implementations.KoneArraySettableListSerializer

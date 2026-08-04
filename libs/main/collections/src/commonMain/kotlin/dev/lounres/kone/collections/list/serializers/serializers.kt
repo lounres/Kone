@@ -7,8 +7,8 @@
 
 package dev.lounres.kone.collections.list.serializers
 
-import dev.lounres.kone.collections.iterables.serializers.KoneIterableDescriptor
-import dev.lounres.kone.collections.iterables.serializers.KoneIterableSerializationStrategyTemplate
+import dev.lounres.kone.collections.iterable.serializers.KoneIterableDescriptor
+import dev.lounres.kone.collections.iterable.serializers.KoneIterableSerializationStrategyTemplate
 import dev.lounres.kone.collections.list.*
 import dev.lounres.kone.collections.list.implementations.*
 import kotlinx.serialization.KSerializer

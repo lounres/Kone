@@ -5,8 +5,8 @@
 
 package dev.lounres.kone.collections.map
 
-import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.collections.iterables.KoneIterator
+import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterator.KoneIterator
 import dev.lounres.kone.collections.noMatchingKeyException
 import dev.lounres.kone.collections.utils.forEach
 import dev.lounres.kone.maybe.Maybe

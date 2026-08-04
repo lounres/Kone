@@ -5,15 +5,14 @@
 
 package dev.lounres.kone.collections.list.implementations
 
-import dev.lounres.kone.collections.iterables.KoneMutableLinearIterator
-import dev.lounres.kone.collections.iterables.getAndMoveNext
 import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.array.KoneMutableArray
-import dev.lounres.kone.collections.Disposable
 import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.implementations.MAX_CAPACITY
 import dev.lounres.kone.collections.implementations.POWERS_OF_2
 import dev.lounres.kone.collections.implementations.powerOf2IndexGreaterOrEqualTo
+import dev.lounres.kone.collections.iterator.KoneMutableLinearIterator
+import dev.lounres.kone.collections.iterator.getAndMoveNext
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.repeat

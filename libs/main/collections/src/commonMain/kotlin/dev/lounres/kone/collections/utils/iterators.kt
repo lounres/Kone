@@ -5,19 +5,9 @@
 
 package dev.lounres.kone.collections.utils
 
-import dev.lounres.kone.collections.iterables.KoneExtendableLinearIterator
-import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.collections.iterables.KoneIterator
-import dev.lounres.kone.collections.iterables.KoneLinearIterator
-import dev.lounres.kone.collections.iterables.KoneMutableLinearIterator
-import dev.lounres.kone.collections.iterables.KoneRemovableLinearIterator
-import dev.lounres.kone.collections.iterables.KoneReversibleExtendableIterator
-import dev.lounres.kone.collections.iterables.KoneReversibleIterator
-import dev.lounres.kone.collections.iterables.KoneReversibleMutableIterator
-import dev.lounres.kone.collections.iterables.KoneReversibleRemovableIterator
-import dev.lounres.kone.collections.iterables.KoneReversibleSettableIterator
-import dev.lounres.kone.collections.iterables.KoneSequence
-import dev.lounres.kone.collections.iterables.KoneSettableLinearIterator
+import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterator.*
+import dev.lounres.kone.collections.sequence.KoneSequence
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 import kotlin.jvm.JvmInline

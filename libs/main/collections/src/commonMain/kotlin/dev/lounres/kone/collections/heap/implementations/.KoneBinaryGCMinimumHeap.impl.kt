@@ -5,18 +5,13 @@
 
 package dev.lounres.kone.collections.heap.implementations
 
-import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
-import dev.lounres.kone.collections.iterables.KoneLinearIterator
-import dev.lounres.kone.collections.set.KoneLinkedReifiedSet
-import dev.lounres.kone.collections.set.KoneLinkedSetIterator
-import dev.lounres.kone.collections.iterables.KoneReversibleIterable
+import dev.lounres.kone.collections.*
 import dev.lounres.kone.collections.heap.LinkedHeapNode
 import dev.lounres.kone.collections.heap.LinkedMinimumHeap
-import dev.lounres.kone.collections.accessExtremumOfEmptyHeapException
-import dev.lounres.kone.collections.detachedNodeException
-import dev.lounres.kone.collections.disposedInstanceException
-import dev.lounres.kone.collections.Disposable
-import dev.lounres.kone.collections.indexOutOfBoundsException
+import dev.lounres.kone.collections.iterable.KoneReversibleIterable
+import dev.lounres.kone.collections.iterator.KoneLinearIterator
+import dev.lounres.kone.collections.set.KoneLinkedReifiedSet
+import dev.lounres.kone.collections.set.KoneLinkedSetIterator
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.gt

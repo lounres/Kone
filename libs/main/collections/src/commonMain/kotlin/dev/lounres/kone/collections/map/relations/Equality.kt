@@ -7,9 +7,8 @@
 
 package dev.lounres.kone.collections.map.relations
 
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.map.*
-import dev.lounres.kone.collections.map.iterator
 import dev.lounres.kone.collections.utils.copyTo
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.maybe.orElse

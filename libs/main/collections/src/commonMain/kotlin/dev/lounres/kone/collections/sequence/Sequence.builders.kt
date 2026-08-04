@@ -3,11 +3,15 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.collections.iterables
+package dev.lounres.kone.collections.sequence
 
 import dev.lounres.kone.collections.array.KoneArray
-import dev.lounres.kone.collections.iterables.empty.KoneEmptySequence
+import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterator.KoneIterator
+import dev.lounres.kone.collections.iterator.KoneIteratorBuilder
+import dev.lounres.kone.collections.iterator.build
 import dev.lounres.kone.collections.noNextElementInIteratorException
+import dev.lounres.kone.collections.sequence.empty.KoneEmptySequence
 
 
 public fun <Element> KoneSequence.Companion.empty(): KoneSequence<Element> = KoneEmptySequence

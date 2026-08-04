@@ -11,7 +11,7 @@ import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.heap.HeapNode
 import dev.lounres.kone.collections.heap.MinimumHeap
 import dev.lounres.kone.collections.implementations.fibonacciNumberIndexLessOrEqualTo
-import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterable.KoneIterable
 import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Order

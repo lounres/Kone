@@ -7,7 +7,7 @@
 
 package dev.lounres.kone.collections.list.relations
 
-import dev.lounres.kone.collections.iterables.getAndMoveNext
+import dev.lounres.kone.collections.iterator.getAndMoveNext
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality

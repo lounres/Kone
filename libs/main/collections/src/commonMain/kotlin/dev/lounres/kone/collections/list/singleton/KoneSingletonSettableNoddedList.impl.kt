@@ -63,6 +63,10 @@ internal class KoneSingletonSettableNoddedList<Element>(
         
         override fun iteratorFromBeforeHere(): KoneSettableNoddedListIterator<Element> = list.iteratorFrom(0u)
         override fun iteratorFromAfterHere(): KoneSettableNoddedListIterator<Element> = list.iteratorFrom(1u)
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[$element]"
     }
     
     internal class Iterator<Element>(

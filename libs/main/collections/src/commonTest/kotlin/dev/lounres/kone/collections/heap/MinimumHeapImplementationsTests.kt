@@ -13,7 +13,7 @@ import dev.lounres.kone.collections.array.KoneMutableBooleanArray
 import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.heap.implementations.*
 import dev.lounres.kone.collections.interop.toKoneList
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.*
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.collections.utils.*

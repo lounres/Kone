@@ -6,8 +6,8 @@
 package dev.lounres.kone.collections.map.singleton
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
-import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.collections.iterables.KoneIterator
+import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterator.KoneIterator
 import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.KoneMapEntry
 import dev.lounres.kone.collections.map.KoneMapNode
@@ -19,11 +19,7 @@ import dev.lounres.kone.collections.set.singleton.KoneSingletonNoddedReifiedSet
 import dev.lounres.kone.collections.set.singleton.KoneSingletonNoddedSet
 import dev.lounres.kone.collections.utils.first
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.absoluteFor
-import dev.lounres.kone.relations.defaultFor
-import dev.lounres.kone.relations.eq
+import dev.lounres.kone.relations.*
 
 
 @OptIn(DelicateCollectionsInheritanceAPI::class)

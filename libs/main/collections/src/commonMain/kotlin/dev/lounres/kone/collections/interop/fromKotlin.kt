@@ -6,18 +6,13 @@
 package dev.lounres.kone.collections.interop
 
 import dev.lounres.kone.collections.array.*
-import dev.lounres.kone.collections.array.generate
-import dev.lounres.kone.collections.iterables.KoneIterator
-import dev.lounres.kone.collections.iterables.KoneSequence
-import dev.lounres.kone.collections.list.KoneList
-import dev.lounres.kone.collections.list.KoneMutableList
-import dev.lounres.kone.collections.list.KoneSettableList
-import dev.lounres.kone.collections.list.empty
-import dev.lounres.kone.collections.list.generate
+import dev.lounres.kone.collections.iterator.KoneIterator
+import dev.lounres.kone.collections.list.*
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableList
 import dev.lounres.kone.collections.list.implementations.generate
 import dev.lounres.kone.collections.noNextElementInIteratorException
+import dev.lounres.kone.collections.sequence.KoneSequence
 import dev.lounres.kone.collections.utils.toOptimizedList
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
