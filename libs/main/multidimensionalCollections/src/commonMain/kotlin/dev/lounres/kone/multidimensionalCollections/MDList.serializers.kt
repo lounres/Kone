@@ -9,7 +9,7 @@ package dev.lounres.kone.multidimensionalCollections
 
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.array.serializers.serializer
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.implementations.KoneArraySettableList
 import dev.lounres.kone.collections.list.implementations.generate
 import dev.lounres.kone.collections.utils.fold

@@ -6,7 +6,7 @@
 package dev.lounres.kone.numberTheory
 
 import dev.lounres.kone.algebraic.*
-import dev.lounres.kone.collections.iterables.KoneIterable
+import dev.lounres.kone.collections.iterable.KoneIterable
 import dev.lounres.kone.collections.utils.reduce
 import dev.lounres.kone.contexts.KoneContext
 import dev.lounres.kone.contexts.localUnwrap

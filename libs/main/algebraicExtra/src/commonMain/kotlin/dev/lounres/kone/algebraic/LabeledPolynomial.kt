@@ -7,8 +7,8 @@ package dev.lounres.kone.algebraic
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
 import dev.lounres.kone.collections.array.KoneArray
-import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.map.*
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.set.addAllFrom
@@ -17,11 +17,7 @@ import dev.lounres.kone.collections.utils.*
 import dev.lounres.kone.contexts.KoneContextRegistry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.contexts.localContexts
-import dev.lounres.kone.registry.MutableOwnedProviderRegistry
-import dev.lounres.kone.registry.RegisteredValueProvider
-import dev.lounres.kone.registry.cached
-import dev.lounres.kone.registry.correspondsTo
-import dev.lounres.kone.registry.withImpliedUsingFirst
+import dev.lounres.kone.registry.*
 import dev.lounres.kone.relations.*
 import dev.lounres.kone.relations.ComparisonResult.Equal
 import dev.lounres.kone.suppliedTypes.Suppliable

@@ -10,23 +10,15 @@ import dev.lounres.kone.algebraic.internal.asDigit
 import dev.lounres.kone.algebraic.internal.multiply
 import dev.lounres.kone.algebraic.internal.possibleDigits
 import dev.lounres.kone.collections.array.*
-import dev.lounres.kone.collections.iterables.contains
+import dev.lounres.kone.collections.iterable.contains
 import dev.lounres.kone.collections.list.lastIndex
 import dev.lounres.kone.collections.utils.slice
 import dev.lounres.kone.contexts.KoneContext
-import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
-import dev.lounres.kone.relations.ComparisonResult
-import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.Hashing
-import dev.lounres.kone.relations.Order
-import dev.lounres.kone.relations.Reification
-import dev.lounres.kone.relations.defaultFor
-import dev.lounres.kone.relations.lt
-import dev.lounres.kone.relations.reificationException
+import dev.lounres.kone.relations.*
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 

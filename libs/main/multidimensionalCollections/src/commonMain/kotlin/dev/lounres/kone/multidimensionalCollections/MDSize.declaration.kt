@@ -5,19 +5,18 @@
 
 package dev.lounres.kone.multidimensionalCollections
 
-import dev.lounres.kone.collections.*
-import dev.lounres.kone.collections.array.KoneMutableUIntArray
-import dev.lounres.kone.collections.array.KoneUIntArray
-import dev.lounres.kone.collections.array.asKoneUIntArray
-import dev.lounres.kone.collections.array.fill
-import dev.lounres.kone.collections.array.generate
-import dev.lounres.kone.collections.iterables.KoneIterable
-import dev.lounres.kone.collections.iterables.KoneIterator
-import dev.lounres.kone.collections.iterables.build
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
+import dev.lounres.kone.collections.array.*
+import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterator.KoneIterator
+import dev.lounres.kone.collections.iterator.build
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.lastIndex
-import dev.lounres.kone.collections.utils.*
+import dev.lounres.kone.collections.utils.any
+import dev.lounres.kone.collections.utils.anyIndexed
+import dev.lounres.kone.collections.utils.fold
+import dev.lounres.kone.collections.utils.forEachIndexed
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 

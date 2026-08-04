@@ -8,7 +8,7 @@ package dev.lounres.kone.multidimensionalCollections.implementations
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.array.empty
 import dev.lounres.kone.collections.array.generate
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.producers.MDList1Producer
 import dev.lounres.kone.multidimensionalCollections.producers.MDList2Producer

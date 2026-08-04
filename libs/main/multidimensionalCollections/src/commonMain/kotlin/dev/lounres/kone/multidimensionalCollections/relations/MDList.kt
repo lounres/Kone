@@ -5,17 +5,13 @@
 
 package dev.lounres.kone.multidimensionalCollections.relations
 
-import dev.lounres.kone.collections.iterables.next
+import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.relations.Equality
-import dev.lounres.kone.relations.Hashing
-import dev.lounres.kone.relations.hash
-import dev.lounres.kone.relations.neq
 import dev.lounres.kone.multidimensionalCollections.MDList
 import dev.lounres.kone.multidimensionalCollections.MDSizeStrides
 import dev.lounres.kone.multidimensionalCollections.contentEquals
 import dev.lounres.kone.multidimensionalCollections.utils.fold
-import dev.lounres.kone.relations.defaultFor
+import dev.lounres.kone.relations.*
 
 
 internal class MDListEquality<E>(private val elementEquality: Equality<E>) : Equality<MDList<E>> {

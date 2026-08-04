@@ -5,20 +5,12 @@
 
 package dev.lounres.kone.multidimensionalCollections.utils
 
-import dev.lounres.kone.collections.iterables.next
-import dev.lounres.kone.multidimensionalCollections.MDIndex
-import dev.lounres.kone.multidimensionalCollections.MDList
-import dev.lounres.kone.multidimensionalCollections.MDList1
-import dev.lounres.kone.multidimensionalCollections.MDList2
-import dev.lounres.kone.multidimensionalCollections.MDSizeStrides
-import dev.lounres.kone.multidimensionalCollections.columnIndices
-import dev.lounres.kone.multidimensionalCollections.contentSize
+import dev.lounres.kone.collections.iterator.next
+import dev.lounres.kone.multidimensionalCollections.*
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList1
 import dev.lounres.kone.multidimensionalCollections.implementations.ArrayMDList2
 import dev.lounres.kone.multidimensionalCollections.implementations.generate
-import dev.lounres.kone.multidimensionalCollections.indices
-import dev.lounres.kone.multidimensionalCollections.rowIndices
 
 
 public inline fun <E> MDList<E>.forEach(block: (value: E) -> Unit) {
