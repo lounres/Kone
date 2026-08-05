@@ -46,6 +46,10 @@ private class MovingAverageModelGeneratorViaDefault<Number>(
                 override fun moveNext() {
                     currentIndex++
                 }
+                
+                override fun equals(other: Any?): Boolean = this === other
+                override fun hashCode(): Int = super.hashCode()
+                override fun toString(): String = "${super.toString()}[current index = $currentIndex]"
             }
             override fun get(index: UInt): Number = if (index < results.size) results[index] else ring.zero
         }

@@ -10,7 +10,13 @@ import dev.lounres.kone.collections.iterator.KoneIterator
 import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.sequence.KoneSequence
 import dev.lounres.kone.contexts.invoke
-import dev.lounres.kone.relations.*
+import dev.lounres.kone.relations.ClosedRange
+import dev.lounres.kone.relations.OpenEndRange
+import dev.lounres.kone.relations.Order
+import dev.lounres.kone.relations.leq
+import dev.lounres.kone.relations.geq
+import dev.lounres.kone.relations.lt
+import dev.lounres.kone.relations.gt
 
 
 public infix fun <Number> ClosedRange<Number>.withStep(step: Number): ClosedRangeArithmeticProgression<Number> =
@@ -49,6 +55,10 @@ private class ClosedRangeArithmeticProgressionIterator<Number>(
         if (!hasNext()) noNextElementInIteratorException()
         monoid.numberPlusNumber { currentNumber += step }
     }
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[current number = $currentNumber]"
 }
 
 context(semiring: Semiring<Number>, order: Order<Number>)
@@ -94,6 +104,10 @@ private class RightOpenRangeArithmeticProgressionIterator<Number>(
         if (!hasNext()) noNextElementInIteratorException()
         monoid.numberPlusNumber { currentNumber += step }
     }
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[current number = $currentNumber]"
 }
 
 context(semiring: Semiring<Number>, order: Order<Number>)

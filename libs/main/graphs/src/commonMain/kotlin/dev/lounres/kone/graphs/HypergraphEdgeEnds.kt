@@ -38,6 +38,10 @@ public data class HypergraphEdgeEnds(val vertex1: HypergraphVertex, val vertex2:
             if (!hasNext()) noNextElementInIteratorException()
             index++
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[index = $index]"
     }
     
     private class CoupleIterator<V>(private val start: V, private val end: V) : KoneSetIterator<V> {
@@ -53,6 +57,10 @@ public data class HypergraphEdgeEnds(val vertex1: HypergraphVertex, val vertex2:
             if (!hasNext()) noNextElementInIteratorException()
             index++
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[index = $index]"
     }
 }
 
