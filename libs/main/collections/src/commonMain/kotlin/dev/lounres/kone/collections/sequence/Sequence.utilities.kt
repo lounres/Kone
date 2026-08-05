@@ -13,14 +13,33 @@ import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 
 
+/**
+ * Thread-safety modes for caching a [KoneSequence].
+ */
 public enum class KoneSequenceCacheThreadSafetyMode {
-    NONE, SYNCHRONIZED,
+    /**No thread-safety synchronization is applied.*/
+    NONE,
+    /**Access to the cached sequence is synchronized.*/
+    SYNCHRONIZED,
 }
 
-public fun <Element> KoneSequence<Element>.cached(mode: KoneSequenceCacheThreadSafetyMode = KoneSequenceCacheThreadSafetyMode.NONE): KoneSequence<Element> =
+/**
+ * Returns a cached (memorized) version of this sequence.
+ *
+ * The elements are cached on first access and subsequent iterations reuse the cached values.
+ *
+ * It's permitted to create two different iterators (via [KoneSequence.iterator]) and use them at the same time.
+ * But be sure to use the same thread safety semantic on them
+ * (i.e. with [KoneSequenceCacheThreadSafetyMode.NONE] you should not call the iterators' methods concurrently).
+ *
+ * @param Element The type of elements.
+ * @param mode The thread-safety mode for the cached sequence.
+ * @return A cached [KoneSequence] instance.
+ */
+public fun <Element> KoneSequence<Element>.cached(mode: KoneSequenceCacheThreadSafetyMode = NONE): KoneSequence<Element> =
     when (mode) {
-        KoneSequenceCacheThreadSafetyMode.NONE -> KoneCachedSequence(this)
-        KoneSequenceCacheThreadSafetyMode.SYNCHRONIZED -> KoneSynchronizedCachedSequence(this)
+        NONE -> KoneCachedSequence(this)
+        SYNCHRONIZED -> KoneSynchronizedCachedSequence(this)
     }
 
 private class KoneCachedSequence<Element>(sequence: KoneSequence<Element>) : KoneSequence<Element> {
@@ -59,6 +78,10 @@ private class KoneCachedSequence<Element>(sequence: KoneSequence<Element>) : Kon
             }
             noNextElementInIteratorException()
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[index = $index]"
     }
 }
 
@@ -104,5 +127,9 @@ private class KoneSynchronizedCachedSequence<Element>(sequence: KoneSequence<Ele
                 noNextElementInIteratorException()
             }
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[index = $index]"
     }
 }
