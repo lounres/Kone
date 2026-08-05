@@ -17,25 +17,58 @@ import kotlin.coroutines.intrinsics.suspendCoroutineUninterceptedOrReturn
 import kotlin.jvm.JvmInline
 
 
+/**
+ * Returns an empty [KoneIterator].
+ *
+ * @param Element The type of elements.
+ * @return An empty [KoneIterator] instance.
+ */
 public fun <Element> KoneIterator.Companion.empty(): KoneIterator<Element> = KoneEmptySettableLinearIterator
 
+/**
+ * Builder interface for constructing [KoneIterator] instances via [KoneIterator.build].
+ *
+ * @param Element The type of elements produced by the iterator builder.
+ */
 @RestrictsSuspension
 public interface KoneIteratorBuilder<in Element> {
+    /**
+     * Yields a single [element] to the iterator being built.
+     *
+     * @param element The element to yield.
+     */
     public suspend fun yield(element: Element)
+    /**
+     * Yields all elements from the given [iterator] to the iterator being built.
+     *
+     * @param iterator The iterator whose elements are to be yielded.
+     */
     public suspend fun yieldAll(iterator: KoneIterator<Element>)
 }
 
+/**
+ * Yields all elements from the given [iterable] to the iterator being built.
+ *
+ * @param Element The type of elements.
+ * @param iterable The iterable whose elements are to be yielded.
+ */
 public suspend fun <Element> KoneIteratorBuilder<Element>.yieldAll(iterable: KoneIterable<Element>) {
     if (iterable.isNotEmpty()) yieldAll(iterable.iterator())
 }
 
+/**
+ * Yields all elements from the given [sequence] to the iterator being built.
+ *
+ * @param Element The type of elements.
+ * @param sequence The sequence whose elements are to be yielded.
+ */
 public suspend fun <Element> KoneIteratorBuilder<Element>.yieldAll(sequence: KoneSequence<Element>) {
     yieldAll(sequence.iterator())
 }
 
 private class KoneIteratorBuilderImpl<Element>(builder: suspend KoneIteratorBuilder<Element>.() -> Unit) : KoneIteratorBuilder<Element>, KoneIterator<Element>, Continuation<Unit> {
     @JvmInline
-    private value class State private constructor(val id: Int) {
+    private value class State private constructor(val id: Byte) {
         companion object {
             val Finished = State(0)
             val Failed = State(1)
@@ -139,7 +172,18 @@ private class KoneIteratorBuilderImpl<Element>(builder: suspend KoneIteratorBuil
             else -> error("Unexpected state of the iterator: $state")
         }
     }
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[state = $state]"
 }
 
+/**
+ * Builds a [KoneIterator] using the provided coroutine-based [builder] function.
+ *
+ * @param Element The type of elements.
+ * @param builder The suspending builder function that yields elements.
+ * @return A new [KoneIterator] instance.
+ */
 public fun <Element> KoneIterator.Companion.build(builder: suspend KoneIteratorBuilder<Element>.() -> Unit): KoneIterator<Element> =
     KoneIteratorBuilderImpl(builder)

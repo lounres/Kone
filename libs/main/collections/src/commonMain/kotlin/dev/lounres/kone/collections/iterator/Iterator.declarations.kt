@@ -6,6 +6,8 @@
 package dev.lounres.kone.collections.iterator
 
 import dev.lounres.kone.collections.NoFollowingElementInIteratorException
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Hashing
 
 
 /**
@@ -35,6 +37,32 @@ public interface KoneIterator<out Element> {
      * @throws NoFollowingElementInIteratorException when there is no next element.
      */
     public fun moveNext()
+    
+    /**
+     * Legacy equality operation. Must return the result of referential equality.
+     *
+     * See [Equality] for idiomatic replacement and use this operation with caution.
+     *
+     * @param other Another element to check referential equality with.
+     * @return The result of legacy equality check.
+     */
+    override fun equals(other: Any?): Boolean
+    /**
+     * Legacy hash computation operation. Must return any [Int] value.
+     *
+     * See [Hashing] for idiomatic replacement and use this operation with caution.
+     *
+     * @return The result of legacy hash computation.
+     */
+    override fun hashCode(): Int
+    /**
+     * Represents the list node as a string. Must return any string.
+     * It's better if the method returns descriptive string representation.
+     * So that anyone understanding the iterator implementation details can understand its current state.
+     *
+     * @return The string representation of the node.
+     */
+    override fun toString(): String
     
     public companion object
 }
