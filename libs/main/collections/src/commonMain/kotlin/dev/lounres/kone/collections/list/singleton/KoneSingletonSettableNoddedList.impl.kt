@@ -110,5 +110,9 @@ internal class KoneSingletonSettableNoddedList<Element>(
             if (!hasPrevious()) indexOutOfBoundsException(UInt.MAX_VALUE, 1u)
             list.singleElement = element
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[currently before single element = $currentlyBeforeSingleElement]"
     }
 }

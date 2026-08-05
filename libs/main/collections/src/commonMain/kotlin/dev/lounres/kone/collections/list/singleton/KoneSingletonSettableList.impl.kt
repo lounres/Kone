@@ -77,5 +77,9 @@ internal class KoneSingletonSettableList<Element>(
             if (!hasPrevious()) noPreviousElementInIteratorException()
             list.singleElement = element
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[currently before single element = $currentlyBeforeSingleElement]"
     }
 }

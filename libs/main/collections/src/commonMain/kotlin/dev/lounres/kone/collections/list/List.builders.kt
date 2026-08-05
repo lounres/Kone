@@ -629,13 +629,26 @@ public class KoneListBuilder<Element> @PublishedApi internal constructor(result:
     }
     
     /**
-     * Adds the given [element] to the builder.
+     * Adds the [this] element to the builder.
      *
      * @receiver The element to add.
      */
     public operator fun Element.unaryPlus() {
         val result = result ?: error("This KoneList builder is already used")
         result.add(this)
+    }
+    
+    override fun equals(other: Any?): Boolean {
+        val result = result ?: error("This KoneList builder is already used")
+        return result == other
+    }
+    override fun hashCode(): Int {
+        val result = result ?: error("This KoneList builder is already used")
+        return result.hashCode()
+    }
+    override fun toString(): String {
+        val result = result ?: error("This KoneList builder is already used")
+        return result.toString()
     }
     
     @PublishedApi
@@ -760,13 +773,26 @@ public class KoneNoddedListBuilder<Element> @PublishedApi internal constructor(r
     }
     
     /**
-     * Adds the given [element] to the builder.
+     * Adds the [this] element to the builder.
      *
      * @receiver The element to add.
      */
     public operator fun Element.unaryPlus() {
         val result = result ?: error("This KoneList builder is already used")
         result.add(this)
+    }
+    
+    override fun equals(other: Any?): Boolean {
+        val result = result ?: error("This KoneList builder is already used")
+        return result == other
+    }
+    override fun hashCode(): Int {
+        val result = result ?: error("This KoneList builder is already used")
+        return result.hashCode()
+    }
+    override fun toString(): String {
+        val result = result ?: error("This KoneList builder is already used")
+        return result.toString()
     }
     
     @PublishedApi

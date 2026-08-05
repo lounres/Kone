@@ -16,12 +16,11 @@ import dev.lounres.kone.repeat
 import kotlinx.serialization.Serializable
 
 
-// TODO: Add contracts on `toString()`, `equals` and `hashCode`.
 /**
  * Represents a finite collection of elements with some order on them.
  *
  * This interface's inheritors must have some specific structure
- * that provides optimised elements access or optimised elements iteration.
+ * that provides optimized elements access or optimized elements iteration.
  * Without both of them (or with bad time complexity like \(O(n)\)) the interface should not be used.
  *
  * @usesMathJax
@@ -59,6 +58,40 @@ public interface KoneList<out Element> : KoneLinearIterable<Element> {
      */
     override fun iterator(): KoneListIterator<Element> = iteratorFrom(0u)
     
+    /**
+     * Legacy equality operation. Must return `true` iff the following holds.
+     * - [other] is [KoneList] as well.
+     * - [other] has the same [size].
+     * - For each index `i in 0u ..< size`, `this[i] == other[i]`.
+     *
+     * See [Equality] for idiomatic replacement and use this operation with caution.
+     *
+     * @param other Another element to check referential equality with.
+     * @return The result of legacy equality check.
+     */
+    override fun equals(other: Any?): Boolean
+    /**
+     * Legacy hash computation operation. Must return result of the following pseudocode:
+     * ```kotlin
+     * val result = 1
+     * for (i in 0u ..< size) result = result * 31 + this[i].hashCode()
+     * ```
+     *
+     * See [Hashing] for idiomatic replacement and use this operation with caution.
+     *
+     * @return The result of legacy hash computation.
+     */
+    override fun hashCode(): Int
+    /**
+     * Represents the list as a string. Must return a string in the following form.
+     * ```
+     * "[<element at 0>, <element at 1>, ...]"
+     * ```
+     *
+     * @return The string representation of the list.
+     */
+    override fun toString(): String
+    
     public companion object
 }
 
@@ -67,7 +100,7 @@ public interface KoneList<out Element> : KoneLinearIterable<Element> {
  * with possibility to replace element at the provided index.
  *
  * This interface's inheritors must have some specific structure
- * that provides optimised elements access or optimised elements iteration.
+ * that provides optimized elements access or optimized elements iteration.
  * Without both of them (or with bad time complexity like \(O(n)\)) the interface should not be used.
  *
  * @usesMathJax
@@ -98,7 +131,7 @@ public interface KoneSettableList<Element> : KoneList<Element>, KoneSettableLine
  * with possibility to add, replace, and replace element at the provided index.
  *
  * This interface's inheritors must have some specific structure
- * that provides optimised elements access or optimised elements iteration.
+ * that provides optimized elements access or optimized elements iteration.
  * Without both of them (or with bad time complexity like \(O(n)\)) the interface should not be used.
  *
  * @usesMathJax

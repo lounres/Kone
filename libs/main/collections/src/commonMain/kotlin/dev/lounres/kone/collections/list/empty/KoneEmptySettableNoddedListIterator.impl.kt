@@ -25,4 +25,8 @@ internal object KoneEmptySettableNoddedListIterator: KoneSettableNoddedListItera
     override fun movePrevious() = noPreviousElementInIteratorException()
     override fun previousIndex(): UInt = noPreviousElementInIteratorException()
     override fun setPrevious(element: Nothing) = noPreviousElementInIteratorException()
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = super.toString()
 }

@@ -90,6 +90,34 @@ public interface KoneListNode<out Element> {
      * @throws DetachedNodeException when the node is already detached.
      */
     public fun iteratorFromAfterHere(): KoneNoddedListIterator<Element>
+    
+    /**
+     * Legacy equality operation. Must return the result of referential equality.
+     *
+     * See [Equality] for idiomatic replacement and use this operation with caution.
+     *
+     * @param other Another element to check referential equality with.
+     * @return The result of legacy equality check.
+     */
+    override fun equals(other: Any?): Boolean
+    /**
+     * Legacy hash computation operation. Must return any [Int] value.
+     *
+     * See [Hashing] for idiomatic replacement and use this operation with caution.
+     *
+     * @return The result of legacy hash computation.
+     */
+    override fun hashCode(): Int
+    /**
+     * Represents the list node as a string. Must return a string in the following form.
+     * ```
+     * "<node name>[<element>]"
+     * ```
+     * "Node name" here can mean anything, but (FQ) name of the node's class with system hash code (if there is any) is enough.
+     *
+     * @return The string representation of the node.
+     */
+    override fun toString(): String
 }
 
 /**
