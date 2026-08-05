@@ -19,6 +19,12 @@ import kotlinx.serialization.encoding.*
 
 // region Serializers templates
 
+/**
+ * Abstract base class for serialization strategies of [KoneIterable] implementations.
+ *
+ * @param E The type of elements in the iterable.
+ * @param C The concrete iterable type to serialize.
+ */
 public abstract class KoneIterableSerializationStrategyTemplate<E, in C: KoneIterable<E>>: SerializationStrategy<C> {
     protected abstract val elementSerializer: SerializationStrategy<E>
 
@@ -30,6 +36,12 @@ public abstract class KoneIterableSerializationStrategyTemplate<E, in C: KoneIte
     }
 }
 
+/**
+ * Abstract base class for serializers of [KoneIterable] implementations, supporting both serialization and deserialization.
+ *
+ * @param E The type of elements in the iterable.
+ * @param C The concrete iterable type to serialize and deserialize.
+ */
 public abstract class KoneIterableSerializerTemplate<E, C: KoneIterable<E>>: KoneIterableSerializationStrategyTemplate<E, C>(), KSerializer<C> {
     abstract override val elementSerializer: KSerializer<E>
     protected abstract fun buildCollection(size: UInt, initializer: (UInt) -> E): C

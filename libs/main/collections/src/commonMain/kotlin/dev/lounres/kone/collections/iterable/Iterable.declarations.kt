@@ -12,23 +12,31 @@ import kotlinx.serialization.Serializable
 
 /**
  * Represents a finite collection of elements with described size and iteration over it.
+ *
+ * @param Element The type of elements in the iterable.
  */
 @Serializable(with = DefaultKoneIterableSerializer::class)
 public interface KoneIterable<out Element> {
     /**
      * Number of elements in the collection.
+     *
+     * @return The size of the iterable.
      */
     public val size: UInt
     /**
      * Iterator over elements of the collection. There must be exactly [size] number of elements in it.
      *
      * Also, iterator should not be used after the underlying structure of the collection is changed not by the iterator.
+     *
+     * @return The iterator walking through the iterable.
      */
     public operator fun iterator(): KoneIterator<Element>
 }
 
 /**
  * Represents [KoneIterable] that can be iterated by [KoneReversibleIterator].
+ *
+ * @param Element The type of elements in the iterable.
  */
 @Serializable(with = DefaultKoneReversibleIterableSerializer::class)
 public interface KoneReversibleIterable<out Element>: KoneIterable<Element> {
@@ -37,6 +45,8 @@ public interface KoneReversibleIterable<out Element>: KoneIterable<Element> {
 
 /**
  * Represents [KoneIterable] that can be iterated by [KoneSettableIterator].
+ *
+ * @param Element The type of elements in the iterable.
  */
 @Serializable(with = DefaultKoneSettableIterableSerializer::class)
 public interface KoneSettableIterable<Element> : KoneIterable<Element> {
@@ -45,6 +55,8 @@ public interface KoneSettableIterable<Element> : KoneIterable<Element> {
 
 /**
  * Represents [KoneIterable] that can be iterated by [KoneReversibleSettableIterator].
+ *
+ * @param Element The type of elements in the iterable.
  */
 @Serializable(with = DefaultKoneReversibleSettableIterableSerializer::class)
 public interface KoneReversibleSettableIterable<Element> : KoneReversibleIterable<Element>, KoneSettableIterable<Element> {
@@ -53,6 +65,8 @@ public interface KoneReversibleSettableIterable<Element> : KoneReversibleIterabl
 
 /**
  * Represents [KoneIterable] that can be iterated by [KoneExtendableIterator].
+ *
+ * @param Element The type of elements in the iterable.
  */
 @Serializable(with = DefaultKoneExtendableIterableSerializer::class)
 public interface KoneExtendableIterable<Element> : KoneIterable<Element> {
@@ -61,6 +75,8 @@ public interface KoneExtendableIterable<Element> : KoneIterable<Element> {
 
 /**
  * Represents [KoneIterable] that can be iterated by [KoneReversibleExtendableIterator].
+ *
+ * @param Element The type of elements in the iterable.
  */
 @Serializable(with = DefaultKoneReversibleExtendableIterableSerializer::class)
 public interface KoneReversibleExtendableIterable<Element> : KoneReversibleIterable<Element>, KoneExtendableIterable<Element> {
@@ -69,6 +85,8 @@ public interface KoneReversibleExtendableIterable<Element> : KoneReversibleItera
 
 /**
  * Represents [KoneIterable] that can be iterated by [KoneRemovableIterator].
+ *
+ * @param Element The type of elements in the iterable.
  */
 @Serializable(with = DefaultKoneRemovableIterableSerializer::class)
 public interface KoneRemovableIterable<out Element> : KoneIterable<Element> {
@@ -77,6 +95,8 @@ public interface KoneRemovableIterable<out Element> : KoneIterable<Element> {
 
 /**
  * Represents [KoneIterable] that can be iterated by [KoneReversibleRemovableIterator].
+ *
+ * @param Element The type of elements in the iterable.
  */
 @Serializable(with = DefaultKoneReversibleRemovableIterableSerializer::class)
 public interface KoneReversibleRemovableIterable<out Element> : KoneReversibleIterable<Element>, KoneRemovableIterable<Element> {
@@ -85,6 +105,8 @@ public interface KoneReversibleRemovableIterable<out Element> : KoneReversibleIt
 
 /**
  * Represents [KoneIterable] that can be iterated by [KoneMutableIterator].
+ *
+ * @param Element The type of elements in the iterable.
  */
 @Serializable(with = DefaultKoneMutableIterableSerializer::class)
 public interface KoneMutableIterable<Element> : KoneSettableIterable<Element>, KoneExtendableIterable<Element>, KoneRemovableIterable<Element> {
@@ -93,6 +115,8 @@ public interface KoneMutableIterable<Element> : KoneSettableIterable<Element>, K
 
 /**
  * Represents [KoneIterable] that can be iterated by [KoneReversibleMutableIterator].
+ *
+ * @param Element The type of elements in the iterable.
  */
 @Serializable(with = DefaultKoneReversibleMutableIterableSerializer::class)
 public interface KoneReversibleMutableIterable<Element> : KoneMutableIterable<Element>, KoneReversibleSettableIterable<Element>, KoneReversibleExtendableIterable<Element>, KoneReversibleRemovableIterable<Element> {
@@ -101,6 +125,8 @@ public interface KoneReversibleMutableIterable<Element> : KoneMutableIterable<El
 
 /**
  * Represents [KoneIterable] that can be iterated by [KoneLinearIterator].
+ *
+ * @param Element The type of elements in the iterable.
  */
 @Serializable(with = DefaultKoneLinearIterableSerializer::class)
 public interface KoneLinearIterable<out Element> : KoneReversibleIterable<Element> {
@@ -109,6 +135,8 @@ public interface KoneLinearIterable<out Element> : KoneReversibleIterable<Elemen
 
 /**
  * Represents [KoneIterable] that can be iterated by [KoneSettableLinearIterator].
+ *
+ * @param Element The type of elements in the iterable.
  */
 @Serializable(with = DefaultKoneSettableLinearMutableIterableSerializer::class)
 public interface KoneSettableLinearIterable<Element> : KoneLinearIterable<Element>, KoneReversibleSettableIterable<Element> {
@@ -117,6 +145,8 @@ public interface KoneSettableLinearIterable<Element> : KoneLinearIterable<Elemen
 
 /**
  * Represents [KoneIterable] that can be iterated by [KoneExtendableLinearIterator].
+ *
+ * @param Element The type of elements in the iterable.
  */
 @Serializable(with = DefaultKoneExtendableLinearIterableSerializer::class)
 public interface KoneExtendableLinearIterable<Element> : KoneLinearIterable<Element>, KoneReversibleExtendableIterable<Element> {
@@ -125,6 +155,8 @@ public interface KoneExtendableLinearIterable<Element> : KoneLinearIterable<Elem
 
 /**
  * Represents [KoneIterable] that can be iterated by [KoneRemovableLinearIterator].
+ *
+ * @param Element The type of elements in the iterable.
  */
 @Serializable(with = DefaultKoneRemovableLinearIterableSerializer::class)
 public interface KoneRemovableLinearIterable<out Element> : KoneLinearIterable<Element>, KoneReversibleRemovableIterable<Element> {
@@ -133,6 +165,8 @@ public interface KoneRemovableLinearIterable<out Element> : KoneLinearIterable<E
 
 /**
  * Represents [KoneIterable] that can be iterated by [KoneMutableLinearIterator].
+ *
+ * @param Element The type of elements in the iterable.
  */
 @Serializable(with = DefaultKoneMutableLinearIterableSerializer::class)
 public interface KoneMutableLinearIterable<Element> : KoneSettableLinearIterable<Element>, KoneExtendableLinearIterable<Element>, KoneRemovableLinearIterable<Element>, KoneReversibleMutableIterable<Element> {
