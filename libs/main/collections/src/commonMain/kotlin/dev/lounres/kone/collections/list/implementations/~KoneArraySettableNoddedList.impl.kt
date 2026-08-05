@@ -66,7 +66,6 @@ public class KoneArraySettableNoddedList<Element> @PublishedApi internal constru
             index > size -> indexOutOfBoundsException(index, size)
             else -> Iterator(this, index)
         }
-        
     
     override fun toString(): String = buildString {
         if (isDisposed) disposedInstanceException()
@@ -92,16 +91,14 @@ public class KoneArraySettableNoddedList<Element> @PublishedApi internal constru
         if (other !is KoneList<*>) return false
         if (this.size != other.size) return false
         
-        when (other) {
-            is KoneArraySettableNoddedList<*> ->
-                for (i in 0u..<size) {
-                    if (this.data[i]!!.element != other.data[i]!!.element) return false
-                }
-            else -> {
-                val otherIterator = other.iterator()
-                for (i in 0u ..< size) {
-                    if (this.data[i]!!.element != otherIterator.getAndMoveNext()) return false
-                }
+        if (other is KoneArraySettableNoddedList<*>) {
+            for (i in 0u ..< size) {
+                if (this.data[i]!!.element != other.data[i]!!.element) return false
+            }
+        } else {
+            val otherIterator = other.iterator()
+            for (i in 0u ..< size) {
+                if (this.data[i]!!.element != otherIterator.getAndMoveNext()) return false
             }
         }
         
@@ -146,6 +143,10 @@ public class KoneArraySettableNoddedList<Element> @PublishedApi internal constru
             _list = null
             isDetached = true
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[$element]"
     }
     
     internal class Iterator<Element>(
@@ -189,5 +190,9 @@ public class KoneArraySettableNoddedList<Element> @PublishedApi internal constru
             if (!hasPrevious()) noPreviousElementInIteratorException()
             list.data[currentIndex - 1u]!!.element = element
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[current index = $currentIndex]"
     }
 }

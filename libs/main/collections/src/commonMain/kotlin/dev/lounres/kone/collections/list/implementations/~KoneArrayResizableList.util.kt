@@ -12,7 +12,6 @@ import dev.lounres.kone.collections.implementations.powerOf2IndexGreaterOrEqualT
 import dev.lounres.kone.collections.iterable.serializers.KoneIterableSerializerTemplate
 import dev.lounres.kone.collections.list.contexts.KoneResizableMutableListProducer
 import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescriptor
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 

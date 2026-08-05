@@ -269,23 +269,20 @@ public class KoneGCLinkedMeldableList<Element> @PublishedApi internal constructo
         if (other !is KoneList<*>) return false
         if (this.size != other.size) return false
         
-        when (other) {
-            is KoneGCLinkedMeldableList<*> -> {
-                var thisCurrentNode = this.start
-                var otherCurrentNode = other.start
-                repeat(size) {
-                    if (thisCurrentNode!!.element != otherCurrentNode!!.element) return false
-                    thisCurrentNode = thisCurrentNode._nextNode
-                    otherCurrentNode = otherCurrentNode._nextNode
-                }
+        if (other is KoneGCLinkedMeldableList<*>) {
+            var thisCurrentNode = this.start
+            var otherCurrentNode = other.start
+            repeat(size) {
+                if (thisCurrentNode!!.element != otherCurrentNode!!.element) return false
+                thisCurrentNode = thisCurrentNode._nextNode
+                otherCurrentNode = otherCurrentNode._nextNode
             }
-            else -> {
-                var thisCurrentNode = this.start
-                val otherIterator = other.iterator()
-                repeat(size) {
-                    if (thisCurrentNode!!.element != otherIterator.getAndMoveNext()) return false
-                    thisCurrentNode = thisCurrentNode._nextNode
-                }
+        } else {
+            var thisCurrentNode = this.start
+            val otherIterator = other.iterator()
+            repeat(size) {
+                if (thisCurrentNode!!.element != otherIterator.getAndMoveNext()) return false
+                thisCurrentNode = thisCurrentNode._nextNode
             }
         }
         
@@ -359,6 +356,10 @@ public class KoneGCLinkedMeldableList<Element> @PublishedApi internal constructo
                 list = list,
                 currentIndex = null
             )
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[$element]"
     }
     
     // Contract: (nextNode != null && previousNode != null) || list != null
@@ -492,6 +493,10 @@ public class KoneGCLinkedMeldableList<Element> @PublishedApi internal constructo
             if (nextNode == null) list!!.end = previousNode
             _nextIndex = _nextIndex?.let { it - 1u }
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[next node = $nextNode, previous node = $previousNode, next index = $_nextIndex]"
     }
     
     public companion object

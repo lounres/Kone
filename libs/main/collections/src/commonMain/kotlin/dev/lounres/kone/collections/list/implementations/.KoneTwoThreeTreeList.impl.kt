@@ -1030,6 +1030,41 @@ public class KoneTwoThreeTreeList<Element> internal constructor(
         if (isDisposed) disposedInstanceException()
         else Iterator(this, getInternalNode(index), index)
     
+    override fun equals(other: Any?): Boolean {
+        if (isDisposed) disposedInstanceException()
+        if (this === other) return true
+        if (other !is KoneList<*>) return false
+        if (this.size != other.size) return false
+        
+        if (other is KoneTwoThreeTreeList<*>) {
+            var thisCurrentNode = this.firstNode
+            var otherCurrentNode = other.firstNode
+            repeat(size) {
+                if (thisCurrentNode!!.element != otherCurrentNode!!.element) return false
+                thisCurrentNode = thisCurrentNode.nextNode
+                otherCurrentNode = otherCurrentNode.nextNode
+            }
+        } else {
+            var thisCurrentNode = this.firstNode
+            val otherIterator = other.iterator()
+            repeat(size) {
+                if (thisCurrentNode!!.element != otherIterator.getAndMoveNext()) return false
+                thisCurrentNode = thisCurrentNode.nextNode
+            }
+        }
+        
+        return true
+    }
+    override fun hashCode(): Int {
+        if (isDisposed) disposedInstanceException()
+        var hashCode = 1
+        var currentNode = firstNode
+        repeat(size) {
+            hashCode = 31 * hashCode + currentNode!!.element.hashCode()
+            currentNode = currentNode.nextNode
+        }
+        return hashCode
+    }
     override fun toString(): String = buildString {
         if (isDisposed) disposedInstanceException()
         append('[')
@@ -1252,6 +1287,10 @@ public class KoneTwoThreeTreeList<Element> internal constructor(
         override fun iteratorFromAfterHere(): KoneMutableNoddedListIterator<Element> =
             if (isDetached) detachedNodeException()
             else Iterator(holder.tree, nextNode)
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[$element]"
     }
     
     internal class Iterator<Element>(
@@ -1337,5 +1376,9 @@ public class KoneTwoThreeTreeList<Element> internal constructor(
             list.removeNode(previousNode!!)
             _nextIndex = _nextIndex?.let { it - 1u }
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[next node = $nextNode, next index = $_nextIndex]"
     }
 }

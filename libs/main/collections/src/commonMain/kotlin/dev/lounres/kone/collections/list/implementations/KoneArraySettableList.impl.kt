@@ -141,5 +141,9 @@ public value class KoneArraySettableList<Element> @PublishedApi internal constru
             if (!hasPrevious()) noPreviousElementInIteratorException()
             data[currentIndex - 1u] = element
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[current index = $currentIndex]"
     }
 }

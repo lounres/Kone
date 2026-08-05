@@ -96,34 +96,41 @@ public class KoneLazyList<Element>(
             generator = generator,
         )
     
-    // TODO: Don't know what is the best solution: access-less `hashCode` and `equals` or generating all values.
-//    override fun hashCode(): Int {
-//        var hashCode = 1
-//        for (i in 0u..<size) {
-//            hashCode = 31 * hashCode + this[i].hashCode()
-//        }
-//        return hashCode
-//    }
-//    override fun equals(other: Any?): Boolean {
-//        if (this === other) return true
-//        if (other !is KoneList<*>) return false
-//        if (this.size != other.size) return false
-//
-//        when (other) {
-//            is KoneLazyList<*> ->
-//                repeat(size) {
-//                    if (this[it] != other[it]) return false
-//                }
-//            else -> {
-//                val otherIterator = other.iterator()
-//                for (i in 0u ..< size) {
-//                    if (this[i] != otherIterator.getAndMoveNext()) return false
-//                }
-//            }
-//        }
-//
-//        return true
-//    }
+    override fun hashCode(): Int {
+        var hashCode = 1
+        for (i in 0u..<size) {
+            hashCode = 31 * hashCode + this[i].hashCode()
+        }
+        return hashCode
+    }
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is KoneList<*>) return false
+        if (this.size != other.size) return false
+        
+        if (other is KoneLazyList<*>) {
+            repeat(size) {
+                if (this[it] != other[it]) return false
+            }
+        } else {
+            val otherIterator = other.iterator()
+            for (i in 0u ..< size) {
+                if (this[i] != otherIterator.getAndMoveNext()) return false
+            }
+        }
+
+        return true
+    }
+    override fun toString(): String = buildString {
+        val list = this@KoneLazyList
+        append('[')
+        if (size > 0u) append(list[0u])
+        for (i in 1u..<size) {
+            append(", ")
+            append(list[i])
+        }
+        append(']')
+    }
 
     internal class Iterator<Element>(
         val size: UInt,
@@ -160,5 +167,9 @@ public class KoneLazyList<Element>(
             currentIndex--
         }
         override fun previousIndex(): UInt = if (hasPrevious()) currentIndex - 1u else noPreviousElementInIteratorException()
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[current index = $currentIndex]"
     }
 }

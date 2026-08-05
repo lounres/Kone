@@ -279,23 +279,20 @@ public class KoneGCLinkedSizedList<Element> @PublishedApi internal constructor(
         if (other !is KoneList<*>) return false
         if (this.size != other.size) return false
         
-        when (other) {
-            is KoneGCLinkedSizedList<*> -> {
-                var thisCurrentNode = this.start
-                var otherCurrentNode = other.start
-                repeat(size) {
-                    if (thisCurrentNode!!.element != otherCurrentNode!!.element) return false
-                    thisCurrentNode = thisCurrentNode._nextNode
-                    otherCurrentNode = otherCurrentNode._nextNode
-                }
+        if (other is KoneGCLinkedSizedList<*>) {
+            var thisCurrentNode = this.start
+            var otherCurrentNode = other.start
+            repeat(size) {
+                if (thisCurrentNode!!.element != otherCurrentNode!!.element) return false
+                thisCurrentNode = thisCurrentNode._nextNode
+                otherCurrentNode = otherCurrentNode._nextNode
             }
-            else -> {
-                var thisCurrentNode = this.start
-                val otherIterator = other.iterator()
-                repeat(size) {
-                    if (thisCurrentNode!!.element != otherIterator.getAndMoveNext()) return false
-                    thisCurrentNode = thisCurrentNode._nextNode
-                }
+        } else {
+            var thisCurrentNode = this.start
+            val otherIterator = other.iterator()
+            repeat(size) {
+                if (thisCurrentNode!!.element != otherIterator.getAndMoveNext()) return false
+                thisCurrentNode = thisCurrentNode._nextNode
             }
         }
         
@@ -379,6 +376,10 @@ public class KoneGCLinkedSizedList<Element> @PublishedApi internal constructor(
                 nextNode = _nextNode,
                 currentIndex = null
             )
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[$element]"
     }
     
     internal class Iterator<Element>(
@@ -508,6 +509,10 @@ public class KoneGCLinkedSizedList<Element> @PublishedApi internal constructor(
             list.size--
             _nextIndex = _nextIndex?.let { it - 1u }
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[next node = $nextNode, next index = $_nextIndex]"
     }
     
     public companion object

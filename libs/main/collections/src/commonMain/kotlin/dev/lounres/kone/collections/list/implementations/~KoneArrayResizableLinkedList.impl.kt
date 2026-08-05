@@ -384,24 +384,21 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
         if (this === other) return true
         if (other !is KoneList<*>) return false
         if (this.size != other.size) return false
-
-        when (other) {
-            is KoneArrayResizableLinkedList<*> -> {
-                var thisCurrentIndex = this.start
-                var otherCurrentIndex = other.start
-                repeat(size) {
-                    if (this.data[thisCurrentIndex] != other.data[otherCurrentIndex]) return false
-                    thisCurrentIndex = this.nextNodeIndex[thisCurrentIndex]
-                    otherCurrentIndex = other.nextNodeIndex[otherCurrentIndex]
-                }
+        
+        if (other is KoneArrayResizableLinkedList<*>) {
+            var thisCurrentIndex = this.start
+            var otherCurrentIndex = other.start
+            repeat(size) {
+                if (this.data[thisCurrentIndex] != other.data[otherCurrentIndex]) return false
+                thisCurrentIndex = this.nextNodeIndex[thisCurrentIndex]
+                otherCurrentIndex = other.nextNodeIndex[otherCurrentIndex]
             }
-            else -> {
-                var thisCurrentIndex = this.start
-                val otherIterator = other.iterator()
-                for (_ in 0u ..< size) {
-                    if (this.data[thisCurrentIndex] != otherIterator.getAndMoveNext()) return false
-                    thisCurrentIndex = this.nextNodeIndex[thisCurrentIndex]
-                }
+        } else {
+            var thisCurrentIndex = this.start
+            val otherIterator = other.iterator()
+            for (_ in 0u ..< size) {
+                if (this.data[thisCurrentIndex] != otherIterator.getAndMoveNext()) return false
+                thisCurrentIndex = this.nextNodeIndex[thisCurrentIndex]
             }
         }
 
@@ -557,5 +554,9 @@ public class KoneArrayResizableLinkedList<Element> @PublishedApi internal constr
             }
             currentIndex--
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[current index = $currentIndex, actual current index = $actualCurrentIndex]"
     }
 }

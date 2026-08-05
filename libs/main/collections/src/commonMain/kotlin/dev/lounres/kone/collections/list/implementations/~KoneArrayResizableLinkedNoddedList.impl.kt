@@ -502,24 +502,21 @@ public class KoneArrayResizableLinkedNoddedList<Element> @PublishedApi internal 
         if (this === other) return true
         if (other !is KoneList<*>) return false
         if (this.size != other.size) return false
-
-        when (other) {
-            is KoneArrayResizableLinkedNoddedList<*> -> {
-                var thisCurrentIndex = this.start
-                var otherCurrentIndex = other.start
-                repeat(size) {
-                    if (this.data[thisCurrentIndex]!!.element != other.data[otherCurrentIndex]!!.element) return false
-                    thisCurrentIndex = this.nextNodeIndex[thisCurrentIndex]
-                    otherCurrentIndex = other.nextNodeIndex[otherCurrentIndex]
-                }
+        
+        if (other is KoneArrayResizableLinkedNoddedList<*>) {
+            var thisCurrentIndex = this.start
+            var otherCurrentIndex = other.start
+            repeat(size) {
+                if (this.data[thisCurrentIndex]!!.element != other.data[otherCurrentIndex]!!.element) return false
+                thisCurrentIndex = this.nextNodeIndex[thisCurrentIndex]
+                otherCurrentIndex = other.nextNodeIndex[otherCurrentIndex]
             }
-            else -> {
-                var thisCurrentIndex = this.start
-                val otherIterator = other.iterator()
-                for (_ in 0u ..< size) {
-                    if (this.data[thisCurrentIndex]!!.element != otherIterator.getAndMoveNext()) return false
-                    thisCurrentIndex = this.nextNodeIndex[thisCurrentIndex]
-                }
+        } else {
+            var thisCurrentIndex = this.start
+            val otherIterator = other.iterator()
+            for (_ in 0u ..< size) {
+                if (this.data[thisCurrentIndex]!!.element != otherIterator.getAndMoveNext()) return false
+                thisCurrentIndex = this.nextNodeIndex[thisCurrentIndex]
             }
         }
 
@@ -583,6 +580,10 @@ public class KoneArrayResizableLinkedNoddedList<Element> @PublishedApi internal 
                 currentIndex = list.virtualIndex(actualIndex) + 1u,
                 actualCurrentIndex = list.nextNodeIndex[actualIndex],
             )
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[$element]"
     }
 
     internal class Iterator<Element>(
@@ -756,5 +757,9 @@ public class KoneArrayResizableLinkedNoddedList<Element> @PublishedApi internal 
             }
             currentIndex--
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[current index = $currentIndex, actual current index = $actualCurrentIndex]"
     }
 }

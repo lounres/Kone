@@ -231,17 +231,15 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
         if (this === other) return true
         if (other !is KoneList<*>) return false
         if (this.size != other.size) return false
-
-        when (other) {
-            is KoneArrayGrowableList<*> ->
-                repeat(size) {
-                    if (this.data[it] != other.data[it]) return false
-                }
-            else -> {
-                val otherIterator = other.iterator()
-                for (i in 0u ..< size) {
-                    if (this.data[i] != otherIterator.getAndMoveNext()) return false
-                }
+        
+        if (other is KoneArrayGrowableList<*>) {
+            repeat(size) {
+                if (this.data[it] != other.data[it]) return false
+            }
+        } else {
+            val otherIterator = other.iterator()
+            for (i in 0u ..< size) {
+                if (this.data[i] != otherIterator.getAndMoveNext()) return false
             }
         }
 
@@ -300,5 +298,9 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
             if (!hasPrevious()) noPreviousElementInIteratorException()
             list.removeAt(--currentIndex)
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[current index = $currentIndex]"
     }
 }

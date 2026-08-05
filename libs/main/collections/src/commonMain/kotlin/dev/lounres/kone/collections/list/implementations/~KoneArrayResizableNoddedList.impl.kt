@@ -309,17 +309,15 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
         if (this === other) return true
         if (other !is KoneList<*>) return false
         if (this.size != other.size) return false
-
-        when (other) {
-            is KoneArrayResizableNoddedList<*> ->
-                for (i in 0u..<size) {
-                    if (this.data[i]!!.element != other.data[i]!!.element) return false
-                }
-            else -> {
-                val otherIterator = other.iterator()
-                for (i in 0u ..< size) {
-                    if (this.data[i]!!.element != otherIterator.getAndMoveNext()) return false
-                }
+        
+        if (other is KoneArrayResizableNoddedList<*>) {
+            for (i in 0u ..< size) {
+                if (this.data[i]!!.element != other.data[i]!!.element) return false
+            }
+        } else {
+            val otherIterator = other.iterator()
+            for (i in 0u ..< size) {
+                if (this.data[i]!!.element != otherIterator.getAndMoveNext()) return false
             }
         }
 
@@ -370,6 +368,10 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
             if (isDetached) detachedNodeException() else list.iteratorFrom(index)
         override fun iteratorFromAfterHere(): KoneMutableNoddedListIterator<Element> =
             if (isDetached) detachedNodeException() else list.iteratorFrom(index + 1u)
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[$element]"
     }
 
     internal class Iterator<Element>(
@@ -432,5 +434,9 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
             if (!hasPrevious()) noPreviousElementInIteratorException()
             list.removeAt(--currentIndex)
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[current index = $currentIndex]"
     }
 }

@@ -12,7 +12,6 @@ import dev.lounres.kone.collections.iterable.serializers.KoneIterableSerializerT
 import dev.lounres.kone.collections.list.KoneGrowableMutableList
 import dev.lounres.kone.collections.list.contexts.KoneGrowableMutableListProducer
 import dev.lounres.kone.collections.list.serializers.KoneListImplementationDescriptor
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 
