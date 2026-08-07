@@ -16,6 +16,8 @@ import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneMutableListNode
 import dev.lounres.kone.collections.list.KoneMutableNoddedList
 import dev.lounres.kone.collections.list.KoneMutableNoddedListIterator
+import dev.lounres.kone.collections.list.implementations.KoneArrayResizableList.BulkElementsRemover
+import dev.lounres.kone.collections.list.implementations.KoneArrayResizableList.SeveralElementsInserter
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
 import kotlinx.serialization.Serializable
@@ -191,24 +193,9 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
         }
         return newNode
     }
-    override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
-        if (isDisposed) disposedInstanceException()
-        val newSize = size + number
-        if (newSize > sizeUpperBound) {
-            val oldSize = size
-            reinitializeBoundsAndData(newSize) {
-                when {
-                    it < oldSize -> get(it)
-                    it < oldSize + number -> Node(this@KoneArrayResizableNoddedList, builder(it - oldSize), it)
-                    else -> null
-                }
-            }
-        } else {
-            for (localIndex in 0u ..< number) data[localIndex + size] = Node(this, builder(localIndex), localIndex + size)
-            size = newSize
-        }
-    }
-    override fun addSeveralAt(index: UInt, number: UInt, builder: (UInt) -> Element) {
+    
+    @DelicateSeveralElementsInserterAPI
+    override fun startAddingSeveralAt(index: UInt, number: UInt): KoneSeveralElementsInserter<Element> {
         if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
         val newSize = size + number
@@ -216,17 +203,18 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
             reinitializeBoundsAndData(newSize) {
                 when {
                     it < index -> get(it)
-                    it < index + number -> Node(this@KoneArrayResizableNoddedList, builder(it - index), it)
+                    it < index + number -> null
                     it < newSize -> get(it - number).also { node -> node!!.index = it }
                     else -> null
                 }
             }
         } else {
-            for (i in (size-1u) downTo index) data[i + number] = data[i].also { it!!.index = i + number }
-            repeat(number) { data[index + it] = Node(this, builder(it), index + it) }
+            if (size >= 1u) for (i in (size-1u) downTo index) data[i + number] = data[i].also { it!!.index = i + number }
             size = newSize
         }
+        return SeveralElementsInserter(this, index, number)
     }
+    
     override fun removeAt(index: UInt) {
         if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
@@ -246,36 +234,11 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
             size = newSize
         }
     }
-
-    override fun removeAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean) {
+    
+    @DelicateBulkElementsRemoverAPI
+    override fun startBulkyRemoving(): KoneBulkElementsRemover<Element> =
         if (isDisposed) disposedInstanceException()
-        val newSize: UInt
-        scope {
-            var checkingMark = 0u
-            var resultMark = 0u
-            while (checkingMark < size) {
-                if (!predicate(checkingMark, data[checkingMark]!!.element)) {
-                    data[resultMark] = data[checkingMark].also { it!!.index = resultMark }
-                    resultMark++
-                } else {
-                    data[checkingMark]!!.detach()
-                }
-                checkingMark++
-            }
-            newSize = resultMark
-        }
-        if (newSize < sizeLowerBound) {
-            reinitializeBoundsAndData(newSize) {
-                when {
-                    it < newSize -> get(it)
-                    else -> null
-                }
-            }
-        } else {
-            for (i in newSize ..< size) data[i] = null
-            size = newSize
-        }
-    }
+        else BulkElementsRemover(this)
     
     override fun iterator(): KoneMutableNoddedListIterator<Element> =
         if (isDisposed) disposedInstanceException() else Iterator(this, 0u)
@@ -438,5 +401,67 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
         override fun equals(other: Any?): Boolean = this === other
         override fun hashCode(): Int = super.hashCode()
         override fun toString(): String = "${super.toString()}[current index = $currentIndex]"
+    }
+    
+    internal class SeveralElementsInserter<Element>(
+        val list: KoneArrayResizableNoddedList<Element>,
+        val newElementsStartIndex: UInt,
+        override val newElementsNumber: UInt,
+    ) : KoneSeveralElementsInserter<Element> {
+        var currentIndex: UInt = 0u
+        
+        override fun insert(element: Element) {
+            if (currentIndex >= newElementsStartIndex) severalElementsInserterOverflowException()
+            list.data[newElementsStartIndex + currentIndex] = Node(list, element, newElementsStartIndex + currentIndex)
+        }
+        
+        override fun close() {
+            if (currentIndex != newElementsStartIndex) severalElementsInserterElementsLackException()
+        }
+    }
+    
+    internal class BulkElementsRemover<Element>(
+        val list: KoneArrayResizableNoddedList<Element>,
+    ) : KoneBulkElementsRemover<Element> {
+        var checkingMark = 0u
+        var resultMark = 0u
+        
+        override fun hasNext(): Boolean = checkingMark < list.size
+        
+        override fun getNext(): Element {
+            if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            return list.data[checkingMark]!!.element
+        }
+        
+        override fun nextIndex(): UInt {
+            if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            return checkingMark
+        }
+        
+        override fun moveNext() {
+            if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            list.data[resultMark] = list.data[checkingMark]
+            resultMark++
+            checkingMark++
+        }
+        
+        override fun removeNext() {
+            if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            checkingMark++
+        }
+        
+        override fun close() {
+            if (resultMark < list.sizeLowerBound) {
+                list.reinitializeBoundsAndData(resultMark) {
+                    when {
+                        it < resultMark -> get(it)
+                        else -> null
+                    }
+                }
+            } else {
+                for (i in resultMark ..< list.size) list.data[i] = null
+                list.size = resultMark
+            }
+        }
     }
 }

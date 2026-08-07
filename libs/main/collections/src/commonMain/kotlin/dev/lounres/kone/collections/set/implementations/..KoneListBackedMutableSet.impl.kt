@@ -11,6 +11,7 @@ import dev.lounres.kone.collections.iterator.KoneRemovableIterator
 import dev.lounres.kone.collections.iterator.getAndMoveNext
 import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.KoneMutableList
+import dev.lounres.kone.collections.list.removeAllThat
 import dev.lounres.kone.collections.set.KoneMutableReifiedSet
 import dev.lounres.kone.collections.set.KoneMutableSet
 import dev.lounres.kone.collections.utils.firstIndexOf

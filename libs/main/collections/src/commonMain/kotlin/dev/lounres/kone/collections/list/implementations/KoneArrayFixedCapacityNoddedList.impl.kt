@@ -18,6 +18,7 @@ import dev.lounres.kone.scope
 import kotlinx.serialization.Serializable
 
 
+// TODO: Actualize time complexity table
 /**
  * Represents a nodded list that is laid out consecutively on a prefix of array of fixed capacity.
  *
@@ -158,21 +159,14 @@ public class KoneArrayFixedCapacityNoddedList<Element> @PublishedApi internal co
         size++
         return newNode
     }
-    override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
-        if (isDisposed) disposedInstanceException()
-        val newSize = size + number
-        if (newSize > capacity) capacityOverflowException(capacity)
-        repeat(number) { data[size + it] = Node(this, builder(it), size + it) }
-        size = newSize
-    }
-    override fun addSeveralAt(index: UInt, number: UInt, builder: (UInt) -> Element) {
+    @DelicateSeveralElementsInserterAPI
+    override fun startAddingSeveralAt(index: UInt, number: UInt): KoneSeveralElementsInserter<Element> {
         if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
         val newSize = size + number
         if (newSize > capacity) capacityOverflowException(capacity)
         if (size >= 1u) for (i in (size-1u) downTo index) data[i + number] = data[i].also { it!!.index = i + number }
-        repeat(number) { data[index + it] = Node(this, builder(it), index + it) }
-        size = newSize
+        return SeveralElementsInserter(this, index, number)
     }
     override fun removeAt(index: UInt) {
         if (isDisposed) disposedInstanceException()
@@ -183,26 +177,10 @@ public class KoneArrayFixedCapacityNoddedList<Element> @PublishedApi internal co
         data[size - 1u] = null
         size = newSize
     }
-
-    override fun removeAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean) {
+    @DelicateBulkElementsRemoverAPI
+    override fun startBulkyRemoving(): KoneBulkElementsRemover<Element> {
         if (isDisposed) disposedInstanceException()
-        val newSize: UInt
-        scope {
-            var checkingMark = 0u
-            var resultMark = 0u
-            while (checkingMark < size) {
-                if (!predicate(checkingMark, data[checkingMark]!!.element)) {
-                    data[resultMark] = data[checkingMark].also { it!!.index = resultMark }
-                    resultMark++
-                } else {
-                    data[checkingMark]!!.detach()
-                }
-                checkingMark++
-            }
-            newSize = resultMark
-        }
-        for (i in newSize ..< size) data[i] = null
-        size = newSize
+        return BulkElementsRemover(this)
     }
 
     override fun removeAll() {
@@ -378,5 +356,62 @@ public class KoneArrayFixedCapacityNoddedList<Element> @PublishedApi internal co
         override fun equals(other: Any?): Boolean = this === other
         override fun hashCode(): Int = super.hashCode()
         override fun toString(): String = "${super.toString()}[current index = $currentIndex]"
+    }
+    
+    internal class SeveralElementsInserter<Element>(
+        val list: KoneArrayFixedCapacityNoddedList<Element>,
+        var currentListIndex: UInt,
+        override val newElementsNumber: UInt,
+    ) : KoneSeveralElementsInserter<Element> {
+        var currentIndex: UInt = 0u
+        
+        override fun insert(element: Element) {
+            if (currentIndex >= newElementsNumber) severalElementsInserterOverflowException()
+            list.data[currentListIndex] = Node(list, element, currentListIndex)
+            currentListIndex++
+            currentIndex++
+        }
+        
+        override fun close() {
+            if (currentIndex != newElementsNumber) severalElementsInserterElementsLackException()
+        }
+    }
+    
+    internal class BulkElementsRemover<Element>(
+        val list: KoneArrayFixedCapacityNoddedList<Element>,
+    ) : KoneBulkElementsRemover<Element> {
+        var checkingMark = 0u
+        var resultMark = 0u
+        
+        override fun hasNext(): Boolean = checkingMark < list.size
+        
+        override fun getNext(): Element {
+            if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            return list.data[checkingMark]!!.element
+        }
+        
+        override fun nextIndex(): UInt {
+            if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            return checkingMark
+        }
+        
+        override fun moveNext() {
+            if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            list.data[resultMark] = list.data[checkingMark].also { it!!.index = resultMark }
+            resultMark++
+            checkingMark++
+        }
+        
+        override fun removeNext() {
+            if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            list.data[checkingMark]!!.detach()
+            checkingMark++
+        }
+        
+        override fun close() {
+            while (hasNext()) moveNext()
+            for (i in resultMark ..< list.size) list.data[i] = null
+            list.size = resultMark
+        }
     }
 }

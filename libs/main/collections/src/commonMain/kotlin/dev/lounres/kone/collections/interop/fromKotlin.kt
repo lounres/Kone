@@ -418,6 +418,10 @@ private class IteratorAsKoneIteratorWrapper<Element>(
             is Some<Element> -> cache = None
         }
     }
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[cache = $cache, source = $source]"
 }
 
 public fun <Element> Iterator<Element>.asKoneIterator(): KoneIterator<Element> =

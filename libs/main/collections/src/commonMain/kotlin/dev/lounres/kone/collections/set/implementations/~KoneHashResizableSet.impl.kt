@@ -17,6 +17,7 @@ import dev.lounres.kone.collections.iterator.KoneRemovableIterator
 import dev.lounres.kone.collections.iterator.getAndMoveNext
 import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedList
+import dev.lounres.kone.collections.list.removeAllThat
 import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.set.KoneMutableReifiedSet
 import dev.lounres.kone.collections.set.KoneMutableSet
@@ -256,6 +257,10 @@ public open class KoneHashResizableSet<Element> @PublishedApi internal construct
                 set.data[nextIndex].iterator().removeNext()
             }
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[current bucket = $currentBucket, current iterator = $currentIterator]"
     }
     
     public companion object

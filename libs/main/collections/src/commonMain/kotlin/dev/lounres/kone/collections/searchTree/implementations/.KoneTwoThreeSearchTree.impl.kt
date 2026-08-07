@@ -1011,6 +1011,10 @@ public class KoneTwoThreeSearchTree<Element, Priority>(
             nextNode = previousNode
             previousNode = previousNode!!.previousNode
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[nex node = $nextNode, previous node = $previousNode, next index = $nextIndex]"
     }
 
     @OptIn(DelicateCollectionsInheritanceAPI::class)
@@ -1056,6 +1060,10 @@ public class KoneTwoThreeSearchTree<Element, Priority>(
             nextNode = previousNode
             previousNode = previousNode!!.previousNode
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[nex node = $nextNode, previous node = $previousNode, next index = $nextIndex]"
     }
 
     @OptIn(DelicateCollectionsInheritanceAPI::class)
@@ -1101,9 +1109,12 @@ public class KoneTwoThreeSearchTree<Element, Priority>(
             nextNode = previousNode
             previousNode = previousNode!!.previousNode
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[nex node = $nextNode, previous node = $previousNode, next index = $nextIndex]"
     }
     
-    @OptIn(DelicateCollectionsInheritanceAPI::class)
     internal class Elements<Element>(
         private val tree: KoneTwoThreeSearchTree<Element, *>,
     ) : KoneReversibleIterable<Element> {

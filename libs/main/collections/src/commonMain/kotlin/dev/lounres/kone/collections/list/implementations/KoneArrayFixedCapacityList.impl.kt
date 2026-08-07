@@ -16,6 +16,7 @@ import dev.lounres.kone.scope
 import kotlinx.serialization.Serializable
 
 
+// TODO: Actualize time complexity table
 /**
  * Represents a list that is laid out consecutively on a prefix of array of fixed capacity.
  *
@@ -120,21 +121,19 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
         data[index] = element
         size++
     }
-    override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
-        if (isDisposed) disposedInstanceException()
-        val newSize = size + number
-        if (newSize > capacity) capacityOverflowException(capacity)
-        repeat(number) { data[size + it] = builder(it) }
-        size = newSize
-    }
-    override fun addSeveralAt(index: UInt, number: UInt, builder: (UInt) -> Element) {
+    @DelicateSeveralElementsInserterAPI
+    override fun startAddingSeveralAt(index: UInt, number: UInt): KoneSeveralElementsInserter<Element> {
         if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
         val newSize = size + number
         if (newSize > capacity) capacityOverflowException(capacity)
         if (size >= 1u) for (i in (size-1u) downTo index) data[i + number] = data[i]
-        repeat(number) { data[index + it] = builder(it) }
         size = newSize
+        return SeveralElementsInserter(
+            list = this,
+            currentListIndex = index,
+            newElementsNumber = number,
+        )
     }
     
     override fun removeAt(index: UInt) {
@@ -145,23 +144,10 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
         data[size - 1u] = null
         size = newSize
     }
-    override fun removeAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean) {
+    @DelicateBulkElementsRemoverAPI
+    override fun startBulkyRemoving(): KoneBulkElementsRemover<Element> {
         if (isDisposed) disposedInstanceException()
-        val newSize: UInt
-        scope {
-            var checkingMark = 0u
-            var resultMark = 0u
-            while (checkingMark < size) {
-                if (!predicate(checkingMark, data[checkingMark] as Element)) {
-                    data[resultMark] = data[checkingMark]
-                    resultMark++
-                }
-                checkingMark++
-            }
-            newSize = resultMark
-        }
-        for (i in newSize ..< size) data[i] = null
-        size = newSize
+        return BulkElementsRemover(this)
     }
     override fun removeAll() {
         if (isDisposed) disposedInstanceException()
@@ -274,5 +260,61 @@ public class KoneArrayFixedCapacityList<Element> @PublishedApi internal construc
         override fun equals(other: Any?): Boolean = this === other
         override fun hashCode(): Int = super.hashCode()
         override fun toString(): String = "${super.toString()}[current index = $currentIndex]"
+    }
+    
+    internal class SeveralElementsInserter<Element>(
+        val list: KoneArrayFixedCapacityList<Element>,
+        var currentListIndex: UInt,
+        override val newElementsNumber: UInt,
+    ) : KoneSeveralElementsInserter<Element> {
+        var currentIndex: UInt = 0u
+        
+        override fun insert(element: Element) {
+            if (currentIndex >= newElementsNumber) severalElementsInserterOverflowException()
+            list.data[currentListIndex] = element
+            currentListIndex++
+            currentIndex++
+        }
+        
+        override fun close() {
+            if (currentIndex != newElementsNumber) severalElementsInserterElementsLackException()
+        }
+    }
+    
+    internal class BulkElementsRemover<Element>(
+        val list: KoneArrayFixedCapacityList<Element>,
+    ) : KoneBulkElementsRemover<Element> {
+        var checkingMark = 0u
+        var resultMark = 0u
+        
+        override fun hasNext(): Boolean = checkingMark < list.size
+        
+        override fun getNext(): Element {
+            if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            return list.data[checkingMark] as Element
+        }
+        
+        override fun nextIndex(): UInt {
+            if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            return checkingMark
+        }
+        
+        override fun moveNext() {
+            if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            list.data[resultMark] = list.data[checkingMark]
+            resultMark++
+            checkingMark++
+        }
+        
+        override fun removeNext() {
+            if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            checkingMark++
+        }
+        
+        override fun close() {
+            while (hasNext()) moveNext()
+            for (i in resultMark ..< list.size) list.data[i] = null
+            list.size = resultMark
+        }
     }
 }

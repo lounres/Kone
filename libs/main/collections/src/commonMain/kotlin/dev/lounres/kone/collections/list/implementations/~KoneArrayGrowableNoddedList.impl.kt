@@ -186,26 +186,9 @@ public class KoneArrayGrowableNoddedList<Element> @PublishedApi internal constru
         }
         return newNode
     }
-    override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
-        if (isDisposed) disposedInstanceException()
-        val newSize = size + number
-        if (newSize > sizeUpperBound) {
-            val oldSize = size
-            reinitializeBoundsAndData(newSize) {
-                when {
-                    it < oldSize -> get(it)
-                    it < oldSize + number -> Node(this@KoneArrayGrowableNoddedList, builder(it - oldSize), it)
-                    else -> null
-                }
-            }
-        } else {
-            repeat(number) {
-                data[size + it] = Node(this, builder(it), size + it)
-            }
-            size = newSize
-        }
-    }
-    override fun addSeveralAt(index: UInt, number: UInt, builder: (UInt) -> Element) {
+    
+    @DelicateSeveralElementsInserterAPI
+    override fun startAddingSeveralAt(index: UInt, number: UInt): KoneSeveralElementsInserter<Element> {
         if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
         val newSize = size + number
@@ -213,18 +196,16 @@ public class KoneArrayGrowableNoddedList<Element> @PublishedApi internal constru
             reinitializeBoundsAndData(newSize) {
                 when {
                     it < index -> get(it)
-                    it < index + number -> Node(this@KoneArrayGrowableNoddedList, builder(it - index), it)
+                    it < index + number -> null
                     it < newSize -> get(it - number).also { node -> node!!.index = it }
                     else -> null
                 }
             }
         } else {
             if (size >= 1u) for (i in (size-1u) downTo index) data[i + number] = data[i].also { it!!.index = i + number }
-            repeat(number) {
-                data[index + it] = Node(this, builder(it), index + it)
-            }
             size = newSize
         }
+        return SeveralElementsInserter(this, index, number)
     }
     override fun removeAt(index: UInt) {
         if (isDisposed) disposedInstanceException()
@@ -234,24 +215,11 @@ public class KoneArrayGrowableNoddedList<Element> @PublishedApi internal constru
         data[size - 1u] = null
         size = newSize
     }
-
-    override fun removeAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean) {
+    
+    @DelicateBulkElementsRemoverAPI
+    override fun startBulkyRemoving(): KoneBulkElementsRemover<Element> {
         if (isDisposed) disposedInstanceException()
-        val newSize: UInt
-        scope {
-            var checkingMark = 0u
-            var resultMark = 0u
-            while (checkingMark < size) {
-                if (!predicate(checkingMark, data[checkingMark]!!.element)) {
-                    data[resultMark] = data[checkingMark].also { it!!.index = resultMark }
-                    resultMark++
-                }
-                checkingMark++
-            }
-            newSize = resultMark
-        }
-        for (i in newSize ..< size) data[i] = null
-        size = newSize
+        return BulkElementsRemover(this)
     }
 
     override fun iterator(): KoneMutableNoddedListIterator<Element> =
@@ -412,5 +380,58 @@ public class KoneArrayGrowableNoddedList<Element> @PublishedApi internal constru
         override fun equals(other: Any?): Boolean = this === other
         override fun hashCode(): Int = super.hashCode()
         override fun toString(): String = "${super.toString()}[current index = $currentIndex]"
+    }
+    
+    internal class SeveralElementsInserter<Element>(
+        val list: KoneArrayGrowableNoddedList<Element>,
+        val newElementsStartIndex: UInt,
+        override val newElementsNumber: UInt,
+    ) : KoneSeveralElementsInserter<Element> {
+        var currentIndex: UInt = 0u
+        
+        override fun insert(element: Element) {
+            if (currentIndex >= newElementsStartIndex) severalElementsInserterOverflowException()
+            list.data[newElementsStartIndex + currentIndex] = Node(list, element, newElementsStartIndex + currentIndex)
+        }
+        
+        override fun close() {
+            if (currentIndex != newElementsStartIndex) severalElementsInserterElementsLackException()
+        }
+    }
+    
+    internal class BulkElementsRemover<Element>(
+        val list: KoneArrayGrowableNoddedList<Element>,
+    ) : KoneBulkElementsRemover<Element> {
+        var checkingMark = 0u
+        var resultMark = 0u
+        
+        override fun hasNext(): Boolean = checkingMark < list.size
+        
+        override fun getNext(): Element {
+            if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            return list.data[checkingMark]!!.element
+        }
+        
+        override fun nextIndex(): UInt {
+            if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            return checkingMark
+        }
+        
+        override fun moveNext() {
+            if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            list.data[resultMark] = list.data[checkingMark].also { it!!.index = resultMark }
+            resultMark++
+            checkingMark++
+        }
+        
+        override fun removeNext() {
+            if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            checkingMark++
+        }
+        
+        override fun close() {
+            for (i in resultMark ..< list.size) list.data[i] = null
+            list.size = resultMark
+        }
     }
 }

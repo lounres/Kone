@@ -148,6 +148,10 @@ internal class KoneIndexingIterator<out T>(private val source: KoneIterator<T>) 
         source.moveNext()
         index++
     }
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[source = $source, index = $index]"
 }
 
 // TODO: Add other kinds of indexing iterators
@@ -173,6 +177,10 @@ private class KoneBlockingIterator<Element>(private val source: KoneIterator<Ele
     override fun hasNext(): Boolean = synchronized(this) { source.hasNext() }
     override fun getNext(): Element = synchronized(this) { source.getNext() }
     override fun moveNext() { synchronized(this) { source.moveNext() } }
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[source = $source]"
 }
 
 public fun <E> KoneIterator<E>.blocking(): KoneIterator<E> = KoneBlockingIterator(this)

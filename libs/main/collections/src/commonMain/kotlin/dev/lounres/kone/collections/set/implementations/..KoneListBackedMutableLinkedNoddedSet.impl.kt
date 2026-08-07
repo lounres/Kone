@@ -11,6 +11,7 @@ import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.KoneMutableListNode
 import dev.lounres.kone.collections.list.KoneMutableNoddedList
 import dev.lounres.kone.collections.list.KoneMutableNoddedListIterator
+import dev.lounres.kone.collections.list.removeAllThat
 import dev.lounres.kone.collections.noCorrespondingSetNodeException
 import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.noPreviousElementInIteratorException
@@ -152,6 +153,10 @@ public open class KoneListBackedMutableLinkedNoddedSet<Element> @PublishedApi in
             if (!hasPrevious()) noPreviousElementInIteratorException()
             listIterator.removePrevious()
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[list iterator = $listIterator]"
     }
     
     internal class NodesView<Element>(

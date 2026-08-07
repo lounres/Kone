@@ -19,6 +19,7 @@ import dev.lounres.kone.collections.iterator.getAndMoveNext
 import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.KoneMutableListNode
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedNoddedList
+import dev.lounres.kone.collections.list.removeAllThat
 import dev.lounres.kone.collections.map.KoneMap
 import dev.lounres.kone.collections.map.KoneMutableMap
 import dev.lounres.kone.collections.map.KoneMutableMapNode
@@ -309,6 +310,10 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
                 currentIterator = map.data[nextIndex].iterator().also { it.moveNext() }
             }
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[current bucket = $currentBucket, current iterator = $currentIterator]"
     }
 
     internal class KeyIterator<Key, Value>(
@@ -339,6 +344,10 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
                 currentIterator = map.data[nextIndex].iterator().also { it.moveNext() }
             }
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[current bucket = $currentBucket, current iterator = $currentIterator]"
     }
 
     internal class ValueIterator<Key, Value>(
@@ -369,6 +378,10 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
                 currentIterator = map.data[nextIndex].iterator().also { it.moveNext() }
             }
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[current bucket = $currentBucket, current iterator = $currentIterator]"
     }
     
     @OptIn(DelicateCollectionsInheritanceAPI::class)

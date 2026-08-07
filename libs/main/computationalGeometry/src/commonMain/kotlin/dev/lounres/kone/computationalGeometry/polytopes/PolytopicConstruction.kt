@@ -8,6 +8,7 @@ package dev.lounres.kone.computationalGeometry.polytopes
 import dev.lounres.kone.collections.iterable.isNotEmpty
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneMutableList
+import dev.lounres.kone.collections.list.addSeveral
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList
 import dev.lounres.kone.collections.list.implementations.generate
 import dev.lounres.kone.collections.list.lastIndex

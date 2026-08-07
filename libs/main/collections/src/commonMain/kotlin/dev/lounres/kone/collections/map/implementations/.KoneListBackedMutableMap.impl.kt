@@ -12,6 +12,7 @@ import dev.lounres.kone.collections.iterator.getAndMoveNext
 import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.KoneMutableListNode
 import dev.lounres.kone.collections.list.KoneMutableNoddedList
+import dev.lounres.kone.collections.list.removeAllThat
 import dev.lounres.kone.collections.map.KoneMutableMap
 import dev.lounres.kone.collections.map.KoneMutableMapNode
 import dev.lounres.kone.collections.map.KoneMutableReifiedMap
@@ -121,6 +122,9 @@ public open class KoneListBackedMutableMap<Key, Value> @PublishedApi internal co
         override fun moveNext() {
             nodesIterator.moveNext()
         }
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[nodes iterator = $nodesIterator]"
     }
     
     @OptIn(DelicateCollectionsInheritanceAPI::class)
@@ -141,6 +145,9 @@ public open class KoneListBackedMutableMap<Key, Value> @PublishedApi internal co
         override fun moveNext() {
             nodesIterator.moveNext()
         }
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[nodes iterator = $nodesIterator]"
     }
     
     internal class ValuesView<Value>(
@@ -174,6 +181,9 @@ public class KoneListBackedMutableReifiedMap<Key, Value> @PublishedApi internal 
         override fun moveNext() {
             nodesIterator.moveNext()
         }
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[nodes iterator = $nodesIterator]"
     }
     
     @OptIn(DelicateCollectionsInheritanceAPI::class)

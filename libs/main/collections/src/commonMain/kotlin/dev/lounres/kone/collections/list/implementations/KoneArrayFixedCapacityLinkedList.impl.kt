@@ -405,7 +405,7 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
         override fun toString(): String = "${super.toString()}[current index = $currentIndex, actual current index = $actualCurrentIndex]"
     }
     
-    private object ZeroElementsInserter : KoneSeveralElementsInserter<Any?> {
+    internal object ZeroElementsInserter : KoneSeveralElementsInserter<Any?> {
         override val newElementsNumber: UInt get() = 0u
         override fun insert(element: Any?) {
             severalElementsInserterOverflowException()

@@ -138,6 +138,10 @@ private class KoneTakeIterator<Element>(
         source.moveNext()
         nextIndex++
     }
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[source = $source, next index = $nextIndex]"
 }
 
 public fun <E> KoneIterator<E>.take(n: UInt): KoneIterator<E> = KoneTakeIterator(this, n)
@@ -817,6 +821,10 @@ private class KoneMapIterator<Element, Result>(
     override fun moveNext() {
         source.moveNext()
     }
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[source = $source]"
 }
 
 public fun <E, R> KoneIterator<E>.map(transform: (E) -> R): KoneIterator<R> = KoneMapIterator(this, transform)
@@ -846,6 +854,10 @@ private class KoneMapIndexedIterator<Element, Result>(
         source.moveNext()
         index++
     }
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[source = $source, index = $index]"
 }
 
 public fun <E, R> KoneIterator<E>.mapIndexed(transform: (index: UInt, E) -> R): KoneIterator<R> = KoneMapIndexedIterator(this, transform)
@@ -895,6 +907,10 @@ private class KoneChunkedIterator<Element>(
             newChunkSize++
         }
     }
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[source = $source, current chunk = $currentChunk]"
 }
 
 public fun <E> KoneIterator<E>.chunked(size: UInt): KoneIterator<KoneList<E>> = KoneChunkedIterator(this, size)
@@ -931,6 +947,10 @@ private class KoneChunkedLambdaIterator<Element, Result>(
             newChunkSize++
         }
     }
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[source = $source, current chunk = $currentChunk]"
 }
 
 public fun <E, R> KoneIterator<E>.chunked(size: UInt, mapper: (chunk: KoneList<E>) -> R): KoneIterator<R> = KoneChunkedLambdaIterator(this, size, mapper)
@@ -1015,6 +1035,10 @@ private class KoneWindowedIterator<Element>(
         
         currentWindow = if (nextWindow.size == windowSize) nextWindow else null
     }
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[source = $source, current window = $currentWindow]"
 }
 
 public fun <E> KoneIterator<E>.windowed(size: UInt, step: UInt = 1u): KoneIterator<KoneList<E>> = KoneWindowedIterator(this, size, step)
@@ -1051,6 +1075,10 @@ private class KoneWindowedLambdaIterator<Element, Result>(
         
         currentState = if (nextWindow.size == windowSize) State(nextWindow, mapper(nextWindow)) else null
     }
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[source = $source, current state = $currentState]"
 }
 
 public fun <E, R> KoneIterator<E>.windowed(size: UInt, step: UInt = 1u, mapper: (window: KoneList<E>) -> R): KoneIterator<R> = KoneWindowedLambdaIterator(this, size, step, mapper)
@@ -1131,6 +1159,10 @@ private class KoneFlattenIteratorIterator<Element>(
         }
         source.getNext().moveNext()
     }
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[source = $source]"
 }
 
 public fun <E> KoneIterator<KoneIterator<E>>.flatten(): KoneIterator<E> = KoneFlattenIteratorIterator(this)
@@ -1160,6 +1192,10 @@ private class KoneFlattenSequenceIterator<Element>(
         if (!hasNext()) noNextElementInIteratorException()
         else iterator.moveNext()
     }
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[source = $source, iterator = $iterator]"
 }
 
 private class KoneFlattenSequenceSequence<Element>(
@@ -1247,6 +1283,10 @@ private class KoneFlatMapIteratorIterator<Element, Result>(
             nextIterator = transform(source.getAndMoveNext())
         }
     }
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[source = $source, next iterator = $nextIterator]"
 }
 
 public fun <E, R> KoneIterator<E>.flatMap(transform: (E) -> KoneIterator<R>): KoneIterator<R> = KoneFlatMapIteratorIterator(this, transform)
@@ -1278,6 +1318,10 @@ private class KoneFlatMapSequenceIterator<Element, Result>(
             nextIterator = transform(source.getAndMoveNext()).iterator()
         }
     }
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[source = $source, next iterator = $nextIterator]"
 }
 
 private class KoneFlatMapSequenceSequence<Element, Result>(
@@ -1315,6 +1359,10 @@ private class KoneFlatMapIndexedIteratorIterator<Element, Result>(
             nextIterator = transform(nextIndex++, source.getAndMoveNext())
         }
     }
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[source = $source, next index = $nextIndex, next iterator = $nextIterator]"
 }
 
 public fun <E, R> KoneIterator<E>.flatMapIndexed(transform: (index: UInt, E) -> KoneIterator<R>): KoneIterator<R> = KoneFlatMapIndexedIteratorIterator(this, transform)
@@ -1347,6 +1395,10 @@ private class KoneFlatMapIndexedSequenceIterator<Element, Result>(
             nextIterator = transform(nextIndex++, source.getAndMoveNext()).iterator()
         }
     }
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[source = $source, next index = $nextIndex, next iterator = $nextIterator]"
 }
 
 private class KoneFlatMapIndexedSequenceSequence<Element, Result>(
@@ -1416,6 +1468,10 @@ private class KoneFilterIterator<Element>(
         if (!hasNext()) noNextElementInIteratorException()
         source.moveNext()
     }
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[source = $source]"
 }
 
 public fun <E> KoneIterator<E>.filter(predicate: (E) -> Boolean): KoneIterator<E> = KoneFilterIterator(this, predicate)
@@ -1489,6 +1545,10 @@ private class KoneRunningFoldIterator<Element, Result>(
         }
         accumulator = operation(accumulator as Result, source.getAndMoveNext())
     }
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[source = $source, has next flag = $hasNextFlag, accumulator = $accumulator]"
 }
 
 public fun <E, R> KoneIterator<E>.runningFold(initial: R, operation: (acc: R, E) -> R): KoneIterator<R> = KoneRunningFoldIterator(initial, this, operation)
@@ -1537,6 +1597,10 @@ private class KoneRunningFoldIndexedIterator<Element, Result>(
         }
         accumulator = operation(index++, accumulator as Result, source.getAndMoveNext())
     }
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[source = $source, has next flag = $hasNextFlag, accumulator = $accumulator]"
 }
 
 public fun <E, R> KoneIterator<E>.runningFoldIndexed(initial: R, operation: (index: UInt, acc: R, E) -> R): KoneIterator<R> = KoneRunningFoldIndexedIterator(initial, this, operation)
