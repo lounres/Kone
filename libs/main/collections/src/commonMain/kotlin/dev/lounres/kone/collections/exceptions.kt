@@ -131,3 +131,18 @@ public class DisposedInstanceException(message: String = "The object is already 
  */
 public fun disposedInstanceException(message: String = "The object is already disposed, so the operation is undefined in that case."): Nothing =
     throw DisposedInstanceException(message)
+
+public class SeveralElementsInserterOverflowException(message: String = "Too many elements were inserted into 'KoneSeveralElementsInserter' inheritor.") : IllegalStateException(message)
+
+public fun severalElementsInserterOverflowException(message: String = "Too many elements were inserted into 'KoneSeveralElementsInserter' inheritor."): Nothing =
+    throw SeveralElementsInserterOverflowException(message)
+
+public class SeveralElementsInserterElementsLackException(message: String = "Not enough elements were inserted into 'KoneSeveralElementsInserter' inheritor.") : IllegalStateException(message)
+
+public fun severalElementsInserterElementsLackException(message: String = "Not enough elements were inserted into 'KoneSeveralElementsInserter' inheritor."): Nothing =
+    throw SeveralElementsInserterElementsLackException(message)
+
+public class NoFollowingElementInBulkElementsRemoverException(message: String = "There is no next element in the 'KoneBulkElementsRemover' inheritor.") : IllegalStateException(message)
+
+public fun noNextElementInBulkElementsRemoverException(message: String = "There is no next element in the 'KoneBulkElementsRemover' inheritor."): Nothing =
+    throw NoFollowingElementInBulkElementsRemoverException(message)

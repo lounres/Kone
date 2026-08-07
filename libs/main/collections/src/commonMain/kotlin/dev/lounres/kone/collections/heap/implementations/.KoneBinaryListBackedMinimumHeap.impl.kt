@@ -191,6 +191,10 @@ public class KoneBinaryListBackedMinimumHeap<Element, Priority> @PublishedApi in
             if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, data.size)
             nextIndex--
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[next index = $nextIndex]"
     }
     
     @OptIn(DelicateCollectionsInheritanceAPI::class)
@@ -234,6 +238,10 @@ public class KoneBinaryListBackedMinimumHeap<Element, Priority> @PublishedApi in
             if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, data.size)
             nextIndex--
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[next index = $nextIndex]"
     }
     
     @OptIn(DelicateCollectionsInheritanceAPI::class)
@@ -275,6 +283,10 @@ public class KoneBinaryListBackedMinimumHeap<Element, Priority> @PublishedApi in
             if (!hasPrevious()) indexOutOfBoundsException(nextIndex - 1u, data.size)
             nextIndex--
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[next index = $nextIndex]"
     }
     
     @OptIn(DelicateCollectionsInheritanceAPI::class)

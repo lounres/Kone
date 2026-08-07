@@ -12,6 +12,7 @@ import dev.lounres.kone.collections.iterator.KoneIterator
 import dev.lounres.kone.collections.iterator.getAndMoveNext
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.defaultFor
 
 
 // region Conversion

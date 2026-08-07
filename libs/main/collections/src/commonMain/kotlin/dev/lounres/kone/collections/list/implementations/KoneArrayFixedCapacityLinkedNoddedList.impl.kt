@@ -20,6 +20,7 @@ import kotlinx.serialization.Serializable
 
 
 // TODO: Create `NodeIterator` that does not compute virtual index and does not take O(size) time for initialization
+// TODO: Actualize time complexity table
 /**
  * Represents a doubly linked nodded list that is laid out on three arrays of the same fixed capacity
  * instead of using object nodes.
@@ -297,7 +298,10 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
             index == size -> justAddAfterTheEnd(element)
             else -> justAddBefore(actualIndex(index), element)
         }
-
+    
+    override fun startAddingSeveralAt(index: UInt, number: UInt): KoneSeveralElementsInserter<Element> {
+        TODO("Not yet implemented")
+    }
     override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
         if (isDisposed) disposedInstanceException()
         if (number == 0u) return
@@ -347,7 +351,10 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         if (index >= size) indexOutOfBoundsException(index, size)
         justRemoveAt(actualIndex(index))
     }
-
+    
+    override fun startBulkyRemoving(): KoneBulkElementsRemover<Element> {
+        TODO("Not yet implemented")
+    }
     override fun removeAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean) {
         if (isDisposed) disposedInstanceException()
         val newSize: UInt

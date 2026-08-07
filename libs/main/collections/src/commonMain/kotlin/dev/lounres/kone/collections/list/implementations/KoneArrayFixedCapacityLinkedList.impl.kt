@@ -18,6 +18,7 @@ import dev.lounres.kone.scope
 import kotlinx.serialization.Serializable
 
 
+// TODO: Actualize time complexity table
 /**
  * Represents a doubly linked list that is laid out on three arrays of the same fixed capacity
  * instead of using object nodes.
@@ -235,46 +236,16 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
             else -> justAddBefore(actualIndex(index), element)
         }
     }
-    override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
-        if (isDisposed) disposedInstanceException()
-        if (number == 0u) return
-        val newSize = size + number
-        if (newSize > capacity) capacityOverflowException(capacity)
-
-        justAddAfterTheEnd(number) { builder(it) }
-    }
-    override fun addSeveralAt(index: UInt, number: UInt, builder: (UInt) -> Element) {
+    @DelicateSeveralElementsInserterAPI
+    override fun startAddingSeveralAt(index: UInt, number: UInt): KoneSeveralElementsInserter<Element> {
         if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
-        if (number == 0u) return
+        if (number == 0u) return ZeroElementsInserter
         val newSize = size + number
-        when {
+        return when {
             newSize > capacity -> capacityOverflowException(capacity)
-            index == size -> justAddAfterTheEnd(number) { builder(it) }
-            else -> {
-                val actualRightPartIndex = actualIndex(index)
-                val actualInnerPartLeftEndIndex = nextNodeIndex[end]
-                val actualInnerPartRightEndIndex: UInt
-                scope {
-                    var currentActualIndex = end
-                    repeat(number) {
-                        currentActualIndex = nextNodeIndex[currentActualIndex]
-                        data[currentActualIndex] = builder(it)
-                    }
-                    actualInnerPartRightEndIndex = currentActualIndex
-                }
-
-                nextNodeIndex[end] = nextNodeIndex[actualInnerPartRightEndIndex]
-                previousNodeIndex[nextNodeIndex[actualInnerPartRightEndIndex]] = end
-                val actualLeftPartIndex = previousNodeIndex[actualRightPartIndex]
-                nextNodeIndex[actualLeftPartIndex] = actualInnerPartLeftEndIndex
-                previousNodeIndex[actualInnerPartLeftEndIndex] = actualLeftPartIndex
-                previousNodeIndex[actualRightPartIndex] = actualInnerPartRightEndIndex
-                nextNodeIndex[actualInnerPartRightEndIndex] = actualRightPartIndex
-                
-                if (index == 0u) start = actualInnerPartLeftEndIndex
-                size += number
-            }
+            index == size -> EndAppendingSeveralElementsInserter(this, number)
+            else -> InsideSeveralElementsInserter(this, index, number)
         }
     }
     override fun removeAt(index: UInt) {
@@ -282,39 +253,12 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
         if (index >= size) indexOutOfBoundsException(index, size)
         justRemoveAt(actualIndex(index))
     }
-
-    override fun removeAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean) {
+    @DelicateBulkElementsRemoverAPI
+    override fun startBulkyRemoving(): KoneBulkElementsRemover<Element> {
         if (isDisposed) disposedInstanceException()
-        val newSize: UInt
-        val firstNodeToClear: UInt
-        scope {
-            var checkingActualMark = start
-            var checkingIndex = 0u
-            var resultActualMark = start
-            var resultSize = 0u
-            while (checkingIndex < size) {
-                if (!predicate(checkingIndex, data[checkingActualMark] as Element)) {
-                    data[resultActualMark] = data[checkingActualMark]
-                    resultActualMark = nextNodeIndex[resultActualMark]
-                    resultSize++
-                }
-                checkingActualMark = nextNodeIndex[checkingActualMark]
-                checkingIndex++
-            }
-            newSize = resultSize
-            firstNodeToClear = resultActualMark
-        }
-        end = previousNodeIndex[firstNodeToClear]
-        scope {
-            var currentActualIndexToClear = firstNodeToClear
-            repeat(size - newSize) {
-                data[currentActualIndexToClear] = null
-                currentActualIndexToClear = nextNodeIndex[currentActualIndexToClear]
-            }
-        }
-        size = newSize
+        return BulkElementsRemover(this)
     }
-
+    
     override fun iterator(): KoneMutableLinearIterator<Element> =
         if (isDisposed) disposedInstanceException()
         else Iterator(this, 0u)
@@ -459,5 +403,119 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
         override fun equals(other: Any?): Boolean = this === other
         override fun hashCode(): Int = super.hashCode()
         override fun toString(): String = "${super.toString()}[current index = $currentIndex, actual current index = $actualCurrentIndex]"
+    }
+    
+    private object ZeroElementsInserter : KoneSeveralElementsInserter<Any?> {
+        override val newElementsNumber: UInt get() = 0u
+        override fun insert(element: Any?) {
+            severalElementsInserterOverflowException()
+        }
+        override fun close() {}
+    }
+    
+    internal class EndAppendingSeveralElementsInserter<Element>(
+        private val list: KoneArrayFixedCapacityLinkedList<Element>,
+        override val newElementsNumber: UInt,
+    ) : KoneSeveralElementsInserter<Element> {
+        private var currentIndex = 0u
+        override fun insert(element: Element) {
+            if (currentIndex >= newElementsNumber) severalElementsInserterOverflowException()
+            list.end = list.nextNodeIndex[list.end]
+            list.data[list.end] = element
+            list.size++
+        }
+        override fun close() {
+            if (currentIndex != newElementsNumber) severalElementsInserterElementsLackException()
+        }
+    }
+    
+    internal class InsideSeveralElementsInserter<Element>(
+        private val list: KoneArrayFixedCapacityLinkedList<Element>,
+        private val index: UInt,
+        override val newElementsNumber: UInt,
+    ) : KoneSeveralElementsInserter<Element> {
+        private val actualRightPartIndex = list.actualIndex(index)
+        private val actualInnerPartLeftEndIndex = list.nextNodeIndex[list.end]
+        private var currentIndex = 0u
+        private var currentActualIndex = list.end
+        
+        override fun insert(element: Element) {
+            if (currentIndex >= newElementsNumber) severalElementsInserterOverflowException()
+            currentActualIndex = list.nextNodeIndex[currentActualIndex]
+            currentIndex++
+            list.data[currentActualIndex] = element
+        }
+        override fun close() {
+            if (currentIndex != newElementsNumber) severalElementsInserterElementsLackException()
+            val actualInnerPartRightEndIndex = currentActualIndex
+            
+            list.nextNodeIndex[list.end] = list.nextNodeIndex[actualInnerPartRightEndIndex]
+            list.previousNodeIndex[list.nextNodeIndex[actualInnerPartRightEndIndex]] = list.end
+            val actualLeftPartIndex = list.previousNodeIndex[actualRightPartIndex]
+            list.nextNodeIndex[actualLeftPartIndex] = actualInnerPartLeftEndIndex
+            list.previousNodeIndex[actualInnerPartLeftEndIndex] = actualLeftPartIndex
+            list.previousNodeIndex[actualRightPartIndex] = actualInnerPartRightEndIndex
+            list.nextNodeIndex[actualInnerPartRightEndIndex] = actualRightPartIndex
+            
+            if (index == 0u) list.start = actualInnerPartLeftEndIndex
+            list.size += newElementsNumber
+        }
+    }
+    
+    internal class BulkElementsRemover<Element>(
+        private val list: KoneArrayFixedCapacityLinkedList<Element>,
+    ) : KoneBulkElementsRemover<Element> {
+        var checkingActualMark = list.start
+        var checkingIndex = 0u
+        var resultActualMark = list.start
+        var resultSize = 0u
+        
+        override fun hasNext(): Boolean = checkingIndex < list.size
+        override fun getNext(): Element {
+            if (checkingIndex >= list.size) noNextElementInBulkElementsRemoverException()
+            return list.data[checkingActualMark] as Element
+        }
+        override fun nextIndex(): UInt {
+            if (checkingIndex >= list.size) noNextElementInBulkElementsRemoverException()
+            return checkingIndex
+        }
+        override fun moveNext() {
+            if (checkingIndex >= list.size) noNextElementInBulkElementsRemoverException()
+            list.data[resultActualMark] = list.data[checkingActualMark]
+            resultActualMark = list.nextNodeIndex[resultActualMark]
+            resultSize++
+            checkingActualMark = list.nextNodeIndex[checkingActualMark]
+            checkingIndex++
+        }
+        override fun removeNext() {
+            if (checkingIndex >= list.size) noNextElementInBulkElementsRemoverException()
+            checkingActualMark = list.nextNodeIndex[checkingActualMark]
+            checkingIndex++
+        }
+        override fun close() {
+            resultSize += list.size - checkingIndex
+            if (resultSize == list.size) return
+            if (checkingIndex == list.size) {
+                list.end = list.previousNodeIndex[resultActualMark]
+            } else {
+                val actualIndexBeforeResultMark = list.previousNodeIndex[resultActualMark]
+                val actualIndexBeforeCheckingMark = list.previousNodeIndex[checkingActualMark]
+                val actualIndexAfterEnd = list.nextNodeIndex[list.end]
+                list.nextNodeIndex[actualIndexBeforeResultMark] = checkingActualMark
+                list.previousNodeIndex[checkingActualMark] = actualIndexBeforeResultMark
+                list.nextNodeIndex[actualIndexBeforeCheckingMark] = actualIndexAfterEnd
+                list.previousNodeIndex[actualIndexAfterEnd] = actualIndexBeforeCheckingMark
+                list.nextNodeIndex[list.end] = resultActualMark
+                list.previousNodeIndex[resultActualMark] = list.end
+            }
+            scope {
+                var currentActualIndexToClear = resultActualMark
+                repeat(list.size - resultSize) {
+                    list.data[currentActualIndexToClear] = null
+                    currentActualIndexToClear = list.nextNodeIndex[currentActualIndexToClear]
+                }
+            }
+            list.size = resultSize
+        }
     }
 }

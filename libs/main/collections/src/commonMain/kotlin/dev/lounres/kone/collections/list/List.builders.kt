@@ -5,7 +5,11 @@
 
 package dev.lounres.kone.collections.list
 
+import dev.lounres.kone.collections.DelicateBulkElementsRemoverAPI
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
+import dev.lounres.kone.collections.DelicateSeveralElementsInserterAPI
+import dev.lounres.kone.collections.KoneBulkElementsRemover
+import dev.lounres.kone.collections.KoneSeveralElementsInserter
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.iterable.KoneIterable
 import dev.lounres.kone.collections.iterator.KoneIterator
@@ -559,7 +563,7 @@ public fun <Element> KoneSequence<Element>.toKoneNoddedList(): KoneNoddedList<El
  *
  * @param Element The element type of the list.
  */
-@OptIn(DelicateCollectionsInheritanceAPI::class)
+@OptIn(DelicateCollectionsInheritanceAPI::class, DelicateSeveralElementsInserterAPI::class, DelicateBulkElementsRemoverAPI::class)
 public class KoneListBuilder<Element> @PublishedApi internal constructor(result: KoneMutableList<Element>) : KoneMutableList<Element> {
     private var result: KoneMutableList<Element>? = result
     
@@ -588,14 +592,9 @@ public class KoneListBuilder<Element> @PublishedApi internal constructor(result:
         result.addAt(index, element)
     }
     
-    override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
+    override fun startAddingSeveralAt(index: UInt, number: UInt): KoneSeveralElementsInserter<Element> {
         val result = result ?: error("This KoneList builder is already used")
-        result.addSeveral(number, builder)
-    }
-    
-    override fun addSeveralAt(index: UInt, number: UInt, builder: (UInt) -> Element) {
-        val result = result ?: error("This KoneList builder is already used")
-        result.addSeveralAt(index, number, builder)
+        return result.startAddingSeveralAt(index, number)
     }
     
     override fun removeAt(index: UInt) {
@@ -608,14 +607,9 @@ public class KoneListBuilder<Element> @PublishedApi internal constructor(result:
         result.removeAll()
     }
     
-    override fun removeAllThat(predicate: (Element) -> Boolean) {
+    override fun startBulkyRemoving(): KoneBulkElementsRemover<Element> {
         val result = result ?: error("This KoneList builder is already used")
-        result.removeAllThat(predicate)
-    }
-    
-    override fun removeAllThatIndexed(predicate: (UInt, Element) -> Boolean) {
-        val result = result ?: error("This KoneList builder is already used")
-        result.removeAllThatIndexed(predicate)
+        return result.startBulkyRemoving()
     }
     
     override fun iterator(): KoneMutableListIterator<Element> {
@@ -688,7 +682,7 @@ public inline fun <Element> KoneList.Companion.build(initialCapacity: UInt, buil
  *
  * @param Element The element type of the list.
  */
-@OptIn(DelicateCollectionsInheritanceAPI::class)
+@OptIn(DelicateCollectionsInheritanceAPI::class, DelicateSeveralElementsInserterAPI::class, DelicateBulkElementsRemoverAPI::class)
 public class KoneNoddedListBuilder<Element> @PublishedApi internal constructor(result: KoneMutableNoddedList<Element>) : KoneMutableNoddedList<Element> {
     private var result: KoneMutableNoddedList<Element>? = result
     
@@ -732,14 +726,9 @@ public class KoneNoddedListBuilder<Element> @PublishedApi internal constructor(r
         return result.addNodeAt(index, element)
     }
     
-    override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
+    override fun startAddingSeveralAt(index: UInt, number: UInt): KoneSeveralElementsInserter<Element> {
         val result = result ?: error("This KoneList builder is already used")
-        result.addSeveral(number, builder)
-    }
-    
-    override fun addSeveralAt(index: UInt, number: UInt, builder: (UInt) -> Element) {
-        val result = result ?: error("This KoneList builder is already used")
-        result.addSeveralAt(index, number, builder)
+        return result.startAddingSeveralAt(index, number)
     }
     
     override fun removeAt(index: UInt) {
@@ -752,14 +741,9 @@ public class KoneNoddedListBuilder<Element> @PublishedApi internal constructor(r
         result.removeAll()
     }
     
-    override fun removeAllThat(predicate: (Element) -> Boolean) {
+    override fun startBulkyRemoving(): KoneBulkElementsRemover<Element> {
         val result = result ?: error("This KoneList builder is already used")
-        result.removeAllThat(predicate)
-    }
-    
-    override fun removeAllThatIndexed(predicate: (UInt, Element) -> Boolean) {
-        val result = result ?: error("This KoneList builder is already used")
-        result.removeAllThatIndexed(predicate)
+        return result.startBulkyRemoving()
     }
     
     override fun iterator(): KoneMutableNoddedListIterator<Element> {

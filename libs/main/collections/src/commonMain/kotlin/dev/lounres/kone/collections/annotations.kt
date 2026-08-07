@@ -25,3 +25,23 @@ public annotation class DelicateCollectionsInheritanceAPI
     message = "Please, read the contracts of the constructor or builder carefully before using it."
 )
 public annotation class DelicateListBackedCollectionsBuilderAPI
+
+/**
+ * Marks that the annotated method is delicate to use and requires reading its contracts carefully.
+ */
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CONSTRUCTOR)
+@RequiresOptIn(
+    level = RequiresOptIn.Level.WARNING,
+    message = "Please, use 'addSeveral' or 'addSeveralAt' extension functions or read the contracts of the method carefully before using it."
+)
+public annotation class DelicateSeveralElementsInserterAPI
+
+/**
+ * Marks that the annotated method is delicate to use and requires reading its contracts carefully.
+ */
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CONSTRUCTOR)
+@RequiresOptIn(
+    level = RequiresOptIn.Level.WARNING,
+    message = "Please, use 'removeAllThat', 'removeAllThatIndexed', etc. extension functions or read the contracts of the method carefully before using it."
+)
+public annotation class DelicateBulkElementsRemoverAPI

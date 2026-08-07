@@ -60,6 +60,10 @@ public value class KoneArray<out Element>(internal val array: Array<out Element>
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[at index $index]"
     }
     
     public companion object
@@ -158,6 +162,10 @@ public value class KoneBooleanArray(internal val array: BooleanArray): KoneList<
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[at index $index]"
     }
     
     public companion object
@@ -256,6 +264,10 @@ public value class KoneCharArray(internal val array: CharArray): KoneList<Char> 
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[at index $index]"
     }
     
     public companion object
@@ -354,6 +366,10 @@ public value class KoneByteArray(internal val array: ByteArray): KoneList<Byte> 
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[at index $index]"
     }
     
     public companion object
@@ -452,6 +468,10 @@ public value class KoneShortArray(internal val array: ShortArray): KoneList<Shor
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[at index $index]"
     }
     
     public companion object
@@ -550,6 +570,10 @@ public value class KoneIntArray(internal val array: IntArray): KoneList<Int> {
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[at index $index]"
     }
     
     public companion object
@@ -648,6 +672,10 @@ public value class KoneLongArray(internal val array: LongArray): KoneList<Long> 
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[at index $index]"
     }
     
     public companion object
@@ -746,6 +774,10 @@ public value class KoneFloatArray(internal val array: FloatArray): KoneList<Floa
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[at index $index]"
     }
     
     public companion object
@@ -844,6 +876,10 @@ public value class KoneDoubleArray(internal val array: DoubleArray): KoneList<Do
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[at index $index]"
     }
     
     public companion object
@@ -942,6 +978,10 @@ public value class KoneUByteArray(internal val array: UByteArray): KoneList<UByt
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[at index $index]"
     }
     
     public companion object
@@ -1040,6 +1080,10 @@ public value class KoneUShortArray(internal val array: UShortArray): KoneList<US
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[at index $index]"
     }
     
     public companion object
@@ -1138,6 +1182,10 @@ public value class KoneUIntArray(internal val array: UIntArray): KoneList<UInt> 
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[at index $index]"
     }
     
     public companion object
@@ -1167,15 +1215,7 @@ public value class KoneMutableUIntArray(internal val array: UIntArray): KoneSett
         return Iterator(array, index.toInt())
     }
     
-    override fun toString(): String = buildString {
-        append('[')
-        if (size > 0u) append(array[0])
-        for (i in 1..<array.size) {
-            append(", ")
-            append(array[i])
-        }
-        append(']')
-    }
+    override fun toString(): String = array.contentToString()
     
     // FIXME: KT-24874
 //    override fun hashCode(): Int = array.contentHashCode()
@@ -1244,6 +1284,10 @@ public value class KoneULongArray(internal val array: ULongArray): KoneList<ULon
             index--
         }
         override fun previousIndex(): UInt = (index - 1).toUInt()
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[at index $index]"
     }
     
     public companion object

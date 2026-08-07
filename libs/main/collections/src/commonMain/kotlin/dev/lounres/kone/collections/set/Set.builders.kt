@@ -565,19 +565,9 @@ public class KoneReifiedSetBuilder<Element> @PublishedApi internal constructor(r
         result.add(this)
     }
     
-    public operator fun KoneIterable<Element>.unaryPlus() {
-        val result = result ?: error("This KoneReifiedSet builder is already used")
-        result.addAllFrom(this)
-    }
-    
     public operator fun Element.unaryMinus() {
         val result = result ?: error("This KoneReifiedSet builder is already used")
         result.remove(this)
-    }
-    
-    public operator fun KoneIterable<Element>.unaryMinus() {
-        val result = result ?: error("This KoneReifiedSet builder is already used")
-        result.removeAllFrom(this)
     }
     
     @PublishedApi

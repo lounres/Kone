@@ -86,6 +86,10 @@ internal open class KoneSingletonMap<Key, Value>(
                 if (!hasNext()) noNextElementInIteratorException()
                 currentlyBeforeSingleElement = false
             }
+            
+            override fun equals(other: Any?): Boolean = this === other
+            override fun hashCode(): Int = super.hashCode()
+            override fun toString(): String = "${super.toString()}[currently before single element = $currentlyBeforeSingleElement]"
         }
     }
     
@@ -109,6 +113,10 @@ internal open class KoneSingletonMap<Key, Value>(
                 if (!hasNext()) noNextElementInIteratorException()
                 currentlyBeforeSingleElement = false
             }
+            
+            override fun equals(other: Any?): Boolean = this === other
+            override fun hashCode(): Int = super.hashCode()
+            override fun toString(): String = "${super.toString()}[currently before single element = $currentlyBeforeSingleElement]"
         }
     }
 }

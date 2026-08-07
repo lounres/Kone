@@ -5,6 +5,8 @@
 
 package dev.lounres.kone.collections.list
 
+import dev.lounres.kone.collections.DelicateBulkElementsRemoverAPI
+import dev.lounres.kone.collections.DelicateSeveralElementsInserterAPI
 import dev.lounres.kone.collections.iterable.KoneIterable
 import dev.lounres.kone.collections.iterator.KoneIterator
 import dev.lounres.kone.collections.iterator.getAndMoveNext
@@ -14,6 +16,7 @@ import dev.lounres.kone.maybe.None
 import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.neq
+import dev.lounres.kone.repeat
 
 
 /**
@@ -29,6 +32,24 @@ public fun <Element> KoneList<Element>.getMaybe(index: UInt): Maybe<Element> = i
  */
 public fun <Element> KoneList<Element>.getOrElse(index: UInt, block: () -> Element): Element = if (index < size) this[index] else block()
 
+@OptIn(DelicateSeveralElementsInserterAPI::class)
+public inline fun <Element> KoneMutableList<Element>.addSeveral(number: UInt, builder: (index: UInt) -> Element) {
+    val inserter = startAddingSeveralAt(index = 0u, number = number)
+    try {
+        repeat(number) { inserter.insert(builder(it)) }
+    } finally {
+        inserter.close()
+    }
+}
+@OptIn(DelicateSeveralElementsInserterAPI::class)
+public inline fun <Element> KoneMutableList<Element>.addSeveralAt(index: UInt, number: UInt, builder: (index: UInt) -> Element) {
+    val inserter = startAddingSeveralAt(index = index, number = number)
+    try {
+        repeat(number) { inserter.insert(builder(it)) }
+    } finally {
+        inserter.close()
+    }
+}
 /**
  * Adds provided [elements] at the end of the ordered collection.
  *
@@ -119,6 +140,30 @@ public fun <Element> KoneMutableList<Element>.addAllFromAt(index: UInt, elements
     addAllFromAt(index, elements.iterator())
 }
 
+@OptIn(DelicateBulkElementsRemoverAPI::class)
+public inline fun <Element> KoneMutableList<Element>.removeAllThat(predicate: (element: Element) -> Boolean) {
+    val remover = this.startBulkyRemoving()
+    try {
+        while (remover.hasNext()) {
+            if (predicate(remover.getNext())) remover.removeNext()
+            else remover.moveNext()
+        }
+    } finally {
+        remover.close()
+    }
+}
+@OptIn(DelicateBulkElementsRemoverAPI::class)
+public inline fun <Element> KoneMutableList<Element>.removeAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean) {
+    val remover = this.startBulkyRemoving()
+    try {
+        while (remover.hasNext()) {
+            if (predicate(remover.nextIndex(), remover.getNext())) remover.removeNext()
+            else remover.moveNext()
+        }
+    } finally {
+        remover.close()
+    }
+}
 /**
  * Finds first element equal to the provided [element] with respect to context [Equality]
  * and removes it.
@@ -136,13 +181,13 @@ public fun <Element> KoneMutableList<Element>.remove(element: Element) {
 /**
  * Iterates over the collection and retains only the elements matching the [predicate].
  */
-public inline fun <Element> KoneMutableList<Element>.retainAllThatIndexed(crossinline predicate: (index: UInt, element: Element) -> Boolean) {
+public inline fun <Element> KoneMutableList<Element>.retainAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean) {
     removeAllThatIndexed { index, element -> !predicate(index, element) }
 }
 /**
  * Iterates over the collection and retains only the elements matching the [predicate].
  */
-public inline fun <Element> KoneMutableList<Element>.retainAllThat(crossinline predicate: (element: Element) -> Boolean) {
+public inline fun <Element> KoneMutableList<Element>.retainAllThat(predicate: (element: Element) -> Boolean) {
     removeAllThat { element -> !predicate(element) }
 }
 

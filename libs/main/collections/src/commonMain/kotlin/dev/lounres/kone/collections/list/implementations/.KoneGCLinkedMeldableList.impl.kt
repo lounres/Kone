@@ -51,6 +51,7 @@ public class KoneGCLinkedMeldableList<Element> @PublishedApi internal constructo
             return counter
         }
     
+    // TODO: It can throw NPE when index is too big (on both '!!'-points). So think about making it nullable.
     internal fun getInternalNode(index: UInt): Node<Element> {
         var currentNode = start!!
         var currentIndex = 0u
@@ -147,42 +148,14 @@ public class KoneGCLinkedMeldableList<Element> @PublishedApi internal constructo
         return newNode
     }
     
-    override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
+    @DelicateSeveralElementsInserterAPI
+    override fun startAddingSeveralAt(index: UInt, number: UInt): KoneSeveralElementsInserter<Element> =
         if (isDisposed) disposedInstanceException()
-        repeat(number) {
-            val newNode = Node(builder(it))
-            newNode._previousNode = end
-            end?._nextNode = newNode
-            end = newNode
-            if (size == 0u && it == 0u) start = newNode
-        }
-    }
-    
-    override fun addSeveralAt(index: UInt, number: UInt, builder: (UInt) -> Element) {
-        if (isDisposed) disposedInstanceException()
-        if (index > size) indexOutOfBoundsException(index, size)
-        if (index == size) {
-            repeat(number) {
-                val newNode = Node(builder(it))
-                newNode._previousNode = end
-                end?._nextNode = newNode
-                end = newNode
-                if (size == 0u && it == 0u) start = newNode
-            }
-        } else {
-            val nextNode = getInternalNode(index)
-            var previousNode = nextNode._previousNode
-            repeat(number) {
-                val newNode = Node(builder(it))
-                newNode._nextNode = nextNode
-                newNode._previousNode = previousNode
-                nextNode._previousNode = newNode
-                previousNode?._nextNode = newNode
-                if (previousNode == null) start = newNode
-                previousNode = newNode
-            }
-        }
-    }
+        else SeveralElementsInserter(
+            list = this,
+            currentNode = if (index == 0u) null else getInternalNode(index - 1u),
+            newElementsNumber = number,
+        )
     
     override fun removeAt(index: UInt) {
         if (isDisposed) disposedInstanceException()
@@ -197,28 +170,12 @@ public class KoneGCLinkedMeldableList<Element> @PublishedApi internal constructo
         nodeToRemove.detach()
     }
     
-    override fun removeAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean) {
-        var currentNode = start
-        var currentIndex = 0u
-        var searchingForStart = true
-        start = null
-        end = null
-        while (currentNode != null) {
-            if (predicate(currentIndex, currentNode.element)) {
-                currentNode._nextNode?._previousNode = currentNode._previousNode
-                currentNode._previousNode?._nextNode = currentNode._nextNode
-                currentNode = currentNode._nextNode.also { currentNode.detach() }
-            } else {
-                if (searchingForStart) {
-                    start = currentNode
-                    searchingForStart = false
-                }
-                end = currentNode
-                currentNode = currentNode._nextNode
-            }
-            currentIndex++
-        }
-    }
+    @DelicateBulkElementsRemoverAPI
+    override fun startBulkyRemoving(): KoneBulkElementsRemover<Element> =
+        if (isDisposed) disposedInstanceException()
+        else BulkElementsRemover(
+            list = this,
+        )
     
     override fun iterator(): KoneMutableNoddedListIterator<Element> =
         Iterator(
@@ -289,7 +246,8 @@ public class KoneGCLinkedMeldableList<Element> @PublishedApi internal constructo
         return true
     }
     
-    public class Node<Element> @PublishedApi internal constructor(
+    @PublishedApi
+    internal class Node<Element>(
         override var element: Element,
     ) : KoneMutableListNode<Element> {
         override var isDetached: Boolean = false
@@ -497,6 +455,67 @@ public class KoneGCLinkedMeldableList<Element> @PublishedApi internal constructo
         override fun equals(other: Any?): Boolean = this === other
         override fun hashCode(): Int = super.hashCode()
         override fun toString(): String = "${super.toString()}[next node = $nextNode, previous node = $previousNode, next index = $_nextIndex]"
+    }
+    
+    internal class SeveralElementsInserter<Element>(
+        private val list: KoneGCLinkedMeldableList<Element>,
+        private var currentNode: Node<Element>?,
+        override val newElementsNumber: UInt,
+    ) : KoneSeveralElementsInserter<Element> {
+        var currentIndex = 0u
+        override fun insert(element: Element) {
+            if (currentIndex >= newElementsNumber) severalElementsInserterOverflowException()
+            val newNode = Node(element)
+            newNode._previousNode = currentNode
+            newNode._nextNode = if (currentNode == null) list.start else currentNode!!._nextNode
+            newNode._nextNode?._previousNode = newNode._previousNode
+            newNode._previousNode?._nextNode = newNode._nextNode
+            currentIndex++
+        }
+        override fun close() {}
+    }
+    
+    internal class BulkElementsRemover<Element>(
+        list: KoneGCLinkedMeldableList<Element>,
+    ) : KoneBulkElementsRemover<Element> {
+        private var currentNode: Node<Element>? = list.start
+        private var currentIndex = 0u
+        
+        override fun hasNext(): Boolean = currentNode == null
+        override fun getNext(): Element {
+            if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            return currentNode!!.element
+        }
+        override fun nextIndex(): UInt {
+            if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            return currentIndex
+        }
+        override fun moveNext() {
+            if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            currentNode = currentNode!!._nextNode
+            currentIndex++
+        }
+        override fun removeNext() {
+            if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            val nodeToRemove = currentNode!!
+            val nextNode = nodeToRemove._nextNode
+            val previousNode = nodeToRemove._previousNode
+            nextNode?._previousNode = previousNode
+            previousNode?._nextNode = nextNode
+            if (previousNode == null) {
+                val list = nodeToRemove.list!!
+                list.start = nextNode
+                nextNode?.list = list
+            }
+            if (nextNode == null) {
+                val list = nodeToRemove.list!!
+                list.end = previousNode
+                previousNode?.list = list
+            }
+            nodeToRemove.detach()
+            currentNode = nextNode
+        }
+        override fun close() {}
     }
     
     public companion object

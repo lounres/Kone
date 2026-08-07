@@ -293,6 +293,10 @@ public class KoneBinaryGCMinimumHeap<Element, Priority> @PublishedApi internal c
             nextHolder = previousHolder
             previousHolder = previousHolder!!.previous
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[next node = ${nextHolder?.node}, previous node = ${previousHolder?.node}, next index = $nextIndex]"
     }
     
     @OptIn(DelicateCollectionsInheritanceAPI::class)
@@ -343,6 +347,10 @@ public class KoneBinaryGCMinimumHeap<Element, Priority> @PublishedApi internal c
             nextHolder = previousHolder
             previousHolder = previousHolder!!.previous
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[next node = ${nextHolder?.node}, previous node = ${previousHolder?.node}, next index = $nextIndex]"
     }
     
     @OptIn(DelicateCollectionsInheritanceAPI::class)
@@ -391,6 +399,10 @@ public class KoneBinaryGCMinimumHeap<Element, Priority> @PublishedApi internal c
             nextHolder = previousHolder
             previousHolder = previousHolder!!.previous
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = super.hashCode()
+        override fun toString(): String = "${super.toString()}[next node = ${nextHolder?.node}, previous node = ${previousHolder?.node}, next index = $nextIndex]"
     }
     
     @OptIn(DelicateCollectionsInheritanceAPI::class)

@@ -987,28 +987,20 @@ public class KoneTwoThreeTreeList<Element> internal constructor(
         return addNodeBefore(getInternalNode(index), element)
     }
     // TODO: Maybe there is a better tree reconstruction?..
-//    override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
-//        super.addSeveral(number, builder)
-//    }
-//    override fun addSeveralAt(index: UInt, number: UInt, builder: (UInt) -> Element) {
-//        super.addSeveralAt(index, number, builder)
-//    }
+    @DelicateSeveralElementsInserterAPI
+    override fun startAddingSeveralAt(index: UInt, number: UInt): KoneSeveralElementsInserter<Element> {
+        TODO("Not yet implemented")
+    }
     
     override fun removeAt(index: UInt) {
         if (isDisposed) disposedInstanceException()
         if (index >= size) indexOutOfBoundsException(index, size)
         removeNode(getInternalNode(index))
     }
-    override fun removeAllThatIndexed(predicate: (UInt, Element) -> Boolean) {
-        if (isDisposed) disposedInstanceException()
-        
-        // TODO: Maybe there is a better tree reconstruction?..
-        var currentIndex = 0u
-        var currentNode = firstNode
-        while (currentNode != null) {
-            currentNode = currentNode.nextNode.also { if (predicate(currentIndex, currentNode.element)) removeNode(currentNode) }
-            currentIndex++
-        }
+    // TODO: Maybe there is a better tree reconstruction?..
+    @DelicateBulkElementsRemoverAPI
+    override fun startBulkyRemoving(): KoneBulkElementsRemover<Element> {
+        TODO("Not yet implemented")
     }
     override fun removeAll() {
         if (isDisposed) disposedInstanceException()

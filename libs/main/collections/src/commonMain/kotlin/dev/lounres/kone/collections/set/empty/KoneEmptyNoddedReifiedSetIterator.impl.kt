@@ -15,4 +15,8 @@ internal object KoneEmptyNoddedSetIterator: KoneNoddedSetIterator<Nothing> {
     override fun getNext(): Nothing = noNextElementInIteratorException()
     override fun getNextNode(): KoneSetNode<Nothing> = noNextElementInIteratorException()
     override fun moveNext() = noNextElementInIteratorException()
+    
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = super.toString()
 }

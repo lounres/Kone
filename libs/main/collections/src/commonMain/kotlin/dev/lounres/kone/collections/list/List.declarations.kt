@@ -5,14 +5,17 @@
 
 package dev.lounres.kone.collections.list
 
+import dev.lounres.kone.collections.DelicateBulkElementsRemoverAPI
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
+import dev.lounres.kone.collections.DelicateSeveralElementsInserterAPI
+import dev.lounres.kone.collections.KoneBulkElementsRemover
+import dev.lounres.kone.collections.KoneSeveralElementsInserter
 import dev.lounres.kone.collections.iterable.KoneLinearIterable
 import dev.lounres.kone.collections.iterable.KoneMutableLinearIterable
 import dev.lounres.kone.collections.iterable.KoneSettableLinearIterable
 import dev.lounres.kone.collections.list.serializers.*
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Hashing
-import dev.lounres.kone.repeat
 import kotlinx.serialization.Serializable
 
 
@@ -162,47 +165,9 @@ public interface KoneMutableList<Element> : KoneSettableList<Element>, KoneMutab
      * @throws IndexOutOfBoundsException when index is greater than [size].
      */
     public fun addAt(index: UInt, element: Element)
-    /**
-     * Adds provided [number] of elements at the end of the ordered collection.
-     * `i`th new element is a result of `builder(i)`.
-     * The builder is consecutively called on indices from `0` to [number] exclusive.
-     *
-     * For each index from `0` to [size] there is exactly one corresponding place for a value.
-     * And this operation:
-     * - adds places with indices from [size] to `size + number` exclusive,
-     * - and puts result of `builder(i)` in a place with index `size + i`
-     *   for each `i` from `0` to [number] exclusive.
-     *
-     * All [builder] invocations are computed consecutively on values from `0` to [number] exclusive
-     * in their order starting with `0`.
-     */
-    public fun addSeveral(number: UInt, builder: (index: UInt) -> Element) {
-        repeat(number) { add(builder(it)) }
-    }
-    /**
-     * Adds provided [number] of elements before element with index [index].
-     * `i`th new element is a result of `builder(i)`.
-     * The builder is consecutively called on indices from `0` to [number] exclusive.
-     *
-     * For each index from `0` to [size] there is exactly one corresponding place for a value.
-     * And this operation:
-     * - for each place with index at least [index] increases its index by [number],
-     * - adds places with indices from [index] to `index + number` exclusive,
-     * - and puts result of `builder(i)` in a place with index `index + i`
-     *   for each `i` from `0` to [number] exclusive.
-     *
-     * All [builder] invocations are computed consecutively on values from `0` to [number] exclusive
-     * in their order starting with `0`.
-     *
-     * When [index] is equal to [size] the elements are added at the end.
-     *
-     * If [index] is greater than [size], [IndexOutOfBoundsException] is thrown.
-     *
-     * @throws IndexOutOfBoundsException when index is greater than [size].
-     */
-    public fun addSeveralAt(index: UInt, number: UInt, builder: (index: UInt) -> Element) {
-        repeat(number) { addAt(index + it, builder(it)) }
-    }
+    // TODO: Add docs
+    @DelicateSeveralElementsInserterAPI
+    public fun startAddingSeveralAt(index: UInt, number: UInt): KoneSeveralElementsInserter<Element>
     
     /**
      * Removes element with the provided [index].
@@ -217,36 +182,9 @@ public interface KoneMutableList<Element> : KoneSettableList<Element>, KoneMutab
      * @throws IndexOutOfBoundsException when index is no less than [size].
      */
     public fun removeAt(index: UInt)
-    /**
-     * Removes elements that satisfy the provided [predicate].
-     *
-     * For each index from `0` to [size] there is exactly one corresponding place for a value.
-     * And for each index `i` from `0` to [size] this operation
-     * if `predicate(element)` is false where `element` is the element with index `i`
-     * removes the element and its place.
-     * After that indices are reassigned to the rest places with in their corresponding order
-     * starting from `0`.
-     *
-     * The [predicate] is called consecutively on elements of the collection in their order
-     * starting with the first one (at index `0`).
-     */
-    public fun removeAllThat(predicate: (element: Element) -> Boolean) {
-        removeAllThatIndexed { _, element -> predicate(element) }
-    }
-    /**
-     * Removes elements that satisfy the provided [predicate].
-     *
-     * For each index from `0` to [size] there is exactly one corresponding place for a value.
-     * And for each index `i` from `0` to [size] this operation
-     * if `predicate(i, element)` is false where `element` is the element with index `i`
-     * removes the element and its place.
-     * After that indices are reassigned to the rest places with in their corresponding order
-     * starting from `0`.
-     *
-     * The [predicate] is called consecutively on elements of the collection in their order
-     * starting with the first one (at index `0`).
-     */
-    public fun removeAllThatIndexed(predicate: (index: UInt, element: Element) -> Boolean)
+    // TODO: Add docs
+    @DelicateBulkElementsRemoverAPI
+    public fun startBulkyRemoving(): KoneBulkElementsRemover<Element>
     /**
      * Removes all elements and their places from the collection.
      */
