@@ -7,7 +7,6 @@ package dev.lounres.kone.collections.deque.implementations
 
 import dev.lounres.kone.collections.deque.KoneDeque
 import dev.lounres.kone.collections.emptyDequeAccessException
-import dev.lounres.kone.collections.iterable.isEmpty
 import dev.lounres.kone.collections.list.KoneMutableList
 import dev.lounres.kone.collections.list.lastIndex
 import dev.lounres.kone.collections.utils.first

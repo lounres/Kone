@@ -12,7 +12,6 @@ import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.disposedInstanceException
 import dev.lounres.kone.collections.implementations.*
 import dev.lounres.kone.collections.iterable.KoneIterable
-import dev.lounres.kone.collections.iterable.isEmpty
 import dev.lounres.kone.collections.iterable.isNotEmpty
 import dev.lounres.kone.collections.iterator.KoneIterator
 import dev.lounres.kone.collections.iterator.getAndMoveNext

@@ -64,33 +64,6 @@ public fun KoneUShortArray.contentHashCode(): Int = this.array.contentHashCode()
 public fun KoneUIntArray.contentHashCode(): Int = this.array.contentHashCode()
 public fun KoneULongArray.contentHashCode(): Int = this.array.contentHashCode()
 
-public fun KoneArray<*>.isEmpty(): Boolean = size == 0u
-public fun KoneMutableArray<*>.isEmpty(): Boolean = size == 0u
-public fun KoneBooleanArray.isEmpty(): Boolean = size == 0u
-public fun KoneMutableBooleanArray.isEmpty(): Boolean = size == 0u
-public fun KoneCharArray.isEmpty(): Boolean = size == 0u
-public fun KoneMutableCharArray.isEmpty(): Boolean = size == 0u
-public fun KoneByteArray.isEmpty(): Boolean = size == 0u
-public fun KoneMutableByteArray.isEmpty(): Boolean = size == 0u
-public fun KoneShortArray.isEmpty(): Boolean = size == 0u
-public fun KoneMutableShortArray.isEmpty(): Boolean = size == 0u
-public fun KoneIntArray.isEmpty(): Boolean = size == 0u
-public fun KoneMutableIntArray.isEmpty(): Boolean = size == 0u
-public fun KoneLongArray.isEmpty(): Boolean = size == 0u
-public fun KoneMutableLongArray.isEmpty(): Boolean = size == 0u
-public fun KoneFloatArray.isEmpty(): Boolean = size == 0u
-public fun KoneMutableFloatArray.isEmpty(): Boolean = size == 0u
-public fun KoneDoubleArray.isEmpty(): Boolean = size == 0u
-public fun KoneMutableDoubleArray.isEmpty(): Boolean = size == 0u
-public fun KoneUByteArray.isEmpty(): Boolean = size == 0u
-public fun KoneMutableUByteArray.isEmpty(): Boolean = size == 0u
-public fun KoneUShortArray.isEmpty(): Boolean = size == 0u
-public fun KoneMutableUShortArray.isEmpty(): Boolean = size == 0u
-public fun KoneUIntArray.isEmpty(): Boolean = size == 0u
-public fun KoneMutableUIntArray.isEmpty(): Boolean = size == 0u
-public fun KoneULongArray.isEmpty(): Boolean = size == 0u
-public fun KoneMutableULongArray.isEmpty(): Boolean = size == 0u
-
 public fun KoneArray<*>.isNotEmpty(): Boolean = !isEmpty()
 public fun KoneMutableArray<*>.isNotEmpty(): Boolean = !isEmpty()
 public fun KoneBooleanArray.isNotEmpty(): Boolean = !isEmpty()

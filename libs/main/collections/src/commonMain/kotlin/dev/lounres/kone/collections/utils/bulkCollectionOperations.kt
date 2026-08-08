@@ -11,7 +11,6 @@ import dev.lounres.kone.collections.deque.KoneDeque
 import dev.lounres.kone.collections.deque.empty
 import dev.lounres.kone.collections.deque.popFirst
 import dev.lounres.kone.collections.iterable.KoneIterable
-import dev.lounres.kone.collections.iterable.isEmpty
 import dev.lounres.kone.collections.iterator.KoneIterator
 import dev.lounres.kone.collections.iterator.empty
 import dev.lounres.kone.collections.iterator.empty.KoneEmptySettableLinearIterator

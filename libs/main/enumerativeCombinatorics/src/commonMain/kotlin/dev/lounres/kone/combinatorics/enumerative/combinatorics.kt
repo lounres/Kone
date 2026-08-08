@@ -8,7 +8,6 @@ package dev.lounres.kone.combinatorics.enumerative
 import dev.lounres.kone.collections.array.*
 import dev.lounres.kone.collections.interop.toKoneList
 import dev.lounres.kone.collections.iterable.KoneIterable
-import dev.lounres.kone.collections.iterable.isEmpty
 import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.*
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableList

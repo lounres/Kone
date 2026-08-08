@@ -9,7 +9,6 @@ package dev.lounres.kone.collections.list.empty
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
 import dev.lounres.kone.collections.indexOutOfBoundsException
-import dev.lounres.kone.collections.iterable.isEmpty
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneSettableListNode
 import dev.lounres.kone.collections.list.KoneSettableNoddedList

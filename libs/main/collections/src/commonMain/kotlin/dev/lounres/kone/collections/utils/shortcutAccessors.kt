@@ -6,7 +6,6 @@
 package dev.lounres.kone.collections.utils
 
 import dev.lounres.kone.collections.iterable.KoneIterable
-import dev.lounres.kone.collections.iterable.isEmpty
 import dev.lounres.kone.collections.iterator.KoneIterator
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.lastIndex

@@ -24,6 +24,12 @@ public interface KoneIterable<out Element> {
      */
     public val size: UInt
     /**
+     * Checks if the iterable is empty.
+     *
+     * @return `true` is the iterable is empty, `false` otherwise.
+     */
+    public fun isEmpty(): Boolean = size == 0u
+    /**
      * Iterator over elements of the collection. There must be exactly [size] number of elements in it.
      *
      * Also, iterator should not be used after the underlying structure of the collection is changed not by the iterator.

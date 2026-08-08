@@ -12,13 +12,6 @@ import dev.lounres.kone.relations.eq
 
 
 /**
- * Checks if the iterable is empty.
- *
- * @receiver The iterable which emptiness is checked.
- * @return `true` is the iterable is empty, `false` otherwise.
- */
-public fun KoneIterable<*>.isEmpty(): Boolean = size == 0u
-/**
  * Checks if the iterable is not empty.
  *
  * @receiver The iterable which non-emptiness is checked.

@@ -7,7 +7,6 @@ package dev.lounres.kone.collections.interop
 
 import dev.lounres.kone.collections.iterable.KoneIterable
 import dev.lounres.kone.collections.iterable.contains
-import dev.lounres.kone.collections.iterable.isEmpty
 import dev.lounres.kone.collections.iterator.KoneIterator
 import dev.lounres.kone.collections.iterator.getAndMoveNext
 import dev.lounres.kone.contexts.invoke

@@ -300,6 +300,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
             else -> justAddBefore(actualIndex(index), element)
         }
     
+    @DelicateSeveralElementsInserterAPI
     override fun startAddingSeveralAt(index: UInt, number: UInt): KoneSeveralElementsInserter<Element> {
         if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
@@ -318,6 +319,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         justRemoveAt(actualIndex(index))
     }
     
+    @DelicateBulkElementsRemoverAPI
     override fun startBulkyRemoving(): KoneBulkElementsRemover<Element> {
         if (isDisposed) disposedInstanceException()
         return BulkElementsRemover(this)
