@@ -628,6 +628,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         }
         override fun removeNext() {
             if (checkingIndex >= list.size) noNextElementInBulkElementsRemoverException()
+            list.data[checkingActualMark]!!.detach()
             checkingActualMark = list.nextNodeIndex[checkingActualMark]
             checkingIndex++
         }

@@ -390,12 +390,13 @@ public class KoneArrayGrowableNoddedList<Element> @PublishedApi internal constru
         var currentIndex: UInt = 0u
         
         override fun insert(element: Element) {
-            if (currentIndex >= newElementsStartIndex) severalElementsInserterOverflowException()
+            if (currentIndex >= newElementsNumber) severalElementsInserterOverflowException()
             list.data[newElementsStartIndex + currentIndex] = Node(list, element, newElementsStartIndex + currentIndex)
+            currentIndex++
         }
         
         override fun close() {
-            if (currentIndex != newElementsStartIndex) severalElementsInserterElementsLackException()
+            if (currentIndex != newElementsNumber) severalElementsInserterElementsLackException()
         }
     }
     
@@ -426,10 +427,12 @@ public class KoneArrayGrowableNoddedList<Element> @PublishedApi internal constru
         
         override fun removeNext() {
             if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            list.data[checkingMark]!!.detach()
             checkingMark++
         }
         
         override fun close() {
+            while (hasNext()) moveNext()
             for (i in resultMark ..< list.size) list.data[i] = null
             list.size = resultMark
         }

@@ -286,12 +286,13 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
         var currentIndex: UInt = 0u
         
         override fun insert(element: Element) {
-            if (currentIndex >= newElementsStartIndex) severalElementsInserterOverflowException()
+            if (currentIndex >= newElementsNumber) severalElementsInserterOverflowException()
             list.data[newElementsStartIndex + currentIndex] = element
+            currentIndex++
         }
         
         override fun close() {
-            if (currentIndex != newElementsStartIndex) severalElementsInserterElementsLackException()
+            if (currentIndex != newElementsNumber) severalElementsInserterElementsLackException()
         }
     }
     
@@ -326,6 +327,7 @@ public class KoneArrayGrowableList<Element> @PublishedApi internal constructor(
         }
         
         override fun close() {
+            while (hasNext()) moveNext()
             for (i in resultMark ..< list.size) list.data[i] = null
             list.size = resultMark
         }

@@ -740,6 +740,7 @@ public class KoneArrayGrowableLinkedNoddedList<Element> internal constructor(
         
         override fun removeNext() {
             if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            list.data[checkingActualMark]!!.detach()
             checkingActualMark = list.nextNodeIndex[checkingActualMark]
             checkingIndex++
         }
