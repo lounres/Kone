@@ -36,9 +36,6 @@ public open class KoneListBackedMutableSet<Element> @PublishedApi internal const
     override fun add(element: Element) {
         if (elementEquality { element !in backingList }) backingList.add(element)
     }
-    override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
-        repeat(number) { add(builder(it)) }
-    }
 
     override fun removeAll() {
         backingList.removeAll()
@@ -47,9 +44,6 @@ public open class KoneListBackedMutableSet<Element> @PublishedApi internal const
     override fun remove(element: Element) {
         val index = elementEquality { backingList.firstIndexOf(element) }
         if (index != backingList.size) backingList.removeAt(index)
-    }
-    override fun removeAllThat(predicate: (element: Element) -> Boolean) {
-        backingList.removeAllThat(predicate)
     }
 
     override fun iterator(): KoneRemovableIterator<Element> = backingList.iterator()

@@ -22,7 +22,7 @@ public typealias KoneSetIterator<Element> = KoneIterator<Element>
  * Represents iterator over [KoneMutableSet] with iteration order coincident with the list elements order.
  * See [KoneRemovableIterator] for more.
  */
-public typealias KoneMutableSetIterator<Element> = KoneRemovableIterator<Element>
+public typealias KoneRemovableSetIterator<Element> = KoneRemovableIterator<Element>
 
 /**
  * Represents iterator over [KoneNoddedSet].
@@ -38,8 +38,8 @@ public interface KoneNoddedSetIterator<out Element> : KoneSetIterator<Element> {
 /**
  * Represents iterator over [KoneMutableNoddedSet].
  */
-public interface KoneMutableNoddedSetIterator<out Element> : KoneNoddedSetIterator<Element>, KoneMutableSetIterator<Element> {
-    override fun getNextNode(): KoneMutableSetNode<Element>
+public interface KoneRemovableNoddedSetIterator<out Element> : KoneNoddedSetIterator<Element>, KoneRemovableSetIterator<Element> {
+    override fun getNextNode(): KoneRemovableSetNode<Element>
 }
 
 /**
@@ -52,7 +52,7 @@ public typealias KoneLinkedSetIterator<Element> = KoneReversibleIterator<Element
  * Represents iterator over [KoneMutableLinkedSet] with iteration order coincident with the list elements order.
  * See [KoneReversibleRemovableIterator] for more.
  */
-public typealias KoneMutableLinkedSetIterator<Element> = KoneReversibleRemovableIterator<Element>
+public typealias KoneRemovableLinkedSetIterator<Element> = KoneReversibleRemovableIterator<Element>
 
 /**
  * Represents iterator over [KoneLinkedNoddedSet].
@@ -69,7 +69,7 @@ public interface KoneLinkedNoddedSetIterator<out Element> : KoneLinkedSetIterato
 /**
  * Represents iterator over [KoneMutableLinkedNoddedSet].
  */
-public interface KoneMutableLinkedNoddedSetIterator<out Element> : KoneLinkedNoddedSetIterator<Element>, KoneMutableLinkedSetIterator<Element>, KoneMutableNoddedSetIterator<Element> {
-    override fun getNextNode(): KoneMutableLinkedSetNode<Element>
-    override fun getPreviousNode(): KoneMutableLinkedSetNode<Element>
+public interface KoneRemovableLinkedNoddedSetIterator<out Element> : KoneLinkedNoddedSetIterator<Element>, KoneRemovableLinkedSetIterator<Element>, KoneRemovableNoddedSetIterator<Element> {
+    override fun getNextNode(): KoneRemovableLinkedSetNode<Element>
+    override fun getPreviousNode(): KoneRemovableLinkedSetNode<Element>
 }

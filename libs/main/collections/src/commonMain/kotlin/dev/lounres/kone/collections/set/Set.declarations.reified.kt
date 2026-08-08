@@ -16,11 +16,16 @@ public interface KoneReifiedSet<out Element> : KoneSet<@UnsafeVariance Element> 
     public companion object
 }
 
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+public interface KoneRemovableReifiedSet<out Element> : KoneRemovableSet<@UnsafeVariance Element>, KoneReifiedSet<Element> {
+    public companion object
+}
+
 /**
  * Represents a reified version of [KoneMutableSet].
  */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
-public interface KoneMutableReifiedSet<Element> : KoneMutableSet<Element>, KoneReifiedSet<Element> {
+public interface KoneMutableReifiedSet<Element> : KoneMutableSet<Element>, KoneRemovableReifiedSet<Element> {
     public companion object
 }
 
@@ -32,11 +37,16 @@ public interface KoneNoddedReifiedSet<out Element> : KoneNoddedSet<@UnsafeVarian
     public companion object
 }
 
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+public interface KoneRemovableNoddedReifiedSet<out Element> : KoneRemovableNoddedSet<@UnsafeVariance Element>, KoneRemovableReifiedSet<Element>, KoneNoddedReifiedSet<Element> {
+    public companion object
+}
+
 /**
  * Represents a reified version of [KoneMutableNoddedSet].
  */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
-public interface KoneMutableNoddedReifiedSet<Element> : KoneMutableNoddedSet<Element>, KoneMutableReifiedSet<Element>, KoneNoddedReifiedSet<Element> {
+public interface KoneMutableNoddedReifiedSet<Element> : KoneMutableNoddedSet<Element>, KoneMutableReifiedSet<Element>, KoneRemovableNoddedReifiedSet<Element> {
     public companion object
 }
 
@@ -48,11 +58,16 @@ public interface KoneLinkedReifiedSet<out Element> : KoneReifiedSet<Element>, Ko
     public companion object
 }
 
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+public interface KoneRemovableLinkedReifiedSet<out Element> : KoneLinkedReifiedSet<Element>, KoneRemovableReifiedSet<Element>, KoneRemovableLinkedSet<@UnsafeVariance Element> {
+    public companion object
+}
+
 /**
  * Represents a reified version of [KoneMutableLinkedSet].
  */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
-public interface KoneMutableLinkedReifiedSet<Element> : KoneLinkedReifiedSet<Element>, KoneMutableReifiedSet<Element>, KoneMutableLinkedSet<Element> {
+public interface KoneMutableLinkedReifiedSet<Element> : KoneRemovableLinkedReifiedSet<Element>, KoneMutableReifiedSet<Element>, KoneMutableLinkedSet<Element> {
     public companion object
 }
 
@@ -64,10 +79,16 @@ public interface KoneLinkedNoddedReifiedSet<out Element> : KoneNoddedReifiedSet<
     public companion object
 }
 
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+public interface KoneRemovableLinkedNoddedReifiedSet<out Element> : KoneLinkedNoddedReifiedSet<Element>, KoneRemovableLinkedReifiedSet<Element>, KoneRemovableNoddedReifiedSet<Element>, KoneRemovableLinkedNoddedSet<@UnsafeVariance Element> {
+    public companion object
+}
+
 /**
  * Represents a reified version of [KoneMutableLinkedNoddedSet].
  */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
-public interface KoneMutableLinkedNoddedReifiedSet<Element> : KoneLinkedNoddedReifiedSet<Element>, KoneMutableLinkedReifiedSet<Element>, KoneMutableNoddedReifiedSet<Element>, KoneMutableLinkedNoddedSet<Element> {
+public interface KoneMutableLinkedNoddedReifiedSet<Element> : KoneRemovableLinkedNoddedReifiedSet<Element>, KoneMutableLinkedReifiedSet<Element>, KoneMutableNoddedReifiedSet<Element>, KoneMutableLinkedNoddedSet<Element> {
+    
     public companion object
 }

@@ -16,6 +16,7 @@ import dev.lounres.kone.collections.set.KoneMutableReifiedSet
 import dev.lounres.kone.collections.set.KoneReifiedSet
 import dev.lounres.kone.collections.set.addAllFrom
 import dev.lounres.kone.collections.set.of
+import dev.lounres.kone.collections.set.removeAllThat
 import dev.lounres.kone.collections.utils.forEachIndexed
 import dev.lounres.kone.collections.utils.lastIndexThat
 import dev.lounres.kone.registry.MutableOwnedProviderRegistry

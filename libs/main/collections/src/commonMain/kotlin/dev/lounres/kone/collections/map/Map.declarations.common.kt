@@ -7,7 +7,10 @@ package dev.lounres.kone.collections.map
 
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
 import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterable.KoneRemovableIterable
 import dev.lounres.kone.collections.set.KoneReifiedSet
+import dev.lounres.kone.collections.set.KoneRemovableReifiedSet
+import dev.lounres.kone.collections.set.KoneRemovableSet
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.set.toKoneReifiedSet
 import dev.lounres.kone.relations.*
@@ -32,14 +35,16 @@ public interface KoneMap<Key, out Value> {
 
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
 public interface KoneMutableMap<Key, Value> : KoneMap<Key, Value> {
-    override val nodesView: KoneReifiedSet<KoneMutableMapNode<Key, Value>>
+    override val nodesView: KoneRemovableReifiedSet<KoneMutableMapNode<Key, Value>>
     override val nodes: KoneReifiedSet<KoneMutableMapNode<Key, Value>>
         get() = nodesView.toKoneReifiedSet(
             elementReification = Reification.defaultFor(),
             elementEquality = Equality.absoluteFor(),
             elementHashing = Hashing.defaultFor(),
         )
+    override val keysView: KoneRemovableSet<Key>
     override val keys: KoneSet<Key>
+    override val valuesView: KoneRemovableIterable<Value>
     
     override fun getNodeOrNull(key: Key): KoneMutableMapNode<Key, Value>?
     
@@ -51,8 +56,8 @@ public interface KoneMutableMap<Key, Value> : KoneMap<Key, Value> {
     public fun removeAll()
     
     // TODO: Think about bulk operations.
-    public fun removeAllThat(predicate: (key: Key, value: Value) -> Boolean)
-    public fun removeAllNodesThat(predicate: (node: KoneMutableMapNode<Key, Value>) -> Boolean)
+//    public fun removeAllThat(predicate: (key: Key, value: Value) -> Boolean)
+//    public fun removeAllNodesThat(predicate: (node: KoneMutableMapNode<Key, Value>) -> Boolean)
 //    public fun setAllFrom(from: KoneMap<out K, V>) {
 //        for ((key, value) in from) set(key, value)
 //    }

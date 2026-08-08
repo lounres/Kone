@@ -147,11 +147,6 @@ public open class KoneHashResizableSet<Element> @PublishedApi internal construct
             size++
         }
     }
-    
-    override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
-        if (isDisposed) disposedInstanceException()
-        repeat(number) { add(builder(it)) }
-    }
 
     override fun removeAll() {
         if (isDisposed) disposedInstanceException()
@@ -162,14 +157,6 @@ public open class KoneHashResizableSet<Element> @PublishedApi internal construct
         sizeUpperBound = calculateHashTableSize(capacityUpperBound, loadFactor)
         data = KoneArray.generate(capacityUpperBound) { KoneArrayResizableLinkedList() }
         size = 0u
-    }
-
-    override fun removeAllThat(predicate: (element: Element) -> Boolean) {
-        if (isDisposed) disposedInstanceException()
-        var newSize = 0u
-        for (linkedList in data) linkedList.removeAllThat { element -> predicate(element).also { if (!it) newSize += 1u } }
-        if (newSize < sizeLowerBound) reinitializeBoundsAndData(newSize)
-        else size = newSize
     }
 
     override fun remove(element: Element) {

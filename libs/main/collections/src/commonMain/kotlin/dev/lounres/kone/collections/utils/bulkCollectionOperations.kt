@@ -29,6 +29,7 @@ import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.sequence.KoneSequence
 import dev.lounres.kone.collections.set.KoneMutableSet
 import dev.lounres.kone.collections.set.addAllFrom
+import dev.lounres.kone.collections.set.addSeveral
 import dev.lounres.kone.collections.set.removeAllFrom
 import dev.lounres.kone.collections.utils.sorting.*
 import dev.lounres.kone.maybe.*

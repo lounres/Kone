@@ -10,12 +10,17 @@ import dev.lounres.kone.collections.iterator.KoneIterator
 import dev.lounres.kone.collections.iterator.getAndMoveNext
 import dev.lounres.kone.collections.sequence.KoneSequence
 import dev.lounres.kone.collections.utils.all
+import dev.lounres.kone.repeat
 
 
 public fun <Element> KoneSet<Element>.containsAllFrom(elements: KoneIterable<Element>): Boolean = elements.all { it in this }
 
 public fun <Element> KoneMutableSet<Element>.addAllFrom(elements: KoneIterator<Element>) {
     while (elements.hasNext()) add(elements.getAndMoveNext())
+}
+
+public inline fun <Element> KoneMutableSet<Element>.addSeveral(number: UInt, builder: (index: UInt) -> Element) {
+    repeat(number) { add(builder(it)) }
 }
 
 public fun <Element> KoneMutableSet<Element>.addAllFrom(elements: KoneIterable<Element>) {
@@ -27,14 +32,26 @@ public fun <Element> KoneMutableSet<Element>.addAllFrom(elements: KoneSequence<E
     addAllFrom(elements.iterator())
 }
 
-public fun <Element> KoneMutableSet<Element>.removeAllFrom(elements: KoneIterator<Element>) {
+public inline fun <Element> KoneRemovableSet<Element>.removeAllThat(predicate: (element: Element) -> Boolean) {
+    val remover = this.iterator()
+    while (remover.hasNext()) {
+        if (predicate(remover.getNext())) remover.removeNext()
+        else remover.moveNext()
+    }
+}
+
+public inline fun <Element> KoneRemovableSet<Element>.retainAllThat(predicate: (element: Element) -> Boolean) {
+    removeAllThat { element -> !predicate(element) }
+}
+
+public fun <Element> KoneRemovableSet<Element>.removeAllFrom(elements: KoneIterator<Element>) {
     while (elements.hasNext()) remove(elements.getAndMoveNext())
 }
 
-public fun <Element> KoneMutableSet<Element>.removeAllFrom(elements: KoneIterable<Element>) {
+public fun <Element> KoneRemovableSet<Element>.removeAllFrom(elements: KoneIterable<Element>) {
     removeAllFrom(elements.iterator())
 }
 
-public fun <Element> KoneMutableSet<Element>.removeAllFrom(elements: KoneSequence<Element>) {
+public fun <Element> KoneRemovableSet<Element>.removeAllFrom(elements: KoneSequence<Element>) {
     removeAllFrom(elements.iterator())
 }

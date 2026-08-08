@@ -36,9 +36,9 @@ public open class KoneListBackedMutableLinkedNoddedSet<Element> @PublishedApi in
 
     override fun contains(element: Element): Boolean = backingList.any { elementEquality { it.element eq element } }
     
-    override fun nodeOfOrNull(element: Element): KoneMutableLinkedSetNode<Element>? =
+    override fun nodeOfOrNull(element: Element): KoneRemovableLinkedSetNode<Element>? =
         backingList.firstThatOrNull { elementEquality { it.element eq element } }
-    override fun nodeOf(element: Element): KoneMutableLinkedSetNode<Element> =
+    override fun nodeOf(element: Element): KoneRemovableLinkedSetNode<Element> =
         backingList.firstThatOrNull { elementEquality { it.element eq element } } ?: noCorrespondingSetNodeException()
 
     override fun add(element: Element) {
@@ -48,7 +48,7 @@ public open class KoneListBackedMutableLinkedNoddedSet<Element> @PublishedApi in
             newNode.listNode = listNode
         }
     }
-    override fun addNode(element: Element): KoneMutableLinkedSetNode<Element> {
+    override fun addNode(element: Element): KoneRemovableLinkedSetNode<Element> {
         val node = backingList.firstThatOrNull { elementEquality { it.element eq element } }
         return if (node == null) {
             val newNode = Node(element)
@@ -56,9 +56,6 @@ public open class KoneListBackedMutableLinkedNoddedSet<Element> @PublishedApi in
             newNode.listNode = listNode
             newNode
         } else node
-    }
-    override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
-        repeat(number) { add(builder(it)) }
     }
 
     override fun removeAll() {
@@ -69,13 +66,10 @@ public open class KoneListBackedMutableLinkedNoddedSet<Element> @PublishedApi in
         val index = backingList.firstIndexThat { _, node -> elementEquality { node.element eq element } }
         if (index != backingList.size) backingList.removeAt(index)
     }
-    override fun removeAllThat(predicate: (element: Element) -> Boolean) {
-        backingList.removeAllThat { predicate(it.element) }
-    }
     
-    override fun iterator(): KoneMutableLinkedNoddedSetIterator<Element> = Iterator(backingList.iterator())
+    override fun iterator(): KoneRemovableLinkedNoddedSetIterator<Element> = Iterator(backingList.iterator())
     
-    override val nodesView: KoneReifiedSet<KoneMutableLinkedSetNode<Element>> = NodesView(backingList)
+    override val nodesView: KoneRemovableReifiedSet<KoneRemovableLinkedSetNode<Element>> = NodesView(backingList)
 
     // TODO: Override equals and `hashCode`
 
@@ -92,7 +86,7 @@ public open class KoneListBackedMutableLinkedNoddedSet<Element> @PublishedApi in
     
     internal class Node<Element>(
         override val element: Element,
-    ) : KoneMutableLinkedSetNode<Element> {
+    ) : KoneRemovableLinkedSetNode<Element> {
         internal var _listNode: KoneMutableListNode<Node<Element>>? = null
         var listNode: KoneMutableListNode<Node<Element>>
             get() = _listNode!!
@@ -100,8 +94,8 @@ public open class KoneListBackedMutableLinkedNoddedSet<Element> @PublishedApi in
         
         override val isDetached: Boolean get() = _listNode == null
         
-        override val nextNode: KoneMutableLinkedSetNode<Element>? get() = listNode.nextNode?.element
-        override val previousNode: KoneMutableLinkedSetNode<Element>? get() = listNode.previousNode?.element
+        override val nextNode: KoneRemovableLinkedSetNode<Element>? get() = listNode.nextNode?.element
+        override val previousNode: KoneRemovableLinkedSetNode<Element>? get() = listNode.previousNode?.element
         
         override fun remove() {
             if (isDetached) return
@@ -109,19 +103,19 @@ public open class KoneListBackedMutableLinkedNoddedSet<Element> @PublishedApi in
             _listNode = null
         }
         
-        override fun iteratorFromBeforeHere(): KoneMutableLinkedNoddedSetIterator<Element> = Iterator(listNode.iteratorFromBeforeHere())
-        override fun iteratorFromAfterHere(): KoneMutableLinkedNoddedSetIterator<Element> = Iterator(listNode.iteratorFromAfterHere())
+        override fun iteratorFromBeforeHere(): KoneRemovableLinkedNoddedSetIterator<Element> = Iterator(listNode.iteratorFromBeforeHere())
+        override fun iteratorFromAfterHere(): KoneRemovableLinkedNoddedSetIterator<Element> = Iterator(listNode.iteratorFromAfterHere())
     }
     
     internal class Iterator<Element>(
         val listIterator: KoneMutableNoddedListIterator<Node<Element>>
-    ) : KoneMutableLinkedNoddedSetIterator<Element> {
+    ) : KoneRemovableLinkedNoddedSetIterator<Element> {
         override fun hasNext(): Boolean = listIterator.hasNext()
         override fun getNext(): Element {
             if (!hasNext()) noNextElementInIteratorException()
             return listIterator.getNext().element
         }
-        override fun getNextNode(): KoneMutableLinkedSetNode<Element> {
+        override fun getNextNode(): KoneRemovableLinkedSetNode<Element> {
             if (!hasNext()) noNextElementInIteratorException()
             return listIterator.getNext()
         }
@@ -141,7 +135,7 @@ public open class KoneListBackedMutableLinkedNoddedSet<Element> @PublishedApi in
             if (!hasPrevious()) noPreviousElementInIteratorException()
             return listIterator.getPrevious().element
         }
-        override fun getPreviousNode(): KoneMutableLinkedSetNode<Element> {
+        override fun getPreviousNode(): KoneRemovableLinkedSetNode<Element> {
             if (!hasPrevious()) noPreviousElementInIteratorException()
             return listIterator.getPrevious()
         }
@@ -161,10 +155,17 @@ public open class KoneListBackedMutableLinkedNoddedSet<Element> @PublishedApi in
     
     internal class NodesView<Element>(
         val backingList: KoneMutableNoddedList<Node<Element>>
-    ) : KoneReifiedSet<KoneMutableLinkedSetNode<Element>> {
+    ) : KoneRemovableReifiedSet<KoneRemovableLinkedSetNode<Element>> {
         override val size: UInt get() = backingList.size
-        override fun contains(element: KoneMutableLinkedSetNode<Element>): Boolean = backingList.any { it === element }
-        override fun iterator(): KoneSetIterator<KoneMutableLinkedSetNode<Element>> = backingList.iterator()
+        override fun contains(element: KoneRemovableLinkedSetNode<Element>): Boolean = backingList.any { it === element }
+        override fun remove(element: KoneRemovableLinkedSetNode<Element>) {
+            val index = backingList.firstIndexThat { _, node -> node === element }
+            if (index != backingList.size) backingList.removeAt(index)
+        }
+        override fun removeAll() {
+            backingList.removeAll()
+        }
+        override fun iterator(): KoneRemovableSetIterator<KoneRemovableLinkedSetNode<Element>> = backingList.iterator()
     }
     
     public companion object

@@ -8,6 +8,7 @@ package dev.lounres.kone.collections.map
 import dev.lounres.kone.collections.DelicateCollectionsInheritanceAPI
 import dev.lounres.kone.collections.array.KoneArray
 import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterable.KoneRemovableIterable
 import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.implementations.KoneArrayGrowableLinkedNoddedListProducer
 import dev.lounres.kone.collections.list.implementations.KoneArrayResizableLinkedNoddedListProducer
@@ -19,6 +20,8 @@ import dev.lounres.kone.collections.map.implementations.KoneListBackedMutableRei
 import dev.lounres.kone.collections.map.singleton.KoneSingletonMap
 import dev.lounres.kone.collections.map.singleton.KoneSingletonReifiedMap
 import dev.lounres.kone.collections.set.KoneReifiedSet
+import dev.lounres.kone.collections.set.KoneRemovableReifiedSet
+import dev.lounres.kone.collections.set.KoneRemovableSet
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.relations.*
 import kotlin.contracts.InvocationKind
@@ -297,7 +300,7 @@ public class KoneMapBuilder<Key, Value> @PublishedApi internal constructor(resul
         return result.size
     }
     
-    override val nodesView: KoneReifiedSet<KoneMutableMapNode<Key, Value>> get() {
+    override val nodesView: KoneRemovableReifiedSet<KoneMutableMapNode<Key, Value>> get() {
         val result = result ?: error("This KoneMap builder is already used")
         return result.nodesView
     }
@@ -307,7 +310,7 @@ public class KoneMapBuilder<Key, Value> @PublishedApi internal constructor(resul
         return result.nodes
     }
     
-    override val keysView: KoneSet<Key> get() {
+    override val keysView: KoneRemovableSet<Key> get() {
         val result = result ?: error("This KoneMap builder is already used")
         return result.keysView
     }
@@ -317,7 +320,7 @@ public class KoneMapBuilder<Key, Value> @PublishedApi internal constructor(resul
         return result.keys
     }
     
-    override val valuesView: KoneIterable<Value> get() {
+    override val valuesView: KoneRemovableIterable<Value> get() {
         val result = result ?: error("This KoneMap builder is already used")
         return result.valuesView
     }
@@ -342,29 +345,9 @@ public class KoneMapBuilder<Key, Value> @PublishedApi internal constructor(resul
         result.removeAll()
     }
     
-    override fun removeAllThat(predicate: (Key, Value) -> Boolean) {
-        val result = result ?: error("This KoneMap builder is already used")
-        result.removeAllThat(predicate)
-    }
-    
-    override fun removeAllNodesThat(predicate: (KoneMutableMapNode<Key, Value>) -> Boolean) {
-        val result = result ?: error("This KoneMap builder is already used")
-        result.removeAllNodesThat(predicate)
-    }
-    
     public operator fun KoneMapEntry<Key, Value>.unaryPlus() {
         val result = result ?: error("This KoneMap builder is already used")
         result.set(this)
-    }
-    
-    public operator fun KoneIterable<KoneMapEntry<Key, Value>>.unaryPlus() {
-        val result = result ?: error("This KoneMap builder is already used")
-        result.setAllFrom(this)
-    }
-    
-    public operator fun KoneMap<out Key, Value>.unaryPlus() {
-        val result = result ?: error("This KoneMap builder is already used")
-        result.setAllFrom(this)
     }
     
     @PublishedApi
@@ -383,7 +366,7 @@ public class KoneReifiedMapBuilder<Key, Value> @PublishedApi internal constructo
         return result.size
     }
     
-    override val nodesView: KoneReifiedSet<KoneMutableMapNode<Key, Value>> get() {
+    override val nodesView: KoneRemovableReifiedSet<KoneMutableMapNode<Key, Value>> get() {
         val result = result ?: error("This KoneReifiedMap builder is already used")
         return result.nodesView
     }
@@ -393,7 +376,7 @@ public class KoneReifiedMapBuilder<Key, Value> @PublishedApi internal constructo
         return result.nodes
     }
     
-    override val keysView: KoneReifiedSet<Key> get() {
+    override val keysView: KoneRemovableReifiedSet<Key> get() {
         val result = result ?: error("This KoneReifiedMap builder is already used")
         return result.keysView
     }
@@ -403,7 +386,7 @@ public class KoneReifiedMapBuilder<Key, Value> @PublishedApi internal constructo
         return result.keys
     }
     
-    override val valuesView: KoneIterable<Value> get() {
+    override val valuesView: KoneRemovableIterable<Value> get() {
         val result = result ?: error("This KoneReifiedMap builder is already used")
         return result.valuesView
     }
@@ -429,29 +412,9 @@ public class KoneReifiedMapBuilder<Key, Value> @PublishedApi internal constructo
         result.removeAll()
     }
     
-    override fun removeAllThat(predicate: (Key, Value) -> Boolean) {
-        val result = result ?: error("This KoneReifiedMap builder is already used")
-        result.removeAllThat(predicate)
-    }
-    
-    override fun removeAllNodesThat(predicate: (KoneMutableMapNode<Key, Value>) -> Boolean) {
-        val result = result ?: error("This KoneReifiedMap builder is already used")
-        result.removeAllNodesThat(predicate)
-    }
-    
     public operator fun KoneMapEntry<Key, Value>.unaryPlus() {
         val result = result ?: error("This KoneReifiedMap builder is already used")
         result.set(this)
-    }
-    
-    public operator fun KoneIterable<KoneMapEntry<Key, Value>>.unaryPlus() {
-        val result = result ?: error("This KoneReifiedMap builder is already used")
-        result.setAllFrom(this)
-    }
-    
-    public operator fun KoneMap<out Key, Value>.unaryPlus() {
-        val result = result ?: error("This KoneReifiedMap builder is already used")
-        result.setAllFrom(this)
     }
     
     @PublishedApi

@@ -31,36 +31,38 @@ public interface KoneSet<Element> : KoneIterable<Element> {
     public companion object
 }
 
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+public interface KoneRemovableSet<Element> : KoneSet<Element>, KoneRemovableIterable<Element> {
+    /**
+     * Removes an element equal to the specified [element] from the collection if there is such one
+     * or does nothing otherwise.
+     */
+    public fun remove(element: Element)
+    // TODO: Think about filtering removal.
+//    @DelicateBulkElementsRemoverAPI
+//    public fun startBulkyRemoving(): KoneBulkElementsRemover<Element>
+    /**
+     * Removes all elements from the collection.
+     */
+    public fun removeAll()
+    
+    public companion object
+}
+
 /**
  * Represents a composition of [Equality] context
  * and an unordered collection of elements without repetitions with respect to the equality context
  * with possibility to add and remove elements from it.
  */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
-public interface KoneMutableSet<Element> : KoneSet<Element>, KoneRemovableIterable<Element> {
+public interface KoneMutableSet<Element> : KoneRemovableSet<Element> {
     /**
      * Adds the [element] to the collection if there is no equal to it element in the collection already.
      */
     public fun add(element: Element)
-    /**
-     * Adds elements `builder(0u)`, `builder(1u)`, ..., `builder(number-1u)` to the collection.
-     * Each element is added iff there is no equal to it element in the collection already.
-     */
-    public fun addSeveral(number: UInt, builder: (index: UInt) -> Element)
-    
-    /**
-     * Removes an element equal to the specified [element] from the collection if there is such one
-     * or does nothing otherwise.
-     */
-    public fun remove(element: Element)
-    /**
-     * Removes all elements satisfying the [predicate] from the collection.
-     */
-    public fun removeAllThat(predicate: (element: Element) -> Boolean)
-    /**
-     * Removes all elements from the collection.
-     */
-    public fun removeAll()
+    // TODO: Think about adding several elements at once.
+//    @DelicateSeveralElementsInserterAPI
+//    public fun startAddingSeveral(number: UInt): KoneSeveralElementsInserter<Element>
     
     public companion object
 }
@@ -95,16 +97,33 @@ public interface KoneNoddedSet<Element> : KoneSet<Element> {
      * Returns a node that corresponds to the element in the set equal to the specified [element]
      * or `null` if there is no such element.
      */
-    public fun nodeOfOrNull(element: @UnsafeVariance Element): KoneSetNode<Element>?
+    public fun nodeOfOrNull(element: Element): KoneSetNode<Element>?
     /**
      * Returns a node that corresponds to the element in the set equal to the specified [element]
      * or throws [NoCorrespondingNodeException] if there is no such element.
      *
      * @throws NoCorrespondingNodeException if there is no element equal to the specified [element].
      */
-    public fun nodeOf(element: @UnsafeVariance Element): KoneSetNode<Element>
+    public fun nodeOf(element: Element): KoneSetNode<Element>
     
     override fun iterator(): KoneNoddedSetIterator<Element>
+    
+    public companion object
+}
+
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+public interface KoneRemovableNoddedSet<Element> : KoneRemovableSet<Element>, KoneNoddedSet<Element> {
+    override val nodesView: KoneRemovableReifiedSet<KoneRemovableSetNode<Element>>
+    override val nodes: KoneReifiedSet<KoneRemovableSetNode<Element>>
+        get() = nodesView.toKoneReifiedSet(
+            elementReification = Reification.defaultFor(),
+            elementEquality = Equality.absoluteFor(),
+            elementHashing = Hashing.defaultFor(),
+        )
+    override fun nodeOfOrNull(element: Element): KoneRemovableSetNode<Element>?
+    override fun nodeOf(element: Element): KoneRemovableSetNode<Element>
+    
+    override fun iterator(): KoneRemovableNoddedSetIterator<Element>
     
     public companion object
 }
@@ -112,33 +131,24 @@ public interface KoneNoddedSet<Element> : KoneSet<Element> {
 /**
  * Represents a nodded version of [KoneMutableSet].
  *
- * It means that there is exactly one [KoneMutableSetNode] corresponding to each place
+ * It means that there is exactly one [KoneRemovableSetNode] corresponding to each place
  * that can effectively access the places element and index as well as
  * other things that can be found in its documentation.
  *
  * @see KoneMutableSet
- * @see KoneMutableSetNode
+ * @see KoneRemovableSetNode
  */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
-public interface KoneMutableNoddedSet<Element> : KoneMutableSet<Element>, KoneNoddedSet<Element> {
-    override val nodesView: KoneReifiedSet<KoneMutableSetNode<Element>>
-    override val nodes: KoneReifiedSet<KoneMutableSetNode<Element>>
-        get() = nodesView.toKoneReifiedSet(
-            elementReification = Reification.defaultFor(),
-            elementEquality = Equality.absoluteFor(),
-            elementHashing = Hashing.defaultFor(),
-        )
-    override fun nodeOfOrNull(element: Element): KoneMutableSetNode<Element>?
-    override fun nodeOf(element: Element): KoneMutableSetNode<Element>
-    public fun addNode(element: Element): KoneMutableSetNode<Element>
+public interface KoneMutableNoddedSet<Element> : KoneMutableSet<Element>, KoneRemovableNoddedSet<Element> {
+    public fun addNode(element: Element): KoneRemovableSetNode<Element>
     override fun add(element: Element) {
         val _ = addNode(element)
     }
     
-    override fun iterator(): KoneMutableNoddedSetIterator<Element>
-    
     public companion object
 }
+
+
 
 /**
  * Represents a composition of [Equality] context,
@@ -160,6 +170,13 @@ public interface KoneLinkedSet<Element> : KoneSet<Element>, KoneReversibleIterab
     public companion object
 }
 
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+public interface KoneRemovableLinkedSet<Element> : KoneLinkedSet<Element>, KoneRemovableSet<Element>, KoneReversibleRemovableIterable<Element> {
+    override fun iterator(): KoneRemovableLinkedSetIterator<Element>
+    
+    public companion object
+}
+
 /**
  * Represents a composition of [Equality] context,
  * an unordered collection of elements without repetitions with respect to the equality context
@@ -175,9 +192,7 @@ public interface KoneLinkedSet<Element> : KoneSet<Element>, KoneReversibleIterab
  * See implementations' documentations to get the behaviour you need.
  */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
-public interface KoneMutableLinkedSet<Element> : KoneLinkedSet<Element>, KoneMutableSet<Element>, KoneReversibleRemovableIterable<Element> {
-    override fun iterator(): KoneMutableLinkedSetIterator<Element>
-    
+public interface KoneMutableLinkedSet<Element> : KoneRemovableLinkedSet<Element>, KoneMutableSet<Element> {
     public companion object
 }
 
@@ -195,10 +210,27 @@ public interface KoneMutableLinkedSet<Element> : KoneLinkedSet<Element>, KoneMut
 public interface KoneLinkedNoddedSet<Element> : KoneNoddedSet<Element>, KoneLinkedSet<Element> {
     override val nodesView: KoneReifiedSet<KoneLinkedSetNode<Element>>
     override val nodes: KoneReifiedSet<KoneLinkedSetNode<Element>> get() = nodesView
-    override fun nodeOfOrNull(element: @UnsafeVariance Element): KoneLinkedSetNode<Element>?
-    override fun nodeOf(element: @UnsafeVariance Element): KoneLinkedSetNode<Element>
+    override fun nodeOfOrNull(element: Element): KoneLinkedSetNode<Element>?
+    override fun nodeOf(element: Element): KoneLinkedSetNode<Element>
     
     override fun iterator(): KoneLinkedNoddedSetIterator<Element>
+    
+    public companion object
+}
+
+@SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
+public interface KoneRemovableLinkedNoddedSet<Element> : KoneLinkedNoddedSet<Element>, KoneRemovableLinkedSet<Element>, KoneRemovableNoddedSet<Element> {
+    override val nodesView: KoneRemovableReifiedSet<KoneRemovableLinkedSetNode<Element>>
+    override val nodes: KoneReifiedSet<KoneRemovableLinkedSetNode<Element>>
+        get() = nodesView.toKoneReifiedSet(
+            elementReification = Reification.defaultFor(),
+            elementEquality = Equality.absoluteFor(),
+            elementHashing = Hashing.defaultFor(),
+        )
+    override fun nodeOfOrNull(element: Element): KoneRemovableLinkedSetNode<Element>?
+    override fun nodeOf(element: Element): KoneRemovableLinkedSetNode<Element>
+    
+    override fun iterator(): KoneRemovableLinkedNoddedSetIterator<Element>
     
     public companion object
 }
@@ -206,27 +238,16 @@ public interface KoneLinkedNoddedSet<Element> : KoneNoddedSet<Element>, KoneLink
 /**
  * Represents a nodded version of [KoneMutableLinkedSet].
  *
- * It means that there is exactly one [KoneMutableLinkedSetNode] corresponding to each place
+ * It means that there is exactly one [KoneRemovableLinkedSetNode] corresponding to each place
  * that can effectively access the places element and index as well as
  * other things that can be found in its documentation.
  *
  * @see KoneMutableLinkedSet
- * @see KoneMutableLinkedSetNode
+ * @see KoneRemovableLinkedSetNode
  */
 @SubclassOptInRequired(DelicateCollectionsInheritanceAPI::class)
-public interface KoneMutableLinkedNoddedSet<Element> : KoneLinkedNoddedSet<Element>, KoneMutableLinkedSet<Element>, KoneMutableNoddedSet<Element> {
-    override val nodesView: KoneReifiedSet<KoneMutableLinkedSetNode<Element>>
-    override val nodes: KoneReifiedSet<KoneMutableLinkedSetNode<Element>>
-        get() = nodesView.toKoneReifiedSet(
-            elementReification = Reification.defaultFor(),
-            elementEquality = Equality.absoluteFor(),
-            elementHashing = Hashing.defaultFor(),
-        )
-    override fun nodeOfOrNull(element: @UnsafeVariance Element): KoneMutableLinkedSetNode<Element>?
-    override fun nodeOf(element: @UnsafeVariance Element): KoneMutableLinkedSetNode<Element>
-    override fun addNode(element: Element): KoneMutableLinkedSetNode<Element>
-    
-    override fun iterator(): KoneMutableLinkedNoddedSetIterator<Element>
+public interface KoneMutableLinkedNoddedSet<Element> : KoneRemovableLinkedNoddedSet<Element>, KoneMutableLinkedSet<Element>, KoneMutableNoddedSet<Element> {
+    override fun addNode(element: Element): KoneRemovableLinkedSetNode<Element>
     
     public companion object
 }

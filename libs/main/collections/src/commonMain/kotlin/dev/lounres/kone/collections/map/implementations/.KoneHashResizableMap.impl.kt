@@ -12,8 +12,10 @@ import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.disposedInstanceException
 import dev.lounres.kone.collections.implementations.*
 import dev.lounres.kone.collections.iterable.KoneIterable
+import dev.lounres.kone.collections.iterable.KoneRemovableIterable
 import dev.lounres.kone.collections.iterable.isNotEmpty
 import dev.lounres.kone.collections.iterator.KoneIterator
+import dev.lounres.kone.collections.iterator.KoneRemovableIterator
 import dev.lounres.kone.collections.iterator.getAndMoveNext
 import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.KoneMutableListNode
@@ -25,6 +27,8 @@ import dev.lounres.kone.collections.map.KoneMutableMapNode
 import dev.lounres.kone.collections.map.KoneMutableReifiedMap
 import dev.lounres.kone.collections.noNextElementInIteratorException
 import dev.lounres.kone.collections.set.KoneReifiedSet
+import dev.lounres.kone.collections.set.KoneRemovableReifiedSet
+import dev.lounres.kone.collections.set.KoneRemovableSet
 import dev.lounres.kone.collections.set.KoneSet
 import dev.lounres.kone.collections.set.toKoneReifiedSet
 import dev.lounres.kone.collections.set.toKoneSet
@@ -32,6 +36,7 @@ import dev.lounres.kone.collections.utils.any
 import dev.lounres.kone.collections.utils.anyIndexed
 import dev.lounres.kone.collections.utils.firstIndexThat
 import dev.lounres.kone.collections.utils.firstThatOrNull
+import dev.lounres.kone.collections.utils.forEach
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.*
 import dev.lounres.kone.scope
@@ -167,20 +172,6 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
         size = 0u
     }
 
-    override fun removeAllThat(predicate: (key: Key, value: Value) -> Boolean) {
-        var newSize = 0u
-        for (linkedList in data) linkedList.removeAllThat { node -> predicate(node.key, node.value).also { if (!it) newSize += 1u } }
-        if (newSize < sizeLowerBound) reinitializeBoundsAndData(newSize)
-        else size = newSize
-    }
-    
-    override fun removeAllNodesThat(predicate: (nodes: KoneMutableMapNode<Key, Value>) -> Boolean) {
-        var newSize = 0u
-        for (linkedList in data) linkedList.removeAllThat { node -> predicate(node).also { if (!it) newSize += 1u } }
-        if (newSize < sizeLowerBound) reinitializeBoundsAndData(newSize)
-        else size = newSize
-    }
-
     override fun remove(key: Key) {
         if (isDisposed) disposedInstanceException()
         
@@ -241,15 +232,15 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
         return this.nodesView == other.nodesView
     }
     
-    protected open val _nodesView: KoneReifiedSet<KoneMutableMapNode<Key, Value>> = NodesSet(this)
-    final override val nodesView: KoneReifiedSet<KoneMutableMapNode<Key, Value>>
+    protected open val _nodesView: KoneRemovableReifiedSet<KoneMutableMapNode<Key, Value>> = NodesSet(this)
+    final override val nodesView: KoneRemovableReifiedSet<KoneMutableMapNode<Key, Value>>
         get() = if (isDisposed) disposedInstanceException() else _nodesView
-    protected open val _keysView: KoneSet<Key> = KeysSet(this)
-    override val keysView: KoneSet<Key>
+    protected open val _keysView: KoneRemovableSet<Key> = KeysSet(this)
+    override val keysView: KoneRemovableSet<Key>
         get() = if (isDisposed) disposedInstanceException() else _keysView
     override val keys: KoneSet<Key> get() = keysView.toKoneSet(elementEquality = keyEquality, elementHashing = keyHashing)
-    protected open val _valuesView: KoneIterable<Value> = ValueIterable(this)
-    final override val valuesView: KoneIterable<Value>
+    protected open val _valuesView: KoneRemovableIterable<Value> = ValueIterable(this)
+    final override val valuesView: KoneRemovableIterable<Value>
         get() = if (isDisposed) disposedInstanceException() else _valuesView
     
     internal class Node<Key, Value>(
@@ -260,7 +251,8 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
         override var isDetached: Boolean = false
             private set
         
-        private var map: KoneHashResizableMap<*, *>? = map
+        internal var map: KoneHashResizableMap<*, *>? = map
+            private set
         var bucketListNode: KoneMutableListNode<Node<Key, Value>>? = null
         
         internal fun detach() {
@@ -283,9 +275,9 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
     
     internal class NodeIterator<Key, Value>(
         val map: KoneHashResizableMap<Key, Value>
-    ) : KoneIterator<Node<Key, Value>> {
+    ) : KoneRemovableIterator<Node<Key, Value>> {
         private var currentBucket: UInt = 0u
-        private var currentIterator: KoneIterator<Node<Key, Value>> = map.data[currentBucket].iterator()
+        private var currentIterator: KoneRemovableIterator<Node<Key, Value>> = map.data[currentBucket].iterator()
         
         override fun hasNext(): Boolean =
             if (map.isDisposed) disposedInstanceException()
@@ -309,6 +301,20 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
                 currentIterator = map.data[nextIndex].iterator().also { it.moveNext() }
             }
         }
+        override fun removeNext() {
+            if (!hasNext()) noNextElementInIteratorException()
+            if (currentIterator.hasNext()) currentIterator.removeNext()
+            else {
+                val nextIndex = map.data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
+                currentBucket = nextIndex
+                currentIterator = map.data[nextIndex].iterator().also {
+                    val node = it.getNext()
+                    node.detach()
+                    it.removeNext()
+                    map.size--
+                }
+            }
+        }
         
         override fun equals(other: Any?): Boolean = this === other
         override fun hashCode(): Int = super.hashCode()
@@ -317,9 +323,9 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
 
     internal class KeyIterator<Key, Value>(
         val map: KoneHashResizableMap<Key, Value>
-    ) : KoneIterator<Key> {
+    ) : KoneRemovableIterator<Key> {
         private var currentBucket: UInt = 0u
-        private var currentIterator: KoneIterator<Node<Key, Value>> = map.data[currentBucket].iterator()
+        private var currentIterator: KoneRemovableIterator<Node<Key, Value>> = map.data[currentBucket].iterator()
 
         override fun hasNext(): Boolean =
             if (map.isDisposed) disposedInstanceException()
@@ -343,6 +349,20 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
                 currentIterator = map.data[nextIndex].iterator().also { it.moveNext() }
             }
         }
+        override fun removeNext() {
+            if (!hasNext()) noNextElementInIteratorException()
+            if (currentIterator.hasNext()) currentIterator.removeNext()
+            else {
+                val nextIndex = map.data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
+                currentBucket = nextIndex
+                currentIterator = map.data[nextIndex].iterator().also {
+                    val node = it.getNext()
+                    node.detach()
+                    it.removeNext()
+                    map.size--
+                }
+            }
+        }
         
         override fun equals(other: Any?): Boolean = this === other
         override fun hashCode(): Int = super.hashCode()
@@ -351,9 +371,9 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
 
     internal class ValueIterator<Key, Value>(
         val map: KoneHashResizableMap<Key, Value>
-    ) : KoneIterator<Value> {
+    ) : KoneRemovableIterator<Value> {
         private var currentBucket: UInt = 0u
-        private var currentIterator: KoneIterator<Node<Key, Value>> = map.data[currentBucket].iterator()
+        private var currentIterator: KoneRemovableIterator<Node<Key, Value>> = map.data[currentBucket].iterator()
 
         override fun hasNext(): Boolean =
             if (map.isDisposed) disposedInstanceException()
@@ -377,6 +397,20 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
                 currentIterator = map.data[nextIndex].iterator().also { it.moveNext() }
             }
         }
+        override fun removeNext() {
+            if (!hasNext()) noNextElementInIteratorException()
+            if (currentIterator.hasNext()) currentIterator.removeNext()
+            else {
+                val nextIndex = map.data.firstIndexThat { index, element -> index > currentBucket && element.isNotEmpty() }
+                currentBucket = nextIndex
+                currentIterator = map.data[nextIndex].iterator().also {
+                    val node = it.getNext()
+                    node.detach()
+                    it.removeNext()
+                    map.size--
+                }
+            }
+        }
         
         override fun equals(other: Any?): Boolean = this === other
         override fun hashCode(): Int = super.hashCode()
@@ -386,16 +420,27 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
     @OptIn(DelicateCollectionsInheritanceAPI::class)
     internal class NodesSet<Key, Value>(
         val map: KoneHashResizableMap<Key, Value>,
-    ) :  KoneReifiedSet<Node<Key, Value>> {
+    ) :  KoneRemovableReifiedSet<Node<Key, Value>> {
         override val size: UInt get() = map.size
         @Suppress("USELESS_IS_CHECK")
         override fun contains(element: Node<Key, Value>): Boolean =
             when {
                 map.isDisposed -> disposedInstanceException()
                 element !is Node -> false
-                else -> map.data.any { it.any { it === element } }
+                else -> map.data.any { bucket -> bucket.any { it === element } }
             }
-        override fun iterator(): KoneIterator<Node<Key, Value>> =
+        @Suppress("USELESS_IS_CHECK")
+        override fun remove(element: Node<Key, Value>) {
+            if (map.isDisposed) disposedInstanceException()
+            if (element !is Node) return
+            if (element.map !== map) return
+            element.remove()
+        }
+        override fun removeAll() {
+            if (map.isDisposed) disposedInstanceException()
+            map.data.forEach { it.removeAll() }
+        }
+        override fun iterator(): KoneRemovableIterator<Node<Key, Value>> =
             if (map.isDisposed) disposedInstanceException()
             else NodeIterator(map)
         // TODO: Override `toString`.
@@ -404,12 +449,18 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
     @OptIn(DelicateCollectionsInheritanceAPI::class)
     internal class KeysSet<Key>(
         val map: KoneHashResizableMap<Key, *>,
-    ) : KoneSet<Key> {
+    ) : KoneRemovableSet<Key> {
         override val size: UInt get() = map.size
         override fun contains(element: Key): Boolean =
             if (map.isDisposed) disposedInstanceException()
             else map.data[with(map) { element.dataIndex() }].any { entry -> context(map.keyEquality) { entry.key eq element } }
-        override fun iterator(): KoneIterator<Key> =
+        override fun remove(element: Key) {
+            map.remove(element)
+        }
+        override fun removeAll() {
+            map.removeAll()
+        }
+        override fun iterator(): KoneRemovableIterator<Key> =
             if (map.isDisposed) disposedInstanceException()
             else KeyIterator(map)
         // TODO: Override `toString`.
@@ -417,9 +468,9 @@ public open class KoneHashResizableMap<Key, Value> internal constructor(
 
     internal class ValueIterable<Value>(
         val map: KoneHashResizableMap<*, Value>,
-    ) : KoneIterable<Value> {
+    ) : KoneRemovableIterable<Value> {
         override val size: UInt get() = map.size
-        override fun iterator(): KoneIterator<Value> =
+        override fun iterator(): KoneRemovableIterator<Value> =
             if (map.isDisposed) disposedInstanceException()
             else ValueIterator(map)
         // TODO: Override `toString`.
@@ -450,9 +501,9 @@ public class KoneHashResizableReifiedMap<Key, Value> @PublishedApi internal cons
     keyEquality = keyEquality,
     keyHashing = keyHashing,
 ), KoneMutableReifiedMap<Key, Value> {
-    override val _nodesView: KoneReifiedSet<KoneMutableMapNode<Key, Value>> = NodesSet(this)
-    override val _keysView: KoneReifiedSet<Key> = KeysSet(this)
-    override val keysView: KoneReifiedSet<Key>
+    override val _nodesView: KoneRemovableReifiedSet<KoneMutableMapNode<Key, Value>> = NodesSet(this)
+    override val _keysView: KoneRemovableReifiedSet<Key> = KeysSet(this)
+    override val keysView: KoneRemovableReifiedSet<Key>
         get() = if (isDisposed) disposedInstanceException() else _keysView
     override val keys: KoneReifiedSet<Key>
         get() = keysView.toKoneReifiedSet(elementReification = keyReification, elementEquality = keyEquality, elementHashing = keyHashing)
@@ -460,7 +511,7 @@ public class KoneHashResizableReifiedMap<Key, Value> @PublishedApi internal cons
     @OptIn(DelicateCollectionsInheritanceAPI::class)
     internal class NodesSet<Key, Value>(
         val map: KoneHashResizableReifiedMap<Key, Value>,
-    ) : KoneReifiedSet<Node<Key, Value>> {
+    ) : KoneRemovableReifiedSet<Node<Key, Value>> {
         override val size: UInt get() = map.size
         @Suppress("USELESS_IS_CHECK")
         override fun contains(element: Node<Key, Value>): Boolean =
@@ -472,7 +523,18 @@ public class KoneHashResizableReifiedMap<Key, Value> @PublishedApi internal cons
                     key in map.keyReification && map.data[with(map) { key.dataIndex() }].any { it === element }
                 }
             }
-        override fun iterator(): KoneIterator<Node<Key, Value>> =
+        @Suppress("USELESS_IS_CHECK")
+        override fun remove(element: Node<Key, Value>) {
+            if (map.isDisposed) disposedInstanceException()
+            if (element !is Node) return
+            if (element.map !== map) return
+            element.remove()
+        }
+        override fun removeAll() {
+            if (map.isDisposed) disposedInstanceException()
+            map.data.forEach { it.removeAll() }
+        }
+        override fun iterator(): KoneRemovableIterator<Node<Key, Value>> =
             if (map.isDisposed) disposedInstanceException()
             else NodeIterator(map)
         // TODO: Override `toString`.
@@ -481,12 +543,18 @@ public class KoneHashResizableReifiedMap<Key, Value> @PublishedApi internal cons
     @OptIn(DelicateCollectionsInheritanceAPI::class)
     internal class KeysSet<Key>(
         val map: KoneHashResizableReifiedMap<Key, *>,
-    ) : KoneReifiedSet<Key> {
+    ) : KoneRemovableReifiedSet<Key> {
         override val size: UInt get() = map.size
         override fun contains(element: Key): Boolean =
             if (map.isDisposed) disposedInstanceException()
             else element in map.keyReification && map.data[with(map) { element.dataIndex() }].any { entry -> context(map.keyEquality) { entry.key eq element } }
-        override fun iterator(): KoneIterator<Key> =
+        override fun remove(element: Key) {
+            map.remove(element)
+        }
+        override fun removeAll() {
+            map.removeAll()
+        }
+        override fun iterator(): KoneRemovableIterator<Key> =
             if (map.isDisposed) disposedInstanceException()
             else KeyIterator(map)
         // TODO: Override `toString`.

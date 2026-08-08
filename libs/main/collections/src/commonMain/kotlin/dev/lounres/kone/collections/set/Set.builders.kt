@@ -474,11 +474,6 @@ public class KoneSetBuilder<Element> @PublishedApi internal constructor(result: 
         result.add(element)
     }
     
-    override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
-        val result = result ?: error("This KoneSet builder is already used")
-        result.addSeveral(number, builder)
-    }
-    
     override fun remove(element: Element) {
         val result = result ?: error("This KoneSet builder is already used")
         result.remove(element)
@@ -487,11 +482,6 @@ public class KoneSetBuilder<Element> @PublishedApi internal constructor(result: 
     override fun removeAll() {
         val result = result ?: error("This KoneSet builder is already used")
         result.removeAll()
-    }
-    
-    override fun removeAllThat(predicate: (Element) -> Boolean) {
-        val result = result ?: error("This KoneSet builder is already used")
-        result.removeAllThat(predicate)
     }
     
     override fun iterator(): KoneRemovableIterator<Element> {
@@ -535,11 +525,6 @@ public class KoneReifiedSetBuilder<Element> @PublishedApi internal constructor(r
         result.add(element)
     }
     
-    override fun addSeveral(number: UInt, builder: (UInt) -> Element) {
-        val result = result ?: error("This KoneReifiedSet builder is already used")
-        result.addSeveral(number, builder)
-    }
-    
     override fun remove(element: Element) {
         val result = result ?: error("This KoneReifiedSet builder is already used")
         result.remove(element)
@@ -548,11 +533,6 @@ public class KoneReifiedSetBuilder<Element> @PublishedApi internal constructor(r
     override fun removeAll() {
         val result = result ?: error("This KoneReifiedSet builder is already used")
         result.removeAll()
-    }
-    
-    override fun removeAllThat(predicate: (Element) -> Boolean) {
-        val result = result ?: error("This KoneReifiedSet builder is already used")
-        result.removeAllThat(predicate)
     }
     
     override fun iterator(): KoneRemovableIterator<Element> {
