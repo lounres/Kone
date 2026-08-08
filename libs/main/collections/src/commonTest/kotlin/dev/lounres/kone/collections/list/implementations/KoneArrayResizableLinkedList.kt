@@ -5,6 +5,8 @@
 
 package dev.lounres.kone.collections.list.implementations
 
+import dev.lounres.kone.assertions.AssertionScope
+import dev.lounres.kone.assertions.fail
 import dev.lounres.kone.collections.implementations.POWERS_OF_2
 import dev.lounres.kone.collections.iterator.KoneIterator
 import dev.lounres.kone.collections.list.KoneList
@@ -14,13 +16,13 @@ import dev.lounres.kone.collections.list.contexts.KoneListProducer
 import dev.lounres.kone.collections.utils.any
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
-import kotlin.test.fail
 
 
 object KoneArrayResizableLinkedListDescription : ListImplementationDescription {
     override val name get() = "KoneArrayResizableLinkedList"
     
     internal object Validator {
+        context(assertionScope: AssertionScope)
         fun <Element: Any> validate(
             list: KoneArrayResizableLinkedList<Element>,
         ) {
@@ -64,6 +66,7 @@ object KoneArrayResizableLinkedListDescription : ListImplementationDescription {
             }
         }
         
+        context(assertionScope: AssertionScope)
         fun validateWithIterator(
             list: KoneArrayResizableLinkedList<Any>,
             iterator: KoneArrayResizableLinkedList.Iterator<Any>,
@@ -85,19 +88,30 @@ object KoneArrayResizableLinkedListDescription : ListImplementationDescription {
     
     override val listProducer: KoneListProducer get() = KoneArrayResizableLinkedListProducer
     override val listValidator: KoneListValidator = object : KoneListValidator {
+        context(assertionScope: AssertionScope)
         override fun validate(
             list: KoneList<Any>,
         ) {
-            if (list !is KoneArrayResizableLinkedList<Any>) fail("The list is invalid")
+            if (list !is KoneArrayResizableLinkedList<Any>) {
+                fail("The list is invalid")
+                return
+            }
             Validator.validate(list)
         }
         
+        context(assertionScope: AssertionScope)
         override fun validateWithIterator(
             list: KoneList<Any>,
             iterator: KoneIterator<Any>,
         ) {
-            if (list !is KoneArrayResizableLinkedList<Any>) fail("The list is invalid")
-            if (iterator !is KoneArrayResizableLinkedList.Iterator<Any>) fail("The iterator is invalid")
+            if (list !is KoneArrayResizableLinkedList<Any>) {
+                fail("The list is invalid")
+                return
+            }
+            if (iterator !is KoneArrayResizableLinkedList.Iterator<Any>) {
+                fail("The iterator is invalid")
+                return
+            }
             Validator.validateWithIterator(list, iterator)
         }
     }

@@ -5,13 +5,15 @@
 
 package dev.lounres.kone.collections.list.implementations
 
+import dev.lounres.kone.assertions.AssertionScope
+import dev.lounres.kone.assertions.fail
 import dev.lounres.kone.collections.iterator.KoneIterator
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneListValidator
 import dev.lounres.kone.collections.list.ListImplementationDescription
 import dev.lounres.kone.collections.list.contexts.KoneListProducer
 import dev.lounres.kone.collections.list.implementations.KoneTwoThreeTreeList.Companion.size
-import kotlin.test.fail
+import dev.lounres.kone.scope
 
 
 object KoneTwoThreeTreeListDescription : ListImplementationDescription {
@@ -19,8 +21,12 @@ object KoneTwoThreeTreeListDescription : ListImplementationDescription {
     
     override val listProducer: KoneListProducer get() = KoneTwoThreeTreeListProducer
     override val listValidator: KoneListValidator = object : KoneListValidator {
+        context(assertionScope: AssertionScope)
         override fun validate(list: KoneList<Any>) {
-            if (list !is KoneTwoThreeTreeList<Any>) fail("The list is invalid")
+            if (list !is KoneTwoThreeTreeList<Any>) {
+                fail("The list is invalid")
+                return
+            }
             if (list.isDisposed) fail("The list is invalid")
             
             val size = list.size
@@ -31,7 +37,10 @@ object KoneTwoThreeTreeListDescription : ListImplementationDescription {
             if (size == 0u) {
                 if (rootHolder != null || firstNode != null || lastNode != null) fail("The list is invalid")
             } else {
-                if (rootHolder == null || firstNode == null || lastNode == null) fail("The list is invalid")
+                if (rootHolder == null || firstNode == null || lastNode == null) {
+                    fail("The list is invalid")
+                    return
+                }
                 
                 if (rootHolder.size != size) fail("The list is invalid")
                 
@@ -81,8 +90,8 @@ object KoneTwoThreeTreeListDescription : ListImplementationDescription {
                                 if (holder.firstChildSize != holder.firstChild.size || holder.secondChildSize != holder.secondChild.size) fail("The list is invalid")
                                 val node = holder.element
                                 if (node.holder !== holder) fail("The list is invalid")
-                                val previousNode = node.previousNode ?: fail("The list is invalid")
-                                val nextNode = node.nextNode ?: fail("The list is invalid")
+                                val previousNode = node.previousNode ?: scope { fail("The list is invalid"); return }
+                                val nextNode = node.nextNode ?: scope { fail("The list is invalid"); return }
                                 if (previousNode.nextNode !== node || nextNode.previousNode !== node) fail("The list is invalid")
                                 validateSubtree(
                                     holder.firstChild!!,
@@ -104,11 +113,11 @@ object KoneTwoThreeTreeListDescription : ListImplementationDescription {
                                 val node1 = holder.firstElement
                                 val node2 = holder.secondElement
                                 if (node1.holder !== holder || node2.holder !== holder) fail("The list is invalid")
-                                val previousNode1 = node1.previousNode ?: fail("The list is invalid")
-                                val nextNode1 = node1.nextNode ?: fail("The list is invalid")
+                                val previousNode1 = node1.previousNode ?: scope { fail("The list is invalid"); return }
+                                val nextNode1 = node1.nextNode ?: scope { fail("The list is invalid"); return }
                                 if (previousNode1.nextNode !== node1 || nextNode1.previousNode !== node1) fail("The list is invalid")
-                                val previousNode2 = node2.previousNode ?: fail("The list is invalid")
-                                val nextNode2 = node2.nextNode ?: fail("The list is invalid")
+                                val previousNode2 = node2.previousNode ?: scope { fail("The list is invalid"); return }
+                                val nextNode2 = node2.nextNode ?: scope { fail("The list is invalid"); return }
                                 if (previousNode2.nextNode !== node2 || nextNode2.previousNode !== node2) fail("The list is invalid")
                                 validateSubtree(
                                     holder.firstChild!!,
@@ -136,6 +145,8 @@ object KoneTwoThreeTreeListDescription : ListImplementationDescription {
                 validateSubtree(rootHolder, depth, firstNode, lastNode)
             }
         }
+        
+        context(assertionScope: AssertionScope)
         override fun validateWithIterator(
             list: KoneList<Any>,
             iterator: KoneIterator<Any>
@@ -143,7 +154,10 @@ object KoneTwoThreeTreeListDescription : ListImplementationDescription {
             validate(list)
             list as KoneTwoThreeTreeList<Any>
             
-            if (iterator !is KoneTwoThreeTreeList.Iterator<Any>) fail("The iterator is invalid")
+            if (iterator !is KoneTwoThreeTreeList.Iterator<Any>) {
+                fail("The iterator is invalid")
+                return
+            }
             if (iterator.list !== list) fail("The iterator is invalid")
             
             val nextNode = iterator.nextNode

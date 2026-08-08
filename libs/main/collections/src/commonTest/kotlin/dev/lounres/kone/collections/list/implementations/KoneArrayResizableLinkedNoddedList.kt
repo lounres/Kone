@@ -5,6 +5,8 @@
 
 package dev.lounres.kone.collections.list.implementations
 
+import dev.lounres.kone.assertions.AssertionScope
+import dev.lounres.kone.assertions.fail
 import dev.lounres.kone.collections.implementations.POWERS_OF_2
 import dev.lounres.kone.collections.iterator.KoneIterator
 import dev.lounres.kone.collections.list.KoneList
@@ -14,13 +16,13 @@ import dev.lounres.kone.collections.list.contexts.KoneListProducer
 import dev.lounres.kone.collections.utils.any
 import dev.lounres.kone.repeat
 import dev.lounres.kone.scope
-import kotlin.test.fail
 
 
 object KoneArrayResizableLinkedNoddedListDescription : ListImplementationDescription {
     override val name get() = "KoneArrayResizableLinkedNoddedList"
     
     internal object Validator {
+        context(assertionScope: AssertionScope)
         fun <Element: Any> validate(
             list: KoneArrayResizableLinkedNoddedList<Element>,
         ) {
@@ -61,9 +63,11 @@ object KoneArrayResizableLinkedNoddedListDescription : ListImplementationDescrip
                     val currentNodeOrNull = data[currentIndex]
                     if (iteration < size) {
                         if (currentNodeOrNull == null) fail("The list is invalid")
-                        if (currentNodeOrNull.actualIndex != currentIndex) fail("The list is invalid")
-                        if (currentNodeOrNull.isDetached) fail("The list is invalid")
-                        if (currentNodeOrNull.list !== list) fail("The list is invalid")
+                        else {
+                            if (currentNodeOrNull.actualIndex != currentIndex) fail("The list is invalid")
+                            if (currentNodeOrNull.isDetached) fail("The list is invalid")
+                            if (currentNodeOrNull.list !== list) fail("The list is invalid")
+                        }
                     } else {
                         if (currentNodeOrNull != null) fail("The list is invalid")
                     }
@@ -72,6 +76,7 @@ object KoneArrayResizableLinkedNoddedListDescription : ListImplementationDescrip
             }
         }
         
+        context(assertionScope: AssertionScope)
         fun validateWithIterator(
             list: KoneArrayResizableLinkedNoddedList<Any>,
             iterator: KoneArrayResizableLinkedNoddedList.Iterator<Any>,
@@ -93,19 +98,30 @@ object KoneArrayResizableLinkedNoddedListDescription : ListImplementationDescrip
     
     override val listProducer: KoneListProducer get() = KoneArrayResizableLinkedNoddedListProducer
     override val listValidator: KoneListValidator = object : KoneListValidator {
+        context(assertionScope: AssertionScope)
         override fun validate(
             list: KoneList<Any>,
         ) {
-            if (list !is KoneArrayResizableLinkedNoddedList<Any>) fail("The list is invalid")
+            if (list !is KoneArrayResizableLinkedNoddedList<Any>) {
+                fail("The list is invalid")
+                return
+            }
             Validator.validate(list)
         }
         
+        context(assertionScope: AssertionScope)
         override fun validateWithIterator(
             list: KoneList<Any>,
             iterator: KoneIterator<Any>,
         ) {
-            if (list !is KoneArrayResizableLinkedNoddedList<Any>) fail("The list is invalid")
-            if (iterator !is KoneArrayResizableLinkedNoddedList.Iterator<Any>) fail("The iterator is invalid")
+            if (list !is KoneArrayResizableLinkedNoddedList<Any>) {
+                fail("The list is invalid")
+                return
+            }
+            if (iterator !is KoneArrayResizableLinkedNoddedList.Iterator<Any>) {
+                fail("The iterator is invalid")
+                return
+            }
             Validator.validateWithIterator(list, iterator)
         }
     }

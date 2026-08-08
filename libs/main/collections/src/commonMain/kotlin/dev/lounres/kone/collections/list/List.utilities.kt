@@ -34,7 +34,7 @@ public fun <Element> KoneList<Element>.getOrElse(index: UInt, block: () -> Eleme
 
 @OptIn(DelicateSeveralElementsInserterAPI::class)
 public inline fun <Element> KoneMutableList<Element>.addSeveral(number: UInt, builder: (index: UInt) -> Element) {
-    val inserter = startAddingSeveralAt(index = 0u, number = number)
+    val inserter = startAddingSeveralAt(index = size, number = number)
     try {
         repeat(number) { inserter.insert(builder(it)) }
     } finally {

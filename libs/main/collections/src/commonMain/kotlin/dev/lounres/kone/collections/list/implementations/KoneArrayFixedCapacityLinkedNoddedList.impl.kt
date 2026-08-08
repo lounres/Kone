@@ -559,6 +559,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
             list.end = list.nextNodeIndex[list.end]
             list.data[list.end] = Node(list, element, list.end)
             list.size++
+            currentIndex++
         }
         override fun close() {
             if (currentIndex != newElementsNumber) severalElementsInserterElementsLackException()

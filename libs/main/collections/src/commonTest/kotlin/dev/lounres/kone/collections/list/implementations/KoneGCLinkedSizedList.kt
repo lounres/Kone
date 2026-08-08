@@ -5,18 +5,20 @@
 
 package dev.lounres.kone.collections.list.implementations
 
+import dev.lounres.kone.assertions.AssertionScope
+import dev.lounres.kone.assertions.fail
 import dev.lounres.kone.collections.iterator.KoneIterator
 import dev.lounres.kone.collections.list.KoneList
 import dev.lounres.kone.collections.list.KoneListValidator
 import dev.lounres.kone.collections.list.ListImplementationDescription
 import dev.lounres.kone.collections.list.contexts.KoneListProducer
-import kotlin.test.fail
 
 
 object KoneGCLinkedSizedListDescription : ListImplementationDescription {
     override val name get() = "KoneGCLinkedSizedList"
     
     internal object Validator {
+        context(assertionScope: AssertionScope)
         fun <Element: Any> validate(list: KoneGCLinkedSizedList<Element>) {
             if (list.isDisposed) fail("The list is invalid")
             
@@ -27,7 +29,10 @@ object KoneGCLinkedSizedListDescription : ListImplementationDescription {
             if (size == 0u) {
                 if (start != null || end != null) fail("The list is invalid")
             } else {
-                if (start == null || end == null) fail("The list is invalid")
+                if (start == null || end == null) {
+                    fail("The list is invalid")
+                    return
+                }
                 
                 if (start.previousNode != null) fail("The list is invalid")
                 
@@ -44,6 +49,7 @@ object KoneGCLinkedSizedListDescription : ListImplementationDescription {
             }
         }
         
+        context(assertionScope: AssertionScope)
         fun validateWithIterator(
             list: KoneGCLinkedSizedList<Any>,
             iterator: KoneGCLinkedSizedList.Iterator<Any>
@@ -62,19 +68,30 @@ object KoneGCLinkedSizedListDescription : ListImplementationDescription {
     
     override val listProducer: KoneListProducer get() = KoneGCLinkedSizedListProducer
     override val listValidator: KoneListValidator = object : KoneListValidator {
+        context(assertionScope: AssertionScope)
         override fun validate(
             list: KoneList<Any>,
         ) {
-            if (list !is KoneGCLinkedSizedList<Any>) fail("The list is invalid")
+            if (list !is KoneGCLinkedSizedList<Any>) {
+                fail("The list is invalid")
+                return
+            }
             Validator.validate(list)
         }
         
+        context(assertionScope: AssertionScope)
         override fun validateWithIterator(
             list: KoneList<Any>,
             iterator: KoneIterator<Any>,
         ) {
-            if (list !is KoneGCLinkedSizedList<Any>) fail("The list is invalid")
-            if (iterator !is KoneGCLinkedSizedList.Iterator<Any>) fail("The iterator is invalid")
+            if (list !is KoneGCLinkedSizedList<Any>) {
+                fail("The list is invalid")
+                return
+            }
+            if (iterator !is KoneGCLinkedSizedList.Iterator<Any>) {
+                fail("The iterator is invalid")
+                return
+            }
             Validator.validateWithIterator(list, iterator)
         }
     }

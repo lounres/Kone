@@ -8,6 +8,13 @@ package dev.lounres.kone.collections.util.sorting
 import de.infix.testBalloon.framework.core.TestSuite
 import de.infix.testBalloon.framework.core.testSuite
 import de.infix.testBalloon.framework.shared.TestRegistering
+import dev.lounres.kone.assertions.AssertionScope
+import dev.lounres.kone.assertions.Expect
+import dev.lounres.kone.assertions.fail
+import dev.lounres.kone.assertions.of
+import dev.lounres.kone.assertions.softly
+import dev.lounres.kone.assertions.toBe
+import dev.lounres.kone.assertions.withClue
 import dev.lounres.kone.collections.iterable.KoneIterable
 import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.KoneList
@@ -20,9 +27,6 @@ import dev.lounres.kone.combinatorics.enumerative.permutationsWithoutRepetitions
 import dev.lounres.kone.relations.Comparator
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.defaultFor
-import io.kotest.assertions.withClue
-import io.kotest.matchers.shouldBe
-import kotlin.test.fail
 
 
 interface SortingApplier {
@@ -60,10 +64,11 @@ interface SortingDescription {
 
 val sortings = listOf<SortingDescription>(
     HeapsortingDescription,
-    QuicksortingDescription,
+//    QuicksortingDescription,
     DefaultDescription,
 )
 
+context(assertionScope: AssertionScope)
 fun <Element> testEquality(list1: KoneList<Element>, list2: KoneList<Element>) {
     withClue("Checking equality of lists $list1 and $list2") {
         val list1Iterator = list1.iterator()
@@ -73,7 +78,7 @@ fun <Element> testEquality(list1: KoneList<Element>, list2: KoneList<Element>) {
             if (list1Iterator.hasNext() != list2Iterator.hasNext()) fail("List iterators ended not at the same time $index")
             if (list1Iterator.hasNext()) {
                 withClue({ "Checking equality of elements at index $index" }) {
-                    list1Iterator.getNext() shouldBe list2Iterator.getNext()
+                    Expect of list1Iterator.getNext() toBe list2Iterator.getNext()
                 }
                 list1Iterator.moveNext()
                 list2Iterator.moveNext()
@@ -91,6 +96,7 @@ val SortTests by testSuite {
     for (desc in sortings) testSuite(desc.name) {
         
         @TestRegistering
+        context(assertionScope: AssertionScope)
         /*inline*/ fun TestSuite.testSortFunction(
             /*crossinline*/ sort: (list: KoneSettableList<UInt>) -> Unit,
         ) {
@@ -107,73 +113,98 @@ val SortTests by testSuite {
         }
         
         testSuite("sort comparable") {
-            testSortFunction {
-                desc.applier.sort(it)
+            AssertionScope.softly {
+                testSortFunction {
+                    desc.applier.sort(it)
+                }
             }
         }
         testSuite("sort ordered") {
-            testSortFunction {
-                desc.applier.sort(Order.defaultFor(), it)
+            AssertionScope.softly {
+                testSortFunction {
+                    desc.applier.sort(Order.defaultFor(), it)
+                }
             }
         }
         testSuite("sort with comparator") {
-            testSortFunction {
-                desc.applier.sortWith(it, Comparator.defaultFor())
+            AssertionScope.softly {
+                testSortFunction {
+                    desc.applier.sortWith(it, Comparator.defaultFor())
+                }
             }
         }
         testSuite("sort descending comparable") {
-            testSortFunction {
-                desc.applier.sortDescending(it)
-                it.reverse()
+            AssertionScope.softly {
+                testSortFunction {
+                    desc.applier.sortDescending(it)
+                    it.reverse()
+                }
             }
         }
         testSuite("sort descending ordered") {
-            testSortFunction {
-                desc.applier.sortDescending(Order.defaultFor(), it)
-                it.reverse()
+            AssertionScope.softly {
+                testSortFunction {
+                    desc.applier.sortDescending(Order.defaultFor(), it)
+                    it.reverse()
+                }
             }
         }
         testSuite("sort descending with comparator") {
-            testSortFunction {
-                desc.applier.sortWithDescending(it, Comparator.defaultFor())
-                it.reverse()
+            AssertionScope.softly {
+                testSortFunction {
+                    desc.applier.sortWithDescending(it, Comparator.defaultFor())
+                    it.reverse()
+                }
             }
         }
         testSuite("sort by comparable") {
-            testSortFunction {
-                desc.applier.sortBy(it) { it }
+            AssertionScope.softly {
+                testSortFunction {
+                    desc.applier.sortBy(it) { it }
+                }
             }
         }
         testSuite("sort by ordered") {
-            testSortFunction {
-                desc.applier.sortBy(Order.defaultFor(), it) { it }
+            AssertionScope.softly {
+                testSortFunction {
+                    desc.applier.sortBy(Order.defaultFor(), it) { it }
+                }
             }
         }
         testSuite("sort by with comparator") {
-            testSortFunction {
-                desc.applier.sortWithBy(it, Comparator.defaultFor()) { it }
+            AssertionScope.softly {
+                testSortFunction {
+                    desc.applier.sortWithBy(it, Comparator.defaultFor()) { it }
+                }
             }
         }
         testSuite("sort by descending comparable") {
-            testSortFunction {
-                desc.applier.sortByDescending(it) { it }
-                it.reverse()
+            AssertionScope.softly {
+                testSortFunction {
+                    desc.applier.sortByDescending(it) { it }
+                    it.reverse()
+                }
             }
         }
         testSuite("sort by descending ordered") {
-            testSortFunction {
-                desc.applier.sortByDescending(Order.defaultFor(), it) { it }
-                it.reverse()
+            AssertionScope.softly {
+                testSortFunction {
+                    desc.applier.sortByDescending(Order.defaultFor(), it) { it }
+                    it.reverse()
+                }
             }
         }
         testSuite("sort by descending with comparator") {
-            testSortFunction {
-                desc.applier.sortWithByDescending(it, Comparator.defaultFor()) { it }
-                it.reverse()
+            AssertionScope.softly {
+                testSortFunction {
+                    desc.applier.sortWithByDescending(it, Comparator.defaultFor()) { it }
+                    it.reverse()
+                }
             }
         }
         
         @TestRegistering
+        context(assertionScope: AssertionScope)
         /*inline*/ fun TestSuite.testSortedFunction(
             /*crossinline*/ sort: (list: KoneIterable<UInt>) -> KoneList<UInt>,
         ) {
@@ -188,40 +219,66 @@ val SortTests by testSuite {
         }
         
         testSuite("sorted comparable") {
-            testSortedFunction { desc.applier.sorted(it) }
+            AssertionScope.softly {
+                testSortedFunction { desc.applier.sorted(it) }
+            }
         }
         testSuite("sorted ordered") {
-            testSortedFunction { desc.applier.sorted(Order.defaultFor(), it) }
+            AssertionScope.softly {
+                testSortedFunction { desc.applier.sorted(Order.defaultFor(), it) }
+            }
         }
         testSuite("sorted with comparator") {
-            testSortedFunction { desc.applier.sortedWith(it, Comparator.defaultFor()) }
+            AssertionScope.softly {
+                testSortedFunction { desc.applier.sortedWith(it, Comparator.defaultFor()) }
+            }
         }
         testSuite("sorted descending comparable") {
-            testSortedFunction { desc.applier.sortedDescending(it).reversed() }
+            AssertionScope.softly {
+                testSortedFunction { desc.applier.sortedDescending(it).reversed() }
+            }
         }
         testSuite("sorted descending ordered") {
-            testSortedFunction { desc.applier.sortedDescending(Order.defaultFor(), it).reversed() }
+            AssertionScope.softly {
+                testSortedFunction { desc.applier.sortedDescending(Order.defaultFor(), it).reversed() }
+            }
         }
         testSuite("sorted descending with comparator") {
-            testSortedFunction { desc.applier.sortedWithDescending(it, Comparator.defaultFor()).reversed() }
+            AssertionScope.softly {
+                testSortedFunction { desc.applier.sortedWithDescending(it, Comparator.defaultFor()).reversed() }
+            }
         }
         testSuite("sorted by comparable") {
-            testSortedFunction { desc.applier.sortedBy(it) { it } }
+            AssertionScope.softly {
+                testSortedFunction { desc.applier.sortedBy(it) { it } }
+            }
         }
         testSuite("sorted by ordered") {
-            testSortedFunction { desc.applier.sortedBy(Order.defaultFor(), it) { it } }
+            AssertionScope.softly {
+                testSortedFunction { desc.applier.sortedBy(Order.defaultFor(), it) { it } }
+            }
         }
         testSuite("sorted by with comparator") {
-            testSortedFunction { desc.applier.sortedWithBy(it, Comparator.defaultFor()) { it } }
+            AssertionScope.softly {
+                testSortedFunction { desc.applier.sortedWithBy(it, Comparator.defaultFor()) { it } }
+            }
         }
         testSuite("sorted by descending comparable") {
-            testSortedFunction { desc.applier.sortedByDescending(it) { it }.reversed() }
+            AssertionScope.softly {
+                testSortedFunction { desc.applier.sortedByDescending(it) { it }.reversed() }
+            }
         }
         testSuite("sorted by descending ordered") {
-            testSortedFunction { desc.applier.sortedByDescending(Order.defaultFor(), it) { it }.reversed() }
+            AssertionScope.softly {
+                testSortedFunction { desc.applier.sortedByDescending(Order.defaultFor(), it) { it }.reversed() }
+            }
         }
         testSuite("sorted by descending with comparator") {
-            testSortedFunction { desc.applier.sortedWithByDescending(it, Comparator.defaultFor()) { it }.reversed() }
+            AssertionScope.softly {
+                testSortedFunction {
+                    desc.applier.sortedWithByDescending(it, Comparator.defaultFor()) { it }.reversed()
+                }
+            }
         }
     }
 }

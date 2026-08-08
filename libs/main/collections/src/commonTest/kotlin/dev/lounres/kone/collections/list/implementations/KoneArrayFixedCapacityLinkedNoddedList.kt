@@ -60,13 +60,12 @@ object KoneArrayFixedCapacityLinkedNoddedListDescription : ListImplementationDes
                     }
                     val currentNodeOrNull = data[currentIndex]
                     if (iteration < size) {
-                        if (currentNodeOrNull == null) {
-                            fail("The list is invalid")
-                            return@repeat
+                        if (currentNodeOrNull == null) fail("The list is invalid")
+                        else {
+                            if (currentNodeOrNull.actualIndex != currentIndex) fail("The list is invalid")
+                            if (currentNodeOrNull.isDetached) fail("The list is invalid")
+                            if (currentNodeOrNull.list !== list) fail("The list is invalid")
                         }
-                        if (currentNodeOrNull.actualIndex != currentIndex) fail("The list is invalid")
-                        if (currentNodeOrNull.isDetached) fail("The list is invalid")
-                        if (currentNodeOrNull.list !== list) fail("The list is invalid")
                     } else {
                         if (currentNodeOrNull != null) fail("The list is invalid")
                     }

@@ -244,61 +244,98 @@ fun <Element> allMutableListExtensionReductionOperationsWithResultsSeriesWithLen
     initialSize: UInt,
     capacity: UInt? = null,
     numberOfOperations: UInt,
-): List<MutableListExtensionReductionOperationsWithResultsSeries<Element>> = buildList {
-
-    val seriesToProcess = ArrayDeque<MutableListExtensionReductionOperationsWithResultsSeries<Element>>()
-    seriesToProcess.add(
-        MutableListExtensionReductionOperationsWithResultsSeries(
-            initialList = List(initialSize.toInt()) { randomElement() },
-            numberOfOperations = 0u,
-            operations = listOf(),
-            results = listOf(),
+): Sequence<MutableListExtensionReductionOperationsWithResultsSeries<Element>> = sequence {
+    data class GenerationLevel(
+        val series: MutableListExtensionReductionOperationsWithResultsSeries<Element>,
+        val nextSeries: Iterator<MutableListExtensionReductionOperationsWithResultsSeries<Element>>,
+    )
+    
+    val initialSeries = MutableListExtensionReductionOperationsWithResultsSeries(
+        initialList = List(initialSize.toInt()) { randomElement() },
+        numberOfOperations = 0u,
+        operations = listOf(),
+        results = listOf(),
+    )
+    
+    yield(initialSeries)
+    
+    val generationStack = ArrayDeque<GenerationLevel>()
+    generationStack.add(
+        GenerationLevel(
+            series = initialSeries,
+            nextSeries = emptyList<MutableListExtensionReductionOperationsWithResultsSeries<Element>>().iterator()
         )
     )
-
-    while (seriesToProcess.isNotEmpty()) {
-        val series = seriesToProcess.removeFirst()
-        add(series)
-        val lastResult = series.lastResult
-
-        if (series.numberOfOperations < numberOfOperations) {
-//            for (index in lastResult.indices) {
-//                val newElement = element()
-//                seriesToProcess.add(
-//                    MutableListOperationsWithResultsSeries(
-//                        initialList = series.initialList,
-//                        numberOfOperations = series.numberOfOperations + 1u,
-//                        operations = series.operations + MutableListExtensionReductionOperation.Set(index.toUInt(), newElement),
-//                        results = series.results + listOf(lastResult.subList(0, index) + newElement + lastResult.subList(index + 1, lastResult.size)),
-//                    )
+    
+    fun MutableListExtensionReductionOperationsWithResultsSeries<Element>.nextLevel(): Iterator<MutableListExtensionReductionOperationsWithResultsSeries<Element>> = buildList {
+        val series = this@nextLevel
+        
+//        for (index in lastResult.indices) {
+//            val newElement = randomElement()
+//            seriesToProcess.add(
+//                MutableListExtensionReductionOperationsWithResultsSeries(
+//                    initialList = series.initialList,
+//                    numberOfOperations = series.numberOfOperations + 1u,
+//                    operations = series.operations + MutableListExtensionReductionOperation.Set(index.toUInt(), newElement),
+//                    results = series.results + listOf(lastResult.subList(0, index) + newElement + lastResult.subList(index + 1, lastResult.size)),
 //                )
-//            }
-
-            for (index in lastResult.indices) {
-                seriesToProcess.add(
+//            )
+//        }
+        
+        for (index in lastResult.indices) {
+            add(
+                MutableListExtensionReductionOperationsWithResultsSeries(
+                    initialList = series.initialList,
+                    numberOfOperations = series.numberOfOperations + 1u,
+                    operations = series.operations + MutableListExtensionReductionOperation.RemoveAt(index.toUInt()),
+                    results = series.results + listOf(lastResult.subList(0, index) + lastResult.subList(index + 1, lastResult.size)),
+                )
+            )
+        }
+        
+        if (capacity == null || lastResult.size < capacity.toInt()) {
+            for (index in 0..lastResult.size) {
+                val newElement = randomElement()
+                add(
                     MutableListExtensionReductionOperationsWithResultsSeries(
                         initialList = series.initialList,
                         numberOfOperations = series.numberOfOperations + 1u,
-                        operations = series.operations + MutableListExtensionReductionOperation.RemoveAt(index.toUInt()),
-                        results = series.results + listOf(lastResult.subList(0, index) + lastResult.subList(index + 1, lastResult.size)),
+                        operations = series.operations + MutableListExtensionReductionOperation.AddAt(index.toUInt(), newElement),
+                        results = series.results + listOf(lastResult.subList(0, index) + newElement + lastResult.subList(index, lastResult.size)),
                     )
                 )
             }
-
-            if (capacity == null || lastResult.size < capacity.toInt()) {
-                for (index in 0..lastResult.size) {
-                    val newElement = randomElement()
-                    seriesToProcess.add(
-                        MutableListExtensionReductionOperationsWithResultsSeries(
-                            initialList = series.initialList,
-                            numberOfOperations = series.numberOfOperations + 1u,
-                            operations = series.operations + MutableListExtensionReductionOperation.AddAt(index.toUInt(), newElement),
-                            results = series.results + listOf(lastResult.subList(0, index) + newElement + lastResult.subList(index, lastResult.size)),
-                        )
-                    )
-                }
-            }
         }
+    }.iterator()
+    
+    while (true) {
+        scope {
+            if (generationStack.size.toUInt() == numberOfOperations + 1u) return@scope
+            val last = generationStack.last()
+            val nextLevelIterator = last.series.nextLevel()
+            if (!nextLevelIterator.hasNext()) return@scope
+            val nextLevelSeries = nextLevelIterator.next()
+            yield(nextLevelSeries)
+            generationStack.addLast(
+                GenerationLevel(
+                    series = nextLevelSeries,
+                    nextSeries = nextLevelIterator,
+                )
+            )
+            continue
+        }
+        while (generationStack.isNotEmpty()) {
+            if (generationStack.last().nextSeries.hasNext()) break
+            generationStack.removeLast()
+        }
+        if (generationStack.isEmpty()) break
+        val oldLastLevel = generationStack.removeLast()
+        generationStack.addLast(
+            GenerationLevel(
+                series = oldLastLevel.nextSeries.next(),
+                nextSeries = oldLastLevel.nextSeries,
+            )
+        )
     }
 }
 
@@ -306,12 +343,12 @@ fun <Element> allMutableListOperationWithResult(
     randomElement: () -> Element,
     initialList: List<Element>,
     severalElementsAdditionLimit: Int,
-) : List<MutableListOperationWithResult<Element>> = buildList {
+) : Sequence<MutableListOperationWithResult<Element>> = sequence {
 
     // Set
     for (index in initialList.indices) {
         val newElement = randomElement()
-        add(
+        yield(
             MutableListOperationWithResult(
                 operation = MutableListOperation.Set(index.toUInt(), newElement),
                 result = initialList.subList(0, index) + newElement + initialList.subList(index + 1, initialList.size),
@@ -323,7 +360,7 @@ fun <Element> allMutableListOperationWithResult(
     // Add
     scope {
         val newElement = randomElement()
-        add(
+        yield(
             MutableListOperationWithResult(
                 operation = MutableListOperation.Add(newElement),
                 result = initialList + newElement,
@@ -335,7 +372,7 @@ fun <Element> allMutableListOperationWithResult(
     // AddAt
     for (index in 0 .. initialList.size) {
         val newElement = randomElement()
-        add(
+        yield(
             MutableListOperationWithResult(
                 operation = MutableListOperation.AddAt(newElement, index.toUInt()),
                 result = initialList.subList(0, index) + newElement + initialList.subList(index, initialList.size),
@@ -347,7 +384,7 @@ fun <Element> allMutableListOperationWithResult(
     // AddSeveral
     for (extraSize in 0 ..< severalElementsAdditionLimit) {
         val newElements = List(extraSize) { randomElement() }
-        add(
+        yield(
             MutableListOperationWithResult(
                 operation = MutableListOperation.AddSeveral(newElements),
                 result = initialList + newElements,
@@ -359,7 +396,7 @@ fun <Element> allMutableListOperationWithResult(
     // AddSeveralAt
     for (index in 0 .. initialList.size) for (extraSize in 0 ..< severalElementsAdditionLimit) {
         val newElements = List(extraSize) { randomElement() }
-        add(
+        yield(
             MutableListOperationWithResult(
                 operation = MutableListOperation.AddSeveralAt(newElements, index.toUInt()),
                 result = initialList.subList(0, index) + newElements + initialList.subList(index, initialList.size),
@@ -369,7 +406,7 @@ fun <Element> allMutableListOperationWithResult(
 
     // RemoveAt
     for (index in initialList.indices) {
-        add(
+        yield(
             MutableListOperationWithResult(
                 operation = MutableListOperation.RemoveAt(index.toUInt()),
                 result = initialList.subList(0, index) + initialList.subList(index + 1, initialList.size),
@@ -378,7 +415,7 @@ fun <Element> allMutableListOperationWithResult(
     }
 
     // RemoveAllThatIndexed
-    add(
+    yield(
         MutableListOperationWithResult(
             operation = MutableListOperation.RemoveAllThatIndexed(
                 initialList.indices.filter { it % 2 == 0 }.map { it.toUInt() }
@@ -388,7 +425,7 @@ fun <Element> allMutableListOperationWithResult(
     )
 
     // RemoveAll
-    add(
+    yield(
         MutableListOperationWithResult(
             operation = MutableListOperation.RemoveAll,
             result = emptyList(),
@@ -399,12 +436,12 @@ fun <Element> allMutableListOperationWithResult(
 fun <Element> allMutableNoddedListOperationWithResult(
     randomElement: () -> Element,
     initialList: List<Element>,
-) : List<MutableNoddedListOperationWithResult<Element>> = buildList {
+) : Sequence<MutableNoddedListOperationWithResult<Element>> = sequence {
     // TODO: Добавить проверку вместимости
     // AddNode
     scope {
         val newElement = randomElement()
-        add(
+        yield(
             MutableNoddedListOperationWithResult(
                 operation = MutableNoddedListOperation.AddNode(newElement),
                 result = initialList + newElement,
@@ -416,7 +453,7 @@ fun <Element> allMutableNoddedListOperationWithResult(
     // AddNodeAt
     for (index in 0 .. initialList.size) {
         val newElement = randomElement()
-        add(
+        yield(
             MutableNoddedListOperationWithResult(
                 operation = MutableNoddedListOperation.AddNodeAt(newElement, index.toUInt()),
                 result = initialList.subList(0, index) + newElement + initialList.subList(index, initialList.size),
@@ -851,7 +888,7 @@ val ListImplementationsTests by testSuite {
 
         if (producer is KoneResizableMutableListProducer)
             test("test of mutability operations after series of changes") {
-                AssertionScope.softly {
+                AssertionScope {
                     for (previousSteps in allMutableListExtensionReductionOperationsWithResultsSeriesWithLengthsNoMoreThan(randomElement = { Random.nextUInt() }, initialSize = 10u, numberOfOperations = 3u)) {
                         for ((operation, result) in allMutableListOperationWithResult(randomElement = { Random.nextUInt() }, initialList = previousSteps.lastResult, severalElementsAdditionLimit = 5)) {
                             val mutableList = producer.produceBy(previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
@@ -869,7 +906,7 @@ val ListImplementationsTests by testSuite {
 
         if (producer is KoneGrowableMutableListProducer) {
             test("test of mutability operations after series of changes") {
-                AssertionScope.softly {
+                AssertionScope {
                     for (previousSteps in allMutableListExtensionReductionOperationsWithResultsSeriesWithLengthsNoMoreThan(randomElement = { Random.nextUInt() }, initialSize = 10u, numberOfOperations = 3u)) {
                         for ((operation, result) in allMutableListOperationWithResult(randomElement = { Random.nextUInt() }, initialList = previousSteps.lastResult, severalElementsAdditionLimit = 5)) {
                             val mutableList = producer.produceBy(previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
@@ -885,7 +922,7 @@ val ListImplementationsTests by testSuite {
                 }
             }
             test("test of mutability operations after series of changes with ensured capacity") {
-                AssertionScope.softly {
+                AssertionScope {
                     for (previousSteps in allMutableListExtensionReductionOperationsWithResultsSeriesWithLengthsNoMoreThan(randomElement = { Random.nextUInt() }, initialSize = 10u, numberOfOperations = 3u)) {
                         for ((operation, result) in allMutableListOperationWithResult(randomElement = { Random.nextUInt() }, initialList = previousSteps.lastResult, severalElementsAdditionLimit = 5)) {
                             val mutableList = producer.produceBy(20u, previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
@@ -904,7 +941,7 @@ val ListImplementationsTests by testSuite {
 
         if (producer is KoneFixedCapacityMutableListProducer)
             test("test of mutability operations after series of changes") {
-                AssertionScope.softly {
+                AssertionScope {
                     for (previousSteps in allMutableListExtensionReductionOperationsWithResultsSeriesWithLengthsNoMoreThan(randomElement = { Random.nextUInt() }, initialSize = 10u, numberOfOperations = 3u)) {
                         for ((operation, result) in allMutableListOperationWithResult(randomElement = { Random.nextUInt() }, initialList = previousSteps.lastResult, severalElementsAdditionLimit = 5)) {
                             val mutableList = producer.produceBy(20u, previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }

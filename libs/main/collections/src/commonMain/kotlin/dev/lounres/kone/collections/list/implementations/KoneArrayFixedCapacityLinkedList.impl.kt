@@ -423,6 +423,7 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
             list.end = list.nextNodeIndex[list.end]
             list.data[list.end] = element
             list.size++
+            currentIndex++
         }
         override fun close() {
             if (currentIndex != newElementsNumber) severalElementsInserterElementsLackException()

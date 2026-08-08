@@ -5,6 +5,8 @@
 
 package dev.lounres.kone.collections.list.implementations
 
+import dev.lounres.kone.assertions.AssertionScope
+import dev.lounres.kone.assertions.fail
 import dev.lounres.kone.collections.implementations.POWERS_OF_2
 import dev.lounres.kone.collections.iterator.KoneIterator
 import dev.lounres.kone.collections.list.KoneList
@@ -12,7 +14,6 @@ import dev.lounres.kone.collections.list.KoneListValidator
 import dev.lounres.kone.collections.list.ListImplementationDescription
 import dev.lounres.kone.collections.list.contexts.KoneListProducer
 import dev.lounres.kone.repeat
-import kotlin.test.fail
 
 
 object KoneArrayResizableNoddedListDescription : ListImplementationDescription {
@@ -20,10 +21,14 @@ object KoneArrayResizableNoddedListDescription : ListImplementationDescription {
     
     override val listProducer: KoneListProducer get() = KoneArrayResizableNoddedListProducer
     override val listValidator: KoneListValidator = object : KoneListValidator {
+        context(assertionScope: AssertionScope)
         override fun validate(
             list: KoneList<Any>,
         ) {
-            if (list !is KoneArrayResizableNoddedList<Any>) fail("The list is invalid")
+            if (list !is KoneArrayResizableNoddedList<Any>) {
+                fail("The list is invalid")
+                return
+            }
             if (list.isDisposed) fail("The list is invalid")
             
             val dataSizeNumber = list.dataSizeNumber
@@ -41,22 +46,28 @@ object KoneArrayResizableNoddedListDescription : ListImplementationDescription {
                 val currentNodeOrNull = data[index]
                 if (index < size) {
                     if (currentNodeOrNull == null) fail("The list is invalid")
-                    if (currentNodeOrNull.index != index) fail("The list is invalid")
-                    if (currentNodeOrNull.isDetached) fail("The list is invalid")
-                    if (currentNodeOrNull.list !== list) fail("The list is invalid")
+                    else {
+                        if (currentNodeOrNull.index != index) fail("The list is invalid")
+                        if (currentNodeOrNull.isDetached) fail("The list is invalid")
+                        if (currentNodeOrNull.list !== list) fail("The list is invalid")
+                    }
                 } else {
                     if (currentNodeOrNull != null) fail("The list is invalid")
                 }
             }
         }
         
+        context(assertionScope: AssertionScope)
         override fun validateWithIterator(
             list: KoneList<Any>,
             iterator: KoneIterator<Any>,
         ) {
             validate(list)
             
-            if (iterator !is KoneArrayResizableNoddedList.Iterator<Any>) fail("The iterator is invalid")
+            if (iterator !is KoneArrayResizableNoddedList.Iterator<Any>) {
+                fail("The iterator is invalid")
+                return
+            }
             if (iterator.list !== list) fail("The iterator is invalid")
             
             if (iterator.currentIndex > list.size) fail("The iterator is invalid")
