@@ -38,13 +38,6 @@ interface KoneListValidator {
     )
 }
 
-@IgnorableReturnValue
-context(assertionScope: AssertionScope)
-fun <Validator: KoneListValidator> Expect<Validator>.toValidate(list: KoneList<Any>) { exposeValue().validate(list) }
-@IgnorableReturnValue
-context(assertionScope: AssertionScope)
-fun <Validator: KoneListValidator> Expect<Validator>.toValidate(list: KoneList<Any>, iterator: KoneIterator<Any>) { exposeValue().validateWithIterator(list, iterator) }
-
 interface ListDisposabilityTest {
     context(assertionScope: AssertionScope)
     fun <Element: Any> test(list: KoneList<Element>) {}
