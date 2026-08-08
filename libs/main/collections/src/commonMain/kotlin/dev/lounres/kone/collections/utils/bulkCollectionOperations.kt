@@ -7,8 +7,7 @@ package dev.lounres.kone.collections.utils
 
 import dev.lounres.kone.collections.array.KoneMutableArray
 import dev.lounres.kone.collections.array.generate
-import dev.lounres.kone.collections.deque.KoneDeque
-import dev.lounres.kone.collections.deque.empty
+import dev.lounres.kone.collections.deque.implementations.KoneArrayFixedCapacityCircularDeque
 import dev.lounres.kone.collections.deque.popFirst
 import dev.lounres.kone.collections.iterable.KoneIterable
 import dev.lounres.kone.collections.iterator.KoneIterator
@@ -163,7 +162,7 @@ private class KoneTakeSequence<Element>(
 public fun <E> KoneSequence<E>.take(n: UInt): KoneSequence<E> = KoneTakeSequence(this, n)
 
 public fun <E> KoneIterator<E>.takeLast(n: UInt): KoneIterator<E> {
-    val deque = KoneDeque.empty<E>()
+    val deque = KoneArrayFixedCapacityCircularDeque<E>(n)
     while (hasNext()) {
         deque.addLast(getAndMoveNext())
         if (deque.size > n) deque.removeFirst()

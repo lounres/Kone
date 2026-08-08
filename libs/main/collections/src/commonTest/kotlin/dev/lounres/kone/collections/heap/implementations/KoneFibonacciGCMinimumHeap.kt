@@ -54,7 +54,7 @@ object KoneFibonacciGCMinimumHeapDescription : MinimumHeapImplementationDescript
                     Expect of heap.lastChild notToBe null
                     Expect of heap.minimumNode notToBe null
                     
-                    val children = KoneDeque.empty<KoneFibonacciGCMinimumHeap.Node<Element, Priority>>()
+                    val children = KoneDeque.empty<KoneFibonacciGCMinimumHeap.Node<Element, Priority>>() // TODO: Try to replace with KoneArrayFixedCapacityCircularDeque
                     scope {
                         var child = heap.firstChild
                         Expect of child!!.previousSibling toBe null
