@@ -721,6 +721,7 @@ public class KoneArrayResizableLinkedNoddedList<Element> @PublishedApi internal 
             if (currentIndex >= newElementsNumber) severalElementsInserterOverflowException()
             list.end = list.nextNodeIndex[list.end]
             list.data[list.end] = Node(list, element, list.end)
+            currentIndex++
         }
         
         override fun close() {
@@ -742,6 +743,7 @@ public class KoneArrayResizableLinkedNoddedList<Element> @PublishedApi internal 
             if (currentIndex >= newElementsNumber) severalElementsInserterOverflowException()
             currentActualIndex = list.nextNodeIndex[currentActualIndex]
             list.data[currentActualIndex] = Node(list, element, currentActualIndex)
+            currentIndex++
         }
         
         override fun close() {
@@ -782,7 +784,7 @@ public class KoneArrayResizableLinkedNoddedList<Element> @PublishedApi internal 
         
         override fun moveNext() {
             if (!hasNext()) noNextElementInBulkElementsRemoverException()
-            list.data[resultActualMark] = list.data[checkingActualMark]
+            list.data[resultActualMark] = list.data[checkingActualMark].also { it!!.actualIndex = resultActualMark }
             resultActualMark = list.nextNodeIndex[resultActualMark]
             resultSize++
             checkingActualMark = list.nextNodeIndex[checkingActualMark]
@@ -791,6 +793,7 @@ public class KoneArrayResizableLinkedNoddedList<Element> @PublishedApi internal 
         
         override fun removeNext() {
             if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            list.data[checkingActualMark]!!.detach()
             checkingActualMark = list.nextNodeIndex[checkingActualMark]
             checkingIndex++
         }
