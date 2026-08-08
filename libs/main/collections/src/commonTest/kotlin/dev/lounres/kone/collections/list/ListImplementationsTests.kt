@@ -761,27 +761,29 @@ val ListImplementationsTests by testSuite {
             mutableList: KoneMutableList<Element>,
             validator: KoneListValidator,
         ) {
-            withClue({
-                """
-                    Data:
-                      initialList: ${data.initialList}
-                      numberOfOperations: ${data.numberOfOperations}
-                      operations: ${data.operations}
-                      results: ${data.results}
-                      
-                """.trimIndent()
-            }) {
-                repeat(data.numberOfOperations) {
-                    val operation = data.operations[it.toInt()]
-                    val expected = data.results[it.toInt()]
-                    withClue({ "at iteration $it with current state $mutableList, operation $operation, and expected result $expected" }) {
-                        when (operation) {
-//                            is MutableListExtensionReductionOperation.Set<Element> -> mutableList[operation.index] = operation.element
-                            is MutableListExtensionReductionOperation.AddAt<Element> -> mutableList.addAt(operation.index, operation.element)
-                            is MutableListExtensionReductionOperation.RemoveAt -> mutableList.removeAt(operation.index)
+            firmly {
+                withClue({
+                    """
+                        Data:
+                          initialList: ${data.initialList}
+                          numberOfOperations: ${data.numberOfOperations}
+                          operations: ${data.operations}
+                          results: ${data.results}
+                          
+                    """.trimIndent()
+                }) {
+                    repeat(data.numberOfOperations) {
+                        val operation = data.operations[it.toInt()]
+                        val expected = data.results[it.toInt()]
+                        withClue({ "at iteration $it with current state $mutableList, operation $operation, and expected result $expected" }) {
+                            when (operation) {
+    //                            is MutableListExtensionReductionOperation.Set<Element> -> mutableList[operation.index] = operation.element
+                                is MutableListExtensionReductionOperation.AddAt<Element> -> mutableList.addAt(operation.index, operation.element)
+                                is MutableListExtensionReductionOperation.RemoveAt -> mutableList.removeAt(operation.index)
+                            }
+                            validator.validate(mutableList)
+                            testEquality(mutableList, expected)
                         }
-                        validator.validate(mutableList)
-                        testEquality(mutableList, expected)
                     }
                 }
             }
@@ -854,55 +856,57 @@ val ListImplementationsTests by testSuite {
             mutableList: KoneMutableList<Element>,
             validator: KoneListValidator,
         ) {
-            withClue({
-                 """
-                     Previous steps:
-                       initialList: ${previousSteps.initialList}
-                       numberOfOperations: ${previousSteps.numberOfOperations}
-                       operations: ${previousSteps.operations}
-                       results: ${previousSteps.results}
-                     
-                     operation: $operation
-                     
-                 """.trimIndent()
-            }) {
-                repeat(previousSteps.numberOfOperations) {
-                    val step = previousSteps.operations[it.toInt()]
-                    when (step) {
-    //                    is MutableListExtensionReductionOperation.Set<Element> -> mutableList[step.index] = step.element
-                        is MutableListExtensionReductionOperation.AddAt<Element> -> mutableList.addAt(step.index, step.element)
-                        is MutableListExtensionReductionOperation.RemoveAt -> mutableList.removeAt(step.index)
-                    }
-                }
-                validator.validate(mutableList)
-                when (operation) {
-                    is MutableListOperation.Set<Element> -> mutableList[operation.index] = operation.element
-                    is MutableListOperation.Add<Element> -> mutableList.add(operation.element)
-                    is MutableListOperation.AddAt<Element> -> mutableList.addAt(operation.index, operation.element)
-                    is MutableListOperation.StartAddingSeveralAt<Element> -> {
-                        val inserter = mutableList.startAddingSeveralAt(operation.index, operation.elements.size.toUInt())
-                        for (element in operation.elements) inserter.insert(element)
-                        inserter.close()
-                    }
-                    is MutableListOperation.RemoveAt -> mutableList.removeAt(operation.index)
-                    is MutableListOperation.StartBulkyRemoving -> {
-                        val remover = mutableList.startBulkyRemoving()
-                        var currentIndexIndex = 0
-                        repeat(operation.number) {
-                            Expect of remover.hasNext() toBe true
-                            if (remover.nextIndex() == operation.indices.getOrNull(currentIndexIndex)) {
-                                remover.removeNext()
-                                currentIndexIndex++
-                            } else {
-                                remover.moveNext()
-                            }
+            firmly {
+                withClue({
+                     """
+                         Previous steps:
+                           initialList: ${previousSteps.initialList}
+                           numberOfOperations: ${previousSteps.numberOfOperations}
+                           operations: ${previousSteps.operations}
+                           results: ${previousSteps.results}
+                         
+                         operation: $operation
+                         
+                     """.trimIndent()
+                }) {
+                    repeat(previousSteps.numberOfOperations) {
+                        val step = previousSteps.operations[it.toInt()]
+                        when (step) {
+        //                    is MutableListExtensionReductionOperation.Set<Element> -> mutableList[step.index] = step.element
+                            is MutableListExtensionReductionOperation.AddAt<Element> -> mutableList.addAt(step.index, step.element)
+                            is MutableListExtensionReductionOperation.RemoveAt -> mutableList.removeAt(step.index)
                         }
-                        remover.close()
                     }
-                    MutableListOperation.RemoveAll -> mutableList.removeAll()
+                    validator.validate(mutableList)
+                    when (operation) {
+                        is MutableListOperation.Set<Element> -> mutableList[operation.index] = operation.element
+                        is MutableListOperation.Add<Element> -> mutableList.add(operation.element)
+                        is MutableListOperation.AddAt<Element> -> mutableList.addAt(operation.index, operation.element)
+                        is MutableListOperation.StartAddingSeveralAt<Element> -> {
+                            val inserter = mutableList.startAddingSeveralAt(operation.index, operation.elements.size.toUInt())
+                            for (element in operation.elements) inserter.insert(element)
+                            inserter.close()
+                        }
+                        is MutableListOperation.RemoveAt -> mutableList.removeAt(operation.index)
+                        is MutableListOperation.StartBulkyRemoving -> {
+                            val remover = mutableList.startBulkyRemoving()
+                            var currentIndexIndex = 0
+                            repeat(operation.number) {
+                                Expect of remover.hasNext() toBe true
+                                if (remover.nextIndex() == operation.indices.getOrNull(currentIndexIndex)) {
+                                    remover.removeNext()
+                                    currentIndexIndex++
+                                } else {
+                                    remover.moveNext()
+                                }
+                            }
+                            remover.close()
+                        }
+                        MutableListOperation.RemoveAll -> mutableList.removeAll()
+                    }
+                    validator.validate(mutableList)
+                    testEquality(mutableList, result)
                 }
-                validator.validate(mutableList)
-                testEquality(mutableList, result)
             }
         }
 
@@ -985,32 +989,47 @@ val ListImplementationsTests by testSuite {
             mutableNoddedList: KoneMutableNoddedList<Element>,
             validator: KoneListValidator,
         ) {
-            repeat(previousSteps.numberOfOperations) {
-                val step = previousSteps.operations[it.toInt()]
-                when (step) {
-//                    is MutableListExtensionReductionOperation.Set<Element> -> mutableList[step.index] = step.element
-                    is MutableListExtensionReductionOperation.AddAt<Element> -> mutableNoddedList.addAt(step.index, step.element)
-                    is MutableListExtensionReductionOperation.RemoveAt -> mutableNoddedList.removeAt(step.index)
+            firmly {
+                withClue({
+                    """
+                        Previous steps:
+                          initialList: ${previousSteps.initialList}
+                          numberOfOperations: ${previousSteps.numberOfOperations}
+                          operations: ${previousSteps.operations}
+                          results: ${previousSteps.results}
+                        
+                        operation: $operation
+                        
+                    """.trimIndent()
+                }) {
+                    repeat(previousSteps.numberOfOperations) {
+                        val step = previousSteps.operations[it.toInt()]
+                        when (step) {
+        //                    is MutableListExtensionReductionOperation.Set<Element> -> mutableList[step.index] = step.element
+                            is MutableListExtensionReductionOperation.AddAt<Element> -> mutableNoddedList.addAt(step.index, step.element)
+                            is MutableListExtensionReductionOperation.RemoveAt -> mutableNoddedList.removeAt(step.index)
+                        }
+                    }
+                    validator.validate(mutableNoddedList)
+                    when (operation) {
+                        is MutableNoddedListOperation.AddNode<Element> -> {
+                            mutableNoddedList.addNode(operation.element)
+                            // TODO: Добавить проверку получаемой ноды
+                        }
+                        is MutableNoddedListOperation.AddNodeAt<Element> -> {
+                            mutableNoddedList.addNodeAt(operation.index, operation.element)
+                            // TODO: Добавить проверку получаемой ноды
+                        }
+                    }
+                    validator.validate(mutableNoddedList)
+                    testEquality(mutableNoddedList, result)
                 }
             }
-            validator.validate(mutableNoddedList)
-            when (operation) {
-                is MutableNoddedListOperation.AddNode<Element> -> {
-                    mutableNoddedList.addNode(operation.element)
-                    // TODO: Добавить проверку получаемой ноды
-                }
-                is MutableNoddedListOperation.AddNodeAt<Element> -> {
-                    mutableNoddedList.addNodeAt(operation.index, operation.element)
-                    // TODO: Добавить проверку получаемой ноды
-                }
-            }
-            validator.validate(mutableNoddedList)
-            testEquality(mutableNoddedList, result)
         }
 
         if (producer is KoneResizableMutableNoddedListProducer)
             test("test of nodded mutability operations after series of changes") {
-                AssertionScope.softly {
+                AssertionScope {
                     for (previousSteps in allMutableListExtensionReductionOperationsWithResultsSeriesWithLengthsNoMoreThan(randomElement = { Random.nextUInt() }, initialSize = 10u, numberOfOperations = 3u)) {
                         for ((operation, result) in allMutableNoddedListOperationWithResult(randomElement = { Random.nextUInt() }, initialList = previousSteps.lastResult)) {
                             val mutableNoddedList = producer.produceBy(previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
@@ -1028,7 +1047,7 @@ val ListImplementationsTests by testSuite {
 
         if (producer is KoneGrowableMutableNoddedListProducer) {
             test("test of nodded mutability operations after series of changes") {
-                AssertionScope.softly {
+                AssertionScope {
                     for (previousSteps in allMutableListExtensionReductionOperationsWithResultsSeriesWithLengthsNoMoreThan(randomElement = { Random.nextUInt() }, initialSize = 10u, numberOfOperations = 3u)) {
                         for ((operation, result) in allMutableNoddedListOperationWithResult(randomElement = { Random.nextUInt() }, initialList = previousSteps.lastResult)) {
                             val mutableNoddedList = producer.produceBy(previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
@@ -1044,7 +1063,7 @@ val ListImplementationsTests by testSuite {
                 }
             }
             test("test of nodded mutability operations after series of changes with ensured capacity") {
-                AssertionScope.softly {
+                AssertionScope {
                     for (previousSteps in allMutableListExtensionReductionOperationsWithResultsSeriesWithLengthsNoMoreThan(randomElement = { Random.nextUInt() }, initialSize = 10u, numberOfOperations = 3u)) {
                         for ((operation, result) in allMutableNoddedListOperationWithResult(randomElement = { Random.nextUInt() }, initialList = previousSteps.lastResult)) {
                             val mutableNoddedList = producer.produceBy(20u, previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
@@ -1063,7 +1082,7 @@ val ListImplementationsTests by testSuite {
 
         if (producer is KoneFixedCapacityMutableNoddedListProducer)
             test("test of nodded mutability operations after series of changes") {
-                AssertionScope.softly {
+                AssertionScope {
                     for (previousSteps in allMutableListExtensionReductionOperationsWithResultsSeriesWithLengthsNoMoreThan(randomElement = { Random.nextUInt() }, initialSize = 10u, capacity = 20u, numberOfOperations = 3u)) {
                         for ((operation, result) in allMutableNoddedListOperationWithResult(randomElement = { Random.nextUInt() }, initialList = previousSteps.lastResult, capacity = 20)) {
                             val mutableNoddedList = producer.produceBy(20u, previousSteps.initialList.size.toUInt()) { previousSteps.initialList[it.toInt()] }
@@ -1086,104 +1105,106 @@ val ListImplementationsTests by testSuite {
             nextIteratorIndex: UInt,
             validator: KoneListValidator,
         ) {
-            var nextIteratorIndex = nextIteratorIndex
-            val iterator = mutableList.iteratorFrom(nextIteratorIndex)
-            repeat(arbData.numberOfOperations) {
-                val operation = arbData.operations[it.toInt()]
-                val expected = arbData.results[it.toInt()]
-                withClue("at iteration $it with current state $mutableList, current next iterator index $nextIteratorIndex, operation $operation, and expected result $expected") {
-                    when (operation) {
-//                        is MutableListExtensionReductionOperation.Set<Element> -> {
-//                            if (operation.index >= nextIteratorIndex) {
-//                                while (operation.index > nextIteratorIndex) {
-//                                    iterator.hasNext().shouldBeTrue()
-//                                    iterator.nextIndex() shouldBe nextIteratorIndex
-//                                    iterator.getNext() shouldBe mutableList[nextIteratorIndex]
-//                                    iterator.moveNext()
-//                                    nextIteratorIndex++
-//                                }
-//                                iterator.hasNext().shouldBeTrue()
-//                                iterator.nextIndex() shouldBe operation.index
-//                                iterator.setNext(operation.element)
-//                                validator.shouldValidate(mutableList, iterator)
-//                                iterator.hasNext().shouldBeTrue()
-//                                iterator.nextIndex() shouldBe operation.index
-//                            } else {
-//                                while (operation.index < nextIteratorIndex - 1u) {
-//                                    iterator.hasPrevious().shouldBeTrue()
-//                                    iterator.previousIndex() shouldBe nextIteratorIndex - 1u
-//                                    iterator.getPrevious() shouldBe mutableList[nextIteratorIndex - 1u]
-//                                    iterator.movePrevious()
-//                                    nextIteratorIndex--
-//                                }
-//                                iterator.hasPrevious().shouldBeTrue()
-//                                iterator.previousIndex() shouldBe operation.index
-//                                iterator.setPrevious(operation.element)
-//                                validator.shouldValidate(mutableList, iterator)
-//                                iterator.hasPrevious().shouldBeTrue()
-//                                iterator.previousIndex() shouldBe operation.index
-//                            }
-//                        }
-                        is MutableListExtensionReductionOperation.AddAt<Element> -> {
-                            if (operation.index >= nextIteratorIndex) {
-                                while (operation.index > nextIteratorIndex) {
+            firmly {
+                var nextIteratorIndex = nextIteratorIndex
+                val iterator = mutableList.iteratorFrom(nextIteratorIndex)
+                repeat(arbData.numberOfOperations) {
+                    val operation = arbData.operations[it.toInt()]
+                    val expected = arbData.results[it.toInt()]
+                    withClue("at iteration $it with current state $mutableList, current next iterator index $nextIteratorIndex, operation $operation, and expected result $expected") {
+                        when (operation) {
+    //                        is MutableListExtensionReductionOperation.Set<Element> -> {
+    //                            if (operation.index >= nextIteratorIndex) {
+    //                                while (operation.index > nextIteratorIndex) {
+    //                                    iterator.hasNext().shouldBeTrue()
+    //                                    iterator.nextIndex() shouldBe nextIteratorIndex
+    //                                    iterator.getNext() shouldBe mutableList[nextIteratorIndex]
+    //                                    iterator.moveNext()
+    //                                    nextIteratorIndex++
+    //                                }
+    //                                iterator.hasNext().shouldBeTrue()
+    //                                iterator.nextIndex() shouldBe operation.index
+    //                                iterator.setNext(operation.element)
+    //                                validator.shouldValidate(mutableList, iterator)
+    //                                iterator.hasNext().shouldBeTrue()
+    //                                iterator.nextIndex() shouldBe operation.index
+    //                            } else {
+    //                                while (operation.index < nextIteratorIndex - 1u) {
+    //                                    iterator.hasPrevious().shouldBeTrue()
+    //                                    iterator.previousIndex() shouldBe nextIteratorIndex - 1u
+    //                                    iterator.getPrevious() shouldBe mutableList[nextIteratorIndex - 1u]
+    //                                    iterator.movePrevious()
+    //                                    nextIteratorIndex--
+    //                                }
+    //                                iterator.hasPrevious().shouldBeTrue()
+    //                                iterator.previousIndex() shouldBe operation.index
+    //                                iterator.setPrevious(operation.element)
+    //                                validator.shouldValidate(mutableList, iterator)
+    //                                iterator.hasPrevious().shouldBeTrue()
+    //                                iterator.previousIndex() shouldBe operation.index
+    //                            }
+    //                        }
+                            is MutableListExtensionReductionOperation.AddAt<Element> -> {
+                                if (operation.index >= nextIteratorIndex) {
+                                    while (operation.index > nextIteratorIndex) {
+                                        Expect of iterator.hasNext() toBe true
+                                        Expect of iterator.nextIndex() toBe nextIteratorIndex
+                                        Expect of iterator.getNext() toBe mutableList[nextIteratorIndex]
+                                        iterator.moveNext()
+                                        nextIteratorIndex++
+                                    }
+                                    iterator.addNext(operation.element)
+                                    validator.validateWithIterator(mutableList, iterator)
                                     Expect of iterator.hasNext() toBe true
+                                    Expect of iterator.getNext() toBe operation.element
                                     Expect of iterator.nextIndex() toBe nextIteratorIndex
-                                    Expect of iterator.getNext() toBe mutableList[nextIteratorIndex]
-                                    iterator.moveNext()
+                                } else {
+                                    while (operation.index < nextIteratorIndex) {
+                                        Expect of iterator.hasPrevious() toBe true
+                                        Expect of iterator.previousIndex() toBe nextIteratorIndex - 1u
+                                        Expect of iterator.getPrevious() toBe mutableList[nextIteratorIndex - 1u]
+                                        iterator.movePrevious()
+                                        nextIteratorIndex--
+                                    }
+                                    iterator.addPrevious(operation.element)
+                                    validator.validateWithIterator(mutableList, iterator)
                                     nextIteratorIndex++
-                                }
-                                iterator.addNext(operation.element)
-                                validator.validateWithIterator(mutableList, iterator)
-                                Expect of iterator.hasNext() toBe true
-                                Expect of iterator.getNext() toBe operation.element
-                                Expect of iterator.nextIndex() toBe nextIteratorIndex
-                            } else {
-                                while (operation.index < nextIteratorIndex) {
                                     Expect of iterator.hasPrevious() toBe true
+                                    Expect of iterator.getPrevious() toBe operation.element
                                     Expect of iterator.previousIndex() toBe nextIteratorIndex - 1u
-                                    Expect of iterator.getPrevious() toBe mutableList[nextIteratorIndex - 1u]
-                                    iterator.movePrevious()
+                                }
+                            }
+                            is MutableListExtensionReductionOperation.RemoveAt -> {
+                                if (operation.index >= nextIteratorIndex) {
+                                    while (operation.index > nextIteratorIndex) {
+                                        Expect of iterator.hasNext() toBe true
+                                        Expect of iterator.nextIndex() toBe nextIteratorIndex
+                                        Expect of iterator.getNext() toBe mutableList[nextIteratorIndex]
+                                        iterator.moveNext()
+                                        nextIteratorIndex++
+                                    }
+                                    Expect of iterator.hasNext() toBe true
+                                    Expect of iterator.nextIndex() toBe operation.index
+                                    iterator.removeNext()
+                                    validator.validateWithIterator(mutableList, iterator)
+                                } else {
+                                    while (operation.index < nextIteratorIndex - 1u) {
+                                        Expect of iterator.hasPrevious() toBe true
+                                        Expect of iterator.previousIndex() toBe nextIteratorIndex - 1u
+                                        Expect of iterator.getPrevious() toBe mutableList[nextIteratorIndex - 1u]
+                                        iterator.movePrevious()
+                                        nextIteratorIndex--
+                                    }
+                                    Expect of iterator.hasPrevious() toBe true
+                                    Expect of iterator.previousIndex() toBe operation.index
+                                    iterator.removePrevious()
+                                    validator.validateWithIterator(mutableList, iterator)
                                     nextIteratorIndex--
                                 }
-                                iterator.addPrevious(operation.element)
-                                validator.validateWithIterator(mutableList, iterator)
-                                nextIteratorIndex++
-                                Expect of iterator.hasPrevious() toBe true
-                                Expect of iterator.getPrevious() toBe operation.element
-                                Expect of iterator.previousIndex() toBe nextIteratorIndex - 1u
                             }
                         }
-                        is MutableListExtensionReductionOperation.RemoveAt -> {
-                            if (operation.index >= nextIteratorIndex) {
-                                while (operation.index > nextIteratorIndex) {
-                                    Expect of iterator.hasNext() toBe true
-                                    Expect of iterator.nextIndex() toBe nextIteratorIndex
-                                    Expect of iterator.getNext() toBe mutableList[nextIteratorIndex]
-                                    iterator.moveNext()
-                                    nextIteratorIndex++
-                                }
-                                Expect of iterator.hasNext() toBe true
-                                Expect of iterator.nextIndex() toBe operation.index
-                                iterator.removeNext()
-                                validator.validateWithIterator(mutableList, iterator)
-                            } else {
-                                while (operation.index < nextIteratorIndex - 1u) {
-                                    Expect of iterator.hasPrevious() toBe true
-                                    Expect of iterator.previousIndex() toBe nextIteratorIndex - 1u
-                                    Expect of iterator.getPrevious() toBe mutableList[nextIteratorIndex - 1u]
-                                    iterator.movePrevious()
-                                    nextIteratorIndex--
-                                }
-                                Expect of iterator.hasPrevious() toBe true
-                                Expect of iterator.previousIndex() toBe operation.index
-                                iterator.removePrevious()
-                                validator.validateWithIterator(mutableList, iterator)
-                                nextIteratorIndex--
-                            }
-                        }
+                        testEquality(mutableList, expected)
                     }
-                    testEquality(mutableList, expected)
                 }
             }
         }

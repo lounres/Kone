@@ -60,7 +60,7 @@ public inline fun AssertionScope.softly(block: context(AssertionScope) () -> Uni
                                 }
                             }
                         }
-                    }
+                    },
                 )
             )
         }

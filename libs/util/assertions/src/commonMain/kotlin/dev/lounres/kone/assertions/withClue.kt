@@ -44,7 +44,21 @@ public inline fun AssertionScope.withClue(clue: String, block: context(Assertion
             )
         }
     }
-    block(softAssertionScope)
+    try {
+        block(softAssertionScope)
+    } catch (e: FirmAssertionError) {
+        throw FirmAssertionError(
+            AssertionScope.Assertion(
+                message = buildString {
+                    appendLine(clue)
+                    for (line in e.assertionResult.message.lines()) {
+                        appendLine("  $line")
+                    }
+                },
+                cause = e.assertionResult.cause,
+            )
+        )
+    }
 }
 
 /**
@@ -106,7 +120,21 @@ public inline fun AssertionScope.withClue(crossinline clue: () -> String, block:
             )
         }
     }
-    block(softAssertionScope)
+    try {
+        block(softAssertionScope)
+    } catch (e: FirmAssertionError) {
+        throw FirmAssertionError(
+            AssertionScope.Assertion(
+                message = buildString {
+                    appendLine(clue())
+                    for (line in e.assertionResult.message.lines()) {
+                        appendLine("  $line")
+                    }
+                },
+                cause = e.assertionResult.cause,
+            )
+        )
+    }
 }
 
 /**

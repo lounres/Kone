@@ -175,19 +175,19 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
     override fun addNodeAt(index: UInt, element: Element): KoneMutableListNode<Element> {
         if (isDisposed) disposedInstanceException()
         if (index > size) indexOutOfBoundsException(index, size)
-        val newNode = Node(this, element, size)
+        val newNode = Node(this, element, index)
         if (size == sizeUpperBound) {
             val oldSize = size
             reinitializeBoundsAndData(size + 1u) {
                 when {
                     it < index -> get(it)
                     it == index -> newNode
-                    it <= oldSize -> get(it-1u)
+                    it <= oldSize -> get(it-1u).also { node -> node!!.index = it }
                     else -> null
                 }
             }
         } else {
-            if (size >= 1u) for (i in (size-1u) downTo index) data[i+1u] = data[i]
+            if (size >= 1u) for (i in (size-1u) downTo index) data[i+1u] = data[i].also { node -> node!!.index = i + 1u }
             data[index] = newNode
             size++
         }
@@ -411,12 +411,13 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
         var currentIndex: UInt = 0u
         
         override fun insert(element: Element) {
-            if (currentIndex >= newElementsStartIndex) severalElementsInserterOverflowException()
+            if (currentIndex >= newElementsNumber) severalElementsInserterOverflowException()
             list.data[newElementsStartIndex + currentIndex] = Node(list, element, newElementsStartIndex + currentIndex)
+            currentIndex++
         }
         
         override fun close() {
-            if (currentIndex != newElementsStartIndex) severalElementsInserterElementsLackException()
+            if (currentIndex != newElementsNumber) severalElementsInserterElementsLackException()
         }
     }
     
@@ -440,17 +441,19 @@ public class KoneArrayResizableNoddedList<Element> @PublishedApi internal constr
         
         override fun moveNext() {
             if (!hasNext()) noNextElementInBulkElementsRemoverException()
-            list.data[resultMark] = list.data[checkingMark]
+            list.data[resultMark] = list.data[checkingMark].also { it!!.index = resultMark }
             resultMark++
             checkingMark++
         }
         
         override fun removeNext() {
             if (!hasNext()) noNextElementInBulkElementsRemoverException()
+            list.data[checkingMark]!!.detach()
             checkingMark++
         }
         
         override fun close() {
+            while (hasNext()) moveNext()
             if (resultMark < list.sizeLowerBound) {
                 list.reinitializeBoundsAndData(resultMark) {
                     when {
