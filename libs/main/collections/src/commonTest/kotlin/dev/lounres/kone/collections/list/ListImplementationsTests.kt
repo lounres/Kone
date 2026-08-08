@@ -57,7 +57,7 @@ interface ListImplementationDescription {
     val listDisposabilityTest: ListDisposabilityTest? get() = null
 }
 
-val listImplementations = listOf<ListImplementationDescription>(
+val mutableListImplementations = listOf<ListImplementationDescription>(
     KoneArrayFixedCapacityLinkedListDescription,
     KoneArrayFixedCapacityLinkedNoddedListDescription,
     KoneArrayFixedCapacityListDescription,
@@ -70,11 +70,19 @@ val listImplementations = listOf<ListImplementationDescription>(
     KoneArrayResizableLinkedNoddedListDescription,
     KoneArrayResizableListDescription,
     KoneArrayResizableNoddedListDescription,
-    KoneArraySettableListDescription,
-    KoneArraySettableNoddedListDescription,
     KoneGCLinkedSizedListDescription,
     KoneTwoThreeTreeListDescription,
 )
+
+val settableListImplementations = listOf<ListImplementationDescription>(
+    KoneArraySettableListDescription,
+    KoneArraySettableNoddedListDescription,
+)
+
+val listImplementations = buildList<ListImplementationDescription> {
+    addAll(mutableListImplementations)
+    addAll(settableListImplementations)
+}
 
 context(assertionScope: AssertionScope)
 fun <Element> testEqualityIndexAccess(list1: KoneList<Element>, list2: List<Element>) {
