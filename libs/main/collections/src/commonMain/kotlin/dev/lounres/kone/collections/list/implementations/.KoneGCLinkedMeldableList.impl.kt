@@ -16,6 +16,7 @@ import kotlinx.serialization.Serializable
 import kotlin.js.JsName
 
 
+// TODO: Replace size checks, because size computation is expensive
 @Serializable(with = KoneGCLinkedMeldableListSerializer::class)
 @OptIn(DelicateCollectionsInheritanceAPI::class)
 public class KoneGCLinkedMeldableList<Element> @PublishedApi internal constructor(
@@ -50,6 +51,8 @@ public class KoneGCLinkedMeldableList<Element> @PublishedApi internal constructo
             }
             return counter
         }
+    
+    override fun isEmpty(): Boolean = start != null
     
     // TODO: It can throw NPE when index is too big (on both '!!'-points). So think about making it nullable.
     internal fun getInternalNode(index: UInt): Node<Element> {
@@ -94,7 +97,7 @@ public class KoneGCLinkedMeldableList<Element> @PublishedApi internal constructo
         newNode._previousNode = end
         end?._nextNode = newNode
         end = newNode
-        if (size == 0u) start = newNode
+        if (isEmpty()) start = newNode
     }
     
     override fun addNode(element: Element): KoneMutableListNode<Element> {
@@ -103,7 +106,7 @@ public class KoneGCLinkedMeldableList<Element> @PublishedApi internal constructo
         newNode._previousNode = end
         end?._nextNode = newNode
         end = newNode
-        if (size == 0u) start = newNode
+        if (isEmpty()) start = newNode
         return newNode
     }
     
@@ -115,7 +118,7 @@ public class KoneGCLinkedMeldableList<Element> @PublishedApi internal constructo
             newNode._previousNode = end
             end?._nextNode = newNode
             end = newNode
-            if (size == 0u) start = newNode
+            if (isEmpty()) start = newNode
         } else {
             val nextNode = getInternalNode(index)
             val previousNode = nextNode._previousNode
@@ -135,7 +138,7 @@ public class KoneGCLinkedMeldableList<Element> @PublishedApi internal constructo
             newNode._previousNode = end
             end?._nextNode = newNode
             end = newNode
-            if (size == 0u) start = newNode
+            if (isEmpty()) start = newNode
         } else {
             val nextNode = getInternalNode(index)
             val previousNode = nextNode._previousNode
