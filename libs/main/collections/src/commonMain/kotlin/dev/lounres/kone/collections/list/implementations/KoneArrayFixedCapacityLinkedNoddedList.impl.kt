@@ -620,7 +620,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
         }
         override fun moveNext() {
             if (checkingIndex >= list.size) noNextElementInBulkElementsRemoverException()
-            list.data[resultActualMark] = list.data[checkingActualMark]
+            list.data[resultActualMark] = list.data[checkingActualMark].also { it!!.actualIndex = resultActualMark }
             resultActualMark = list.nextNodeIndex[resultActualMark]
             resultSize++
             checkingActualMark = list.nextNodeIndex[checkingActualMark]
@@ -632,8 +632,7 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
             checkingIndex++
         }
         override fun close() {
-            resultSize += list.size - checkingIndex
-            if (resultSize == list.size) return
+            if (resultSize == checkingIndex) return
             if (checkingIndex == list.size) {
                 list.end = list.previousNodeIndex[resultActualMark]
             } else {
@@ -646,7 +645,9 @@ public class KoneArrayFixedCapacityLinkedNoddedList<Element> internal constructo
                 list.previousNodeIndex[actualIndexAfterEnd] = actualIndexBeforeCheckingMark
                 list.nextNodeIndex[list.end] = resultActualMark
                 list.previousNodeIndex[resultActualMark] = list.end
+                if (resultSize == 0u) list.start = checkingActualMark
             }
+            resultSize += list.size - checkingIndex
             scope {
                 var currentActualIndexToClear = resultActualMark
                 repeat(list.size - resultSize) {

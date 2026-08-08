@@ -374,6 +374,7 @@ public class KoneArrayFixedCapacityNoddedList<Element> @PublishedApi internal co
         
         override fun close() {
             if (currentIndex != newElementsNumber) severalElementsInserterElementsLackException()
+            list.size += newElementsNumber
         }
     }
     

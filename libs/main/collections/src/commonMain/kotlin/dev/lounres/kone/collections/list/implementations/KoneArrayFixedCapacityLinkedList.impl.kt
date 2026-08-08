@@ -494,8 +494,7 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
             checkingIndex++
         }
         override fun close() {
-            resultSize += list.size - checkingIndex
-            if (resultSize == list.size) return
+            if (resultSize == checkingIndex) return
             if (checkingIndex == list.size) {
                 list.end = list.previousNodeIndex[resultActualMark]
             } else {
@@ -508,7 +507,9 @@ public class KoneArrayFixedCapacityLinkedList<Element> internal constructor(
                 list.previousNodeIndex[actualIndexAfterEnd] = actualIndexBeforeCheckingMark
                 list.nextNodeIndex[list.end] = resultActualMark
                 list.previousNodeIndex[resultActualMark] = list.end
+                if (resultSize == 0u) list.start = checkingActualMark
             }
+            resultSize += list.size - checkingIndex
             scope {
                 var currentActualIndexToClear = resultActualMark
                 repeat(list.size - resultSize) {

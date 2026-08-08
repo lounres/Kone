@@ -477,6 +477,7 @@ public class KoneArrayGrowableLinkedList<Element> internal constructor(
             if (currentIndex >= newElementsNumber) severalElementsInserterOverflowException()
             list.end = list.nextNodeIndex[list.end]
             list.data[list.end] = element
+            currentIndex++
         }
         
         override fun close() {
@@ -498,6 +499,7 @@ public class KoneArrayGrowableLinkedList<Element> internal constructor(
             if (currentIndex >= newElementsNumber) severalElementsInserterOverflowException()
             currentActualIndex = list.nextNodeIndex[currentActualIndex]
             list.data[currentActualIndex] = element
+            currentIndex++
         }
         
         override fun close() {
