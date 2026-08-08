@@ -479,11 +479,15 @@ public class KoneGCLinkedSizedList<Element> @PublishedApi internal constructor(
             val newNode = Node(element, list)
             newNode._previousNode = currentNode
             newNode._nextNode = if (currentNode == null) list.start else currentNode!!._nextNode
-            newNode._nextNode?._previousNode = newNode._previousNode
-            newNode._previousNode?._nextNode = newNode._nextNode
+            newNode._nextNode?._previousNode = newNode
+            newNode._previousNode?._nextNode = newNode
+            if (currentNode == null) list.start = newNode
             currentIndex++
+            currentNode = newNode
         }
-        override fun close() {}
+        override fun close() {
+            list.size += newElementsNumber
+        }
     }
     
     internal class BulkElementsRemover<Element>(
@@ -492,7 +496,7 @@ public class KoneGCLinkedSizedList<Element> @PublishedApi internal constructor(
         private var currentNode: Node<Element>? = list.start
         private var currentIndex = 0u
         
-        override fun hasNext(): Boolean = currentNode == null
+        override fun hasNext(): Boolean = currentNode != null
         override fun getNext(): Element {
             if (!hasNext()) noNextElementInBulkElementsRemoverException()
             return currentNode!!.element
@@ -517,6 +521,8 @@ public class KoneGCLinkedSizedList<Element> @PublishedApi internal constructor(
             if (nextNode == null) list.end = previousNode
             nodeToRemove.detach()
             currentNode = nextNode
+            currentIndex++
+            list.size--
         }
         override fun close() {}
     }
