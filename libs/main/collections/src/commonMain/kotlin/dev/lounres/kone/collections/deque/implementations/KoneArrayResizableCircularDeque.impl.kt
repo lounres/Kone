@@ -12,14 +12,17 @@ import dev.lounres.kone.collections.deque.KoneDeque
 import dev.lounres.kone.collections.disposedInstanceException
 import dev.lounres.kone.collections.emptyDequeAccessException
 import dev.lounres.kone.collections.implementations.MAX_CAPACITY
-import dev.lounres.kone.collections.implementations.powerOf2ArraySizeGreaterOrEqualTo
+import dev.lounres.kone.collections.implementations.POWERS_OF_2
+import dev.lounres.kone.collections.implementations.powerOf2IndexGreaterOrEqualTo
 import dev.lounres.kone.repeat
 
 
 @Suppress("UNCHECKED_CAST")
-public class KoneArrayGrowableCircularDeque<Element> internal constructor(
+public class KoneArrayResizableCircularDeque<Element> internal constructor(
     size: UInt,
-    internal var sizeUpperBound: UInt = powerOf2ArraySizeGreaterOrEqualTo(size),
+    internal var dataSizeNumber: UInt = powerOf2IndexGreaterOrEqualTo(maxOf(size, 2u)) - 1u,
+    internal var sizeLowerBound: UInt = POWERS_OF_2[dataSizeNumber - 1u],
+    internal var sizeUpperBound: UInt = POWERS_OF_2[dataSizeNumber + 1u],
     data: KoneMutableArray<Any?> = KoneMutableArray.generate<Any?>(sizeUpperBound) { null },
     internal var start: UInt = 0u,
     internal var end: UInt = if (size > 0u) size - 1u else sizeUpperBound - 1u,
@@ -54,10 +57,21 @@ public class KoneArrayGrowableCircularDeque<Element> internal constructor(
         private set
     
     private fun reinitializeBounds(newSize: UInt) {
-        if (newSize > MAX_CAPACITY) throw IllegalArgumentException("KoneArrayGrowableCircularDeque implementation can not allocate array of size more than 2^31")
-        if (newSize > sizeUpperBound) {
-            while (newSize > sizeUpperBound) {
-                sizeUpperBound = if (sizeUpperBound == 0u) 1u else sizeUpperBound shl 1
+        if (newSize > MAX_CAPACITY) throw IllegalArgumentException("KoneArrayResizableCircularDeque implementation can not allocate array of size more than 2^31")
+        when {
+            newSize > sizeUpperBound -> {
+                while (newSize > sizeUpperBound) {
+                    dataSizeNumber++
+                    sizeLowerBound = POWERS_OF_2[dataSizeNumber - 1u]
+                    sizeUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
+                }
+            }
+            newSize < sizeLowerBound -> {
+                while (newSize < sizeLowerBound && dataSizeNumber >= 2u) {
+                    dataSizeNumber--
+                    sizeLowerBound = POWERS_OF_2[dataSizeNumber - 1u]
+                    sizeUpperBound = POWERS_OF_2[dataSizeNumber + 1u]
+                }
             }
         }
     }
@@ -71,7 +85,7 @@ public class KoneArrayGrowableCircularDeque<Element> internal constructor(
         reinitializeBounds(newSize)
         reinitializeData(generator = generator)
         size = newSize
-        end = if (size > 0u) size - 1u else sizeUpperBound - 1u
+        end = (if (size > 0u) size - 1u else sizeUpperBound - 1u)
     }
     
     override fun getFirst(): Element {
@@ -122,23 +136,42 @@ public class KoneArrayGrowableCircularDeque<Element> internal constructor(
     
     override fun removeFirst() {
         if (size == 0u) emptyDequeAccessException()
-        data[start] = null
-        start = if (start == sizeUpperBound - 1u) 0u else start + 1u
-        size--
+        val newSize = size - 1u
+        if (newSize < sizeLowerBound) {
+            var actualIndex = if (start == sizeUpperBound - 1u) 0u else start + 1u
+            reinitializeBoundsAndData(newSize) {
+                when {
+                    it < newSize -> get(actualIndex).also { actualIndex = if (actualIndex == size - 1u) 0u else actualIndex + 1u }
+                    else -> null
+                }
+            }
+        } else {
+            data[start] = null
+            start = if (start == sizeUpperBound - 1u) 0u else start + 1u
+            size--
+        }
     }
     
     override fun removeLast() {
         if (size == 0u) emptyDequeAccessException()
-        data[end] = null
-        end = if (end == 0u) sizeUpperBound - 1u else end - 1u
-        size--
+        val newSize = size - 1u
+        if (newSize < sizeLowerBound) {
+            var actualIndex = start
+            reinitializeBoundsAndData(newSize) {
+                when {
+                    it < newSize -> get(actualIndex).also { actualIndex = if (actualIndex == size - 1u) 0u else actualIndex + 1u }
+                    else -> null
+                }
+            }
+        } else {
+            data[end] = null
+            end = if (end == 0u) sizeUpperBound - 1u else end - 1u
+            size--
+        }
     }
     
     override fun removeAll() {
-        repeat(size) {
-            data[start] = null
-            start = if (start == sizeUpperBound - 1u) 0u else start + 1u
-        }
-        size = 0u
+        if (isDisposed) disposedInstanceException()
+        reinitializeBoundsAndData(0u) { null }
     }
 }
