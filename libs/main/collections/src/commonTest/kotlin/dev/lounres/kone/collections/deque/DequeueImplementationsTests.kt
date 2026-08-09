@@ -8,6 +8,7 @@ package dev.lounres.kone.collections.deque
 import de.infix.testBalloon.framework.core.testSuite
 import dev.lounres.kone.assertions.*
 import dev.lounres.kone.collections.deque.implementations.KoneArrayFixedCapacityCircularDequeDescription
+import dev.lounres.kone.collections.deque.implementations.KoneArrayGrowableCircularDequeDescription
 import dev.lounres.kone.collections.deque.implementations.KoneListBackedDequeDescription
 import dev.lounres.kone.collections.list.mutableListImplementations
 import dev.lounres.kone.repeat
@@ -40,7 +41,10 @@ interface DequeImplementationDescription {
 
 val dequeImplementations = buildList<DequeImplementationDescription> {
     mutableListImplementations.mapTo(this) { KoneListBackedDequeDescription(it) }
-    add(KoneArrayFixedCapacityCircularDequeDescription)
+    this += listOf(
+        KoneArrayFixedCapacityCircularDequeDescription,
+        KoneArrayGrowableCircularDequeDescription,
+    )
 }
 
 sealed interface DequeOperation<out Element> {

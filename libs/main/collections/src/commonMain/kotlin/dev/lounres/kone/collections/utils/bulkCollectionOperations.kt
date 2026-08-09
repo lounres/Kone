@@ -164,8 +164,8 @@ public fun <E> KoneSequence<E>.take(n: UInt): KoneSequence<E> = KoneTakeSequence
 public fun <E> KoneIterator<E>.takeLast(n: UInt): KoneIterator<E> {
     val deque = KoneArrayFixedCapacityCircularDeque<E>(n)
     while (hasNext()) {
+        if (deque.size == n) deque.removeFirst()
         deque.addLast(getAndMoveNext())
-        if (deque.size > n) deque.removeFirst()
     }
     return KoneList.generate(deque.size) { deque.popFirst() }.iterator()
 }
