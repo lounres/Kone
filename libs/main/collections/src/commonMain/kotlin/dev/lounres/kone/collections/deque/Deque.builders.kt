@@ -5,7 +5,7 @@
 
 package dev.lounres.kone.collections.deque
 
-import dev.lounres.kone.collections.deque.implementations.KoneListBackedDeque
+import dev.lounres.kone.collections.deque.implementations.KoneArrayResizableCircularDeque
 
 
-public fun <Element> KoneDeque.Companion.empty(): KoneDeque<Element> = KoneListBackedDeque()
+public fun <Element> KoneDeque.Companion.empty(): KoneDeque<Element> = KoneArrayResizableCircularDeque()

@@ -6,8 +6,7 @@
 package dev.lounres.kone.collections.heap.implementations
 
 import dev.lounres.kone.assertions.*
-import dev.lounres.kone.collections.deque.KoneDeque
-import dev.lounres.kone.collections.deque.empty
+import dev.lounres.kone.collections.deque.implementations.KoneArrayFixedCapacityCircularDeque
 import dev.lounres.kone.collections.deque.isNotEmpty
 import dev.lounres.kone.collections.deque.popFirst
 import dev.lounres.kone.collections.heap.MinimumHeap
@@ -54,7 +53,7 @@ object KoneFibonacciGCMinimumHeapDescription : MinimumHeapImplementationDescript
                     Expect of heap.lastChild notToBe null
                     Expect of heap.minimumNode notToBe null
                     
-                    val children = KoneDeque.empty<KoneFibonacciGCMinimumHeap.Node<Element, Priority>>() // TODO: Try to replace with KoneArrayFixedCapacityCircularDeque
+                    val children = KoneArrayFixedCapacityCircularDeque<KoneFibonacciGCMinimumHeap.Node<Element, Priority>>(heap.size)
                     scope {
                         var child = heap.firstChild
                         Expect of child!!.previousSibling toBe null

@@ -106,9 +106,9 @@ val MinimumHeapImplementationsTests by testSuite {
         val producer = impl.producer
         
         testSuite("test generative construction") {
-            for (init in listsToShuffle) testSuite("initial list $init") {
-                for (input in init.permutationsWithoutRepetitions()) test("permutation $input") {
-                    AssertionScope {
+            for (init in listsToShuffle) test("initial list $init") {
+                AssertionScope {
+                    for (input in init.permutationsWithoutRepetitions()) withClue({ "permutation $input" }) {
                         val heap = producer.produceBy<String, UInt>(
                             Order.defaultFor(),
                             input.size,
@@ -138,9 +138,9 @@ val MinimumHeapImplementationsTests by testSuite {
         /*inline*/ fun TestSuite.testHeapFillingAndEmptying(
             /*crossinline*/ buildHeap: (size: UInt) -> MinimumHeap<String, UInt>,
         ) {
-            for (init in listsToShuffle) testSuite("initial list $init") {
-                for (input in init.permutationsWithoutRepetitions()) test("permutation $input") {
-                    AssertionScope {
+            for (init in listsToShuffle) test("initial list $init") {
+                AssertionScope {
+                    for (input in init.permutationsWithoutRepetitions()) withClue({ "permutation $input" }) {
                         val heap = buildHeap(init.size)
                         val nodes = KoneArrayFixedCapacityList<HeapNode<String, UInt>>(init.size)
     
@@ -200,27 +200,27 @@ val MinimumHeapImplementationsTests by testSuite {
         /*inline*/ fun TestSuite.testHeapFillingChangingAndEmptying(
             /*crossinline*/ buildHeap: (size: UInt) -> MinimumHeap<String, UInt>,
         ) {
-            for (init in listsToShuffle) testSuite("initial list $init") {
-                for (input in init.permutationsWithoutRepetitions()) testSuite("permutation $input") {
-                    val newInput = input.map { it * 2u + 1u }
-                    val limit = newInput.max() + 1u
-
-                    data class Change(
-                        val index: UInt,
-                        val newValue: UInt,
-                    )
-
-                    for (
-                    changes in newInput.indices.toKoneList()
-                        .combinations(3u)
-                        .flatMap { indicesToChange ->
-                            cartesianProduct(indicesToChange.map { (0u .. limit).toKoneList() })
-                                .map { newValues ->
-                                    KoneList.generate(indicesToChange.size) { Change(indicesToChange[it], newValues[it]) }
+            for (init in listsToShuffle) test("initial list $init") {
+                AssertionScope {
+                    for (input in init.permutationsWithoutRepetitions()) withClue({ "permutation $input" }) {
+                        val newInput = input.map { it * 2u + 1u }
+                        val limit = newInput.max() + 1u
+    
+                        data class Change(
+                            val index: UInt,
+                            val newValue: UInt,
+                        )
+    
+                        for (
+                            changes in newInput.indices.toKoneList()
+                                .combinations(3u)
+                                .flatMap { indicesToChange ->
+                                    cartesianProduct(indicesToChange.map { (0u .. limit).toKoneList() })
+                                        .map { newValues ->
+                                            KoneList.generate(indicesToChange.size) { Change(indicesToChange[it], newValues[it]) }
+                                        }
                                 }
-                        }
-                    ) test("changing elements: ${changes.joinToString { "#${it.index}: ${newInput[it.index]} -> ${it.newValue}" }}") {
-                        AssertionScope {
+                        ) withClue({ "changing elements: ${changes.joinToString { "#${it.index}: ${newInput[it.index]} -> ${it.newValue}" }}" }) {
                             val newInit = KoneList.build {
                                 addAllFrom(newInput)
                                 for (change in changes) this[change.index] = change.newValue

@@ -43,8 +43,8 @@ object KoneBinaryGCMinimumHeapDescription : MinimumHeapImplementationDescription
                     Expect of heap.rootHolder toBe null
                     Expect of heap.lastHolder toBe null
                 } else {
-                    Expect of heap.rootHolder toBe null
-                    Expect of heap.lastHolder toBe null
+                    Expect of heap.rootHolder notToBe null
+                    Expect of heap.lastHolder notToBe null
                     
                     val nodes = KoneArrayFixedCapacityList<KoneBinaryGCMinimumHeap.NodeHolder<Element, Priority>>(heap.size)
                     
