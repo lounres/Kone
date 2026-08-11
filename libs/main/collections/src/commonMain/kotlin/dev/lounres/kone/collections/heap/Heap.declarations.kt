@@ -6,10 +6,10 @@
 package dev.lounres.kone.collections.heap
 
 import dev.lounres.kone.collections.DetachedNodeException
-import dev.lounres.kone.collections.set.KoneLinkedReifiedSet
-import dev.lounres.kone.collections.set.KoneReifiedSet
-import dev.lounres.kone.collections.iterable.KoneIterable
-import dev.lounres.kone.collections.iterable.KoneReversibleIterable
+import dev.lounres.kone.collections.iterable.KoneRemovableIterable
+import dev.lounres.kone.collections.iterable.KoneReversibleRemovableIterable
+import dev.lounres.kone.collections.set.KoneRemovableLinkedReifiedSet
+import dev.lounres.kone.collections.set.KoneRemovableReifiedSet
 import dev.lounres.kone.relations.Order
 
 
@@ -137,12 +137,12 @@ public interface MinimumHeap<Element, Priority> {
      * Because there is exactly one instance of heap node corresponding to each entry in the heap,
      * the collection is a reified set which equality is the absolute equality.
      */
-    public val nodesView: KoneReifiedSet<HeapNode<Element, Priority>>
+    public val nodesView: KoneRemovableReifiedSet<HeapNode<Element, Priority>>
     /**
      * Iterable that is a view on elements of that heap.
      */
-    public val elementsView: KoneIterable<Element>
-    public val prioritiesView: KoneIterable<Priority>
+    public val elementsView: KoneRemovableIterable<Element>
+    public val prioritiesView: KoneRemovableIterable<Priority>
     
     /**
      * Adds the [element] with corresponding [priority] to the heap
@@ -184,12 +184,12 @@ public interface MaximumHeap<Element, Priority> {
      * Because there is exactly one instance of heap node corresponding to each entry in the heap,
      * the collection is a reified set which equality is the absolute equality.
      */
-    public val nodesView: KoneReifiedSet<HeapNode<Element, Priority>>
+    public val nodesView: KoneRemovableReifiedSet<HeapNode<Element, Priority>>
     /**
      * Iterable that is a view on elements of that heap.
      */
-    public val elementsView: KoneIterable<Element>
-    public val prioritiesView: KoneIterable<Priority>
+    public val elementsView: KoneRemovableIterable<Element>
+    public val prioritiesView: KoneRemovableIterable<Priority>
     
     /**
      * Adds the [element] with corresponding [priority] to the heap
@@ -260,14 +260,14 @@ public interface LinkedMinimumHeap<Element, Priority> : MinimumHeap<Element, Pri
      * Because there is exactly one instance of heap node corresponding to each entry in the heap,
      * the collection is a reified set which equality is the absolute equality.
      */
-    override val nodesView: KoneLinkedReifiedSet<LinkedHeapNode<Element, Priority>>
+    override val nodesView: KoneRemovableLinkedReifiedSet<LinkedHeapNode<Element, Priority>>
     /**
      * Reversible iterable that is a view on elements of that heap.
      *
      * The order of elements in the iterable coincides with the order of the corresponding nodes in the heap itself.
      */
-    override val elementsView: KoneReversibleIterable<Element>
-    override val prioritiesView: KoneReversibleIterable<Priority>
+    override val elementsView: KoneReversibleRemovableIterable<Element>
+    override val prioritiesView: KoneReversibleRemovableIterable<Priority>
     
     override fun add(element: Element, priority: Priority): LinkedHeapNode<Element, Priority>
     override fun takeMinimum(): LinkedHeapNode<Element, Priority>
@@ -297,14 +297,14 @@ public interface LinkedMaximumHeap<Element, Priority> : MaximumHeap<Element, Pri
      * Because there is exactly one instance of heap node corresponding to each entry in the heap,
      * the collection is a reified set which equality is the absolute equality.
      */
-    override val nodesView: KoneLinkedReifiedSet<LinkedHeapNode<Element, Priority>>
+    override val nodesView: KoneRemovableLinkedReifiedSet<LinkedHeapNode<Element, Priority>>
     /**
      * Reversible iterable that is a view on elements of that heap.
      *
      * The order of elements in the iterable coincides with the order of the corresponding nodes in the heap itself.
      */
-    override val elementsView: KoneReversibleIterable<Element>
-    override val prioritiesView: KoneReversibleIterable<Priority>
+    override val elementsView: KoneReversibleRemovableIterable<Element>
+    override val prioritiesView: KoneReversibleRemovableIterable<Priority>
     
     override fun add(element: Element, priority: Priority): LinkedHeapNode<Element, Priority>
     override fun takeMaximum(): LinkedHeapNode<Element, Priority>

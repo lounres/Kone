@@ -11,8 +11,8 @@ import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.heap.HeapNode
 import dev.lounres.kone.collections.heap.MinimumHeap
 import dev.lounres.kone.collections.implementations.fibonacciNumberIndexLessOrEqualTo
-import dev.lounres.kone.collections.iterable.KoneIterable
-import dev.lounres.kone.collections.set.KoneReifiedSet
+import dev.lounres.kone.collections.iterable.KoneRemovableIterable
+import dev.lounres.kone.collections.set.KoneRemovableReifiedSet
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.compareWith
@@ -41,11 +41,11 @@ public class KoneFibonacciGCMinimumHeap<Element, Priority> @PublishedApi interna
     internal var minimumNode: Node<Element, Priority>? = minimumNode
         private set
 
-    override val nodesView: KoneReifiedSet<HeapNode<Element, Priority>>
+    override val nodesView: KoneRemovableReifiedSet<HeapNode<Element, Priority>>
         get() = TODO("Not yet implemented")
-    override val elementsView: KoneIterable<Element>
+    override val elementsView: KoneRemovableIterable<Element>
         get() = TODO("Not yet implemented")
-    override val prioritiesView: KoneIterable<Priority>
+    override val prioritiesView: KoneRemovableIterable<Priority>
         get() = TODO("Not yet implemented")
 
     override fun add(element: Element, priority: Priority): HeapNode<Element, Priority> {
