@@ -49,23 +49,9 @@ public class KoneFibonacciGCMinimumHeap<Element, Priority> @PublishedApi interna
         get() = TODO("Not yet implemented")
     
     public companion object {
-        private fun <Element, Priority> Node<Element, Priority>.actualParent(): Node<Element, Priority>? {
-//            var currentNode = this
-//            while (true) {
-//                val nextNode = currentNode.nextSibling
-//                if (nextNode === null) return currentNode.parent
-//                currentNode = nextNode
-//            }
-            return parent
-        }
         private fun <Element, Priority> Node<Element, Priority>.actualHeap(): KoneFibonacciGCMinimumHeap<Element, Priority> {
             var currentNode = this
             while (true) {
-//                while (true) {
-//                    val nextNode = currentNode.nextSibling
-//                    if (nextNode === null) break
-//                    currentNode = nextNode
-//                }
                 val parent = currentNode.parent
                 if (parent === null) return currentNode.heap!!
                 else currentNode = parent
@@ -94,16 +80,6 @@ public class KoneFibonacciGCMinimumHeap<Element, Priority> @PublishedApi interna
             this.unlink()
             heap.numberOfChildren--
         }
-
-//        private fun <Element, Priority> Node<Element, Priority>.linkBetween(
-//            previous: Node<Element, Priority>?,
-//            next: Node<Element, Priority>?,
-//        ) {
-//            previous?.nextSibling = this
-//            next?.previousSibling = this
-//            this.previousSibling = previous
-//            this.nextSibling = next
-//        }
         
         private fun <Element, Priority> Node<Element, Priority>.linkLastFor(parent: Node<Element, Priority>) {
             this.previousSibling = parent.lastChild
@@ -187,6 +163,13 @@ public class KoneFibonacciGCMinimumHeap<Element, Priority> @PublishedApi interna
         newMinNode.heap = this
     }
     
+    private fun updateMinimalNode(newNode: Node<Element, Priority>) {
+        val currentMinimumNode = minimumNode
+        if (currentMinimumNode === null || priorityOrder { newNode.priority lt currentMinimumNode.priority }) {
+            minimumNode = newNode
+        }
+    }
+    
     private fun performCascadingCutsFrom(node: Node<Element, Priority>) {
         var currentNode = node
         while (currentNode.isMarked) {
@@ -217,11 +200,7 @@ public class KoneFibonacciGCMinimumHeap<Element, Priority> @PublishedApi interna
         
         newNode.linkLastFor(this)
         size++
-
-        val currentMinimumNode = minimumNode
-        if (currentMinimumNode === null || priorityOrder { newNode.priority lt currentMinimumNode.priority }) {
-            minimumNode = newNode
-        }
+        updateMinimalNode(newNode)
 
         return newNode
     }
@@ -271,16 +250,14 @@ public class KoneFibonacciGCMinimumHeap<Element, Priority> @PublishedApi interna
                         Equal -> {}
                         LeftIsLessThanRight -> when {
                             parent === null -> {
-                                val min = heap.minimumNode!!
-                                if (heap.priorityOrder { value lt min.priority }) heap.minimumNode = this
+                                heap.updateMinimalNode(this)
                             }
                             heap.priorityOrder { value lt parent!!.priority } -> {
                                 val parent = parent!!
                                 this.unlinkFor(parent)
                                 this.linkLastFor(heap)
                                 this.isMarked = false
-                                val minNode = heap.minimumNode!!
-                                if (heap.priorityOrder { value lt minNode.priority }) heap.minimumNode = this
+                                heap.updateMinimalNode(this)
                                 
                                 heap.performCascadingCutsFrom(parent)
                             }
