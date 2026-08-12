@@ -10,6 +10,7 @@ import de.infix.testBalloon.framework.core.testSuite
 import de.infix.testBalloon.framework.shared.TestRegistering
 import dev.lounres.kone.assertions.*
 import dev.lounres.kone.collections.array.KoneMutableBooleanArray
+import dev.lounres.kone.collections.array.fill
 import dev.lounres.kone.collections.array.generate
 import dev.lounres.kone.collections.heap.implementations.*
 import dev.lounres.kone.collections.interop.toKoneList
@@ -17,7 +18,7 @@ import dev.lounres.kone.collections.iterator.next
 import dev.lounres.kone.collections.list.*
 import dev.lounres.kone.collections.list.implementations.KoneArrayFixedCapacityList
 import dev.lounres.kone.collections.utils.*
-import dev.lounres.kone.combinatorics.enumerative.cartesianProduct
+import dev.lounres.kone.combinatorics.enumerative.cartesianPower
 import dev.lounres.kone.combinatorics.enumerative.combinations
 import dev.lounres.kone.combinatorics.enumerative.permutationsWithoutRepetitions
 import dev.lounres.kone.relations.Order
@@ -208,14 +209,20 @@ val MinimumHeapImplementationsTests by testSuite {
     
                         data class Change(
                             val index: UInt,
-                            val newValue: UInt,
+                            val newValue: UInt?,
                         )
+                        
+                        val possibleValues = KoneList.build {
+                            addAllFrom((0u .. limit).toKoneList())
+                            +null
+                        }
     
                         for (
                             changes in newInput.indices.toKoneList()
                                 .combinations(3u)
                                 .flatMap { indicesToChange ->
-                                    cartesianProduct(indicesToChange.map { (0u .. limit).toKoneList() })
+                                    possibleValues
+                                        .cartesianPower(indicesToChange.size)
                                         .map { newValues ->
                                             KoneList.generate(indicesToChange.size) { Change(indicesToChange[it], newValues[it]) }
                                         }
@@ -224,6 +231,9 @@ val MinimumHeapImplementationsTests by testSuite {
                             val newInit = KoneList.build {
                                 addAllFrom(newInput)
                                 for (change in changes) this[change.index] = change.newValue
+                                removeAllThat { it == null }
+                                @Suppress("UNCHECKED_CAST")
+                                this as KoneListBuilder<UInt>
                                 sort()
                             }
     
@@ -241,32 +251,35 @@ val MinimumHeapImplementationsTests by testSuite {
                                     for (node in nodes) Expect of node.isDetached toBe false
                                 }
                             }
+                            
+                            val isNodeDetached = KoneMutableBooleanArray.fill(newInput.size, false)
     
                             for (change in changes) withClue("Changing element # ${change.index}") {
-                                softly {
-                                    nodes[change.index].priority = change.newValue
-                                    impl.validator.validate(heap)
-                                    for (node in nodes) Expect of node.isDetached toBe false
+                                val node = nodes[change.index]
+                                val newValue = change.newValue
+                                if (newValue != null) {
+                                    node.priority = newValue
+                                } else {
+                                    node.remove()
+                                    isNodeDetached[change.index] = true
                                 }
+                                impl.validator.validate(heap)
+                                for (index in 0u ..< newInput.size) Expect of nodes[index].isDetached toBe isNodeDetached[index]
                             }
     
-                            val isNodeDetached = KoneMutableBooleanArray.generate(nodes.size) { false }
-    
                             for ((val index, val item = value) in newInit.withIndex()) withClue("Removing element # $index") {
-                                softly {
-                                    val min = heap.takeMinimum()
-                                    Expect of min.priority toBe item
-                                    val minIndex = min.element.toUInt()
-                                    Expect of nodes[minIndex] toBeTheSameInstanceAs  min
-                                    Expect of isNodeDetached[minIndex] toBe false
-                                    for (index in nodes.indices) Expect of nodes[index].isDetached toBe isNodeDetached[index]
-                                    Expect of heap.takeMinimum() toBeTheSameInstanceAs min
-                                    for (index in nodes.indices) Expect of nodes[index].isDetached toBe isNodeDetached[index]
-                                    Expect of heap.popMinimum() toBeTheSameInstanceAs min
-                                    isNodeDetached[minIndex] = true
-                                    for (index in nodes.indices) Expect of nodes[index].isDetached toBe isNodeDetached[index]
-                                    impl.validator.validate(heap)
-                                }
+                                val min = heap.takeMinimum()
+                                Expect of min.priority toBe item
+                                val minIndex = min.element.toUInt()
+                                Expect of nodes[minIndex] toBeTheSameInstanceAs min
+                                Expect of isNodeDetached[minIndex] toBe false
+                                for (index in nodes.indices) Expect of nodes[index].isDetached toBe isNodeDetached[index]
+                                Expect of heap.takeMinimum() toBeTheSameInstanceAs min
+                                for (index in nodes.indices) Expect of nodes[index].isDetached toBe isNodeDetached[index]
+                                Expect of heap.popMinimum() toBeTheSameInstanceAs min
+                                isNodeDetached[minIndex] = true
+                                for (index in nodes.indices) Expect of nodes[index].isDetached toBe isNodeDetached[index]
+                                impl.validator.validate(heap)
                             }
                         }
                     }
@@ -275,21 +288,21 @@ val MinimumHeapImplementationsTests by testSuite {
         }
 
         if (producer is MinimumHeapProducer.Resizable)
-            testSuite("test filling, changing, and emptying") {
+            testSuite("test filling, changing/removing, and emptying") {
                 testHeapFillingChangingAndEmptying { producer.produce<String, UInt>(Order.defaultFor()) }
             }
 
         if (producer is MinimumHeapProducer.Growable) {
-            testSuite("test filling, changing, and emptying") {
+            testSuite("test filling, changing/removing, and emptying") {
                 testHeapFillingChangingAndEmptying { producer.produce<String, UInt>(Order.defaultFor()) }
             }
-            testSuite("test filling, changing, and emptying with predefined capacity") {
+            testSuite("test filling, changing/removing, and emptying with predefined capacity") {
                 testHeapFillingChangingAndEmptying { producer.produce<String, UInt>(Order.defaultFor(), it) }
             }
         }
 
         if (producer is MinimumHeapProducer.FixedCapacity)
-            testSuite("test filling, changing, and emptying") {
+            testSuite("test filling, changing/removing, and emptying") {
                 testHeapFillingChangingAndEmptying { producer.produce<String, UInt>(Order.defaultFor(), it) }
             }
     }

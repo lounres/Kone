@@ -61,13 +61,10 @@ object KoneFibonacciGCMinimumHeapDescription : MinimumHeapImplementationDescript
                             children.addLast(child)
                             Expect of child.isDetached toBe false
                             Expect of child.parent toBe null
-                            if (child === heap.minimumNode) {
-                                Expect of child.heap toBeTheSameInstanceAs heap
-                            } else {
-                                Expect of child.heap toBe null
-                            }
+                            Expect of child.heap toBeTheSameInstanceAs heap
                             val nextChild = child.nextSibling
                             if (nextChild != null) Expect of nextChild.previousSibling toBeTheSameInstanceAs child
+                            else Expect of heap.lastChild toBeTheSameInstanceAs child
                             Expect of child.isMarked toBe false
                             child = nextChild
                         }
@@ -77,11 +74,11 @@ object KoneFibonacciGCMinimumHeapDescription : MinimumHeapImplementationDescript
                     var restSize = heap.size - heap.numberOfChildren
                     while (children.isNotEmpty()) {
                         val parent = children.popFirst()
+                        Expect of restSize toBeGreaterThanOrEqualTo parent.numberOfChildren
                         if (parent.numberOfChildren == 0u) {
                             Expect of parent.firstChild toBe null
                             Expect of parent.lastChild toBe null
                         } else {
-                            Expect of restSize toBeGreaterThanOrEqualTo parent.numberOfChildren
                             Expect of parent.firstChild notToBe null
                             Expect of parent.lastChild notToBe null
                             
@@ -98,6 +95,7 @@ object KoneFibonacciGCMinimumHeapDescription : MinimumHeapImplementationDescript
                                     Expect of child.heap toBe null
                                     val nextChild = child.nextSibling
                                     if (nextChild != null) Expect of nextChild.previousSibling toBeTheSameInstanceAs child
+                                    else Expect of parent.lastChild toBeTheSameInstanceAs child
                                     child = nextChild
                                 }
                                 Expect of childrenCounter toBe parent.numberOfChildren

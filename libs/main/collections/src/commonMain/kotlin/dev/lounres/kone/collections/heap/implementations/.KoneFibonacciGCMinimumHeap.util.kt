@@ -9,6 +9,7 @@ import dev.lounres.kone.collections.heap.HeapEntry
 import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.lt
+import dev.lounres.kone.scope
 
 
 public fun <Element, Priority> KoneFibonacciGCMinimumHeap(priorityOrder: Order<Priority>): KoneFibonacciGCMinimumHeap<Element, Priority> =
@@ -77,7 +78,13 @@ public inline fun <Element, Priority> KoneFibonacciGCMinimumHeap(
         minimumNode = minNode,
     )
     
-    minNode.heap = result
+    scope {
+        var currentNode: KoneFibonacciGCMinimumHeap.Node<Element, Priority>? = firstNode
+        while (currentNode !== null) {
+            currentNode.heap = result
+            currentNode = currentNode.nextSibling
+        }
+    }
     
     return result
 }
@@ -130,7 +137,7 @@ public inline fun <Element, Priority> KoneFibonacciGCMinimumHeap(
         if (priorityOrder { currentNode.priority lt minNode.priority }) minNode = currentNode
     }
     
-    return KoneFibonacciGCMinimumHeap(
+    val result = KoneFibonacciGCMinimumHeap(
         priorityOrder = priorityOrder,
         numberOfChildren = size,
         size = size,
@@ -138,4 +145,14 @@ public inline fun <Element, Priority> KoneFibonacciGCMinimumHeap(
         lastChild = currentNode,
         minimumNode = minNode,
     )
+    
+    scope {
+        var currentNode: KoneFibonacciGCMinimumHeap.Node<Element, Priority>? = firstNode
+        while (currentNode !== null) {
+            currentNode.heap = result
+            currentNode = currentNode.nextSibling
+        }
+    }
+    
+    return result
 }
