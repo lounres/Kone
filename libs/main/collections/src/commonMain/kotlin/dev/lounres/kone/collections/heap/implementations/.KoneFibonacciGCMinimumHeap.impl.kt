@@ -244,50 +244,49 @@ public class KoneFibonacciGCMinimumHeap<Element, Priority> @PublishedApi interna
             set(value) {
                 val oldValue = field
                 field = value
-                if (!isDetached) {
-                    val heap = actualHeap()
-                    when (heap.priorityOrder { value compareWith oldValue }) {
-                        Equal -> {}
-                        LeftIsLessThanRight -> when {
-                            parent === null -> {
-                                heap.updateMinimalNode(this)
+                if (isDetached) return
+                val heap = actualHeap()
+                when (heap.priorityOrder { value compareWith oldValue }) {
+                    Equal -> {}
+                    LeftIsLessThanRight -> when {
+                        parent === null -> {
+                            heap.updateMinimalNode(this)
+                        }
+                        heap.priorityOrder { value lt parent!!.priority } -> {
+                            val parent = parent!!
+                            this.unlinkFor(parent)
+                            this.linkLastFor(heap)
+                            this.isMarked = false
+                            heap.updateMinimalNode(this)
+                            
+                            heap.performCascadingCutsFrom(parent)
+                        }
+                    }
+                    LeftIsGreaterThanRight -> when {
+                        scope {
+                            var currentChildNode = firstChild
+                            while (currentChildNode != null) {
+                                if (heap.priorityOrder { value gt currentChildNode.priority }) return@scope true
+                                currentChildNode = currentChildNode.nextSibling
                             }
-                            heap.priorityOrder { value lt parent!!.priority } -> {
-                                val parent = parent!!
-                                this.unlinkFor(parent)
+                            false
+                        } -> {
+                            heap.minimumNode = null
+                            val parentForCascadingCut = parent
+                            if (this.parent != null) {
+                                this.unlinkFor(this.parent!!)
                                 this.linkLastFor(heap)
                                 this.isMarked = false
-                                heap.updateMinimalNode(this)
-                                
-                                heap.performCascadingCutsFrom(parent)
                             }
+                            this.rebaseChildrenOntoTop(heap)
+                            
+                            if (parentForCascadingCut != null) heap.performCascadingCutsFrom(parentForCascadingCut)
+                            
+                            heap.compress()
+                            heap.recomputeMinimalNode()
                         }
-                        LeftIsGreaterThanRight -> when {
-                            scope {
-                                var currentChildNode = firstChild
-                                while (currentChildNode != null) {
-                                    if (heap.priorityOrder { value gt currentChildNode.priority }) return@scope true
-                                    currentChildNode = currentChildNode.nextSibling
-                                }
-                                false
-                            } -> {
-                                heap.minimumNode = null
-                                val parentForCascadingCut = parent
-                                if (this.parent != null) {
-                                    this.unlinkFor(this.parent!!)
-                                    this.linkLastFor(heap)
-                                    this.isMarked = false
-                                }
-                                this.rebaseChildrenOntoTop(heap)
-                                
-                                if (parentForCascadingCut != null) heap.performCascadingCutsFrom(parentForCascadingCut)
-                                
-                                heap.compress()
-                                heap.recomputeMinimalNode()
-                            }
-                            heap.minimumNode === this -> {
-                                heap.recomputeMinimalNode()
-                            }
+                        heap.minimumNode === this -> {
+                            heap.recomputeMinimalNode()
                         }
                     }
                 }
