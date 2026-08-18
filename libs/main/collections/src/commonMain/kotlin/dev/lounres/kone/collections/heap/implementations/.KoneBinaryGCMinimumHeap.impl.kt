@@ -258,6 +258,10 @@ public class KoneBinaryGCMinimumHeap<Element, Priority> @PublishedApi internal c
             if (isDetached) return
             _holder!!.remove()
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = element.hashCode() * 31 + priority.hashCode()
+        override fun toString(): String = "${super.toString()}[element = $element, priority = $priority]"
     }
     
     internal class NodesIterator<Element, Priority>(

@@ -153,6 +153,10 @@ public class KoneBinaryListBackedMinimumHeap<Element, Priority> @PublishedApi in
             if (isDetached) return
             heap.removeNode(index)
         }
+        
+        override fun equals(other: Any?): Boolean = this === other
+        override fun hashCode(): Int = element.hashCode() * 31 + priority.hashCode()
+        override fun toString(): String = "${super.toString()}[element = $element, priority = $priority]"
     }
     
     internal class NodesIterator<Element, Priority>(

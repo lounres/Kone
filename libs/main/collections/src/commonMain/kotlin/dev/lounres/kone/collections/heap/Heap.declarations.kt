@@ -10,6 +10,8 @@ import dev.lounres.kone.collections.iterable.KoneRemovableIterable
 import dev.lounres.kone.collections.iterable.KoneReversibleRemovableIterable
 import dev.lounres.kone.collections.set.KoneRemovableLinkedReifiedSet
 import dev.lounres.kone.collections.set.KoneRemovableReifiedSet
+import dev.lounres.kone.relations.Equality
+import dev.lounres.kone.relations.Hashing
 import dev.lounres.kone.relations.Order
 
 
@@ -27,6 +29,34 @@ public interface HeapEntry<out Element, out Priority> {
      * Returns the corresponding priority of the entry.
      */
     public val priority: Priority
+    
+    /**
+     * Legacy equality operation. Must return the result of referential equality.
+     *
+     * See [Equality] for idiomatic replacement and use this operation with caution.
+     *
+     * @param other Another element to check referential equality with.
+     * @return The result of legacy equality check.
+     */
+    override fun equals(other: Any?): Boolean
+    /**
+     * Legacy hash computation operation. Must return any [Int] value.
+     *
+     * See [Hashing] for idiomatic replacement and use this operation with caution.
+     *
+     * @return The result of legacy hash computation.
+     */
+    override fun hashCode(): Int
+    /**
+     * Represents the heap entry as a string. Must return a string in the following form.
+     * ```
+     * "<entry name>[element = <element>, priority = <priority>]"
+     * ```
+     * "Entry name" here can mean anything, but (FQ) name of the entry's class with system hash code (if there is any) is enough.
+     *
+     * @return The string representation of the node.
+     */
+    override fun toString(): String
 }
 
 /**
@@ -35,11 +65,13 @@ public interface HeapEntry<out Element, out Priority> {
 public fun <Element, Priority> HeapEntry(element: Element, priority: Priority): HeapEntry<Element, Priority> =
     HeapEntryImpl(element, priority)
 
-internal data class HeapEntryImpl<out Element, out Priority>(
+internal class HeapEntryImpl<out Element, out Priority>(
     override val element: Element,
     override val priority: Priority,
 ) : HeapEntry<Element, Priority> {
-    override fun toString(): String = "HeapEntry(element=$element, priority=$priority)"
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = element.hashCode() * 31 + priority.hashCode()
+    override fun toString(): String = "${super.toString()}[element = $element, priority = $priority]"
 }
 
 /**
