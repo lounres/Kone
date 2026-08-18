@@ -153,7 +153,7 @@ public interface HeapNode<Element, Priority> : HeapEntry<Element, Priority> {
  *     that holds one priority value and one "element" value in each its vertex and satisfies *heap property*:
  *     for any given vertex \(C\), if \(P\) is the parent vertex of \(C\), then the priority of \(P\) is less than or equal to the priority of \(C\).
  *
- * This interface's inheritors must have some specific structure that provides optimised minimum node access.
+ * This interface's inheritors must have some specific structure that provides optimized minimum node access.
  * Without it (or with bad time complexity like \(O(n)\)) the interface should not be used.
  *
  * @usesMathJax
@@ -171,9 +171,12 @@ public interface MinimumHeap<Element, Priority> {
      */
     public val nodesView: KoneRemovableReifiedSet<HeapNode<Element, Priority>>
     /**
-     * Iterable that is a view on elements of that heap.
+     * Iterable that is a view on elements of the heap.
      */
     public val elementsView: KoneRemovableIterable<Element>
+    /**
+     * Iterable that is a view on priorities of the heap.
+     */
     public val prioritiesView: KoneRemovableIterable<Priority>
     
     /**
@@ -200,7 +203,7 @@ public interface MinimumHeap<Element, Priority> {
  *     that holds one priority value and one "element" value in each its vertex and satisfies *heap property*:
  *     for any given vertex \(C\), if \(P\) is the parent vertex of \(C\), then the priority of \(P\) is greater than or equal to the priority of \(C\).
  *
- * This interface's inheritors must have some specific structure that provides optimised minimum node access.
+ * This interface's inheritors must have some specific structure that provides optimized minimum node access.
  * Without it (or with bad time complexity like \(O(n)\)) the interface should not be used.
  *
  * @usesMathJax
@@ -299,6 +302,11 @@ public interface LinkedMinimumHeap<Element, Priority> : MinimumHeap<Element, Pri
      * The order of elements in the iterable coincides with the order of the corresponding nodes in the heap itself.
      */
     override val elementsView: KoneReversibleRemovableIterable<Element>
+    /**
+     * Reversible iterable that is a view on priorities of that heap.
+     *
+     * The order of priorities in the iterable coincides with the order of the corresponding nodes in the heap itself.
+     */
     override val prioritiesView: KoneReversibleRemovableIterable<Priority>
     
     override fun add(element: Element, priority: Priority): LinkedHeapNode<Element, Priority>
@@ -336,6 +344,11 @@ public interface LinkedMaximumHeap<Element, Priority> : MaximumHeap<Element, Pri
      * The order of elements in the iterable coincides with the order of the corresponding nodes in the heap itself.
      */
     override val elementsView: KoneReversibleRemovableIterable<Element>
+    /**
+     * Reversible iterable that is a view on priorities of that heap.
+     *
+     * The order of priorities in the iterable coincides with the order of the corresponding nodes in the heap itself.
+     */
     override val prioritiesView: KoneReversibleRemovableIterable<Priority>
     
     override fun add(element: Element, priority: Priority): LinkedHeapNode<Element, Priority>
