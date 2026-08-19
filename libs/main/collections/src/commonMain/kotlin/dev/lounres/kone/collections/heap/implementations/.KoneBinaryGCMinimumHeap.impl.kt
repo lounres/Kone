@@ -178,6 +178,10 @@ public class KoneBinaryGCMinimumHeap<Element, Priority> @PublishedApi internal c
         return root.node.also { removeNode(root) }
     }
     
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[size = $size]"
+    
     @PublishedApi
     internal class NodeHolder<Element, Priority>(
         heap: KoneBinaryGCMinimumHeap<Element, Priority>,

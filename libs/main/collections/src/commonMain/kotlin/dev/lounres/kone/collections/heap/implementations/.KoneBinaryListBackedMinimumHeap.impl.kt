@@ -128,6 +128,10 @@ public class KoneBinaryListBackedMinimumHeap<Element, Priority> @PublishedApi in
         return data[0u].also { removeNode(0u) }
     }
     
+    override fun equals(other: Any?): Boolean = this === other
+    override fun hashCode(): Int = super.hashCode()
+    override fun toString(): String = "${super.toString()}[size = $size]"
+    
     @PublishedApi
     internal class Node<Element, Priority>(
         override var element: Element,
