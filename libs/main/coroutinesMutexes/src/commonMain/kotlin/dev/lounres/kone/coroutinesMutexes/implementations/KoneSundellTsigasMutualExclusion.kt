@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.coroutinesMutexes.implementations
 
+import dev.lounres.kone.coroutinesMutexes.KoneLock
 import dev.lounres.kone.coroutinesMutexes.KoneMutualExclusion
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
@@ -27,15 +28,15 @@ public class KoneSundellTsigasMutualExclusion : KoneMutualExclusion {
                 if (link.isBeingDeleted || compareAndSetPrev(link, BackwardLink(link.node, true))) break
             }
         }
-        
-        private fun CancellableContinuation<Unit>.justResume(
-            onCancellation: ((cause: Throwable, value: Unit, context: CoroutineContext) -> Unit)? = null,
-        ) {
-            resume(Unit, onCancellation)
-        }
     }
 
-    private val onCancellation: (cause: Throwable, value: Unit, context: CoroutineContext) -> Unit = { _, _, _ -> val _ = tryUnlocking() }
+    private class Lock(mutex: KoneSundellTsigasMutualExclusion) : KoneLock {
+        val mutex = AtomicReference<KoneSundellTsigasMutualExclusion?>(mutex)
+        override fun release() {
+            mutex.exchange(null)?.tryUnlocking()
+        }
+    }
+    private val onCancellation: (cause: Throwable, value: KoneLock, context: CoroutineContext) -> Unit = { _, _, _ -> tryUnlocking() }
     
     @IgnorableReturnValue
     private fun correctPrev(prev: Node?, node: Node?): Node? {
@@ -58,7 +59,7 @@ public class KoneSundellTsigasMutualExclusion : KoneMutualExclusion {
                                 if (lastLinkValue != null) lastLinkValue.compareAndSetNext(link, ForwardLink(prev2.node, null, false))
                                 else head.compareAndSet(link, ForwardLink(prev2.node, null, false))
                             ) {
-                                link.continuation?.justResume(onCancellation)
+                                link.continuation?.resume(Lock(this), onCancellation)
                                 break
                             }
                         } else {
@@ -106,18 +107,18 @@ public class KoneSundellTsigasMutualExclusion : KoneMutualExclusion {
         }
     }
     
-    override fun tryLocking(): Boolean {
+    override fun tryLocking(): KoneLock? {
         val newNode = Node()
         newNode.storePrev(BackwardLink(null, false))
         val nextLinkToNewNode = ForwardLink(newNode, null, false)
         while (true) {
             val next = head.load()
-            if (next.node !== null) return false
+            if (next.node !== null) return null
             if (next.isBeingDeleted) continue // TODO: Is this line really needed?
             newNode.storeNext(next)
             if (head.compareAndSet(next, nextLinkToNewNode)) {
                 pushEnd(newNode, next.node)
-                return true
+                return Lock(this)
             }
         }
     }
@@ -138,7 +139,7 @@ public class KoneSundellTsigasMutualExclusion : KoneMutualExclusion {
         }
     }
     
-    override suspend fun awaitLock() {
+    override suspend fun awaitLock(): KoneLock =
         suspendCancellableCoroutine { continuation ->
             val newNode = Node()
             newNode.storePrev(BackwardLink(null, false))
@@ -149,7 +150,7 @@ public class KoneSundellTsigasMutualExclusion : KoneMutualExclusion {
                     newNode.storeNext(ForwardLink(next.node, null, false))
                     if (head.compareAndSet(next, nextLinkToNewNode)) {
                         pushEnd(newNode, next.node)
-                        continuation.justResume()
+                        continuation.resume(Lock(this), null as ((Throwable, KoneLock, CoroutineContext) -> Unit)?)
                         break
                     }
                 } else {
@@ -162,23 +163,22 @@ public class KoneSundellTsigasMutualExclusion : KoneMutualExclusion {
                 }
             }
         }
-    }
     
-    override fun tryUnlocking(): Boolean {
+    private fun tryUnlocking() {
         var node = tail.load().node
         while (true) {
             if ((node?.loadNext() ?: head.load()).let { it.node !== null || it.isBeingDeleted }) {
                 node = correctPrev(node, null)
                 continue
             }
-            if (node === null) return false
+            if (node === null) error(TODO())
             while (true) {
                 val link = node.loadNext()
                 if (link.node !== null || link.isBeingDeleted) break
                 if (node.compareAndSetNext(link, ForwardLink(null, null, true))) {
                     val prev = node.loadPrev().node
                     correctPrev(prev, null)
-                    return true
+                    return
                 }
             }
         }
@@ -208,7 +208,7 @@ public class KoneSundellTsigasMutualExclusion : KoneMutualExclusion {
     
     private /*value*/ data class ForwardLink(
         val node: Node?,
-        val continuation: CancellableContinuation<Unit>? = null,
+        val continuation: CancellableContinuation<KoneLock>? = null,
         val isBeingDeleted: Boolean = false,
     )
 }

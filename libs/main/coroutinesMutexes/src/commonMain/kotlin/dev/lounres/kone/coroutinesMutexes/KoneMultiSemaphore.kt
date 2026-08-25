@@ -5,90 +5,69 @@
 
 package dev.lounres.kone.coroutinesMutexes
 
-import dev.lounres.kone.collections.iterable.KoneIterable
-import dev.lounres.kone.collections.iterable.isNotEmpty
-import dev.lounres.kone.collections.iterator.next
-import dev.lounres.kone.collections.utils.filter
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 
 public interface KoneMultiSemaphore<in Key> {
-    public fun tryAcquiringFor(key: Key): Boolean
-    public suspend fun awaitAcquireFor(key: Key)
-    @IgnorableReturnValue
-    public fun tryReleasingFor(key: Key): Boolean
+    public fun tryAcquiringFor(key: Key): KoneLock?
+    public suspend fun awaitAcquireFor(key: Key): KoneLock
 }
 
-public suspend fun <Key> KoneMultiSemaphore<Key>.awaitAcquireFor(keys: KoneIterable<Key>) {
-    for (key in keys) awaitAcquireFor(key)
-}
+// TODO
+//public suspend fun <Key> KoneMultiSemaphore<Key>.awaitAcquireFor(keys: KoneIterable<Key>) {
+//    for (key in keys) awaitAcquireFor(key)
+//}
+//
+//public suspend fun <Key> KoneMultiSemaphore<Key>.awaitAcquireFor(vararg keys: Key) {
+//    for (key in keys) awaitAcquireFor(key)
+//}
 
-public suspend fun <Key> KoneMultiSemaphore<Key>.awaitAcquireFor(vararg keys: Key) {
-    for (key in keys) awaitAcquireFor(key)
-}
+public suspend fun <Key> KoneMultiSemaphore<Key>.tryOrAwaitAcquireFor(key: Key): KoneLock = tryAcquiringFor(key) ?: awaitAcquireFor(key)
 
-public suspend fun <Key> KoneMultiSemaphore<Key>.tryOrAwaitAcquireFor(key: Key) {
-    if (!tryAcquiringFor(key)) awaitAcquireFor(key)
-}
+//public suspend fun <Key> KoneMultiSemaphore<Key>.tryOrAwaitAcquireFor(keys: KoneIterable<Key>) {
+//    for (key in keys) tryOrAwaitAcquireFor(key)
+//}
+//
+//public suspend fun <Key> KoneMultiSemaphore<Key>.tryOrAwaitAcquireFor(vararg keys: Key) {
+//    for (key in keys) tryOrAwaitAcquireFor(key)
+//}
 
-public suspend fun <Key> KoneMultiSemaphore<Key>.tryOrAwaitAcquireFor(keys: KoneIterable<Key>) {
-    for (key in keys) tryOrAwaitAcquireFor(key)
-}
-
-public suspend fun <Key> KoneMultiSemaphore<Key>.tryOrAwaitAcquireFor(vararg keys: Key) {
-    for (key in keys) tryOrAwaitAcquireFor(key)
-}
-
-public fun <Key> KoneMultiSemaphore<Key>.releaseFor(key: Key) {
-    if (!tryReleasingFor(key)) error("KoneMultiSemaphore is not locked for key $key")
-}
-
-public fun <Key> KoneMultiSemaphore<Key>.releaseFor(keys: KoneIterable<Key>) {
-    val failedKeys = keys.filter { !tryReleasingFor(it) }
-    if (failedKeys.isNotEmpty()) error("KoneMultiSemaphore is not locked for keys $failedKeys")
-}
-
-public fun <Key> KoneMultiSemaphore<Key>.releaseFor(vararg keys: Key) {
-    val failedKeys = keys.filter { !tryReleasingFor(it) }
-    if (failedKeys.isNotEmpty()) error("KoneMultiSemaphore is not locked for keys $failedKeys")
-}
-
-public suspend inline fun <Key, Result> KoneMultiSemaphore<Key>.withPermitFor(key: Key, action: () -> Result): Result {
+public suspend inline fun <Key, Result> KoneMultiSemaphore<Key>.withAcquisitionFor(key: Key, action: () -> Result): Result {
     contract {
         callsInPlace(action, InvocationKind.EXACTLY_ONCE)
     }
     
-    tryOrAwaitAcquireFor(key)
+    val lock = tryOrAwaitAcquireFor(key)
     return try {
         action()
     } finally {
-        releaseFor(key)
+        lock.release()
     }
 }
 
-public suspend inline fun <Key, Result> KoneMultiSemaphore<Key>.withPermitFor(keys: KoneIterable<Key>, action: () -> Result): Result {
-    contract {
-        callsInPlace(action, InvocationKind.EXACTLY_ONCE)
-    }
-    
-    tryOrAwaitAcquireFor(keys)
-    return try {
-        action()
-    } finally {
-        releaseFor(keys)
-    }
-}
-
-public suspend inline fun <Key, Result> KoneMultiSemaphore<Key>.withPermitFor(vararg keys: Key, action: () -> Result): Result {
-    contract {
-        callsInPlace(action, InvocationKind.EXACTLY_ONCE)
-    }
-    
-    tryOrAwaitAcquireFor(*keys)
-    return try {
-        action()
-    } finally {
-        releaseFor(*keys)
-    }
-}
+//public suspend inline fun <Key, Result> KoneMultiSemaphore<Key>.withAcquisitionFor(keys: KoneIterable<Key>, action: () -> Result): Result {
+//    contract {
+//        callsInPlace(action, InvocationKind.EXACTLY_ONCE)
+//    }
+//
+//    tryOrAwaitAcquireFor(keys)
+//    return try {
+//        action()
+//    } finally {
+//        releaseFor(keys)
+//    }
+//}
+//
+//public suspend inline fun <Key, Result> KoneMultiSemaphore<Key>.withAcquisitionFor(vararg keys: Key, action: () -> Result): Result {
+//    contract {
+//        callsInPlace(action, InvocationKind.EXACTLY_ONCE)
+//    }
+//
+//    tryOrAwaitAcquireFor(*keys)
+//    return try {
+//        action()
+//    } finally {
+//        releaseFor(*keys)
+//    }
+//}

@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.coroutinesMutexes.implementations
 
+import dev.lounres.kone.coroutinesMutexes.KoneLock
 import dev.lounres.kone.coroutinesMutexes.KoneSemaphore
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
@@ -37,15 +38,15 @@ public class KoneSundellTsigasSemaphore(
                 if (link.isBeingDeleted || compareAndSetPrev(link, BackwardLink(link.node, true))) break
             }
         }
-
-        private fun CancellableContinuation<Unit>.justResume(
-            onCancellation: ((cause: Throwable, value: Unit, context: CoroutineContext) -> Unit)? = null,
-        ) {
-            resume(Unit, onCancellation)
-        }
     }
 
-    private val onCancellation: (cause: Throwable, value: Unit, context: CoroutineContext) -> Unit = { _, _, _ -> val _ = tryReleasing() }
+    private class Lock(semaphore: KoneSundellTsigasSemaphore) : KoneLock {
+        val semaphore = AtomicReference<KoneSundellTsigasSemaphore?>(semaphore)
+        override fun release() {
+            semaphore.exchange(null)?.tryReleasing()
+        }
+    }
+    private val onCancellation: (cause: Throwable, value: KoneLock, context: CoroutineContext) -> Unit = { _, _, _ -> tryReleasing() }
 
     @IgnorableReturnValue
     private fun correctPrev(prev: Node?, node: Node?): Node? {
@@ -66,7 +67,7 @@ public class KoneSundellTsigasSemaphore(
                                 val link = lastLinkValue.loadNext()
                                 if (link.node !== prev || link.isBeingDeleted) break
                                 if (lastLinkValue.compareAndSetNext(link, ForwardLink(prev2.node, link.continuation, NotYetDeleted))) {
-                                    if (prev2.deletionStatus == ToBeResumedAfterDeletion) prev2.continuation.justResume(onCancellation)
+                                    if (prev2.deletionStatus == ToBeResumedAfterDeletion) prev2.continuation.resume(Lock(this), onCancellation)
                                     break
                                 }
                             } else {
@@ -120,11 +121,11 @@ public class KoneSundellTsigasSemaphore(
         }
     }
 
-    override fun tryAcquiring(): Boolean {
+    override fun tryAcquiring(): KoneLock? {
         while (true) {
-            val next = head.load() as? HeadPermitsLink ?: return false
+            val next = head.load() as? HeadPermitsLink ?: return null
             if (head.compareAndSet(next, if (next.availablePermits > 1u) HeadPermitsLink(availablePermits = next.availablePermits - 1u) else HeadForwardLink(null))) {
-                return true
+                return Lock(this)
             }
         }
     }
@@ -145,7 +146,7 @@ public class KoneSundellTsigasSemaphore(
         }
     }
 
-    override suspend fun awaitAcquire() {
+    override suspend fun awaitAcquire(): KoneLock =
         suspendCancellableCoroutine { continuation ->
             val newNode = Node()
             newNode.storePrev(BackwardLink(null, false))
@@ -155,12 +156,12 @@ public class KoneSundellTsigasSemaphore(
                     is HeadPermitsLink ->
                         if (next.availablePermits == 1u) {
                             if (head.compareAndSet(next, HeadForwardLink(null))) {
-                                continuation.justResume()
+                                continuation.resume(Lock(this), null as ((Throwable, KoneLock, CoroutineContext) -> Unit)?)
                                 break
                             }
                         } else {
                             if (head.compareAndSet(next, HeadPermitsLink(next.availablePermits - 1u))) {
-                                continuation.justResume()
+                                continuation.resume(Lock(this), null as ((Throwable, KoneLock, CoroutineContext) -> Unit)?)
                                 break
                             }
                         }
@@ -175,9 +176,8 @@ public class KoneSundellTsigasSemaphore(
                 }
             }
         }
-    }
 
-    override fun tryReleasing(): Boolean {
+    private fun tryReleasing() {
         var node = tail.load().node
         while (true) {
             if (node !== null) {
@@ -191,7 +191,7 @@ public class KoneSundellTsigasSemaphore(
                     if (node.compareAndSetNext(link, ForwardLink(null, link.continuation, ToBeResumedAfterDeletion))) {
                         val prev = node.loadPrev().node
                         correctPrev(prev, null)
-                        return true
+                        return
                     }
                 }
             } else {
@@ -203,12 +203,12 @@ public class KoneSundellTsigasSemaphore(
                                 node = correctPrev(null, null)
                                 continue
                             }
-                            head.compareAndSet(headLink, HeadPermitsLink(1u)) -> return true
+                            head.compareAndSet(headLink, HeadPermitsLink(1u)) -> return
                         }
                     is HeadPermitsLink ->
                         when {
-                            headLink.availablePermits == permits -> return false
-                            head.compareAndSet(headLink, HeadPermitsLink(headLink.availablePermits + 1u)) -> return true
+                            headLink.availablePermits == permits -> error(TODO())
+                            head.compareAndSet(headLink, HeadPermitsLink(headLink.availablePermits + 1u)) -> return
                         }
                 }
             }
@@ -239,7 +239,7 @@ public class KoneSundellTsigasSemaphore(
     
     private /*value*/ data class ForwardLink(
         val node: Node?,
-        val continuation: CancellableContinuation<Unit>,
+        val continuation: CancellableContinuation<KoneLock>,
         val deletionStatus: DeletionStatus = NotYetDeleted,
     ) {
         enum class DeletionStatus {

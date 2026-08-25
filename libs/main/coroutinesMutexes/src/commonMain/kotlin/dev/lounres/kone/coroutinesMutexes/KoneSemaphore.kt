@@ -10,29 +10,21 @@ import kotlin.contracts.contract
 
 
 public interface KoneSemaphore {
-    public fun tryAcquiring(): Boolean
-    public suspend fun awaitAcquire()
-    @IgnorableReturnValue
-    public fun tryReleasing(): Boolean
+    public fun tryAcquiring(): KoneLock?
+    public suspend fun awaitAcquire(): KoneLock
 }
 
-public suspend fun KoneSemaphore.tryOrAwaitAcquire() {
-    if (!tryAcquiring()) awaitAcquire()
-}
+public suspend fun KoneSemaphore.tryOrAwaitAcquire(): KoneLock = tryAcquiring() ?: awaitAcquire()
 
-public fun KoneSemaphore.release() {
-    if (!tryReleasing()) error("KoneSemaphore is not locked")
-}
-
-public suspend inline fun <Result> KoneSemaphore.withPermit(action: () -> Result): Result {
+public suspend inline fun <Result> KoneSemaphore.withAcquisition(action: () -> Result): Result {
     contract {
         callsInPlace(action, InvocationKind.EXACTLY_ONCE)
     }
     
-    tryOrAwaitAcquire()
+    val lock = tryOrAwaitAcquire()
     return try {
         action()
     } finally {
-        release()
+        lock.release()
     }
 }

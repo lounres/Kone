@@ -10,29 +10,21 @@ import kotlin.contracts.contract
 
 
 public interface KoneMutualExclusion {
-    public fun tryLocking(): Boolean
-    public suspend fun awaitLock()
-    @IgnorableReturnValue
-    public fun tryUnlocking(): Boolean
+    public fun tryLocking(): KoneLock?
+    public suspend fun awaitLock(): KoneLock
 }
 
-public suspend fun KoneMutualExclusion.tryOrAwaitLock() {
-    if (!tryLocking()) awaitLock()
-}
-
-public fun KoneMutualExclusion.unlock() {
-    if (!tryUnlocking()) error("KoneMutualExclusion is not locked")
-}
+public suspend fun KoneMutualExclusion.tryOrAwaitLock(): KoneLock = tryLocking() ?: awaitLock()
 
 public suspend inline fun <Result> KoneMutualExclusion.withLock(action: () -> Result): Result {
     contract {
         callsInPlace(action, InvocationKind.EXACTLY_ONCE)
     }
     
-    tryOrAwaitLock()
+    val lock = tryOrAwaitLock()
     return try {
         action()
     } finally {
-        unlock()
+        lock.release()
     }
 }

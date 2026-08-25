@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.coroutinesMutexes.implementations
 
+import dev.lounres.kone.coroutinesMutexes.KoneLock
 import dev.lounres.kone.coroutinesMutexes.KoneSymmetricRelationExclusion
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
@@ -12,6 +13,7 @@ import dev.lounres.kone.maybe.Some
 import dev.lounres.kone.scope
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.coroutines.CoroutineContext
 
@@ -360,7 +362,7 @@ public class KoneSundellTsigasSymmetricRelationExclusion<in Element>(
         }
     }
     
-    override fun tryLockingBy(element: Element): KoneSymmetricRelationExclusion.Lock? {
+    override fun tryLockingBy(element: Element): KoneLock? {
         val newLockNode = LockNode(element, null, this)
         
         add(newLockNode)
@@ -381,7 +383,7 @@ public class KoneSundellTsigasSymmetricRelationExclusion<in Element>(
         return newLockNode.lock
     }
     
-    override suspend fun awaitLockBy(element: Element): KoneSymmetricRelationExclusion.Lock =
+    override suspend fun awaitLockBy(element: Element): KoneLock =
         suspendCancellableCoroutine { continuation ->
             val newLockNode = LockNode(element, continuation, this)
             
@@ -479,7 +481,7 @@ public class KoneSundellTsigasSymmetricRelationExclusion<in Element>(
     
     internal class LockNode<Element>(
         val element: Element,
-        var continuation: CancellableContinuation<KoneSymmetricRelationExclusion.Lock>?,
+        var continuation: CancellableContinuation<KoneLock>?,
         mutex: KoneSundellTsigasSymmetricRelationExclusion<Element>,
     ) {
         private val prev: AtomicReference<LockBackwardLink<Element>?> = AtomicReference(null)
@@ -505,8 +507,13 @@ public class KoneSundellTsigasSymmetricRelationExclusion<in Element>(
         val dependantHead = AtomicReference(DependantForwardLink<Element>(null))
         val dependantTail = AtomicReference(DependantBackwardLink<Element>(null))
         
-        val lock = KoneSymmetricRelationExclusion.Lock { with(mutex) { this@LockNode.delete() } }
-        val onCancellation: (cause: Throwable, value: KoneSymmetricRelationExclusion.Lock, context: CoroutineContext) -> Unit = { _, _, _ -> with(mutex) { this@LockNode.delete() } }
+        val lock = object : KoneLock {
+            val flag = AtomicBoolean(false)
+            override fun release() {
+                if (!flag.exchange(true)) with(mutex) { this@LockNode.delete() }
+            }
+        }
+        val onCancellation: (cause: Throwable, value: KoneLock, context: CoroutineContext) -> Unit = { _, _, _ -> with(mutex) { this@LockNode.delete() } }
         
         enum class State {
             Constructed,

@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.coroutinesMutexes.implementations
 
+import dev.lounres.kone.coroutinesMutexes.KoneLock
 import dev.lounres.kone.coroutinesMutexes.KoneReadWriteExclusion
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
@@ -33,16 +34,22 @@ public class KoneSundellTsigasReadWriteExclusion(
                 if (link.isBeingDeleted || compareAndSetPrev(link, BackwardLink(link.node, true))) break
             }
         }
-        
-        private fun CancellableContinuation<Unit>.justResume(
-            onCancellation: ((cause: Throwable, value: Unit, context: CoroutineContext) -> Unit)? = null,
-        ) {
-            resume(Unit, onCancellation)
-        }
     }
 
-    private val onReadCancellation: (cause: Throwable, value: Unit, context: CoroutineContext) -> Unit = { _, _, _ -> val _ = tryReadUnlocking() }
-    private val onWriteCancellation: (cause: Throwable, value: Unit, context: CoroutineContext) -> Unit = { _, _, _ -> val _ = tryWriteUnlocking() }
+    private class ReadLock(mutex: KoneSundellTsigasReadWriteExclusion) : KoneLock {
+        val mutex = AtomicReference<KoneSundellTsigasReadWriteExclusion?>(mutex)
+        override fun release() {
+            mutex.exchange(null)?.tryReadUnlocking()
+        }
+    }
+    private class WriteLock(mutex: KoneSundellTsigasReadWriteExclusion) : KoneLock {
+        val mutex = AtomicReference<KoneSundellTsigasReadWriteExclusion?>(mutex)
+        override fun release() {
+            mutex.exchange(null)?.tryWriteUnlocking()
+        }
+    }
+    private val onReadCancellation: (cause: Throwable, value: KoneLock, context: CoroutineContext) -> Unit = { _, _, _ -> val _ = tryReadUnlocking() }
+    private val onWriteCancellation: (cause: Throwable, value: KoneLock, context: CoroutineContext) -> Unit = { _, _, _ -> val _ = tryWriteUnlocking() }
     
     @IgnorableReturnValue
     private fun correctPrev(prev: Node?, node: Node?): Node? {
@@ -84,12 +91,10 @@ public class KoneSundellTsigasReadWriteExclusion(
                                         is NextNodeLink -> {}
                                         is TailLink -> {
                                             if (prev2.deletionStatus == ToBeResumedAfterDeletion)
-                                                prev2.continuation.justResume(
-                                                    when (prev2.continuationLockType) {
-                                                        Read -> onReadCancellation
-                                                        Write -> onWriteCancellation
-                                                    }
-                                                )
+                                                when (prev2.continuationLockType) {
+                                                    Read -> prev2.continuation.resume(ReadLock(this), onReadCancellation)
+                                                    Write -> prev2.continuation.resume(WriteLock(this), onWriteCancellation)
+                                                }
                                         }
                                     }
                                     break
@@ -117,12 +122,10 @@ public class KoneSundellTsigasReadWriteExclusion(
                                         is NextNodeLink -> {}
                                         is TailLink -> {
                                             if (prev2.deletionStatus == ToBeResumedAfterDeletion)
-                                                prev2.continuation.justResume(
-                                                    when (prev2.continuationLockType) {
-                                                        Read -> onReadCancellation
-                                                        Write -> onWriteCancellation
-                                                    }
-                                                )
+                                                when (prev2.continuationLockType) {
+                                                    Read -> prev2.continuation.resume(ReadLock(this), onReadCancellation)
+                                                    Write -> prev2.continuation.resume(WriteLock(this), onWriteCancellation)
+                                                }
                                         }
                                     }
                                     break
@@ -231,45 +234,45 @@ public class KoneSundellTsigasReadWriteExclusion(
         }
     }
 
-    override fun tryReadLocking(): Boolean {
+    override fun tryReadLocking(): KoneLock? {
         while (true) {
             val next = head.load()
             val newNext = when (next) {
                 is HeadNodeLink ->
                     if (maintainTail()) continue
-                    else return false
+                    else return null
                 is HeadTailLink -> when {
                     next.lockedTimes == 0u -> HeadTailLink(
                         lockedTimes = 1u,
                         lockType = Read,
                     )
-                    next.lockType == Write -> return false
-                    next.lockedTimes == readPermits -> return false
+                    next.lockType == Write -> return null
+                    next.lockedTimes == readPermits -> return null
                     else -> HeadTailLink(
                         lockedTimes = next.lockedTimes + 1u,
                         lockType = Read,
                     )
                 }
             }
-            if (head.compareAndSet(next, newNext)) return true
+            if (head.compareAndSet(next, newNext)) return ReadLock(this)
         }
     }
     
-    override fun tryWriteLocking(): Boolean {
+    override fun tryWriteLocking(): KoneLock? {
         while (true) {
             val next = head.load()
             val newNext = when (next) {
                 is HeadNodeLink ->
                     if (maintainTail()) continue
-                    else return false
+                    else return null
                 is HeadTailLink ->
                     if (next.lockedTimes == 0u) HeadTailLink(
                         lockedTimes = 1u,
                         lockType = Write,
                     )
-                    else return false
+                    else return null
             }
-            if (head.compareAndSet(next, newNext)) return true
+            if (head.compareAndSet(next, newNext)) return WriteLock(this)
         }
     }
 
@@ -297,7 +300,7 @@ public class KoneSundellTsigasReadWriteExclusion(
         }
     }
 
-    override suspend fun awaitReadLock() {
+    override suspend fun awaitReadLock(): KoneLock =
         suspendCancellableCoroutine { continuation ->
             val newNode = Node()
             newNode.storePrev(BackwardLink(null, false))
@@ -322,7 +325,7 @@ public class KoneSundellTsigasReadWriteExclusion(
                     is HeadTailLink -> when {
                         next.lockedTimes == 0u -> {
                             if (head.compareAndSet(next, HeadTailLink(lockedTimes = 1u, lockType = Read))) {
-                                continuation.justResume()
+                                continuation.resume(ReadLock(this), null as ((Throwable, KoneLock, CoroutineContext) -> Unit)?)
                                 break
                             }
                         }
@@ -358,7 +361,7 @@ public class KoneSundellTsigasReadWriteExclusion(
                         }
                         else -> {
                             if (head.compareAndSet(next, HeadTailLink(lockedTimes = next.lockedTimes + 1u, lockType = Read))) {
-                                continuation.justResume()
+                                continuation.resume(ReadLock(this), null as ((Throwable, KoneLock, CoroutineContext) -> Unit)?)
                                 break
                             }
                         }
@@ -366,9 +369,8 @@ public class KoneSundellTsigasReadWriteExclusion(
                 }
             }
         }
-    }
     
-    override suspend fun awaitWriteLock() {
+    override suspend fun awaitWriteLock(): KoneLock =
         suspendCancellableCoroutine { continuation ->
             val newNode = Node()
             newNode.storePrev(BackwardLink(null, false))
@@ -393,7 +395,7 @@ public class KoneSundellTsigasReadWriteExclusion(
                     is HeadTailLink ->
                         if (next.lockedTimes == 0u) {
                             if (head.compareAndSet(next, HeadTailLink(lockedTimes = 1u, lockType = Write))) {
-                                continuation.justResume()
+                                continuation.resume(WriteLock(this), null as ((Throwable, KoneLock, CoroutineContext) -> Unit)?)
                                 break
                             }
                         } else {
@@ -414,9 +416,8 @@ public class KoneSundellTsigasReadWriteExclusion(
                 }
             }
         }
-    }
 
-    override fun tryReadUnlocking(): Boolean {
+    private fun tryReadUnlocking() {
         var node = tail.load().node
         while (true) {
             if (node !== null) {
@@ -433,7 +434,7 @@ public class KoneSundellTsigasReadWriteExclusion(
                                     break
                                 }
                                 link.lockedTimes == 0u -> error("The RWE contains non-resumed continuation while being fully unlocked")
-                                link.lockType == Write -> return false
+                                link.lockType == Write -> error(TODO())
                                 else -> when (link.continuationLockType) {
                                     Read -> when {
                                         link.lockedTimes != readPermits -> {
@@ -448,7 +449,7 @@ public class KoneSundellTsigasReadWriteExclusion(
                                             val prev = node.loadPrev().node
                                             correctPrev(prev, null)
                                             maintainTail()
-                                            return true
+                                            return
                                         }
                                     }
                                     Write -> if (link.lockedTimes == 1u) {
@@ -464,7 +465,7 @@ public class KoneSundellTsigasReadWriteExclusion(
                                             val prev = node.loadPrev().node
                                             correctPrev(prev, null)
                                             maintainTail()
-                                            return true
+                                            return
                                         }
                                     } else {
                                         if (
@@ -475,7 +476,7 @@ public class KoneSundellTsigasReadWriteExclusion(
                                                 )
                                             )
                                         ) {
-                                            return true
+                                            return
                                         }
                                     }
                                 }
@@ -496,14 +497,14 @@ public class KoneSundellTsigasReadWriteExclusion(
                                     node = correctPrev(node, null)
                                     break
                                 }
-                                link.lockedTimes == 0u -> return false
-                                link.lockType == Write -> return false
+                                link.lockedTimes == 0u -> error(TODO())
+                                link.lockType == Write -> error(TODO())
                                 else -> if (
                                     head.compareAndSet(
                                         link,
                                         link.copy(lockedTimes = link.lockedTimes - 1u)
                                     )
-                                ) return true
+                                ) return
                             }
                         }
                     }
@@ -512,7 +513,7 @@ public class KoneSundellTsigasReadWriteExclusion(
         }
     }
     
-    override fun tryWriteUnlocking(): Boolean {
+    private fun tryWriteUnlocking() {
         var node = tail.load().node
         while (true) {
             if (node !== null) {
@@ -534,7 +535,7 @@ public class KoneSundellTsigasReadWriteExclusion(
                                         maintainTail()
                                         break
                                     }
-                                    else return false
+                                    else error(TODO())
                                 else -> when (link.continuationLockType) {
                                     Write -> if (
                                         node.compareAndSetNext(
@@ -545,7 +546,7 @@ public class KoneSundellTsigasReadWriteExclusion(
                                         val prev = node.loadPrev().node
                                         correctPrev(prev, null)
                                         maintainTail()
-                                        return true
+                                        return
                                     }
                                     Read -> if (
                                         node.compareAndSetNext(
@@ -559,7 +560,7 @@ public class KoneSundellTsigasReadWriteExclusion(
                                         val prev = node.loadPrev().node
                                         correctPrev(prev, null)
                                         maintainTail()
-                                        return true
+                                        return
                                     }
                                 }
                             }
@@ -579,14 +580,14 @@ public class KoneSundellTsigasReadWriteExclusion(
                                     node = correctPrev(node, null)
                                     break
                                 }
-                                link.lockedTimes == 0u -> return false
-                                link.lockType == Read -> return false
+                                link.lockedTimes == 0u -> error(TODO())
+                                link.lockType == Read -> error(TODO())
                                 else -> if (
                                     head.compareAndSet(
                                         link,
                                         link.copy(lockedTimes = 0u)
                                     )
-                                ) return true
+                                ) return
                             }
                         }
                     }
@@ -627,19 +628,19 @@ public class KoneSundellTsigasReadWriteExclusion(
     }
 
     private sealed interface NodeForwardLink : ForwardLink {
-        val continuation: CancellableContinuation<Unit>
+        val continuation: CancellableContinuation<KoneLock>
         val continuationLockType: LockType
     }
 
     private /*value*/ data class NextNodeLink(
         override val node: Node,
-        override val continuation: CancellableContinuation<Unit>,
+        override val continuation: CancellableContinuation<KoneLock>,
         override val continuationLockType: LockType,
         override val isBeingDeleted: Boolean = false,
     ) : NodeForwardLink
 
     private /*value*/ data class TailLink(
-        override val continuation: CancellableContinuation<Unit>,
+        override val continuation: CancellableContinuation<KoneLock>,
         override val continuationLockType: LockType,
         val lockedTimes: UInt,
         val lockType: LockType,

@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.coroutinesMutexes.implementations
 
+import dev.lounres.kone.coroutinesMutexes.KoneLock
 import dev.lounres.kone.coroutinesMutexes.KoneMutualMultiExclusion
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.maybe.None
@@ -28,11 +29,19 @@ public class KoneSundellTsigasOverConcurrentHashMapMutualMultiExclusion<in Key: 
                 newValue == null -> this.remove(key, oldValue)
                 else -> this.replace(key, oldValue, newValue)
             }
-        
-        private fun CancellableContinuation<Unit>.justResume(
-            onCancellation: ((cause: Throwable, value: Unit, context: CoroutineContext) -> Unit)? = null,
-        ) {
-            resume(Unit, onCancellation)
+    }
+    
+    private class Lock<Key: Any>(
+        mutex: KoneSundellTsigasOverConcurrentHashMapMutualMultiExclusion<Key>,
+        key: Key,
+    ) : KoneLock {
+        private data class Data<Key: Any>(
+            val mutex: KoneSundellTsigasOverConcurrentHashMapMutualMultiExclusion<Key>,
+            val key: Key,
+        )
+        private val mutex = AtomicReference<Data<Key>?>(Data(mutex, key))
+        override fun release() {
+            mutex.exchange(null)?.let { it.mutex.tryUnlockingFor(it.key) }
         }
     }
     
@@ -70,7 +79,7 @@ public class KoneSundellTsigasOverConcurrentHashMapMutualMultiExclusion<in Key: 
                                 if (lastLink.value != null) lastLink.value!!.next.compareAndSet(link!!, ForwardLink(prev2.node, null, false))
                                 else head.getCompareAndSet(key, link, null)
                             ) {
-                                link?.continuation?.justResume { _, _, _ -> val _ = tryUnlockingFor(key) }
+                                link?.continuation?.resume(Lock(this, key)) { _, _, _ -> tryUnlockingFor(key) }
                                 break
                             }
                         } else
@@ -117,18 +126,18 @@ public class KoneSundellTsigasOverConcurrentHashMapMutualMultiExclusion<in Key: 
         }
     }
     
-    override fun tryLockingFor(key: Key): Boolean {
+    override fun tryLockingFor(key: Key): KoneLock? {
         val newNode = Node()
         newNode.prev.store(BackwardLink(null, false))
         val nextLinkToNewNode = ForwardLink(newNode, null, false)
         while (true) {
             val next = head[key]
-            if (next?.node !== null) return false
+            if (next?.node !== null) return null
             if (next?.isBeingDeleted == true) continue // TODO: Is this line really needed?
             newNode.next.store(next ?: ForwardLink(null))
             if (head.getCompareAndSet(key, next, nextLinkToNewNode)) {
                 pushEnd(key, newNode, null)
-                return true
+                return Lock(this, key)
             }
         }
     }
@@ -149,8 +158,8 @@ public class KoneSundellTsigasOverConcurrentHashMapMutualMultiExclusion<in Key: 
         }
     }
     
-    override suspend fun awaitLockFor(key: Key) {
-        if (!tryLockingFor(key)) suspendCancellableCoroutine { continuation ->
+    override suspend fun awaitLockFor(key: Key): KoneLock =
+        suspendCancellableCoroutine { continuation ->
             val newNode = Node()
             newNode.prev.store(BackwardLink(null, false))
             val nextLinkToNewNode = ForwardLink(newNode, null, false)
@@ -160,7 +169,7 @@ public class KoneSundellTsigasOverConcurrentHashMapMutualMultiExclusion<in Key: 
                     newNode.next.store(ForwardLink(null, null, false))
                     if (head.getCompareAndSet(key, next, nextLinkToNewNode)) {
                         pushEnd(key, newNode, null)
-                        continuation.justResume()
+                        continuation.resume(Lock(this, key), null as ((Throwable, KoneLock, CoroutineContext) -> Unit)?)
                         break
                     }
                 } else {
@@ -173,9 +182,8 @@ public class KoneSundellTsigasOverConcurrentHashMapMutualMultiExclusion<in Key: 
                 }
             }
         }
-    }
     
-    override fun tryUnlockingFor(key: Key): Boolean {
+    private fun tryUnlockingFor(key: Key) {
         var node = tail[key]?.node
         val newLink = ForwardLink(null, null, true)
         while (true) {
@@ -184,11 +192,11 @@ public class KoneSundellTsigasOverConcurrentHashMapMutualMultiExclusion<in Key: 
                 node = correctPrev(key, node, null)
                 continue
             }
-            if (node === null) return false
+            if (node === null) error(TODO())
             if (node.next.compareAndSet(link!!, newLink)) {
                 val prev = node.prev.load().node
                 correctPrev(key, prev, null)
-                return true
+                return
             }
         }
     }
@@ -210,7 +218,7 @@ public class KoneSundellTsigasOverConcurrentHashMapMutualMultiExclusion<in Key: 
     
     private /*value*/ data class ForwardLink(
         val node: Node?,
-        val continuation: CancellableContinuation<Unit>? = null,
+        val continuation: CancellableContinuation<KoneLock>? = null,
         val isBeingDeleted: Boolean = false,
     )
 }

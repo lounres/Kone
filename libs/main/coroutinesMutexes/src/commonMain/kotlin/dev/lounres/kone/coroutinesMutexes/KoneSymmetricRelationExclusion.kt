@@ -11,15 +11,11 @@ import kotlin.contracts.contract
 
 // Accepts a symmetric relation.
 public interface KoneSymmetricRelationExclusion<in Element> {
-    public fun tryLockingBy(element: Element): Lock?
-    public suspend fun awaitLockBy(element: Element): Lock
-    
-    public fun interface Lock {
-        public fun release()
-    }
+    public fun tryLockingBy(element: Element): KoneLock?
+    public suspend fun awaitLockBy(element: Element): KoneLock
 }
 
-public suspend fun <Element> KoneSymmetricRelationExclusion<Element>.tryOrAwaitLockBy(element: Element): KoneSymmetricRelationExclusion.Lock =
+public suspend fun <Element> KoneSymmetricRelationExclusion<Element>.tryOrAwaitLockBy(element: Element): KoneLock =
     tryLockingBy(element) ?: awaitLockBy(element)
 
 public suspend inline fun <Element, Result> KoneSymmetricRelationExclusion<Element>.withLockBy(element: Element, action: () -> Result): Result {
