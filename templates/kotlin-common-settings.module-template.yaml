@@ -1,6 +1,6 @@
 settings:
   kotlin:
-    version: "2.4.20-Beta2"
+    version: "2.4.20-RC3"
     freeCompilerArgs:
       - "-Xcontext-parameters"
       - "-Xexplicit-backing-fields"
