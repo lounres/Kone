@@ -1,8 +1,9 @@
 apply:
-  - ./kotlin-jvm-common-settings.module-template.yaml
+  - //toolchain/templates/kotlin/jvm-common-settings.module-template.yaml
 
 dependencies:
   - $libs.kotlin.compiler: compile-only
+  - //libs/util/kotlinCompilerUtils
 
 test-dependencies:
   - $libs.kotlin.test: runtime-only

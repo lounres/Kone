@@ -1,0 +1,2 @@
+apply:
+  - //toolchain/templates/kotlin/common-settings.module-template.yaml

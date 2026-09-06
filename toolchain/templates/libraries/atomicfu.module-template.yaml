@@ -1,0 +1,10 @@
+settings:
+  kotlin:
+    compilerPlugins:
+      - id: org.jetbrains.kotlin.atomicfu
+        dependency: "org.jetbrains.kotlin:kotlin-atomicfu-compiler-plugin-embeddable:2.4.20-RC3"
+
+dependencies:
+  - "org.jetbrains.kotlinx:atomicfu:0.33.0"
+dependencies@js:
+  - "org.jetbrains.kotlin:kotlinx-atomicfu-runtime:2.4.20-RC3"

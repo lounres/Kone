@@ -1,0 +1,20 @@
+product:
+  type: kmp/lib
+  platforms: [jvm, android, js, wasmJs]
+
+description: "Set of libraries for experimental mathematics"
+
+apply:
+  - //toolchain/templates/structure/libs-misc.module-template.yaml
+  - //toolchain/templates/libraries/compose.module-template.yaml
+  - //toolchain/templates/kone-compiler-plugins/suppliedTypes.module-template.yaml
+  - //toolchain/templates/kone-compiler-plugins/contexts.module-template.yaml
+
+dependencies:
+  - //libs/util/misc: exported
+  - //libs/main/suppliedTypes: exported
+  - //libs/main/typeSafeRegistry: exported
+  - //libs/main/collections: exported
+  - //libs/main/computationalGeometry: exported
+  - //libs/misc/canvas: exported
+  - $libs.compose.multiplatform.foundation: exported

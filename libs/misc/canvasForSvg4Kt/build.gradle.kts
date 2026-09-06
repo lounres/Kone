@@ -15,7 +15,6 @@ kotlin {
                 api(projects.libs.main.collections)
                 api(projects.libs.main.computationalGeometry)
                 api(projects.libs.misc.canvas)
-                api(versions.kotlinx.coroutines.core)
                 api(versions.svg4kt)
             }
         }

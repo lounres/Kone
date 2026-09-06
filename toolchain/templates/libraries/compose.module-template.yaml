@@ -1,0 +1,7 @@
+#aliases:
+#  - compose: [jvm, android, js, wasmJs]
+
+settings:
+  compose:
+    enabled: true
+    version: 1.12.0-rc01

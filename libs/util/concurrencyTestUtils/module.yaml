@@ -1,0 +1,13 @@
+product:
+  type: kmp/lib
+  platforms: [jvm, android, js, wasmJs]
+
+description: "Set of libraries for experimental mathematics"
+
+apply:
+  - //toolchain/templates/structure/libs-util.module-template.yaml
+
+dependencies@jvm:
+  - $libs.testBalloon.framework.core
+  - $libs.kotlinx.lincheck
+  - $libs.fray.junit

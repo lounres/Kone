@@ -1,0 +1,13 @@
+apply:
+  - //toolchain/templates/kotlin/jvm-common-settings.module-template.yaml
+
+dependencies:
+  - $libs.kotlin.test: runtime-only
+  - $libs.kotlin.script.runtime: runtime-only
+  - $libs.kotlin.annotations.jvm: runtime-only
+
+  - $libs.kotlin.compiler
+  - $libs.kotlin.reflect
+  - $libs.kotlin.compiler.internal.test.framework
+
+  - //libs/util/kotlinCompilerTestUtils

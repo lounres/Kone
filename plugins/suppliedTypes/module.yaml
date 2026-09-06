@@ -1,0 +1,6 @@
+product:
+  type: jvm/lib
+  platforms: [jvm]
+
+apply:
+  - //toolchain/templates/structure/plugins.module-template.yaml

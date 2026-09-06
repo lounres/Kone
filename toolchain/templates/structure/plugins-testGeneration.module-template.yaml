@@ -1,0 +1,2 @@
+apply:
+  - //toolchain/templates/compiler-plugins/test-generation.module-template.yaml

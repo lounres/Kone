@@ -21,7 +21,6 @@ junit = "6.1.3"
 kmath = "0.5.0"
 koin = "3.5.6"
 komponentual = "0.2.6"
-kone = "0.0.0-experiment-2026.7.20.1"
 kord = "0.18.1"
 kotaml = "0.110.0"
 kotest = "6.2.4"
@@ -110,44 +109,6 @@ junit-platform-runner = {group = "org.junit.platform", name = "junit-platform-ru
 junit-platform-suite-api = {group = "org.junit.platform", name = "junit-platform-suite-api", version.ref = "junit" }
 kmath-core = {group = "space.kscience", name = "kmath-core", version.ref = "kmath" }
 koin-core = {group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
-komponentual-lifecycle = {group = "dev.lounres", name = "komponentual.lifecycle", version.ref = "komponentual" }
-komponentual-navigation = {group = "dev.lounres", name = "komponentual.navigation", version.ref = "komponentual" }
-kone-algebraic = {group = "dev.lounres", name = "kone.algebraic", version.ref = "kone" }
-kone-algebraicExtra = {group = "dev.lounres", name = "kone.algebraicExtra", version.ref = "kone" }
-kone-annotations = {group = "dev.lounres", name = "kone.annotations", version.ref = "kone" }
-kone-automata = {group = "dev.lounres", name = "kone.automata", version.ref = "kone" }
-kone-collections = {group = "dev.lounres", name = "kone.collections", version.ref = "kone" }
-kone-collectionsAlgebraicExtra = {group = "dev.lounres", name = "kone.collectionsAlgebraicExtra", version.ref = "kone" }
-kone-computationalGeometry = {group = "dev.lounres", name = "kone.computationalGeometry", version.ref = "kone" }
-kone-concurrentCollections = {group = "dev.lounres", name = "kone.concurrentCollections", version.ref = "kone" }
-kone-contexts = {group = "dev.lounres", name = "kone.contexts", version.ref = "kone" }
-kone-coroutinesMutexes = {group = "dev.lounres", name = "kone.coroutinesMutexes", version.ref = "kone" }
-kone-enumerativeCombinatorics = {group = "dev.lounres", name = "kone.enumerativeCombinatorics", version.ref = "kone" }
-kone-graphs = {group = "dev.lounres", name = "kone.graphs", version.ref = "kone" }
-kone-linearAlgebra = {group = "dev.lounres", name = "kone.linearAlgebra", version.ref = "kone" }
-kone-matrices = {group = "dev.lounres", name = "kone.matrices", version.ref = "kone" }
-kone-maybe = {group = "dev.lounres", name = "kone.maybe", version.ref = "kone" }
-kone-misc-canvas = {group = "dev.lounres", name = "kone.misc.canvas", version.ref = "kone" }
-kone-misc-canvasForCompose = {group = "dev.lounres", name = "kone.misc.canvasForCompose", version.ref = "kone" }
-kone-misc-canvasForSvg4kt = {group = "dev.lounres", name = "kone.misc.canvasForSvg4kt", version.ref = "kone" }
-kone-misc-composeCanvas = {group = "dev.lounres", name = "kone.misc.composeCanvas", version.ref = "kone" }
-kone-multidimensionalCollections = {group = "dev.lounres", name = "kone.multidimensionalCollections", version.ref = "kone" }
-kone-multidimensionalCollectionsAlgebraicExtra = {group = "dev.lounres", name = "kone.multidimensionalCollectionsAlgebraicExtra", version.ref = "kone" }
-kone-relations = {group = "dev.lounres", name = "kone.relations", version.ref = "kone" }
-kone-state = {group = "dev.lounres", name = "kone.state", version.ref = "kone" }
-kone-suppliedTypes = {group = "dev.lounres", name = "kone.suppliedTypes", version.ref = "kone" }
-kone-typeSafeRegistry = {group = "dev.lounres", name = "kone.typeSafeRegistry", version.ref = "kone" }
-kone-util-assertions = {group = "dev.lounres", name = "kone.util.assertions", version.ref = "kone" }
-kone-util-atomicfu = {group = "dev.lounres", name = "kone.util.atomicfu", version.ref = "kone" }
-kone-util-atomics = {group = "dev.lounres", name = "kone.util.atomics", version.ref = "kone" }
-kone-util-collectionOperations = {group = "dev.lounres", name = "kone.util.collectionOperations", version.ref = "kone" }
-kone-util-concurrencyTestUtils = {group = "dev.lounres", name = "kone.util.concurrencyTestUtils", version.ref = "kone" }
-kone-util-examples = {group = "dev.lounres", name = "kone.util.examples", version.ref = "kone" }
-kone-util-kotlinCompilerTestUtils = {group = "dev.lounres", name = "kone.util.kotlinCompilerTestUtils", version.ref = "kone" }
-kone-util-kotlinCompilerUtils = {group = "dev.lounres", name = "kone.util.kotlinCompilerUtils", version.ref = "kone" }
-kone-util-mapOperations = {group = "dev.lounres", name = "kone.util.mapOperations", version.ref = "kone" }
-kone-util-misc = {group = "dev.lounres", name = "kone.util.misc", version.ref = "kone" }
-kone-util-stateForCompose = {group = "dev.lounres", name = "kone.util.stateForCompose", version.ref = "kone" }
 kord-core = {group = "dev.kord", name = "kord-core", version.ref = "kord" }
 kotaml = {group = "io.heapy.kotaml", name = "kotaml", version.ref = "kotaml" }
 kotest-assertions-core = {group = "io.kotest", name = "kotest-assertions-core", version.ref = "kotest" }
@@ -253,15 +214,11 @@ logKube-core = {group = "dev.lounres", name = "logKube.core", version.ref = "log
 logback-classic = {group = "ch.qos.logback", name = "logback-classic", version.ref = "logback" }
 sshj = {group = "com.hierynomus", name = "sshj", version.ref = "sshj" }
 svg4kt = {group = "dev.jamesyox", name = "svg4kt", version.ref = "svg4kt" }
+testBalloon-compiler-plugin = {group = "de.infix.testBalloon", name = "testBalloon-compiler-plugin", version.ref = "testBallon" }
 testBalloon-framework-core = {group = "de.infix.testBalloon", name = "testBalloon-framework-core", version.ref = "testBallon" }
 tomlkt = {group = "dev.eav.tomlkt", name = "tomlkt", version.ref = "tomlkt" }
 
 [bundles]
-kone-all = ["kone-algebraic", "kone-algebraicExtra", "kone-annotations", "kone-automata", "kone-collections", "kone-collectionsAlgebraicExtra", "kone-computationalGeometry", "kone-concurrentCollections", "kone-contexts", "kone-coroutinesMutexes", "kone-enumerativeCombinatorics", "kone-graphs", "kone-linearAlgebra", "kone-matrices", "kone-maybe", "kone-multidimensionalCollections", "kone-multidimensionalCollectionsAlgebraicExtra", "kone-relations", "kone-state", "kone-suppliedTypes", "kone-typeSafeRegistry", "kone-misc-canvas", "kone-misc-canvasForCompose", "kone-misc-canvasForSvg4kt", "kone-misc-composeCanvas", "kone-util-assertions", "kone-util-atomicfu", "kone-util-atomics", "kone-util-collectionOperations", "kone-util-concurrencyTestUtils", "kone-util-examples", "kone-util-kotlinCompilerTestUtils", "kone-util-kotlinCompilerUtils", "kone-util-mapOperations", "kone-util-misc", "kone-util-stateForCompose"]
-kone-main = ["kone-algebraic", "kone-algebraicExtra", "kone-annotations", "kone-automata", "kone-collections", "kone-collectionsAlgebraicExtra", "kone-computationalGeometry", "kone-concurrentCollections", "kone-contexts", "kone-coroutinesMutexes", "kone-enumerativeCombinatorics", "kone-graphs", "kone-linearAlgebra", "kone-matrices", "kone-maybe", "kone-multidimensionalCollections", "kone-multidimensionalCollectionsAlgebraicExtra", "kone-relations", "kone-state", "kone-suppliedTypes", "kone-typeSafeRegistry"]
-kone-misc = ["kone-misc-canvas", "kone-misc-canvasForCompose", "kone-misc-canvasForSvg4kt", "kone-misc-composeCanvas"]
-kone-public = ["kone-algebraic", "kone-algebraicExtra", "kone-annotations", "kone-automata", "kone-collections", "kone-collectionsAlgebraicExtra", "kone-computationalGeometry", "kone-concurrentCollections", "kone-contexts", "kone-coroutinesMutexes", "kone-enumerativeCombinatorics", "kone-graphs", "kone-linearAlgebra", "kone-matrices", "kone-maybe", "kone-multidimensionalCollections", "kone-multidimensionalCollectionsAlgebraicExtra", "kone-relations", "kone-state", "kone-suppliedTypes", "kone-typeSafeRegistry", "kone-misc-canvas", "kone-misc-canvasForCompose", "kone-misc-canvasForSvg4kt", "kone-misc-composeCanvas"]
-kone-util = ["kone-util-assertions", "kone-util-atomicfu", "kone-util-atomics", "kone-util-collectionOperations", "kone-util-concurrencyTestUtils", "kone-util-examples", "kone-util-kotlinCompilerTestUtils", "kone-util-kotlinCompilerUtils", "kone-util-mapOperations", "kone-util-misc", "kone-util-stateForCompose"]
 logKube-all = ["logKube-core"]
 
 [plugins]
@@ -275,9 +232,6 @@ fray = {id = "org.pastalab.fray.gradle", version.ref = "fray" }
 gradle-maven-publish-plugin = {id = "com.vanniktech.maven.publish", version.ref = "gradle-maven-publish-plugin" }
 gradle-plugin-publish = {id = "com.gradle.plugin-publish", version.ref = "gradle-plugin-publish" }
 grgit = {id = "org.ajoberstar.grgit", version.ref = "grgit" }
-kone-plugin-contexts = {id = "dev.lounres.kone.plugin.contexts.gradle", version.ref = "kone" }
-kone-plugin-fiktion = {id = "dev.lounres.kone.plugin.fiktion.gradle", version.ref = "kone" }
-kone-plugin-suppliedTypes = {id = "dev.lounres.kone.plugin.suppliedTypes.gradle", version.ref = "kone" }
 kotest = {id = "io.kotest", version.ref = "kotest" }
 kotlin-allopen = {id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
 kotlin-android = {id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

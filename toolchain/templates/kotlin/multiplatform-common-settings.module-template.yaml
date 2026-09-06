@@ -1,0 +1,8 @@
+apply:
+  - //toolchain/templates/kotlin/common-settings.module-template.yaml
+
+settings:
+  android:
+    compileSdk: 37
+    targetSdk: 37
+    minSdk: 24

@@ -1,0 +1,15 @@
+product:
+  type: kmp/lib
+  platforms: [jvm, android, js, wasmJs]
+
+description: "Set of libraries for experimental mathematics"
+
+apply:
+  - //toolchain/templates/structure/libs-misc.module-template.yaml
+  - //toolchain/templates/libraries/atomicfu.module-template.yaml
+
+dependencies:
+  - //libs/main/collections: exported
+  - //libs/main/computations: exported
+  - //libs/main/enumerativeCombinatorics: exported
+  - $libs.kotlinx.coroutines.core: exported

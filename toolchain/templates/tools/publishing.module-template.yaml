@@ -1,0 +1,29 @@
+repositories:
+  - url: mavenLocal
+    publish: true
+
+settings:
+  publishing:
+    enabled: true
+    group: dev.lounres
+    version: 0.0.0
+    mavenCentral:
+      enabled: true
+      publishingMode: manual
+    signArtifacts: true
+    publishSources: true
+    pom:
+      name: "Kone library"
+      description: "Set of libraries for experimental mathematics"
+      url: "https://github.com/lounres/Kone"
+
+      licenses:
+        - name: "Apache License, Version 2.0"
+          url: "https://opensource.org/license/apache-2-0/"
+
+      developers:
+        - id: "lounres"
+          name: "Gleb Minaev"
+          email: "minaevgleb@yandex.ru"
+      scm:
+        url: "https://github.com/lounres/Kone.git"

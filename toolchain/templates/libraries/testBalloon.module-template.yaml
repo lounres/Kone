@@ -1,0 +1,8 @@
+settings:
+  kotlin:
+    compilerPlugins:
+      - id: de.infix.testBalloon
+        dependency: $libs.testBalloon.compiler.plugin
+
+test-dependencies:
+  - $libs.testBalloon.framework.core

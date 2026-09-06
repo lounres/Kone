@@ -1,0 +1,6 @@
+product:
+  type: kmp/lib
+  platforms: [jvm, android, js, wasmJs]
+
+apply:
+  - //toolchain/templates/structure/plugins-runtime.module-template.yaml

@@ -1,0 +1,12 @@
+product:
+  type: jvm/app
+
+apply:
+  - //toolchain/templates/structure/plugins-testGeneration.module-template.yaml
+
+settings:
+  jvm:
+    mainClass: dev.lounres.kone.plugin.contextsKeys.GenerateTestsKt
+
+dependencies:
+  - ..
