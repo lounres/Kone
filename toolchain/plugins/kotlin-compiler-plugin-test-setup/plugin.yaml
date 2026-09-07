@@ -1,0 +1,4 @@
+tasks:
+  setupKotlinCompilerPluginTestSystemProperties:
+    action: !dev.lounres.kone.buildLogic.kotlinCompilerPluginTestSetup.setupKotlinCompilerPluginTestSystemProperties
+      classpath: ${module.runtimeClasspath} # TODO: Replace with 'testRuntimeClasspath'

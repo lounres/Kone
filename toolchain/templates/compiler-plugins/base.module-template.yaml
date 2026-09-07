@@ -1,6 +1,9 @@
 apply:
   - //toolchain/templates/kotlin/jvm-common-settings.module-template.yaml
 
+plugins:
+  kotlin-compiler-plugin-test-setup: enabled
+
 dependencies:
   - $libs.kotlin.compiler: compile-only
   - //libs/util/kotlinCompilerUtils

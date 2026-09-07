@@ -15,3 +15,4 @@ modules:
 
 plugins:
   - ./toolchain/plugins/benchmark
+  - ./toolchain/plugins/kotlin-compiler-plugin-test-setup
