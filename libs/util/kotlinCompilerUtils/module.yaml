@@ -10,3 +10,7 @@ apply:
 dependencies@jvm:
   - $libs.kotlin.compiler
   - $libs.kotlin.reflect
+
+settings:
+  publishing:
+    artifactId: kone.util.kotlinCompilerUtils

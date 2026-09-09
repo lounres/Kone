@@ -11,3 +11,7 @@ dependencies@jvm:
   - $libs.testBalloon.framework.core
   - $libs.kotlinx.lincheck
   - $libs.fray.junit
+
+settings:
+  publishing:
+    artifactId: kone.util.concurrencyTestUtils

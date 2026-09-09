@@ -4,3 +4,7 @@ product:
 
 apply:
   - //toolchain/templates/structure/plugins.module-template.yaml
+
+settings:
+  publishing:
+    artifactId: kone.plugin.suppliedTypes

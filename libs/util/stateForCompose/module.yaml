@@ -10,3 +10,7 @@ apply:
 
 dependencies:
   - //libs/main/state: exported
+
+settings:
+  publishing:
+    artifactId: kone.util.stateForCompose

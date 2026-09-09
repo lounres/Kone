@@ -15,3 +15,7 @@ dependencies:
   - //libs/main/typeSafeRegistry: exported
   - //libs/main/collections: exported
   - //libs/main/computationalGeometry: exported
+
+settings:
+  publishing:
+    artifactId: kone.misc.canvas

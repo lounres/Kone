@@ -16,3 +16,7 @@ dependencies@jvm:
   - $libs.junit.platform.commons: exported
   - $libs.junit.platform.launcher: exported
   - $libs.junit.platform.suite.api: exported
+
+settings:
+  publishing:
+    artifactId: kone.util.kotlnCompilerTestUtils

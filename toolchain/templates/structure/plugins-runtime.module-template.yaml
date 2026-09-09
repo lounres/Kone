@@ -1,3 +1,7 @@
 apply:
   - //toolchain/templates/kotlin/multiplatform-common-settings.module-template.yaml
   - //toolchain/templates/kotlin/library-settings.module-template.yaml
+
+#settings:
+#  publishing:
+#    artifactId: "kone.plugin.${module.name}.runtime"

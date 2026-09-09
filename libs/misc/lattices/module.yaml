@@ -13,3 +13,7 @@ dependencies:
   - //libs/main/computations: exported
   - //libs/main/enumerativeCombinatorics: exported
   - $libs.kotlinx.coroutines.core: exported
+
+settings:
+  publishing:
+    artifactId: kone.misc.lattices

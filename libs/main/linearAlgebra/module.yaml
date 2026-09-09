@@ -6,3 +6,7 @@ description: "Set of libraries for experimental mathematics"
 
 apply:
   - //toolchain/templates/structure/libs-main.module-template.yaml
+
+settings:
+  publishing:
+    artifactId: kone.linearAlgebra

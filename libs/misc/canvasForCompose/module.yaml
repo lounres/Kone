@@ -18,3 +18,7 @@ dependencies:
   - //libs/main/computationalGeometry: exported
   - //libs/misc/canvas: exported
   - $libs.compose.multiplatform.foundation: exported
+
+settings:
+  publishing:
+    artifactId: kone.misc.canvasForCompose

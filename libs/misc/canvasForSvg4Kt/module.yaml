@@ -17,3 +17,7 @@ dependencies:
   - //libs/main/computationalGeometry: exported
   - //libs/misc/canvas: exported
   - $libs.svg4kt: exported
+
+settings:
+  publishing:
+    artifactId: kone.misc.canvasForSvg4kt

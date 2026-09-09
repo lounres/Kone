@@ -3,3 +3,7 @@ apply:
   - //toolchain/templates/kotlin/library-settings.module-template.yaml
   - //toolchain/templates/libraries/testBalloon.module-template.yaml
   - //toolchain/templates/tools/publishing.module-template.yaml
+
+#settings:
+#  publishing:
+#    artifactId: "kone.${module.name}"

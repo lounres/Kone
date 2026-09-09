@@ -17,3 +17,7 @@ dependencies:
   - //libs/main/collections: exported
   - //libs/main/linearAlgebra: exported
   - //libs/main/computationalGeometry: exported
+
+settings:
+  publishing:
+    artifactId: kone.misc.composeCanvas

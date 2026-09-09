@@ -1,2 +1,6 @@
 apply:
   - //toolchain/templates/compiler-plugins/base.module-template.yaml
+
+#settings:
+#  publishing:
+#    artifactId: "kone.plugin.${module.name}"

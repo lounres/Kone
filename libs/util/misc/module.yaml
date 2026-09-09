@@ -9,3 +9,7 @@ apply:
 
 dependencies:
   - //libs/main/maybe: exported
+
+settings:
+  publishing:
+    artifactId: kone.util.misc
