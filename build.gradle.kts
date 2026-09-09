@@ -265,7 +265,7 @@ stal {
                         "-Xname-based-destructuring=complete",
                         "-Xcollection-literals",
                         "-Xallow-returns-result-of",
-//                        "-Xcompanion-blocks-and-extensions",
+                        "-Xcompanion-blocks-and-extensions",
                         
                         // Kone compiler plugins order
                         "-Xcompiler-plugin-order=dev.lounres.kone.plugin.suppliedTypes>dev.lounres.kone.plugin.contextsKeys",
@@ -307,7 +307,7 @@ stal {
                         "-Xname-based-destructuring=complete",
                         "-Xcollection-literals",
                         "-Xallow-returns-result-of",
-//                        "-Xcompanion-blocks-and-extensions",
+                        "-Xcompanion-blocks-and-extensions",
                         
                         // Kone compiler plugins order
                         "-Xcompiler-plugin-order=dev.lounres.kone.plugin.suppliedTypes>dev.lounres.kone.plugin.contextsKeys",
