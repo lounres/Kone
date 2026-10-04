@@ -27,3 +27,9 @@ public fun BenchmarkConfiguration.smokeConfiguration() {
     iterationTimeUnit = "ms"
     outputTimeUnit = "ns"
 }
+
+public fun denseListOfPowersOfTwo(start: Int, lastPower: Int): List<Int> = buildList {
+    for (i in 0 .. lastPower) {
+        addAll((1 shl i) ..< (1 shl (i + 1)) step (1 shl (maxOf(i, start) - start)))
+    }
+}

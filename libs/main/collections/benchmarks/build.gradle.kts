@@ -1,3 +1,4 @@
+import dev.lounres.kone.buildSrc.benchmarks.denseListOfPowersOfTwo
 import dev.lounres.kone.buildSrc.benchmarks.mainConfiguration
 
 plugins {
@@ -16,15 +17,6 @@ kotlin {
 
 benchmark {
     configurations {
-        val start = 2
-
-        val numbers = buildList {
-            addAll(1 ..< (1 shl start))
-            for (i in start .. 29) {
-                addAll((1 shl i) ..< (1 shl (i + 1)) step (1 shl (i - start)))
-            }
-        }
-
         register("koneArrayAllocationWithSizeOfPowersOfTwo") {
             mainConfiguration()
             include("dev.lounres.kone.benchmarks.collections.array.KoneArrayAllocationBenchmarks.*")
@@ -35,10 +27,10 @@ benchmark {
             include("dev.lounres.kone.benchmarks.collections.array.KoneArrayAllocationBenchmarks.*")
             param("size", value = (0 .. 511).toList().toTypedArray())
         }
-        register("koneArrayAllocationWithSizeFromSpecificNumbers") {
+        register("koneArrayAllocationWithSizeFromDenseListOfPowersOfTwo") {
             mainConfiguration()
             include("dev.lounres.kone.benchmarks.collections.array.KoneArrayAllocationBenchmarks.*")
-            param("size", value = numbers.toTypedArray())
+            param("size", value = denseListOfPowersOfTwo(start = 2, lastPower = 29).toTypedArray())
         }
         register("koneArrayAccessWithSizeOfPowersOfTwo") {
             mainConfiguration()
@@ -50,10 +42,10 @@ benchmark {
             include("dev.lounres.kone.benchmarks.collections.array.KoneArrayAccessBenchmarks.*")
             param("size", value = (0 .. 511).toList().toTypedArray())
         }
-        register("koneArrayAccessWithSizeFromFromSpecificNumbers") {
+        register("koneArrayAccessWithSizeFromDenseListOfPowersOfTwo") {
             mainConfiguration()
             include("dev.lounres.kone.benchmarks.collections.array.KoneArrayAccessBenchmarks.*")
-            param("size", value = numbers.toTypedArray())
+            param("size", value = denseListOfPowersOfTwo(start = 2, lastPower = 29).toTypedArray())
         }
     }
 }
