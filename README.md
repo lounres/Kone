@@ -2,6 +2,8 @@
     <img src="assets/social-media/kone-logo-colored.svg" alt="Kone logo" style="width: 60%;">
 </div>
 
+<br/>
+
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Kotlin Multiplatform](https://img.shields.io/badge/Kotlin%20Multiplatform-7f52ff?logo=kotlin&logoColor=white)](https://kotlinlang.org/)
 [![Documentation](https://img.shields.io/badge/Documentation-ffea00)](https://lounres.dev/Kone/docs/)
