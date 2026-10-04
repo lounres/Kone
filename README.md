@@ -2,10 +2,10 @@
     <img src="assets/social-media/kone-logo-colored.svg" alt="Kone logo" style="width: 60%;">
 </div>
 
-<!--
-[![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
-[![Kotlin](https://img.shields.io/badge/kotlin-1.8.21-blue.svg?logo=kotlin)](http://kotlinlang.org)
--->
+[![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+[![Kotlin Multiplatform](https://img.shields.io/badge/Kotlin%20Multiplatform-7f52ff?logo=kotlin&logoColor=white)](https://kotlinlang.org/)
+[![Documentation](https://img.shields.io/badge/Documentation-ffea00)](https://lounres.dev/Kone/docs/)
+[![API reference](https://img.shields.io/badge/API%20reference-7f52ff)](https://lounres.dev/Kone/api/)
 
 # Kone &ndash; library for pure mathematical experiments
 
@@ -27,4 +27,4 @@ TODO
 
 ## Documentation
 
-Visit Kone's [docs](https://lounres.github.io/Kone/docs/) and [API reference](https://lounres.github.io/Kone/api/) sites.
+Visit Kone's [docs](https://lounres.dev/Kone/docs/) and [API reference](https://lounres.dev/Kone/api/) sites.

@@ -18,7 +18,6 @@ benchmark {
     configurations {
         val start = 2
 
-        @OptIn(ExperimentalStdlibApi::class)
         val numbers = buildList {
             addAll(1 ..< (1 shl start))
             for (i in start .. 29) {

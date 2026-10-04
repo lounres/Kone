@@ -7,7 +7,7 @@ format.version = "1.1"
 [versions]
 android = "9.2.1"
 changelog = "2.5.0"
-compose-multiplatform = "1.12.0-rc01"
+compose-multiplatform = "1.12.0"
 compose-multiplatform-material3 = "1.12.0-alpha03"
 compose-multiplatform-material3-adaptive = "1.3.0-beta02"
 cryptography = "0.6.0"
@@ -24,18 +24,18 @@ komponentual = "0.2.6"
 kord = "0.18.1"
 kotaml = "0.110.0"
 kotest = "6.2.4"
-kotlin = "2.4.20-RC3"
-kotlin-wrappers = "2026.8.3"
+kotlin = "2.4.20"
+kotlin-wrappers = "2026.9.1"
 kotlinx-atomicfu = "0.33.0"
-kotlinx-benchmark = "0.4.18"
-kotlinx-binary-compatibility-validator = "0.18.1"
+kotlinx-benchmark = "0.5.0"
+kotlinx-binary-compatibility-validator = "0.18.2"
 kotlinx-coroutines = "1.11.0"
 kotlinx-datetime = "0.8.0"
 kotlinx-io = "0.9.1"
 kotlinx-knit = "0.5.1"
 kotlinx-kover = "0.9.9"
 kotlinx-lincheck = "3.7"
-kotlinx-serialization = "1.11.0"
+kotlinx-serialization = "1.12.0-RC"
 ksp = "2.3.11"
 ktor = "3.5.2"
 logKube = "0.2.4"
@@ -43,7 +43,7 @@ logback = "1.5.6"
 shadow = "9.6.1"
 sshj = "0.40.0"
 svg4kt = "0.1.0"
-testBallon = "1.1.0-RC"
+testBallon = "1.2.0-Beta1"
 tomlkt = "0.6.1"
 
 [libraries]
@@ -122,75 +122,75 @@ kotlin-gradle = {group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", 
 kotlin-reflect = {group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 kotlin-script-runtime = {group = "org.jetbrains.kotlin", name = "kotlin-script-runtime", version.ref = "kotlin" }
 kotlin-test = {group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
-kotlin-wrappers-actions-artifact = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-actions-artifact", version = "2026.8.3-6.2.1" }
-kotlin-wrappers-actions-cache = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-actions-cache", version = "2026.8.3-6.2.0" }
-kotlin-wrappers-actions-core = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-actions-core", version = "2026.8.3-3.0.1" }
-kotlin-wrappers-actions-exec = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-actions-exec", version = "2026.8.3-3.0.0" }
-kotlin-wrappers-actions-github = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-actions-github", version = "2026.8.3-9.1.1" }
-kotlin-wrappers-actions-glob = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-actions-glob", version = "2026.8.3-0.7.0" }
-kotlin-wrappers-actions-httpClient = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-actions-http-client", version = "2026.8.3-4.0.1" }
-kotlin-wrappers-actions-io = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-actions-io", version = "2026.8.3-3.0.2" }
-kotlin-wrappers-actions-toolCache = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-actions-tool-cache", version = "2026.8.3-4.0.0" }
-kotlin-wrappers-ajv = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-ajv", version = "2026.8.3-8.20.0" }
-kotlin-wrappers-browser = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-browser", version = "2026.8.3" }
-kotlin-wrappers-cesium-engine = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-cesium-engine", version = "2026.8.3-26.2.0" }
-kotlin-wrappers-cesium-widgets = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-cesium-widgets", version = "2026.8.3-16.1.1" }
-kotlin-wrappers-css = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-css", version = "2026.8.3" }
-kotlin-wrappers-cssomCore = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-cssom-core", version = "2026.8.3" }
-kotlin-wrappers-csstype = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-csstype", version = "2026.8.3-3.2.3" }
-kotlin-wrappers-electron = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-electron", version = "2026.8.3-42.3.0" }
-kotlin-wrappers-emotion-cache = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-emotion-cache", version = "2026.8.3-11.14.0" }
-kotlin-wrappers-emotion-css = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-emotion-css", version = "2026.8.3-11.13.5" }
-kotlin-wrappers-emotion-react = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-emotion-react", version = "2026.8.3-11.14.0" }
-kotlin-wrappers-emotion-styled = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-emotion-styled", version = "2026.8.3-11.14.1" }
-kotlin-wrappers-emotion-utils = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-emotion-utils", version = "2026.8.3-1.4.2" }
-kotlin-wrappers-floatingUiCore = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-floating-ui-core", version = "2026.8.3-1.7.5" }
-kotlin-wrappers-floatingUiDom = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-floating-ui-dom", version = "2026.8.3-1.7.6" }
-kotlin-wrappers-floatingUiReactDom = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-floating-ui-react-dom", version = "2026.8.3-2.1.8" }
-kotlin-wrappers-floatingUiUtils = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-floating-ui-utils", version = "2026.8.3-0.2.11" }
-kotlin-wrappers-js = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-js", version = "2026.8.3" }
-kotlin-wrappers-jsCore = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-js-core", version = "2026.8.3" }
-kotlin-wrappers-jsPlainObject = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-js-plain-object", version = "2026.8.3" }
-kotlin-wrappers-jsTest = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-js-test", version = "2026.8.3" }
-kotlin-wrappers-jszip = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-jszip", version = "2026.8.3-3.10.1" }
-kotlin-wrappers-mui-base = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-mui-base", version = "2026.8.3-5.0.0-beta.70" }
-kotlin-wrappers-mui-iconsMaterial = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-mui-icons-material", version = "2026.8.3-9.2.0" }
-kotlin-wrappers-mui-lab = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-mui-lab", version = "2026.8.3-9.0.0-beta.6" }
-kotlin-wrappers-mui-material = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-mui-material", version = "2026.8.3-9.2.0" }
-kotlin-wrappers-mui-system = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-mui-system", version = "2026.8.3-9.2.0" }
-kotlin-wrappers-muix-datePickers = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-muix-date-pickers", version = "2026.8.3-9.8.0" }
-kotlin-wrappers-muix-treeView = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-muix-tree-view", version = "2026.8.3-9.8.0" }
-kotlin-wrappers-node = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-node", version = "2026.8.3-24.12.4" }
-kotlin-wrappers-pako = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-pako", version = "2026.8.3-2.2.0" }
-kotlin-wrappers-popperjs-core = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-popperjs-core", version = "2026.8.3-2.11.8" }
-kotlin-wrappers-prantlf-jsonlint = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-prantlf-jsonlint", version = "2026.8.3-17.0.1" }
-kotlin-wrappers-preact-signalsCore = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-preact-signals-core", version = "2026.8.3-1.14.3" }
-kotlin-wrappers-preact-signalsReact = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-preact-signals-react", version = "2026.8.3-3.10.2" }
-kotlin-wrappers-react = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-react", version = "2026.8.3-19.2.8" }
-kotlin-wrappers-reactDom = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-react-dom", version = "2026.8.3-19.2.8" }
-kotlin-wrappers-reactSelect = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-react-select", version = "2026.8.3-5.10.2" }
-kotlin-wrappers-reactUse = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-react-use", version = "2026.8.3" }
-kotlin-wrappers-semver = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-semver", version = "2026.8.3-7.7.4" }
-kotlin-wrappers-tanstack-history = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tanstack-history", version = "2026.8.3-1.162.0" }
-kotlin-wrappers-tanstack-queryCore = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tanstack-query-core", version = "2026.8.3-5.90.20" }
-kotlin-wrappers-tanstack-reactQuery = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tanstack-react-query", version = "2026.8.3-5.90.21" }
-kotlin-wrappers-tanstack-reactQueryDevtools = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tanstack-react-query-devtools", version = "2026.8.3-5.91.3" }
-kotlin-wrappers-tanstack-reactRouter = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tanstack-react-router", version = "2026.8.3-1.170.17" }
-kotlin-wrappers-tanstack-reactRouterDevtools = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tanstack-react-router-devtools", version = "2026.8.3-1.167.0" }
-kotlin-wrappers-tanstack-reactTable = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tanstack-react-table", version = "2026.8.3-8.21.3" }
-kotlin-wrappers-tanstack-reactVirtual = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tanstack-react-virtual", version = "2026.8.3-3.14.9" }
-kotlin-wrappers-tanstack-routerCore = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tanstack-router-core", version = "2026.8.3-1.171.14" }
-kotlin-wrappers-tanstack-tableCore = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tanstack-table-core", version = "2026.8.3-8.21.3" }
-kotlin-wrappers-tanstack-virtualCore = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tanstack-virtual-core", version = "2026.8.3-3.17.7" }
-kotlin-wrappers-tauriAppsApi = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tauri-apps-api", version = "2026.8.3-2.11.1" }
-kotlin-wrappers-testingLibraryDom = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-testing-library-dom", version = "2026.8.3-10.4.1" }
-kotlin-wrappers-testingLibraryReact = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-testing-library-react", version = "2026.8.3-16.3.2" }
-kotlin-wrappers-testingLibraryUserEvent = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-testing-library-user-event", version = "2026.8.3-14.6.1" }
-kotlin-wrappers-typescript = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-typescript", version = "2026.8.3-6.0.3" }
-kotlin-wrappers-vercel-ncc = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-vercel-ncc", version = "2026.8.3-0.44.1" }
-kotlin-wrappers-vscode = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-vscode", version = "2026.8.3-1.125.0" }
-kotlin-wrappers-web = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-web", version = "2026.8.3" }
-kotlin-wrappers-yaml = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-yaml", version = "2026.8.3-2.8.3" }
+kotlin-wrappers-actions-artifact = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-actions-artifact", version = "2026.9.1-6.2.1" }
+kotlin-wrappers-actions-cache = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-actions-cache", version = "2026.9.1-6.2.0" }
+kotlin-wrappers-actions-core = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-actions-core", version = "2026.9.1-3.0.1" }
+kotlin-wrappers-actions-exec = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-actions-exec", version = "2026.9.1-3.0.0" }
+kotlin-wrappers-actions-github = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-actions-github", version = "2026.9.1-9.1.1" }
+kotlin-wrappers-actions-glob = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-actions-glob", version = "2026.9.1-0.7.0" }
+kotlin-wrappers-actions-httpClient = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-actions-http-client", version = "2026.9.1-4.0.1" }
+kotlin-wrappers-actions-io = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-actions-io", version = "2026.9.1-3.0.2" }
+kotlin-wrappers-actions-toolCache = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-actions-tool-cache", version = "2026.9.1-4.0.0" }
+kotlin-wrappers-ajv = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-ajv", version = "2026.9.1-8.20.0" }
+kotlin-wrappers-browser = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-browser", version = "2026.9.1" }
+kotlin-wrappers-cesium-engine = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-cesium-engine", version = "2026.9.1-26.3.0" }
+kotlin-wrappers-cesium-widgets = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-cesium-widgets", version = "2026.9.1-16.2.0" }
+kotlin-wrappers-css = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-css", version = "2026.9.1" }
+kotlin-wrappers-cssomCore = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-cssom-core", version = "2026.9.1" }
+kotlin-wrappers-csstype = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-csstype", version = "2026.9.1-3.2.3" }
+kotlin-wrappers-electron = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-electron", version = "2026.9.1-42.3.0" }
+kotlin-wrappers-emotion-cache = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-emotion-cache", version = "2026.9.1-11.14.0" }
+kotlin-wrappers-emotion-css = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-emotion-css", version = "2026.9.1-11.13.5" }
+kotlin-wrappers-emotion-react = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-emotion-react", version = "2026.9.1-11.14.0" }
+kotlin-wrappers-emotion-styled = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-emotion-styled", version = "2026.9.1-11.14.1" }
+kotlin-wrappers-emotion-utils = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-emotion-utils", version = "2026.9.1-1.4.2" }
+kotlin-wrappers-floatingUiCore = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-floating-ui-core", version = "2026.9.1-1.7.5" }
+kotlin-wrappers-floatingUiDom = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-floating-ui-dom", version = "2026.9.1-1.7.6" }
+kotlin-wrappers-floatingUiReactDom = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-floating-ui-react-dom", version = "2026.9.1-2.1.8" }
+kotlin-wrappers-floatingUiUtils = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-floating-ui-utils", version = "2026.9.1-0.2.11" }
+kotlin-wrappers-js = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-js", version = "2026.9.1" }
+kotlin-wrappers-jsCore = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-js-core", version = "2026.9.1" }
+kotlin-wrappers-jsPlainObject = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-js-plain-object", version = "2026.9.1" }
+kotlin-wrappers-jsTest = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-js-test", version = "2026.9.1" }
+kotlin-wrappers-jszip = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-jszip", version = "2026.9.1-3.10.1" }
+kotlin-wrappers-mui-base = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-mui-base", version = "2026.9.1-5.0.0-beta.70" }
+kotlin-wrappers-mui-iconsMaterial = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-mui-icons-material", version = "2026.9.1-9.4.0" }
+kotlin-wrappers-mui-lab = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-mui-lab", version = "2026.9.1-9.0.0-beta.9" }
+kotlin-wrappers-mui-material = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-mui-material", version = "2026.9.1-9.4.0" }
+kotlin-wrappers-mui-system = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-mui-system", version = "2026.9.1-9.4.0" }
+kotlin-wrappers-muix-datePickers = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-muix-date-pickers", version = "2026.9.1-9.12.0" }
+kotlin-wrappers-muix-treeView = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-muix-tree-view", version = "2026.9.1-9.12.0" }
+kotlin-wrappers-node = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-node", version = "2026.9.1-24.12.4" }
+kotlin-wrappers-pako = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-pako", version = "2026.9.1-2.2.0" }
+kotlin-wrappers-popperjs-core = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-popperjs-core", version = "2026.9.1-2.11.8" }
+kotlin-wrappers-prantlf-jsonlint = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-prantlf-jsonlint", version = "2026.9.1-17.0.1" }
+kotlin-wrappers-preact-signalsCore = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-preact-signals-core", version = "2026.9.1-1.14.3" }
+kotlin-wrappers-preact-signalsReact = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-preact-signals-react", version = "2026.9.1-3.10.2" }
+kotlin-wrappers-react = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-react", version = "2026.9.1-19.2.8" }
+kotlin-wrappers-reactDom = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-react-dom", version = "2026.9.1-19.2.8" }
+kotlin-wrappers-reactSelect = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-react-select", version = "2026.9.1-5.10.2" }
+kotlin-wrappers-reactUse = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-react-use", version = "2026.9.1" }
+kotlin-wrappers-semver = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-semver", version = "2026.9.1-7.7.4" }
+kotlin-wrappers-tanstack-history = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tanstack-history", version = "2026.9.1-1.162.0" }
+kotlin-wrappers-tanstack-queryCore = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tanstack-query-core", version = "2026.9.1-5.101.4" }
+kotlin-wrappers-tanstack-reactQuery = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tanstack-react-query", version = "2026.9.1-5.101.4" }
+kotlin-wrappers-tanstack-reactQueryDevtools = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tanstack-react-query-devtools", version = "2026.9.1-5.101.4" }
+kotlin-wrappers-tanstack-reactRouter = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tanstack-react-router", version = "2026.9.1-1.170.17" }
+kotlin-wrappers-tanstack-reactRouterDevtools = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tanstack-react-router-devtools", version = "2026.9.1-1.167.0" }
+kotlin-wrappers-tanstack-reactTable = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tanstack-react-table", version = "2026.9.1-8.21.3" }
+kotlin-wrappers-tanstack-reactVirtual = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tanstack-react-virtual", version = "2026.9.1-3.14.9" }
+kotlin-wrappers-tanstack-routerCore = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tanstack-router-core", version = "2026.9.1-1.171.14" }
+kotlin-wrappers-tanstack-tableCore = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tanstack-table-core", version = "2026.9.1-8.21.3" }
+kotlin-wrappers-tanstack-virtualCore = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tanstack-virtual-core", version = "2026.9.1-3.17.7" }
+kotlin-wrappers-tauriAppsApi = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-tauri-apps-api", version = "2026.9.1-2.11.1" }
+kotlin-wrappers-testingLibraryDom = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-testing-library-dom", version = "2026.9.1-10.4.1" }
+kotlin-wrappers-testingLibraryReact = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-testing-library-react", version = "2026.9.1-16.3.2" }
+kotlin-wrappers-testingLibraryUserEvent = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-testing-library-user-event", version = "2026.9.1-14.6.1" }
+kotlin-wrappers-typescript = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-typescript", version = "2026.9.1-6.0.3" }
+kotlin-wrappers-vercel-ncc = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-vercel-ncc", version = "2026.9.1-0.44.1" }
+kotlin-wrappers-vscode = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-vscode", version = "2026.9.1-1.136.0" }
+kotlin-wrappers-web = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-web", version = "2026.9.1" }
+kotlin-wrappers-yaml = {group = "org.jetbrains.kotlin-wrappers", name = "kotlin-yaml", version = "2026.9.1-2.8.3" }
 kotlinx-benchmark-runtime = {group = "org.jetbrains.kotlinx", name = "kotlinx-benchmark-runtime", version.ref = "kotlinx-benchmark" }
 kotlinx-coroutines-core = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-debug = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-debug", version.ref = "kotlinx-coroutines" }
