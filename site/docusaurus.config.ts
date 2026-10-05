@@ -15,7 +15,6 @@ const config: Config = {
 
     onBrokenLinks: 'warn',
     onBrokenAnchors: 'warn',
-    onBrokenMarkdownLinks: 'warn',
     onDuplicateRoutes: 'warn',
 
     i18n: {
@@ -83,8 +82,19 @@ const config: Config = {
         },
     ],
 
+    markdown: {
+        hooks: {
+            onBrokenMarkdownLinks: 'warn',
+            onBrokenMarkdownImages: 'throw',
+        }
+    },
+
     themeConfig: {
         image: 'img/logos/kone-logo-colored.png',
+        colorMode: {
+            defaultMode: 'light',
+            respectPrefersColorScheme: true,
+        },
         // metadata: [],
         // announcementBar: {},
         docs: {
