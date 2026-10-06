@@ -110,7 +110,7 @@ val buildSite = tasks.register<Exec>("buildSite") {
     standardOutput = ByteArrayOutputStream()
     errorOutput = ByteArrayOutputStream()
     
-    commandLine("node", "--run", "build")
+    commandLine("deno", "run", "build")
 }
 
 tasks.register("publishApiToProduction") {
@@ -124,6 +124,7 @@ tasks.register("publishApiToProduction") {
     
     doLast {
         val hostname = project.property("kone.publishing.hostname") as String
+        val port = (project.property("kone.publishing.ssh.port") as String).toInt()
         val username = project.property("kone.publishing.ssh.username") as String
         val password = project.property("kone.publishing.ssh.password") as String
         val destination = project.property("kone.publishing.destination.api") as String
@@ -131,7 +132,7 @@ tasks.register("publishApiToProduction") {
         val ssh = SSHClient()
         ssh.addHostKeyVerifier(PromiscuousVerifier())
         ssh.use {
-            ssh.connect(hostname)
+            ssh.connect(hostname, port)
             ssh.authPassword(username, password)
             ssh.use {
                 val session = ssh.startSession()
@@ -158,14 +159,15 @@ tasks.register("publishSiteToProduction") {
     
     doLast {
         val hostname = project.property("kone.publishing.hostname") as String
+        val port = (project.property("kone.publishing.ssh.port") as String).toInt()
         val username = project.property("kone.publishing.ssh.username") as String
         val password = project.property("kone.publishing.ssh.password") as String
-        val destination = project.property("kone.publishing.destination.api") as String
+        val destination = project.property("kone.publishing.destination.site") as String
         
         val ssh = SSHClient()
         ssh.addHostKeyVerifier(PromiscuousVerifier())
         ssh.use {
-            ssh.connect(hostname)
+            ssh.connect(hostname, port)
             ssh.authPassword(username, password)
             ssh.use {
                 val session = ssh.startSession()
