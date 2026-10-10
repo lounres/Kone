@@ -1,0 +1,14 @@
+product: jvm/amper-plugin
+
+description: Generate JVM HTML API documentation with the standalone Dokka engine.
+
+pluginInfo:
+  id: dokka
+  settingsClass: io.heapy.ktc.plugins.dokka.DokkaSettings
+
+dependencies:
+  - $libs.kotlinx.serialization.json
+
+settings:
+  jvm:
+    release: 17

@@ -1,6 +1,7 @@
 apply:
   - //toolchain/templates/kotlin/multiplatform-common-settings.module-template.yaml
   - //toolchain/templates/kotlin/library-settings.module-template.yaml
+#  - //toolchain/templates/tools/dokka.module-template.yaml # KTC-535
 
 #settings:
 #  publishing:

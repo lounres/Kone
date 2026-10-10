@@ -3,6 +3,8 @@ apply:
   - //toolchain/templates/kotlin/library-settings.module-template.yaml
   - //toolchain/templates/libraries/testBalloon.module-template.yaml
   - //toolchain/templates/tools/publishing.module-template.yaml
+  - //toolchain/templates/tools/kover.module-template.yaml
+  - //toolchain/templates/tools/dokka.module-template.yaml
 
 #settings:
 #  publishing:

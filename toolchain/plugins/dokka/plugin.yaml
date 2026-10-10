@@ -1,0 +1,18 @@
+tasks:
+  dokkaHtml:
+    action: !io.heapy.ktc.plugins.dokka.generateHtml
+      settings: ${pluginSettings}
+      moduleName: ${module.name}
+      sources: ${module.kotlinJavaSources}
+      compileClasspath: ${module.compileClasspath}
+      dokkaClasspath:
+        - org.jetbrains.dokka:dokka-cli:2.2.0
+      htmlClasspath:
+        - org.jetbrains.dokka:dokka-base:2.2.0
+        - org.jetbrains.dokka:analysis-kotlin-symbols:2.2.0
+        - org.jetbrains.kotlinx:kotlinx-html-jvm:0.8.0
+        - org.freemarker:freemarker:2.3.31
+      outputDirectory: ${taskOutputDir}
+
+commands:
+  - dokkaHtml

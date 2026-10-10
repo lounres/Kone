@@ -1,0 +1,8 @@
+product: jvm/amper-plugin
+
+pluginInfo:
+  id: kover
+  settingsClass: io.heapy.ktc.plugins.kover.KoverSettings
+
+dependencies:
+  - $libs.kotlinx.kover.features.jvm

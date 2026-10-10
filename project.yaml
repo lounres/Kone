@@ -14,5 +14,7 @@ modules:
   - ./toolchain/plugins/*
 
 plugins:
-  - ./toolchain/plugins/benchmark
+#  - ./toolchain/plugins/benchmark
+  - ./toolchain/plugins/dokka
   - ./toolchain/plugins/kotlin-compiler-plugin-test-setup
+  - ./toolchain/plugins/kover

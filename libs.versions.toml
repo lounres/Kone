@@ -197,6 +197,7 @@ kotlinx-coroutines-debug = {group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 kotlinx-coroutines-test = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlinx-datetime = {group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-io-core = {group = "org.jetbrains.kotlinx", name = "kotlinx-io-core", version.ref = "kotlinx-io" }
+kotlinx-kover-features-jvm = { module = "org.jetbrains.kotlinx:kover-features-jvm", version.ref = "kotlinx-kover" }
 kotlinx-lincheck = {group = "org.jetbrains.lincheck", name = "lincheck", version.ref = "kotlinx-lincheck" }
 kotlinx-serialization-core = {group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-json = {group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }

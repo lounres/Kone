@@ -1,0 +1,22 @@
+tasks:
+  koverReport:
+    action: !io.heapy.ktc.plugins.kover.koverReport
+      projectDir: ${project.rootDir}
+      moduleName: ${module.name}
+      classes: ${module.classes}
+      sources: ${module.kotlinJavaSources}
+      agentClasspath:
+        dependencies:
+          - org.jetbrains.kotlinx:kover-jvm-agent:0.9.11
+      outputDir: ${taskOutputDir}
+      settings: ${pluginSettings}
+  koverCheck:
+    action: !io.heapy.ktc.plugins.kover.koverCheck
+      reportDir: ${tasks.koverReport.action.outputDir}
+      minimumLineCoverage: ${pluginSettings.minimumLineCoverage}
+
+commands:
+  - koverReport
+
+checks:
+  - koverCheck

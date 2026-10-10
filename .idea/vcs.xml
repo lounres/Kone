@@ -31,6 +31,10 @@
           <option name="issueRegexp" value="DOKKA-(\d+)" />
           <option name="linkRegexp" value="https://github.com/Kotlin/dokka/issues/$1" />
         </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="KTC-\d+" />
+          <option name="linkRegexp" value="https://youtrack.jetbrains.com/issue/$0" />
+        </IssueNavigationLink>
       </list>
     </option>
   </component>
