@@ -10,13 +10,14 @@ import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 @Suppliable
 public class InverseMatrixKey<@Supply Number, @Supply Matrix : MDList2<Number>> : SuppliedTypeRegistryKey<Matrix?>() {
-    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.InverseMatrixKey<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.InverseMatrixKey<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
 }
 
 @GenerateKoneContextKey

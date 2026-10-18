@@ -14,8 +14,9 @@ FILE fqName:<root> fileName:/withSuppliedUsage1.kt
                 RETURN type=kotlin.Nothing from='local final fun <anonymous> (): kotlin.String declared in <root>.bar'
                   CALL 'public final fun foo <T> ($suppliedTypeParameterFor_T: dev.lounres.kone.suppliedTypes.SuppliedType): kotlin.String declared in <root>' type=kotlin.String origin=null
                     TYPE_ARG T: kotlin.collections.Map<out T of <root>.bar, T of <root>.bar?>
-                    ARG $suppliedTypeParameterFor_T: CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+                    ARG $suppliedTypeParameterFor_T: CALL 'public final fun of <T> (<this>: dev.lounres.kone.suppliedTypes.SuppliedType.Companion): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
                       TYPE_ARG T: kotlin.collections.Map<out T of <root>.bar, T of <root>.bar?>
+                      ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.suppliedTypes.SuppliedType.Companion
   FUN name:box visibility:public modality:FINAL returnType:kotlin.String
     BLOCK_BODY
       RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in <root>'
@@ -24,8 +25,9 @@ FILE fqName:<root> fileName:/withSuppliedUsage1.kt
             if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
               ARG arg0: CALL 'public final fun bar <T> (arg: dev.lounres.kone.suppliedTypes.SuppliedType): kotlin.String declared in <root>' type=kotlin.String origin=null
                 TYPE_ARG T: kotlin.String
-                ARG arg: CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+                ARG arg: CALL 'public final fun of <T> (<this>: dev.lounres.kone.suppliedTypes.SuppliedType.Companion): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
                   TYPE_ARG T: kotlin.String
+                  ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.suppliedTypes.SuppliedType.Companion
               ARG arg1: CONST String type=kotlin.String value="kotlin.collections.List<out kotlin.collections.Map<out kotlin.String, out kotlin.String?>>"
             then: CONST String type=kotlin.String value="OK"
           BRANCH
@@ -39,16 +41,18 @@ FILE fqName:<root> fileName:/withSuppliedUsage1.kt
       annotations:
         SupplianceProvided
       EXPRESSION_BODY
-        CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+        CALL 'public final fun of <T> (<this>: dev.lounres.kone.suppliedTypes.SuppliedType.Companion): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
           TYPE_ARG T: T of <root>.foo
+          ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.suppliedTypes.SuppliedType.Companion
     annotations:
       SupplianceProvided
     BLOCK_BODY
       RETURN type=kotlin.Nothing from='public final fun foo <T> ($suppliedTypeParameterFor_T: dev.lounres.kone.suppliedTypes.SuppliedType): kotlin.String declared in <root>'
         CALL 'public open fun toString (): kotlin.String declared in dev.lounres.kone.suppliedTypes.SuppliedType' type=kotlin.String origin=null
           ARG <this>: TYPE_OP type=kotlin.Any origin=IMPLICIT_CAST typeOperand=kotlin.Any
-            CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+            CALL 'public final fun of <T> (<this>: dev.lounres.kone.suppliedTypes.SuppliedType.Companion): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
               TYPE_ARG T: kotlin.collections.List<T of <root>.foo>
+              ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.suppliedTypes.SuppliedType.Companion
   FUN name:foo visibility:public modality:FINAL returnType:kotlin.String
     TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
       annotations:

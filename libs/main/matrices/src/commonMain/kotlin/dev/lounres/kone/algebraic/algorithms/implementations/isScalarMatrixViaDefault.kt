@@ -24,8 +24,9 @@ import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.neq
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 private class IsScalarMatrixCheckerViaDefault<Number, Matrix : MDList2<Number>>(
@@ -63,10 +64,10 @@ public object IsScalarMatrixCheckerDefaultSuppliableTopLevelFunctions {
         val koneContextRegistry = koneContextRegistry.get()
         return viaDefault(
             numberEquality = koneContextRegistry.requestFor(Equality.Key<Number>()) {
-                "IsScalarMatrixChecker.viaDefault<${suppliedTypeOf<Number>()}, ?>"
+                "IsScalarMatrixChecker.viaDefault<${SuppliedType.of<Number>()}, ?>"
             },
             numberRing = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) {
-                "IsScalarMatrixChecker.viaDefault<${suppliedTypeOf<Number>()}, ?>"
+                "IsScalarMatrixChecker.viaDefault<${SuppliedType.of<Number>()}, ?>"
             },
         )
     }

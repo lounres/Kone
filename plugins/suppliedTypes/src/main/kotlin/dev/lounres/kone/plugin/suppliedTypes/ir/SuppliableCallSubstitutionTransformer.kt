@@ -62,6 +62,10 @@ class SuppliableCallSubstitutionTransformer(
                                     irCall(
                                         callee = irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol
                                     ).apply {
+                                        arguments[0] = irGetObjectValue(
+                                            type = irRuntimeReferences.suppliedTypeCompanionIrType,
+                                            classSymbol = irRuntimeReferences.suppliedTypeCompanionIrClassSymbol,
+                                        )
                                         typeArguments[0] = expressionTypeArguments[suppliedTypeParametersIndices[parameterIndex - initialParameterIndex]]
                                     }
                         } else {
@@ -98,6 +102,10 @@ class SuppliableCallSubstitutionTransformer(
                             arguments[parameterIndex] = arguments[parameterIndex] ?: irCall(
                                 callee = irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol
                             ).apply {
+                                arguments[0] = irGetObjectValue(
+                                    type = irRuntimeReferences.suppliedTypeCompanionIrType,
+                                    classSymbol = irRuntimeReferences.suppliedTypeCompanionIrClassSymbol,
+                                )
                                 typeArguments[0] = expressionTypeArguments[suppliedTypeParametersIndices[parameterIndex - initialParameterIndex]]
                             }
                         } else {

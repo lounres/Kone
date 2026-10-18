@@ -19,8 +19,9 @@ import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 private class InverseMatrixComputerViaAdjugateMatrixAndDeterminant<Number, Matrix : MDList2<Number>>(
@@ -43,7 +44,7 @@ public object InverseMatrixComputerAdjugateMatrixAndDeterminantSuppliableTopLeve
         val koneContextRegistry = koneContextRegistry.get()
         return viaAdjugateMatrixAndDeterminant(
             matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
-                "InverseMatrixComputer.viaAdjugateMatrixAndDeterminant<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "InverseMatrixComputer.viaAdjugateMatrixAndDeterminant<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
         )
     }

@@ -42,8 +42,9 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage23.kt
         annotations:
           SupplianceProvided
         EXPRESSION_BODY
-          CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+          CALL 'public final fun of <T> (<this>: dev.lounres.kone.suppliedTypes.SuppliedType.Companion): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
             TYPE_ARG T: T of <root>.Foo
+            ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.suppliedTypes.SuppliedType.Companion
       annotations:
         SupplianceProvided
     CONSTRUCTOR visibility:public returnType:<root>.Foo<T of <root>.Foo> [primary]
@@ -76,8 +77,9 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage23.kt
         RETURN type=kotlin.Nothing from='public final fun foo (): kotlin.String declared in <root>.Foo'
           CALL 'public open fun toString (): kotlin.String declared in dev.lounres.kone.suppliedTypes.SuppliedType' type=kotlin.String origin=null
             ARG <this>: TYPE_OP type=kotlin.Any origin=IMPLICIT_CAST typeOperand=kotlin.Any
-              CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+              CALL 'public final fun of <T> (<this>: dev.lounres.kone.suppliedTypes.SuppliedType.Companion): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
                 TYPE_ARG T: {T of <root>.Foo & Any}
+                ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.suppliedTypes.SuppliedType.Companion
   FUN name:box visibility:public modality:FINAL returnType:kotlin.String
     BLOCK_BODY
       RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in <root>'
@@ -87,8 +89,9 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage23.kt
               ARG arg0: CALL 'public final fun foo (): kotlin.String declared in <root>.Foo' type=kotlin.String origin=null
                 ARG <this>: CONSTRUCTOR_CALL 'public constructor <init> ($suppliedTypeParameterFor_T: dev.lounres.kone.suppliedTypes.SuppliedType) declared in <root>.Foo' type=<root>.Foo<kotlin.String> origin=null
                   TYPE_ARG (of class) T: kotlin.String
-                  ARG $suppliedTypeParameterFor_T: CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+                  ARG $suppliedTypeParameterFor_T: CALL 'public final fun of <T> (<this>: dev.lounres.kone.suppliedTypes.SuppliedType.Companion): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
                     TYPE_ARG T: kotlin.String
+                    ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.suppliedTypes.SuppliedType.Companion
               ARG arg1: CONST String type=kotlin.String value="kotlin.String"
             then: CONST String type=kotlin.String value="OK"
           BRANCH

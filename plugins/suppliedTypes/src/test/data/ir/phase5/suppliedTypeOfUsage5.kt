@@ -3,7 +3,7 @@ import dev.lounres.kone.suppliedTypes.*
 
 @Suppliable
 abstract class Foo<@Supply T> {
-    fun foo() = suppliedTypeOf<List<T>>().toString()
+    fun foo() = SuppliedType.of<List<T>>().toString()
 }
 
 @Suppliable

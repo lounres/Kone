@@ -16,6 +16,7 @@ const val koneSuppliedTypesPackageFQNameString = "dev.lounres.kone.suppliedTypes
 const val suppliedTypeClassShortNameString = "SuppliedType"
 const val suppliedTypeRegularClassShortNameString = "Regular"
 const val suppliedTypeDynamicSingletonShortNameString = "Dynamic"
+const val suppliedTypeCompanionSingletonShortNameString = "Companion"
 const val suppliedProjectionClassShortNameString = "SuppliedProjection"
 const val suppliedProjectionRegularClassShortNameString = "Regular"
 const val suppliedProjectionStarSingletonShortNameString = "Star"
@@ -23,7 +24,7 @@ const val suppliedProjectionStarSingletonShortNameString = "Star"
 const val supplyAnnotationShortNameString = "Supply"
 const val suppliableAnnotationShortNameString = "Suppliable"
 const val suppliableClassClassShortNameString = "SuppliableClass"
-const val suppliedTypeOfFunctionShortNameString = "suppliedTypeOf"
+const val suppliedTypeOfFunctionShortNameString = "of"
 //const val supplyFunctionShortNameString = "supply"
 const val withSuppliedFunctionShortNameString = "withSupplied"
 // Private runtime
@@ -38,6 +39,7 @@ val koneSuppliedTypesPackageFQName = FqName(koneSuppliedTypesPackageFQNameString
 val suppliedTypeClassShortName = FqName(suppliedTypeClassShortNameString)
 val suppliedTypeRegularClassShortName = FqName("$suppliedTypeClassShortNameString.$suppliedTypeRegularClassShortNameString")
 val suppliedTypeDynamicSingletonShortName = FqName("$suppliedTypeClassShortNameString.$suppliedTypeDynamicSingletonShortNameString")
+val suppliedTypeCompanionSingletonShortName = FqName("$suppliedTypeClassShortNameString.$suppliedTypeCompanionSingletonShortNameString")
 val suppliedProjectionClassShortName = FqName(suppliedProjectionClassShortNameString)
 val suppliedProjectionRegularClassShortName = FqName("$suppliedProjectionClassShortNameString.$suppliedProjectionRegularClassShortNameString")
 val suppliedProjectionStarSingletonShortName = FqName("$suppliedProjectionClassShortNameString.$suppliedProjectionStarSingletonShortNameString")
@@ -69,6 +71,11 @@ val suppliedTypeRegularClassClassId = ClassId(
 val suppliedTypeDynamicSingletonClassId = ClassId(
     packageFqName = koneSuppliedTypesPackageFQName,
     relativeClassName = suppliedTypeDynamicSingletonShortName,
+    isLocal = false
+)
+val suppliedTypeCompanionSingletonClassId = ClassId(
+    packageFqName = koneSuppliedTypesPackageFQName,
+    relativeClassName = suppliedTypeCompanionSingletonShortName,
     isLocal = false
 )
 val suppliedProjectionClassClassId = ClassId(

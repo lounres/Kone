@@ -19,8 +19,9 @@ import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 private class ScalarBasedMatrixFunctionApplierViaSchurParlettForComplexNumbers<Number, Matrix : MDList2<ComplexNumber<Number>>>(
@@ -106,31 +107,31 @@ public object ScalarBasedMatrixFunctionApplierSchurParlettForComplexNumbersSuppl
         val koneContextRegistry = koneContextRegistry.get()
         return viaSchurParlettForComplexNumbers(
             matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, Matrix>()) {
-                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
+                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}, ${SuppliedType.of<Function>()}>"
             },
             field = koneContextRegistry.requestFor(Field.Key<Number>()) {
-                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
+                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}, ${SuppliedType.of<Function>()}>"
             },
             order = koneContextRegistry.requestFor(Order.Key<Number>()) {
-                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
+                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}, ${SuppliedType.of<Function>()}>"
             },
             complexNumberField = koneContextRegistry.requestFor(Field.Key<ComplexNumber<Number>>()) {
-                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
+                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}, ${SuppliedType.of<Function>()}>"
             },
             matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<ComplexNumber<Number>, Matrix>()) {
-                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
+                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}, ${SuppliedType.of<Function>()}>"
             },
             matrixProductComputer = koneContextRegistry.requestFor(MatrixProductComputer.Key<ComplexNumber<Number>, Matrix>()) {
-                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
+                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}, ${SuppliedType.of<Function>()}>"
             },
             inverseMatrixComputer = koneContextRegistry.requestFor(InverseMatrixComputer.Key<ComplexNumber<Number>, Matrix>()) {
-                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
+                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}, ${SuppliedType.of<Function>()}>"
             },
             schurDecompositionComputer = koneContextRegistry.requestFor(SchurDecompositionComputer.Key<ComplexNumber<Number>, Matrix>()) {
-                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
+                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}, ${SuppliedType.of<Function>()}>"
             },
             isDiagonalMatrixChecker = koneContextRegistry.requestFor(IsDiagonalMatrixChecker.Key<ComplexNumber<Number>, Matrix>()) {
-                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}, ${suppliedTypeOf<Function>()}>"
+                "ScalarBasedMatrixFunctionApplier.viaSchurParlettForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}, ${SuppliedType.of<Function>()}>"
             },
             atomicBlockImageComputationTolerance = atomicBlockImageComputationTolerance,
             blockingParameter = blockingParameter,

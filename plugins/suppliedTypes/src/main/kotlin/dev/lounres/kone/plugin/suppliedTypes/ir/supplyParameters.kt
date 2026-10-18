@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.ir.builders.irCall
 import org.jetbrains.kotlin.ir.builders.irExprBody
 import org.jetbrains.kotlin.ir.builders.irGetObject
+import org.jetbrains.kotlin.ir.builders.irGetObjectValue
 import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.util.deepCopyWithSymbols
 import org.jetbrains.kotlin.ir.util.parentAsClass
@@ -40,6 +41,10 @@ fun supplyFunctionsParameters(
                         value = irCall(
                             callee = irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol
                         ).apply {
+                            arguments[0] = irGetObjectValue(
+                                type = irRuntimeReferences.suppliedTypeCompanionIrType,
+                                classSymbol = irRuntimeReferences.suppliedTypeCompanionIrClassSymbol,
+                            )
                             typeArguments[0] = supplianceSupplyTypeParameters[supplyTypeArgumentCounter].defaultType
                         }
                     )
@@ -84,6 +89,10 @@ fun supplyConstructorsParameters(
                             value = irCall(
                                 callee = irRuntimeReferences.suppliedTypeOfIrSimpleFunctionSymbol
                             ).apply {
+                                arguments[0] = irGetObjectValue(
+                                    type = irRuntimeReferences.suppliedTypeCompanionIrType,
+                                    classSymbol = irRuntimeReferences.suppliedTypeCompanionIrClassSymbol,
+                                )
                                 typeArguments[0] = classSupplyTypeParameters[supplyTypeArgumentCounter].defaultType
                             }
                         )

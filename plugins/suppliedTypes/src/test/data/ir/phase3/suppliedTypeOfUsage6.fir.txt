@@ -5,7 +5,7 @@ FILE: suppliedTypeOfUsage6.kt
         }
 
         @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final fun <@R|dev/lounres/kone/suppliedTypes/Supply|() T> foo(): R|kotlin/String| {
-            ^foo R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|kotlin/collections/List<T>|>().R|kotlin/Any.toString|()
+            ^foo Q|dev/lounres/kone/suppliedTypes/SuppliedType|.R|dev/lounres/kone/suppliedTypes/of|<R|kotlin/collections/List<T>|>().R|kotlin/Any.toString|()
         }
 
     }

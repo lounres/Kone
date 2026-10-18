@@ -7,8 +7,9 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage2.kt
             if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
               ARG arg0: CALL 'public open fun toString (): kotlin.String declared in dev.lounres.kone.suppliedTypes.SuppliedType' type=kotlin.String origin=null
                 ARG <this>: TYPE_OP type=kotlin.Any origin=IMPLICIT_CAST typeOperand=kotlin.Any
-                  CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+                  CALL 'public final fun of <T> (<this>: dev.lounres.kone.suppliedTypes.SuppliedType.Companion): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
                     TYPE_ARG T: kotlin.collections.List<kotlin.collections.Map<out kotlin.String, kotlin.String?>>
+                    ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.suppliedTypes.SuppliedType.Companion
               ARG arg1: CONST String type=kotlin.String value="kotlin.collections.List<out kotlin.collections.Map<out kotlin.String, out kotlin.String?>>"
             then: CONST String type=kotlin.String value="OK"
           BRANCH

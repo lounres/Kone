@@ -18,8 +18,9 @@ import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 private class ConjugateTransposeMatrixComputerViaDefault<Number, Matrix : MDList2<ComplexNumber<Number>>>(
@@ -50,10 +51,10 @@ public object ConjugateTransposeMatrixComputerDefaultSuppliableTopLevelFunctions
         val koneContextRegistry = koneContextRegistry.get()
         return viaDefault(
             numberCommutativeRing = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) {
-                "ConjugateTransposeMatrixComputer.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "ConjugateTransposeMatrixComputer.viaDefault<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, Matrix>()) {
-                "ConjugateTransposeMatrixComputer.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "ConjugateTransposeMatrixComputer.viaDefault<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
         )
     }

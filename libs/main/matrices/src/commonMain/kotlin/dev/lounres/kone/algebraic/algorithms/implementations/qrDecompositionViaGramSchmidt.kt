@@ -20,8 +20,9 @@ import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 private class QRDecompositionComputerViaGramSchmidt<Number, Matrix : MDList2<Number>>(
@@ -85,13 +86,13 @@ public object QRDecompositionComputerGramSchmidtSuppliableTopLevelFunctions {
         val koneContextRegistry = koneContextRegistry.get()
         return viaGramSchmidt(
             matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
-                "QRDecompositionComputer.viaGramSchmidt<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "QRDecompositionComputer.viaGramSchmidt<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             field = koneContextRegistry.requestFor(Field.Key<Number>()) {
-                "QRDecompositionComputer.viaGramSchmidt<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "QRDecompositionComputer.viaGramSchmidt<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
-                "QRDecompositionComputer.viaGramSchmidt<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "QRDecompositionComputer.viaGramSchmidt<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
         )
     }

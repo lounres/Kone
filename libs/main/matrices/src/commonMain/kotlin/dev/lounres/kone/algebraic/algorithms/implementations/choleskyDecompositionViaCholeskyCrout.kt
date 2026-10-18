@@ -22,8 +22,9 @@ import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 private class CholeskyDecompositionViaCholeskyCrout<Number, Matrix : MDList2<Number>>(
@@ -88,16 +89,16 @@ public object CholeskyDecompositionComputerCholeskyCroutSuppliableTopLevelFuncti
         val koneContextRegistry = koneContextRegistry.get()
         return viaCholeskyCrout(
             matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
-                "CholeskyDecompositionComputer.viaCholeskyCrout<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "CholeskyDecompositionComputer.viaCholeskyCrout<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
-                "CholeskyDecompositionComputer.viaCholeskyCrout<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "CholeskyDecompositionComputer.viaCholeskyCrout<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
-                "CholeskyDecompositionComputer.viaCholeskyCrout<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "CholeskyDecompositionComputer.viaCholeskyCrout<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             transposeMatrixComputer = koneContextRegistry.requestFor(TransposeMatrixComputer.Key<Number, Matrix>()) {
-                "CholeskyDecompositionComputer.viaCholeskyCrout<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "CholeskyDecompositionComputer.viaCholeskyCrout<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
         )
     }

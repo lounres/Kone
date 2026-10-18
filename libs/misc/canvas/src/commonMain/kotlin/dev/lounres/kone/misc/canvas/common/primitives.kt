@@ -19,8 +19,9 @@ import dev.lounres.kone.misc.canvas.KoneColor
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.*
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.jvm.JvmInline
@@ -28,7 +29,7 @@ import kotlin.jvm.JvmInline
 
 @Suppliable
 public class KoneCanvasTargetKey<@Supply Target> : SuppliedTypeRegistryKey<KoneCanvasPrimitivesRegistry<Target>>() {
-    override fun toString(): String = "dev.lounres.kone.misc.canvas.common.KoneCanvasTargetKey<${suppliedTypeOf<Target>()}>"
+    override fun toString(): String = "dev.lounres.kone.misc.canvas.common.KoneCanvasTargetKey<${SuppliedType.of<Target>()}>"
     
     public data object SetKey : RegistryKey<KoneSet<KoneCanvasTargetKey<*>>>
 }

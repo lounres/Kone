@@ -8,7 +8,7 @@ package dev.lounres.kone.registry
 import dev.lounres.kone.suppliedTypes.Suppliable
 import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 /**
@@ -24,7 +24,7 @@ import dev.lounres.kone.suppliedTypes.suppliedTypeOf
  */
 @Suppliable
 public open class SuppliedTypeRegistryKey<@Supply T> : RegistryKey<T> {
-    private val typeKey: SuppliedType by lazy { suppliedTypeOf<T>() }
+    private val typeKey: SuppliedType by lazy { SuppliedType.of<T>() }
     
     /**
      * The [RegistryKeyContext] that defines equality and hashing for this key based on supplied types.

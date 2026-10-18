@@ -2,7 +2,7 @@ import dev.lounres.kone.suppliedTypes.*
 
 
 @Suppliable
-fun <@Supply T> foo() = suppliedTypeOf<List<T>>().toString()
+fun <@Supply T> foo() = SuppliedType.of<List<T>>().toString()
 
 @Suppliable
 fun <@Supply T> bar() = foo<Map<out T, T?>>()

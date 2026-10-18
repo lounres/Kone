@@ -17,8 +17,9 @@ import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.registry.*
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 private class ScalarBaseForMatrixExponentViaDefault<Number>(
@@ -41,7 +42,7 @@ public object ScalarBaseForMatrixFunctionExponentViaDefaultSuppliableTopLevelFun
         val koneContextRegistry = koneContextRegistry.get()
         return exponentViaDefault(
             exponentComputer = koneContextRegistry.requestFor(ExponentComputer.Key<Number>()) {
-                "ScalarBaseForMatrixFunction.exponentViaDefault<${suppliedTypeOf<Number>()}>"
+                "ScalarBaseForMatrixFunction.exponentViaDefault<${SuppliedType.of<Number>()}>"
             },
         )
     }
@@ -97,13 +98,13 @@ public object ScalarBaseForMatrixFunctionExponentViaDefaultSuppliableTopLevelFun
         val koneContextRegistry = koneContextRegistry.get()
         return exponentViaDefault(
             order = koneContextRegistry.requestFor(Order.Key<Number>()) {
-                "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.exponentViaDefault<${suppliedTypeOf<Number>()}>"
+                "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.exponentViaDefault<${SuppliedType.of<Number>()}>"
             },
             exponentComputer = koneContextRegistry.requestFor(ExponentComputer.Key<Number>()) {
-                "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.exponentViaDefault<${suppliedTypeOf<Number>()}>"
+                "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.exponentViaDefault<${SuppliedType.of<Number>()}>"
             },
             complexNumberExponentComputer = koneContextRegistry.requestFor(ExponentComputer.Key<ComplexNumber<Number>>()) {
-                "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.exponentViaDefault<${suppliedTypeOf<Number>()}>"
+                "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.exponentViaDefault<${SuppliedType.of<Number>()}>"
             },
         )
     }

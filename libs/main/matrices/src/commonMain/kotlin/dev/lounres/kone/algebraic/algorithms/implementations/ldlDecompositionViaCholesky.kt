@@ -24,8 +24,9 @@ import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 private class LDLDecompositionViaCholesky<Number, Matrix : MDList2<Number>>(
@@ -95,13 +96,13 @@ public object LDLDecompositionComputerLDLSuppliableTopLevelFunctions {
         val koneContextRegistry = koneContextRegistry.get()
         return viaCholesky(
             matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
-                "LDLDecompositionComputer.viaCholesky<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "LDLDecompositionComputer.viaCholesky<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
-                "LDLDecompositionComputer.viaCholesky<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "LDLDecompositionComputer.viaCholesky<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             transposeMatrixComputer = koneContextRegistry.requestFor(TransposeMatrixComputer.Key<Number, Matrix>()) {
-                "LDLDecompositionComputer.viaCholesky<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "LDLDecompositionComputer.viaCholesky<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
         )
     }

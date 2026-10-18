@@ -5,7 +5,7 @@ FILE: suppliedTypeOfUsage23.kt
         }
 
         public final fun foo(): R|kotlin/String| {
-            ^foo R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|T & Any|>().R|kotlin/Any.toString|()
+            ^foo Q|dev/lounres/kone/suppliedTypes/SuppliedType|.R|dev/lounres/kone/suppliedTypes/of|<R|T & Any|>().R|kotlin/Any.toString|()
         }
 
         public open var suppliedTypesStorage: R|kotlin/collections/Map<kotlin/String, kotlin/collections/List<dev/lounres/kone/suppliedTypes/SuppliedType>>|

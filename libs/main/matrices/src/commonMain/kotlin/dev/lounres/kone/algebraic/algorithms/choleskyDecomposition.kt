@@ -10,8 +10,9 @@ import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 // X = L L^*, L - lower triangular with real and positive diagonal entries
@@ -21,7 +22,7 @@ public data class CholeskyDecomposition<out Number, out Matrix : MDList2<Number>
 ) {
     @Suppliable
     public class Key<@Supply Number, @Supply Matrix : MDList2<Number>> : SuppliedTypeRegistryKey<CholeskyDecomposition<Number, Matrix>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.CholeskyDecomposition.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.CholeskyDecomposition.Key<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
     }
 }
 

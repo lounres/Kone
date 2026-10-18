@@ -49,8 +49,9 @@ FILE fqName:<root> fileName:/inheritance9.kt
             annotations:
               SupplianceProvided
             EXPRESSION_BODY
-              CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+              CALL 'public final fun of <T> (<this>: dev.lounres.kone.suppliedTypes.SuppliedType.Companion): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
                 TYPE_ARG T: U of <root>.Hou.Kie.Bar
+                ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.suppliedTypes.SuppliedType.Companion
           annotations:
             SupplianceProvided
         CONSTRUCTOR visibility:public returnType:<root>.Hou.Kie.Bar<U of <root>.Hou.Kie.Bar> [primary]
@@ -158,8 +159,9 @@ FILE fqName:<root> fileName:/inheritance9.kt
           annotations:
             SupplianceProvided
           EXPRESSION_BODY
-            CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+            CALL 'public final fun of <T> (<this>: dev.lounres.kone.suppliedTypes.SuppliedType.Companion): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
               TYPE_ARG T: T of <root>.Raf.Foo
+              ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.suppliedTypes.SuppliedType.Companion
         annotations:
           SupplianceProvided
       CONSTRUCTOR visibility:public returnType:<root>.Raf.Foo<T of <root>.Raf.Foo> [primary]

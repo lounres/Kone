@@ -32,8 +32,9 @@ import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 private class QRDecompositionComputerViaHouseholder<Number, Matrix : MDList2<Number>>(
@@ -151,28 +152,28 @@ public object QRDecompositionComputerHouseholderSuppliableTopLevelFunctions {
         val koneContextRegistry = koneContextRegistry.get()
         return viaHouseholder(
             matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
-                "QRDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "QRDecompositionComputer.viaHouseholder<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
-                "QRDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "QRDecompositionComputer.viaHouseholder<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             numberEquality = koneContextRegistry.requestFor(Equality.Key<Number>()) {
-                "QRDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "QRDecompositionComputer.viaHouseholder<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             numberOrder = koneContextRegistry.requestFor(Order.Key<Number>()) {
-                "QRDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "QRDecompositionComputer.viaHouseholder<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
-                "QRDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "QRDecompositionComputer.viaHouseholder<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<Number, Matrix>()) {
-                "QRDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "QRDecompositionComputer.viaHouseholder<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             matrixProductComputer = koneContextRegistry.requestFor(MatrixProductComputer.Key<Number, Matrix>()) {
-                "QRDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "QRDecompositionComputer.viaHouseholder<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             transposeMatrixComputer = koneContextRegistry.requestFor(TransposeMatrixComputer.Key<Number, Matrix>()) {
-                "QRDecompositionComputer.viaHouseholder<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "QRDecompositionComputer.viaHouseholder<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
         )
     }

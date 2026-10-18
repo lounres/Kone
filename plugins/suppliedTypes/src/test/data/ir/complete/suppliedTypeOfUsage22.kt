@@ -8,7 +8,7 @@ interface Foo {
 
 object Bar : Foo {
     @Suppliable
-    override fun <@Supply T> foo(): String = suppliedTypeOf<T & Any>().toString()
+    override fun <@Supply T> foo(): String = SuppliedType.of<T & Any>().toString()
 }
 
 fun box(): String = if ((Bar as Foo).foo<String?>() == "kotlin.String") "OK" else "INCORRECT"

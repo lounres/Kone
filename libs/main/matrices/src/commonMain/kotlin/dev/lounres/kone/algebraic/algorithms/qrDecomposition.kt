@@ -10,8 +10,9 @@ import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 // A = QR where Q is unitary and R is upper triangular
@@ -21,7 +22,7 @@ public data class QRDecomposition<out Number, out Matrix : MDList2<Number>>(
 ) {
     @Suppliable
     public class Key<@Supply Number, @Supply Matrix : MDList2<Number>> : SuppliedTypeRegistryKey<QRDecomposition<Number, Matrix>>() {
-        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.QRDecomposition.Key<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+        override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.QRDecomposition.Key<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
     }
 }
 

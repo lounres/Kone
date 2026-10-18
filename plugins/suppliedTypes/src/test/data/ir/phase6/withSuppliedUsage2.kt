@@ -3,9 +3,9 @@ import dev.lounres.kone.suppliedTypes.*
 
 @Suppliable
 fun <@Supply T, X> foo(): List<String> = buildList {
-    add(suppliedTypeOf<Map<T, String>>().toString())
-    withSupplied<X, _>(suppliedTypeOf<Long>()) {
-        add(suppliedTypeOf<Map<T, X>>().toString())
+    add(SuppliedType.of<Map<T, String>>().toString())
+    withSupplied<X, _>(SuppliedType.of<Long>()) {
+        add(SuppliedType.of<Map<T, X>>().toString())
     }
 }
 

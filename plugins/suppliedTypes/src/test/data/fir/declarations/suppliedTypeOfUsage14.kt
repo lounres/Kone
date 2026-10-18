@@ -3,7 +3,7 @@ import dev.lounres.kone.suppliedTypes.*
 
 @Suppliable
 interface Foo<@Supply T> {
-    fun foo() = suppliedTypeOf<T?>().toString()
+    fun foo() = SuppliedType.of<T?>().toString()
 }
 
 @Suppliable

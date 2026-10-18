@@ -10,13 +10,14 @@ import dev.lounres.kone.contextsKeys.GenerateKoneContextKey
 import dev.lounres.kone.maybe.Maybe
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 @Suppliable
 public class LogarithmKey<@Supply Number> : SuppliedTypeRegistryKey<Maybe<Number>>() {
-    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.LogarithmKey<${suppliedTypeOf<Number>()}>"
+    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.LogarithmKey<${SuppliedType.of<Number>()}>"
 }
 
 @GenerateKoneContextKey

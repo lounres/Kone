@@ -13,8 +13,9 @@ import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.ImpliedKeysRegistry
 import dev.lounres.kone.registry.SuppliedTypeRegistryKey
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 public fun interface ScalarBaseForMatrixFunction<Number> {
@@ -25,12 +26,12 @@ public fun interface ScalarBaseForMatrixFunction<Number> {
 
 @Suppliable
 public class ScalarBaseForMatrixExponentKey<@Supply Number> : SuppliedTypeRegistryKey<ScalarBaseForMatrixFunction<Number>>() {
-    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ScalarBaseForMatrixExponentKey<${suppliedTypeOf<Number>()}>"
+    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ScalarBaseForMatrixExponentKey<${SuppliedType.of<Number>()}>"
 }
 
 @Suppliable
 public class ScalarBaseForMatrixLogarithmKey<@Supply Number> : SuppliedTypeRegistryKey<ScalarBaseForMatrixFunction<Number>>() {
-    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ScalarBaseForMatrixLogarithmKey<${suppliedTypeOf<Number>()}>"
+    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ScalarBaseForMatrixLogarithmKey<${SuppliedType.of<Number>()}>"
 }
 
 public interface ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound<Number> : ScalarBaseForMatrixFunction<ComplexNumber<Number>> {
@@ -46,7 +47,7 @@ public class ScalarBaseForMatrixExponentWithComplexNumberConvexHullBoundKey<@Sup
             ScalarBaseForMatrixExponentKey<ComplexNumber<Number>>().impliesSame()
         }
     }
-    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ScalarBaseForMatrixExponentWithComplexNumberConvexHullBoundKey<${suppliedTypeOf<Number>()}>"
+    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ScalarBaseForMatrixExponentWithComplexNumberConvexHullBoundKey<${SuppliedType.of<Number>()}>"
 }
 
 @Suppliable
@@ -56,7 +57,7 @@ public class ScalarBaseForMatrixLogarithmWithComplexNumberConvexHullBoundKey<@Su
             ScalarBaseForMatrixLogarithmKey<ComplexNumber<Number>>().impliesSame()
         }
     }
-    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ScalarBaseForMatrixLogarithmWithComplexNumberConvexHullBoundKey<${suppliedTypeOf<Number>()}>"
+    override fun toString(): String = "dev.lounres.kone.algebraic.algorithms.ScalarBaseForMatrixLogarithmWithComplexNumberConvexHullBoundKey<${SuppliedType.of<Number>()}>"
 }
 
 @GenerateKoneContextKey

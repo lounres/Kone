@@ -11,8 +11,9 @@ import dev.lounres.kone.contexts.invoke
 import dev.lounres.kone.multidimensionalCollections.MDList2
 import dev.lounres.kone.registry.*
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 private class MatrixCategoryOverRingViaDefault<Number, Matrix : MDList2<Number>>(
@@ -108,10 +109,10 @@ public object MatrixCategoryOverRingViaDefaultSuppliableTopLevelFunctions {
         val koneContextRegistry = koneContextRegistry.get()
         return viaDefault(
             matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
-                "MatrixCategoryOverField.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "MatrixCategoryOverField.viaDefault<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             ring = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) {
-                "MatrixCategoryOverField.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "MatrixCategoryOverField.viaDefault<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
         )
     }
@@ -233,10 +234,10 @@ public object MatrixCategoryOverFieldViaDefaultSuppliableTopLevelFunctions {
         val koneContextRegistry = koneContextRegistry.get()
         return viaDefault(
             matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
-                "MatrixCategoryOverField.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "MatrixCategoryOverField.viaDefault<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             field = koneContextRegistry.requestFor(Field.Key<Number>()) {
-                "MatrixCategoryOverField.viaDefault<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "MatrixCategoryOverField.viaDefault<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
         )
     }

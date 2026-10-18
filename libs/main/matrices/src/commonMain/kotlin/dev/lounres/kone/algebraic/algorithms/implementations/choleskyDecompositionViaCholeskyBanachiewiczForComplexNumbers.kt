@@ -22,8 +22,9 @@ import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 private class CholeskyDecompositionViaCholeskyBanachiewiczForComplexNumbers<Number, Matrix : MDList2<ComplexNumber<Number>>>(
@@ -90,19 +91,19 @@ public object CholeskyDecompositionComputerCholeskyBanachiewiczForComplexNumbers
         val koneContextRegistry = koneContextRegistry.get()
         return viaCholeskyBanachiewiczForComplexNumbers(
             matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, Matrix>()) {
-                "CholeskyDecompositionComputer.viaCholeskyBanachiewiczForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "CholeskyDecompositionComputer.viaCholeskyBanachiewiczForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
-                "CholeskyDecompositionComputer.viaCholeskyBanachiewiczForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "CholeskyDecompositionComputer.viaCholeskyBanachiewiczForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             complexNumberFieldExtension = koneContextRegistry.requestFor(FieldExtension.Key<Number, ComplexNumber<Number>>()) {
-                "CholeskyDecompositionComputer.viaCholeskyBanachiewiczForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "CholeskyDecompositionComputer.viaCholeskyBanachiewiczForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
-                "CholeskyDecompositionComputer.viaCholeskyBanachiewiczForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "CholeskyDecompositionComputer.viaCholeskyBanachiewiczForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             conjugateTransposeMatrixComputer = koneContextRegistry.requestFor(ConjugateTransposeMatrixComputer.Key<Number, Matrix>()) {
-                "CholeskyDecompositionComputer.viaCholeskyBanachiewiczForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "CholeskyDecompositionComputer.viaCholeskyBanachiewiczForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
         )
     }

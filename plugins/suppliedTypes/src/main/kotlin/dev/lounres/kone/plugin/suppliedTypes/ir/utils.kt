@@ -105,6 +105,8 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
     val suppliedTypeRegularIrType: IrType = suppliedTypeRegularIrClassSymbol.createType(hasQuestionMark = false, arguments = emptyList())
     val suppliedTypeDynamicIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedTypeDynamicSingletonClassId)
     val suppliedTypeDynamicIrType: IrType = suppliedTypeDynamicIrClassSymbol.createType(hasQuestionMark = false, arguments = emptyList())
+    val suppliedTypeCompanionIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedTypeCompanionSingletonClassId)
+    val suppliedTypeCompanionIrType: IrType = suppliedTypeCompanionIrClassSymbol.createType(hasQuestionMark = false, arguments = emptyList())
     val suppliedProjectionIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedProjectionClassClassId)
     val suppliedProjectionRegularIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedProjectionRegularClassClassId)
     val suppliedProjectionStarIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedProjectionStarSingletonClassId)
@@ -117,7 +119,9 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
     val suppliableClassSuppliedTypesStorageGetterIrSimpleFunctionSymbol = suppliableClassSuppliedTypesStorageIrPropertySymbol.owner.getter!!.symbol
     val suppliableClassSuppliedTypesStorageSetterIrSimpleFunctionSymbol = suppliableClassSuppliedTypesStorageIrPropertySymbol.owner.setter!!.symbol
     val suppliableClassAfterSupplianceIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = suppliableClassIrClassSymbol.functionByName("afterSuppliance")
-    val suppliedTypeOfIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(suppliedTypeOfFunctionCallableId)
+    val suppliedTypeOfIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(suppliedTypeOfFunctionCallableId) { symbol ->
+        symbol.owner.parameters.let { it.size == 1 && it[0].type == suppliedTypeCompanionIrType }
+    }
 //    val supplyIrSimpleFunctionSymbol: IrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(supplyFunctionCallableId)
     fun withSuppliedIrSimpleFunctionSymbol(arity: Int): IrSimpleFunctionSymbol =
         finder.referenceFunctionThatOrFail(withSuppliedFunctionCallableId) {

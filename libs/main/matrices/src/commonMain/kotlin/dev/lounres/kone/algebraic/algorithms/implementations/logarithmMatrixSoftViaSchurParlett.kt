@@ -20,8 +20,9 @@ import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 private class LogarithmMatrixSoftComputerViaSchurParlett<Number, Matrix : MDList2<Number>>(
@@ -73,22 +74,22 @@ public object LogarithmSoftComputerSchurParlettSuppliableTopLevelFunctions {
         val koneContextRegistry = koneContextRegistry.get()
         return viaSchurParlett(
             matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
-                "LogarithmSoftComputer.viaSchurParlett<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "LogarithmSoftComputer.viaSchurParlett<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             field = koneContextRegistry.requestFor(Field.Key<Number>()) {
-                "LogarithmSoftComputer.viaSchurParlett<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "LogarithmSoftComputer.viaSchurParlett<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<Number, Matrix>()) {
-                "LogarithmSoftComputer.viaSchurParlett<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "LogarithmSoftComputer.viaSchurParlett<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             matrixProductComputer = koneContextRegistry.requestFor(MatrixProductComputer.Key<Number, Matrix>()) {
-                "LogarithmSoftComputer.viaSchurParlett<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "LogarithmSoftComputer.viaSchurParlett<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             schurDecompositionComputer = koneContextRegistry.requestFor(SchurDecompositionComputer.Key<Number, Matrix>()) {
-                "LogarithmSoftComputer.viaSchurParlett<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "LogarithmSoftComputer.viaSchurParlett<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             isDiagonalMatrixChecker = koneContextRegistry.requestFor(IsDiagonalMatrixChecker.Key<Number, Matrix>()) {
-                "LogarithmSoftComputer.viaSchurParlett<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "LogarithmSoftComputer.viaSchurParlett<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
         )
     }

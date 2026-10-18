@@ -32,8 +32,9 @@ import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 private class LDLDecompositionViaCholeskyCroutForComplexNumbers<Number, Matrix : MDList2<ComplexNumber<Number>>>(
@@ -102,16 +103,16 @@ public object LDLDecompositionComputerLDLCroutForComplexNumbersSuppliableTopLeve
         val koneContextRegistry = koneContextRegistry.get()
         return viaCholeskyCroutForComplexNumbers(
             matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, Matrix>()) {
-                "LDLDecompositionComputer.viaCholeskyCroutForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "LDLDecompositionComputer.viaCholeskyCroutForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
-                "LDLDecompositionComputer.viaCholeskyCroutForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "LDLDecompositionComputer.viaCholeskyCroutForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             complexNumberFieldExtension = koneContextRegistry.requestFor(FieldExtension.Key<Number, ComplexNumber<Number>>()) {
-                "LDLDecompositionComputer.viaCholeskyCroutForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "LDLDecompositionComputer.viaCholeskyCroutForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             conjugateTransposeMatrixComputer = koneContextRegistry.requestFor(ConjugateTransposeMatrixComputer.Key<Number, Matrix>()) {
-                "LDLDecompositionComputer.viaCholeskyCroutForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "LDLDecompositionComputer.viaCholeskyCroutForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
         )
     }

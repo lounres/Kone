@@ -19,8 +19,9 @@ import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 private class MDList2MatrixFactory<Number>(
@@ -51,7 +52,7 @@ public object MatrixFactoryViaDefaultSuppliableTopLevelFunctions {
     public fun <@Supply Number> MatrixFactory.Companion.viaDefault(): MatrixFactory<Number, MDList2<Number>> {
         val koneContextRegistry = koneContextRegistry.get()
         return viaDefault(
-            ring = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) { "MatrixFactory.viaDefault<${suppliedTypeOf<Number>()}>" }
+            ring = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) { "MatrixFactory.viaDefault<${SuppliedType.of<Number>()}>" }
         )
     }
     

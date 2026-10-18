@@ -5,7 +5,7 @@ import dev.lounres.kone.suppliedTypes.*
 
 @Suppliable
 context(_: List<String>)
-fun <@Supply T> Int.foo(): Set<T> = emptySet<T>().also { println(suppliedTypeOf<T>()) }
+fun <@Supply T> Int.foo(): Set<T> = emptySet<T>().also { println(SuppliedType.of<T>()) }
 
 // FILE: LongX.kt
 import dev.lounres.kone.suppliedTypes.*
@@ -13,7 +13,7 @@ import dev.lounres.kone.suppliedTypes.*
 
 @Suppliable
 context(_: List<String>)
-fun <@Supply T> Long.foo(): Set<T> = emptySet<T>().also { println(suppliedTypeOf<T>()) }
+fun <@Supply T> Long.foo(): Set<T> = emptySet<T>().also { println(SuppliedType.of<T>()) }
 
 // MODULE: bar(foo)
 import dev.lounres.kone.suppliedTypes.*

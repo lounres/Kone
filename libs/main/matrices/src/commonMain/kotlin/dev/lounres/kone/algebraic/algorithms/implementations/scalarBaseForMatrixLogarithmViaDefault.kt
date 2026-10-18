@@ -17,8 +17,9 @@ import dev.lounres.kone.contexts.localUnwrap
 import dev.lounres.kone.registry.*
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 private class ScalarBaseForMatrixLogarithmViaDefault<Number>(
@@ -48,10 +49,10 @@ public object ScalarBaseForMatrixFunctionLogarithmViaDefaultSuppliableTopLevelFu
         val koneContextRegistry = koneContextRegistry.get()
         return logarithmViaDefault(
             numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
-                "ScalarBaseForMatrixFunction.logarithmViaDefault<${suppliedTypeOf<Number>()}>"
+                "ScalarBaseForMatrixFunction.logarithmViaDefault<${SuppliedType.of<Number>()}>"
             },
             logarithmComputer = koneContextRegistry.requestFor(LogarithmComputer.Key<Number>()) {
-                "ScalarBaseForMatrixFunction.logarithmViaDefault<${suppliedTypeOf<Number>()}>"
+                "ScalarBaseForMatrixFunction.logarithmViaDefault<${SuppliedType.of<Number>()}>"
             },
         )
     }
@@ -123,25 +124,25 @@ public object ScalarBaseForMatrixFunctionLogarithmViaDefaultSuppliableTopLevelFu
         val koneContextRegistry = koneContextRegistry.get()
         return logarithmViaDefault(
             order = koneContextRegistry.requestFor(Order.Key<Number>()) {
-                "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<${suppliedTypeOf<Number>()}>"
+                "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<${SuppliedType.of<Number>()}>"
             },
             numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
-                "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<${suppliedTypeOf<Number>()}>"
+                "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<${SuppliedType.of<Number>()}>"
             },
             complexNumberFieldExtension = koneContextRegistry.requestFor(FieldExtension.Key<Number, ComplexNumber<Number>>()) {
-                "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<${suppliedTypeOf<Number>()}>"
+                "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<${SuppliedType.of<Number>()}>"
             },
             positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
-                "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<${suppliedTypeOf<Number>()}>"
+                "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<${SuppliedType.of<Number>()}>"
             },
             logarithmComputer = koneContextRegistry.requestFor(LogarithmComputer.Key<Number>()) {
-                "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<${suppliedTypeOf<Number>()}>"
+                "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<${SuppliedType.of<Number>()}>"
             },
             complexNumberLogarithmComputer = koneContextRegistry.requestFor(LogarithmComputer.Key<ComplexNumber<Number>>()) {
-                "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<${suppliedTypeOf<Number>()}>"
+                "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<${SuppliedType.of<Number>()}>"
             },
             planarVectorArgumentComputer = koneContextRegistry.requestFor(PlanarVectorArgumentComputer.Key<Number>()) {
-                "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<${suppliedTypeOf<Number>()}>"
+                "ScalarBaseForMatrixFunctionWithComplexNumberConvexHullBound.logarithmViaDefault<${SuppliedType.of<Number>()}>"
             }
         )
     }

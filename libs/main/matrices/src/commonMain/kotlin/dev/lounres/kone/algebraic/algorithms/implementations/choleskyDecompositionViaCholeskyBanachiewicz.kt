@@ -22,8 +22,9 @@ import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 private class CholeskyDecompositionViaCholeskyBanachiewicz<Number, Matrix : MDList2<Number>>(
@@ -86,16 +87,16 @@ public object CholeskyDecompositionComputerCholeskyBanachiewiczSuppliableTopLeve
         val koneContextRegistry = koneContextRegistry.get()
         return viaCholeskyBanachiewicz(
             matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
-                "CholeskyDecompositionComputer.viaCholeskyBanachiewicz<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "CholeskyDecompositionComputer.viaCholeskyBanachiewicz<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
-                "CholeskyDecompositionComputer.viaCholeskyBanachiewicz<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "CholeskyDecompositionComputer.viaCholeskyBanachiewicz<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
-                "CholeskyDecompositionComputer.viaCholeskyBanachiewicz<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "CholeskyDecompositionComputer.viaCholeskyBanachiewicz<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             transposeMatrixComputer = koneContextRegistry.requestFor(TransposeMatrixComputer.Key<Number, Matrix>()) {
-                "CholeskyDecompositionComputer.viaCholeskyBanachiewicz<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "CholeskyDecompositionComputer.viaCholeskyBanachiewicz<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
         )
     }

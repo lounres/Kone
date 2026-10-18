@@ -25,8 +25,9 @@ import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.leq
 import dev.lounres.kone.repeat
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 import kotlin.math.ceil
 import kotlin.math.log2
 
@@ -198,40 +199,40 @@ public object ExponentComputerSchurParlettUsingScalingAndSquaringSuppliableTopLe
         val koneContextRegistry = koneContextRegistry.get()
         return viaSchurParlettUsingScalingAndSquaring(
             matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Double>, Matrix>()) {
-                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${suppliedTypeOf<Matrix>()}>"
+                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${SuppliedType.of<Matrix>()}>"
             },
             field = koneContextRegistry.requestFor(Field.Key<Double>()) {
-                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${suppliedTypeOf<Matrix>()}>"
+                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${SuppliedType.of<Matrix>()}>"
             },
             order = koneContextRegistry.requestFor(Order.Key<Double>()) {
-                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${suppliedTypeOf<Matrix>()}>"
+                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${SuppliedType.of<Matrix>()}>"
             },
             complexNumberField = koneContextRegistry.requestFor(Field.Key<ComplexNumber<Double>>()) {
-                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${suppliedTypeOf<Matrix>()}>"
+                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${SuppliedType.of<Matrix>()}>"
             },
             positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Double>()) {
-                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${suppliedTypeOf<Matrix>()}>"
+                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${SuppliedType.of<Matrix>()}>"
             },
             complexNumberExponentComputer = koneContextRegistry.requestFor(ExponentComputer.Key<ComplexNumber<Double>>()) {
-                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${suppliedTypeOf<Matrix>()}>"
+                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${SuppliedType.of<Matrix>()}>"
             },
             complexNumberHyperbolicSineOverInputComputer = koneContextRegistry.requestFor(HyperbolicSineOverInputComputer.Key<ComplexNumber<Double>>()) {
-                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${suppliedTypeOf<Matrix>()}>"
+                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${SuppliedType.of<Matrix>()}>"
             },
             matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<ComplexNumber<Double>, Matrix>()) {
-                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${suppliedTypeOf<Matrix>()}>"
+                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${SuppliedType.of<Matrix>()}>"
             },
             matrixProductComputer = koneContextRegistry.requestFor(MatrixProductComputer.Key<ComplexNumber<Double>, Matrix>()) {
-                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${suppliedTypeOf<Matrix>()}>"
+                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${SuppliedType.of<Matrix>()}>"
             },
             inverseMatrixComputer = koneContextRegistry.requestFor(InverseMatrixComputer.Key<ComplexNumber<Double>, Matrix>()) {
-                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${suppliedTypeOf<Matrix>()}>"
+                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${SuppliedType.of<Matrix>()}>"
             },
             schurDecompositionComputer = koneContextRegistry.requestFor(SchurDecompositionComputer.Key<ComplexNumber<Double>, Matrix>()) {
-                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${suppliedTypeOf<Matrix>()}>"
+                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${SuppliedType.of<Matrix>()}>"
             },
             isDiagonalMatrixChecker = koneContextRegistry.requestFor(IsDiagonalMatrixChecker.Key<ComplexNumber<Double>, Matrix>()) {
-                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${suppliedTypeOf<Matrix>()}>"
+                "ExponentComputer.viaSchurParlettUsingScalingAndSquaring<Double, ${SuppliedType.of<Matrix>()}>"
             },
             blockingParameter = blockingParameter,
         )

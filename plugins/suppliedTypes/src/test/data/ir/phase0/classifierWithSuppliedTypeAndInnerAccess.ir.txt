@@ -30,8 +30,9 @@ FILE fqName:<root> fileName:/classifierWithSuppliedTypeAndInnerAccess.kt
       VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.Foo<T of <root>.Foo>
       BLOCK_BODY
         TYPE_OP type=kotlin.Unit origin=IMPLICIT_COERCION_TO_UNIT typeOperand=kotlin.Unit
-          CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+          CALL 'public final fun of <T> (<this>: dev.lounres.kone.suppliedTypes.SuppliedType.Companion): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
             TYPE_ARG T: kotlin.collections.List<T of <root>.Foo>
+            ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.suppliedTypes.SuppliedType.Companion
     PROPERTY FAKE_OVERRIDE name:suppliedTypesStorage visibility:public modality:ABSTRACT [fake_override,var]
       annotations:
         Deprecated(message = "Internal supplied types API.", replaceWith = <null>, level = DeprecationLevel.HIDDEN)

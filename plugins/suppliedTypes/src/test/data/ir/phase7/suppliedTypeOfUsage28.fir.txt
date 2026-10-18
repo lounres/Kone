@@ -5,7 +5,7 @@ FILE: suppliedTypeOfUsage28.kt
         }
 
         public final val foo: R|kotlin/String|by R|kotlin/lazy|<R|kotlin/String|>(<L> = lazy@fun <anonymous>(): R|kotlin/String| <inline=NoInline>  {
-            ^ R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|kotlin/collections/List<T>|>().R|kotlin/Any.toString|()
+            ^ Q|dev/lounres/kone/suppliedTypes/SuppliedType|.R|dev/lounres/kone/suppliedTypes/of|<R|kotlin/collections/List<T>|>().R|kotlin/Any.toString|()
         }
         )
             public get(): R|kotlin/String| {

@@ -32,8 +32,9 @@ import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.relations.Order
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 private class HessenbergDecompositionComputerViaHouseholderForComplexNumbers<Number, Matrix : MDList2<ComplexNumber<Number>>>(
@@ -142,31 +143,31 @@ public object HessenbergDecompositionComputerHouseholderForComplexNumbersSupplia
         val koneContextRegistry = koneContextRegistry.get()
         return viaHouseholderForComplexNumbers(
             matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, Matrix>()) {
-                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
-                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             complexNumberFieldExtension = koneContextRegistry.requestFor(FieldExtension.Key<Number, ComplexNumber<Number>>()) {
-                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             numberEquality = koneContextRegistry.requestFor(Equality.Key<Number>()) {
-                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             numberOrder = koneContextRegistry.requestFor(Order.Key<Number>()) {
-                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
-                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<ComplexNumber<Number>, Matrix>()) {
-                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             matrixProductComputer = koneContextRegistry.requestFor(MatrixProductComputer.Key<ComplexNumber<Number>, Matrix>()) {
-                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             conjugateTransposeMatrixComputer = koneContextRegistry.requestFor(ConjugateTransposeMatrixComputer.Key<Number, Matrix>()) {
-                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "HessenbergDecompositionComputer.viaHouseholderForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
         )
     }

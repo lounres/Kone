@@ -28,8 +28,9 @@ import dev.lounres.kone.relations.Order
 import dev.lounres.kone.relations.leq
 import dev.lounres.kone.scope
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 private class SchurDecompositionComputerViaGolubVanLoan<Number, Matrix : MDList2<Number>>(
@@ -290,31 +291,31 @@ public object SchurDecompositionComputerGolubVanLoanSuppliableTopLevelFunctions 
         return viaGolubVanLoan(
             tolerance = tolerance,
             matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<Number, Matrix>()) {
-                "SchurDecompositionComputer.viaGolubVanLoan<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "SchurDecompositionComputer.viaGolubVanLoan<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
-                "SchurDecompositionComputer.viaGolubVanLoan<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "SchurDecompositionComputer.viaGolubVanLoan<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             numberEquality = koneContextRegistry.requestFor(Equality.Key<Number>()) {
-                "SchurDecompositionComputer.viaGolubVanLoan<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "SchurDecompositionComputer.viaGolubVanLoan<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             numberOrder = koneContextRegistry.requestFor(Order.Key<Number>()) {
-                "SchurDecompositionComputer.viaGolubVanLoan<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "SchurDecompositionComputer.viaGolubVanLoan<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
-                "SchurDecompositionComputer.viaGolubVanLoan<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "SchurDecompositionComputer.viaGolubVanLoan<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             matrixCategoryOverField = koneContextRegistry.requestFor(MatrixCategoryOverField.Key<Number, Matrix>()) {
-                "SchurDecompositionComputer.viaGolubVanLoan<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "SchurDecompositionComputer.viaGolubVanLoan<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             matrixProductComputer = koneContextRegistry.requestFor(MatrixProductComputer.Key<Number, Matrix>()) {
-                "SchurDecompositionComputer.viaGolubVanLoan<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "SchurDecompositionComputer.viaGolubVanLoan<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             transposeMatrixComputer = koneContextRegistry.requestFor(TransposeMatrixComputer.Key<Number, Matrix>()) {
-                "SchurDecompositionComputer.viaGolubVanLoan<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "SchurDecompositionComputer.viaGolubVanLoan<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             hessenbergDecompositionComputer = koneContextRegistry.requestFor(HessenbergDecompositionComputer.Key<Number, Matrix>()) {
-                "SchurDecompositionComputer.viaGolubVanLoan<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "SchurDecompositionComputer.viaGolubVanLoan<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
         )
     }

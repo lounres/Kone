@@ -22,8 +22,9 @@ import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.relations.Equality
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 private class IsZeroMatrixCheckerViaDefault<out Number, in Matrix : MDList2<Number>>(
@@ -49,10 +50,10 @@ public object IsZeroMatrixCheckerDefaultSuppliableTopLevelFunctions {
         val koneContextRegistry = koneContextRegistry.get()
         return viaDefault(
             numberEquality = koneContextRegistry.requestFor(Equality.Key<Number>()) {
-                "IsZeroMatrixChecker.viaDefault<${suppliedTypeOf<Number>()}, ?>"
+                "IsZeroMatrixChecker.viaDefault<${SuppliedType.of<Number>()}, ?>"
             },
             numberRing = koneContextRegistry.requestFor(CommutativeRing.Key<Number>()) {
-                "IsZeroMatrixChecker.viaDefault<${suppliedTypeOf<Number>()}, ?>"
+                "IsZeroMatrixChecker.viaDefault<${SuppliedType.of<Number>()}, ?>"
             },
         )
     }

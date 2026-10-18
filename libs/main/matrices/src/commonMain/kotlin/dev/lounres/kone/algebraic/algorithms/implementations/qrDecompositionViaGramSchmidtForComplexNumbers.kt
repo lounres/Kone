@@ -20,8 +20,9 @@ import dev.lounres.kone.registry.RegisteredValueProvider
 import dev.lounres.kone.registry.cached
 import dev.lounres.kone.registry.correspondsTo
 import dev.lounres.kone.suppliedTypes.Suppliable
+import dev.lounres.kone.suppliedTypes.SuppliedType
 import dev.lounres.kone.suppliedTypes.Supply
-import dev.lounres.kone.suppliedTypes.suppliedTypeOf
+import dev.lounres.kone.suppliedTypes.of
 
 
 private class QRDecompositionComputerViaGramSchmidtForComplexNumbers<Number, Matrix : MDList2<ComplexNumber<Number>>>(
@@ -88,16 +89,16 @@ public object QRDecompositionComputerGramSchmidtForComplexNumbersSuppliableTopLe
         val koneContextRegistry = koneContextRegistry.get()
         return viaGramSchmidtForComplexNumbers(
             matrixFactory = koneContextRegistry.requestFor(MatrixFactory.Key<ComplexNumber<Number>, Matrix>()) {
-                "QRDecompositionComputer.viaGramSchmidtForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "QRDecompositionComputer.viaGramSchmidtForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             numberField = koneContextRegistry.requestFor(Field.Key<Number>()) {
-                "QRDecompositionComputer.viaGramSchmidtForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "QRDecompositionComputer.viaGramSchmidtForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             complexNumberFieldExtension = koneContextRegistry.requestFor(FieldExtension.Key<Number, ComplexNumber<Number>>()) {
-                "QRDecompositionComputer.viaGramSchmidtForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "QRDecompositionComputer.viaGramSchmidtForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
             positiveSquareRootComputer = koneContextRegistry.requestFor(PositiveSquareRootComputer.Key<Number>()) {
-                "QRDecompositionComputer.viaGramSchmidtForComplexNumbers<${suppliedTypeOf<Number>()}, ${suppliedTypeOf<Matrix>()}>"
+                "QRDecompositionComputer.viaGramSchmidtForComplexNumbers<${SuppliedType.of<Number>()}, ${SuppliedType.of<Matrix>()}>"
             },
         )
     }

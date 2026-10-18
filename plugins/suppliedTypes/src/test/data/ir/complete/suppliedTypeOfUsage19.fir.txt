@@ -1,7 +1,7 @@
 FILE: suppliedTypeOfUsage19.kt
     @R|dev/lounres/kone/suppliedTypes/Suppliable|() public abstract interface Foo<@R|dev/lounres/kone/suppliedTypes/Supply|() T> : R|kotlin/Any|, R|dev/lounres/kone/suppliedTypes/SuppliableClass| {
         public open fun foo(): R|kotlin/String| {
-            ^foo R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|T & Any|>().R|kotlin/Any.toString|()
+            ^foo Q|dev/lounres/kone/suppliedTypes/SuppliedType|.R|dev/lounres/kone/suppliedTypes/of|<R|T & Any|>().R|kotlin/Any.toString|()
         }
 
     }

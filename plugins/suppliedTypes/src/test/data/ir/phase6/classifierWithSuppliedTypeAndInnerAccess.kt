@@ -5,6 +5,6 @@ import kotlin.reflect.KVariance
 @Suppliable
 interface Foo<@Supply T> {
     fun foo() {
-        suppliedTypeOf<List<T>>()
+        SuppliedType.of<List<T>>()
     }
 }

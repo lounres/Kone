@@ -23,7 +23,7 @@ public annotation class Supply
  * Marks a declaration as suppliable.
  *
  * Suppliable functions and classes can declare supplied type parameters with [Supply], use
- * [suppliedTypeOf] to obtain runtime type representations, and receive supplied types through
+ * [SuppliedType.of] to obtain runtime type representations, and receive supplied types through
  * generated suppliance parameters.
  */
 @Target(
@@ -60,7 +60,6 @@ public interface SuppliableClass {
     public fun afterSuppliance() {}
 }
 
-// TODO: Replace with 'SuppliedType.Companion.of'
 /**
  * Creates a [SuppliedType] that represents the compile-time type [T].
  *
@@ -73,7 +72,7 @@ public interface SuppliableClass {
  * @return A [SuppliedType] describing [T].
  */
 @Suppliable
-public fun <@Supply T> suppliedTypeOf(): SuppliedType = suppliedTypesPluginExceptionForRuntimeDeclarations()
+public fun <@Supply T> SuppliedType.Companion.of(): SuppliedType = suppliedTypesPluginExceptionForRuntimeDeclarations()
 
 //public fun <T> supply(suppliedType: SuppliedType) {
 //    suppliedTypesPluginExceptionForRuntimeDeclarations()
@@ -82,7 +81,7 @@ public fun <@Supply T> suppliedTypeOf(): SuppliedType = suppliedTypesPluginExcep
 /**
  * Executes [block] in a scope where the supplied type parameter [T1] is bound to [suppliedType1].
  *
- * Within [block], [suppliedTypeOf] calls and suppliable calls can use [T1] as if it were a
+ * Within [block], [SuppliedType.of] calls and suppliable calls can use [T1] as if it were a
  * concrete type described by [suppliedType1]. This function is an intrinsic stub replaced by the
  * supplied types compiler plugin. If the plugin is not applied, calling it throws
  * [IllegalStateException].
@@ -108,7 +107,7 @@ public inline fun <T1, R> withSupplied(suppliedType1: SuppliedType, block: () ->
  * Executes [block] in a scope where the supplied type parameters [T1] and [T2] are bound to
  * [suppliedType1] and [suppliedType2], respectively.
  *
- * Within [block], [suppliedTypeOf] calls and suppliable calls can use [T1] and [T2] as if they
+ * Within [block], [SuppliedType.of] calls and suppliable calls can use [T1] and [T2] as if they
  * were concrete types described by the corresponding [SuppliedType] arguments. This function is an
  * intrinsic stub replaced by the supplied types compiler plugin. If the plugin is not applied,
  * calling it throws [IllegalStateException].
@@ -138,7 +137,7 @@ public inline fun <T1, T2, R> withSupplied(suppliedType1: SuppliedType, supplied
  * Executes [block] in a scope where the supplied type parameters [T1], [T2], and [T3] are bound to
  * [suppliedType1], [suppliedType2], and [suppliedType3], respectively.
  *
- * Within [block], [suppliedTypeOf] calls and suppliable calls can use [T1], [T2], and [T3] as if
+ * Within [block], [SuppliedType.of] calls and suppliable calls can use [T1], [T2], and [T3] as if
  * they were concrete types described by the corresponding [SuppliedType] arguments. This function is
  * an intrinsic stub replaced by the supplied types compiler plugin. If the plugin is not applied,
  * calling it throws [IllegalStateException].

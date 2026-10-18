@@ -89,8 +89,9 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage24.kt
         RETURN type=kotlin.Nothing from='public open fun foo (): kotlin.String declared in <root>.Foo'
           CALL 'public open fun toString (): kotlin.String declared in dev.lounres.kone.suppliedTypes.SuppliedType' type=kotlin.String origin=null
             ARG <this>: TYPE_OP type=kotlin.Any origin=IMPLICIT_CAST typeOperand=kotlin.Any
-              CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+              CALL 'public final fun of <T> (<this>: dev.lounres.kone.suppliedTypes.SuppliedType.Companion): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
                 TYPE_ARG T: {T of <root>.Foo & Any}
+                ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.suppliedTypes.SuppliedType.Companion
     PROPERTY FAKE_OVERRIDE name:suppliedTypesStorage visibility:public modality:ABSTRACT [fake_override,var]
       annotations:
         Deprecated(message = "Internal supplied types API.", replaceWith = <null>, level = DeprecationLevel.HIDDEN)

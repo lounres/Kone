@@ -2,7 +2,7 @@ FILE: IntX.kt
     context(<unused var>: R|kotlin/collections/List<kotlin/String>|)
     @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final fun <@R|dev/lounres/kone/suppliedTypes/Supply|() T> R|kotlin/Int|.foo(): R|kotlin/collections/Set<T>| {
         ^foo R|kotlin/collections/emptySet|<R|T|>().R|kotlin/also|<R|kotlin/collections/Set<T>|>(<L> = also@fun <anonymous>(it: R|kotlin/collections/Set<T>|): R|kotlin/Unit| <inline=Inline, kind=EXACTLY_ONCE>  {
-            R|kotlin/io/println|(R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|T|>())
+            R|kotlin/io/println|(Q|dev/lounres/kone/suppliedTypes/SuppliedType|.R|dev/lounres/kone/suppliedTypes/of|<R|T|>())
         }
         )
     }
@@ -10,7 +10,7 @@ FILE: LongX.kt
     context(<unused var>: R|kotlin/collections/List<kotlin/String>|)
     @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final fun <@R|dev/lounres/kone/suppliedTypes/Supply|() T> R|kotlin/Long|.foo(): R|kotlin/collections/Set<T>| {
         ^foo R|kotlin/collections/emptySet|<R|T|>().R|kotlin/also|<R|kotlin/collections/Set<T>|>(<L> = also@fun <anonymous>(it: R|kotlin/collections/Set<T>|): R|kotlin/Unit| <inline=Inline, kind=EXACTLY_ONCE>  {
-            R|kotlin/io/println|(R|dev/lounres/kone/suppliedTypes/suppliedTypeOf|<R|T|>())
+            R|kotlin/io/println|(Q|dev/lounres/kone/suppliedTypes/SuppliedType|.R|dev/lounres/kone/suppliedTypes/of|<R|T|>())
         }
         )
     }
