@@ -76,8 +76,7 @@ private class ExponentMatrixComputerViaSchurParlettUsingScalingAndSquaring<Matri
                         matrixCategoryOverField.matrixTimesInt
                     )
                     
-                    val size = this.rowNumber
-                    return when (size) {
+                    return when (val size = this.rowNumber) {
                         0u -> error(TODO())
                         1u -> matrixFactory.generateMatrix(1u, 1u) { _, _ -> this[0u, 0u].exponent() }
                         2u -> matrixFactory.mapMatrix(

@@ -3,7 +3,7 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-@file:Suppress("unused", "UnusedReceiverParameter", "WRONG_INVOCATION_KIND")
+@file:Suppress("unused", "UnusedReceiverParameter")
 
 package dev.lounres.kone.contexts
 
@@ -39,8 +39,7 @@ public annotation class KoneContextExclude
  * Runtime declaration for the `localReceivers` contexts plugin function.
  *
  * This function is a stub that is replaced at compile time by the Kone contexts compiler plugin.
- * It registers the provided [receivers] as local receivers available in the current scope
- * for context resolution.
+ * It registers the provided [receivers] as local receivers available in the current scope.
  *
  * @param receivers The objects to register as local receivers.
  * @throws UnsupportedOperationException Always thrown at runtime; this function must be
@@ -69,8 +68,8 @@ public fun localContexts(vararg contexts: Any?) {
  * It "unwraps" the provided [koneContexts] into their underlying [KoneContext] instances.
  *
  * "Unwrapping" means that the instance is used as a local context and all its included properties are unwrapped as well.
- * A property is considered as included if it is marked with [KoneContextInclude] which is not overrided by [KoneContextExclude]
- * (i.e. it does not have override property with the [KoneContextExclude] annotaition),
+ * A property is considered as included if it is marked with [KoneContextInclude] which is not overridden by [KoneContextExclude]
+ * (i.e. it does not have override property with the [KoneContextExclude] annotation),
  *
  * The properties to use during the unwrapping are found statically (i.e. by compiler by the provided type),
  * but not dynamically (i.e. not by the actual type that is a subtype of the provided type).
@@ -89,8 +88,8 @@ public fun KoneContext.Companion.localUnwrap(vararg koneContexts: KoneContext) {
  * It "unwraps" values corresponding to the specified [keys] in the [KoneContextRegistry] receiver.
  *
  * "Unwrapping" means that the instance is used as a local context and all its included properties are unwrapped as well.
- * A property is considered as included if it is marked with [KoneContextInclude] which is not overrided by [KoneContextExclude]
- * (i.e. it does not have override property with the [KoneContextExclude] annotaition),
+ * A property is considered as included if it is marked with [KoneContextInclude] which is not overridden by [KoneContextExclude]
+ * (i.e. it does not have override property with the [KoneContextExclude] annotation),
  *
  * The properties to use during the unwrapping are found statically (i.e. by compiler by the provided type),
  * but not dynamically (i.e. not by the actual type that is a subtype of the provided type).
@@ -109,8 +108,8 @@ public fun KoneContextRegistry.koneLocalUnwrap(vararg keys: RegistryKey<out Kone
  * It "unwraps" values corresponding to the specified [keys] in the [KoneContextRegistry] context parameter.
  *
  * "Unwrapping" means that the instance is used as a local context and all its included properties are unwrapped as well.
- * A property is considered as included if it is marked with [KoneContextInclude] which is not overrided by [KoneContextExclude]
- * (i.e. it does not have override property with the [KoneContextExclude] annotaition),
+ * A property is considered as included if it is marked with [KoneContextInclude] which is not overridden by [KoneContextExclude]
+ * (i.e. it does not have override property with the [KoneContextExclude] annotation),
  *
  * The properties to use during the unwrapping are found statically (i.e. by compiler by the provided type),
  * but not dynamically (i.e. not by the actual type that is a subtype of the provided type).
@@ -126,40 +125,79 @@ public fun koneLocalUnwrap(vararg keys: RegistryKey<out KoneContext>) {
     contextsPluginExceptionForRuntimeDeclarations()
 }
 
-//public inline fun <Result> receivers(vararg receivers: Any?, block: () -> Result): Result {
+/**
+ * Runtime declaration for the `localReceivers` contexts plugin function.
+ *
+ * This function is a stub that is replaced at compile time by the Kone contexts compiler plugin.
+ * It registers the provided [receivers] as receivers available in the scope of [block]
+ * for context resolution.
+ *
+ * @param receivers The objects to register as receivers in the scope of [block].
+ * @throws UnsupportedOperationException Always thrown at runtime; this function must be
+ *         transformed by the Kone contexts compiler plugin before execution.
+ */
+public inline fun <Result> receivers(vararg receivers: Any?, block: () -> Result): Result {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+        returnsResultOf(block)
+    }
+    return block()
+}
+
+/**
+ * Runtime declaration for the `localContexts` contexts plugin function.
+ *
+ * This function is a stub that is replaced at compile time by the Kone contexts compiler plugin.
+ * It registers the provided [contexts] as contexts available in the scope of [block].
+ *
+ * @param contexts The context instances to register as contexts in the scope of [block].
+ * @throws UnsupportedOperationException Always thrown at runtime; this function must be
+ *         transformed by the Kone contexts compiler plugin before execution.
+ */
+public inline fun <Result> contexts(vararg contexts: Any?, block: () -> Result): Result {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+        returnsResultOf(block)
+    }
+    return block()
+}
+
+/**
+ * This function is a stub that is replaced at compile time by the Kone contexts compiler plugin.
+ * It "unwraps" the provided [koneContexts] into their underlying [KoneContext] instances.
+ *
+ * "Unwrapping" means that the instance is used as a context in the scope of [block] and all its included properties are unwrapped as well.
+ * A property is considered as included if it is marked with [KoneContextInclude] which is not overridden by [KoneContextExclude]
+ * (i.e. it does not have override property with the [KoneContextExclude] annotation),
+ *
+ * The properties to use during the unwrapping are found statically (i.e. by compiler by the provided type),
+ * but not dynamically (i.e. not by the actual type that is a subtype of the provided type).
+ *
+ * @receiver The [KoneContext.Companion] object.
+ * @param koneContexts The context instances to unwrap.
+ * @throws UnsupportedOperationException Always thrown at runtime; this function must be
+ *         transformed by the Kone contexts compiler plugin before execution.
+ */
+public inline fun <Result> KoneContext.Companion.unwrap(vararg koneContexts: KoneContext, block: () -> Result): Result {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+        returnsResultOf(block)
+    }
+    return block()
+}
+//public inline fun <Result> KoneContextRegistry.koneUnwrap(vararg keys: RegistryKey<out KoneContext>, block: () -> Result): Result {
 //    contract {
 //        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
 //        returnsResultOf(block)
 //    }
-//    contextsPluginExceptionForRuntimeDeclarations()
-//}
-//public inline fun <Result> contexts(vararg receivers: Any?, block: () -> Result): Result {
-//    contract {
-//        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-//        returnsResultOf(block)
-//    }
-//    contextsPluginExceptionForRuntimeDeclarations()
-//}
-//public inline fun <Result> KoneContext.Companion.unwrap(vararg receivers: Any?, block: () -> Result): Result {
-//    contract {
-//        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-//        returnsResultOf(block)
-//    }
-//    contextsPluginExceptionForRuntimeDeclarations()
-//}
-//public inline fun <Result> KoneContextRegistry.koneUnwrap(vararg keys: RegistryKey<out KoneContext>, block: () -> Result) {
-//    contract {
-//        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-//        returnsResultOf(block)
-//    }
-//    contextsPluginExceptionForRuntimeDeclarations()
+//    return block()
 //}
 //@JvmName("koneUnwrapContextual")
 //context(koneContextRegistry: KoneContextRegistry)
-//public inline fun <Result> koneUnwrap(vararg keys: RegistryKey<out KoneContext>, block: () -> Result) {
+//public inline fun <Result> koneUnwrap(vararg keys: RegistryKey<out KoneContext>, block: () -> Result): Result {
 //    contract {
 //        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
 //        returnsResultOf(block)
 //    }
-//    contextsPluginExceptionForRuntimeDeclarations()
+//    return block()
 //}

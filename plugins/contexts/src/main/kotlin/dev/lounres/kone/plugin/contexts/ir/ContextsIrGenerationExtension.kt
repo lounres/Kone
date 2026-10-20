@@ -23,6 +23,16 @@ class ContextsIrGenerationExtension(
         if (currentPhase++ == lastPhase) return
         
         moduleFragment.accept(
+            ContextsScopeArgumentsMovingExtension(
+                pluginContext = pluginContext,
+                irRuntimeReferences = irRuntimeReferences,
+            ),
+            null
+        )
+        
+        if (currentPhase++ == lastPhase) return
+        
+        moduleFragment.accept(
             ContextsFakeValueParametersReplacementTransformer(
                 pluginContext = pluginContext,
                 irRuntimeReferences = irRuntimeReferences,

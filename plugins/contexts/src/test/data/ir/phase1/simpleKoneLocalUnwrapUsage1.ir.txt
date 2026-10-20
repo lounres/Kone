@@ -110,19 +110,16 @@ FILE fqName:foo.bar fileName:/simpleKoneLocalUnwrapUsage1.kt
         public open fun toString (): kotlin.String declared in dev.lounres.kone.contexts.KoneContext
   FUN name:box visibility:public modality:FINAL returnType:kotlin.String
     BLOCK_BODY
-      VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:dev.lounres.kone.contexts.KoneContextRegistry [val]
-        CALL 'public final fun <get-koneContextRegsitry> (): dev.lounres.kone.contexts.KoneContextRegistry declared in foo.bar' type=dev.lounres.kone.contexts.KoneContextRegistry origin=GET_PROPERTY
-      VAR IR_TEMPORARY_VARIABLE name:tmp_2 type:foo.bar.Foo [val]
-        CALL 'public abstract fun get <T> (registryKey: dev.lounres.kone.registry.RegistryKey<out T of dev.lounres.kone.registry.Registry.get>): T of dev.lounres.kone.registry.Registry.get declared in dev.lounres.kone.registry.Registry' type=foo.bar.Foo origin=null
-          TYPE_ARG T: foo.bar.Foo
-          ARG <this>: GET_VAR 'val tmp_1: dev.lounres.kone.contexts.KoneContextRegistry declared in foo.bar.box' type=dev.lounres.kone.contexts.KoneContextRegistry origin=null
-          ARG registryKey: GET_OBJECT 'CLASS OBJECT name:Key modality:FINAL visibility:public [data] superTypes:[dev.lounres.kone.registry.RegistryKey<foo.bar.Foo>]' type=foo.bar.Foo.Key
+      CALL 'public final fun koneLocalUnwrap (<this>: dev.lounres.kone.contexts.KoneContextRegistry, vararg keys: dev.lounres.kone.registry.RegistryKey<out dev.lounres.kone.contexts.KoneContext>): kotlin.Unit declared in dev.lounres.kone.contexts' type=kotlin.Unit origin=null
+        ARG <this>: CALL 'public final fun <get-koneContextRegsitry> (): dev.lounres.kone.contexts.KoneContextRegistry declared in foo.bar' type=dev.lounres.kone.contexts.KoneContextRegistry origin=GET_PROPERTY
+        ARG keys: VARARG type=kotlin.Array<out dev.lounres.kone.registry.RegistryKey<out dev.lounres.kone.contexts.KoneContext>> varargElementType=dev.lounres.kone.registry.RegistryKey<out dev.lounres.kone.contexts.KoneContext>
+          GET_OBJECT 'CLASS OBJECT name:Key modality:FINAL visibility:public [data] superTypes:[dev.lounres.kone.registry.RegistryKey<foo.bar.Foo>]' type=foo.bar.Foo.Key
       RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in foo.bar'
         WHEN type=kotlin.String origin=IF
           BRANCH
             if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
               ARG arg0: CALL 'public final fun <get-baz> (foo: foo.bar.Foo): kotlin.Int declared in foo.bar' type=kotlin.Int origin=GET_PROPERTY
-                ARG foo: GET_VAR 'val tmp_2: foo.bar.Foo declared in foo.bar.box' type=foo.bar.Foo origin=null
+                ARG foo: ERROR_CALL 'Unresolved reference: this@R|dev/lounres/kone/contexts/<Kone contexts koneLocalUnwrap context holder>|' type=foo.bar.Foo
               ARG arg1: CONST Int type=kotlin.Int value=57
             then: CONST String type=kotlin.String value="OK"
           BRANCH

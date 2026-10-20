@@ -1,0 +1,24 @@
+FILE: simpleLocalReceiversUsage1.kt
+    package foo.bar
+
+    public final class Baz : R|dev/lounres/kone/contexts/KoneContext| {
+        public constructor(): R|foo/bar/Baz| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final val gee: R|kotlin/Int| = Int(57)
+            public get(): R|kotlin/Int|
+
+    }
+    public final fun box(): R|kotlin/String| {
+        R|dev/lounres/kone/contexts/localReceivers|(vararg(R|foo/bar/Baz.Baz|()))
+        ^box when () {
+            ==(this@R|dev/lounres/kone/contexts/<Kone contexts localReceivers receiver holder>|.R|foo/bar/Baz.gee|, Int(57)) ->  {
+                String(OK)
+            }
+            else ->  {
+                String(INCORRECT)
+            }
+        }
+
+    }

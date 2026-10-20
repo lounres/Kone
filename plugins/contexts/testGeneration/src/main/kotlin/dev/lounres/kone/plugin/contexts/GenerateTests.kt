@@ -42,9 +42,9 @@ fun main() {
             testClass<AbstractBackendTestForPhase1> {
                 model("ir/phase1")
             }
-//            testClass<AbstractBackendTestForPhase2> {
-//                model("ir/phase2")
-//            }
+            testClass<AbstractBackendTestForPhase2> {
+                model("ir/phase2")
+            }
 //            testClass<AbstractBackendTestForPhase3> {
 //                model("ir/phase3")
 //            }

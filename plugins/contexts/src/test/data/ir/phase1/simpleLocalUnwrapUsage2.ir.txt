@@ -72,18 +72,17 @@ FILE fqName:foo.bar fileName:/simpleLocalUnwrapUsage2.kt
         public open fun toString (): kotlin.String declared in dev.lounres.kone.contexts.KoneContext
   FUN name:box visibility:public modality:FINAL returnType:kotlin.String
     BLOCK_BODY
-      VAR IR_TEMPORARY_VARIABLE name:tmp_0 type:foo.bar.Foo [val]
-        GET_OBJECT 'CLASS OBJECT name:Foo modality:FINAL visibility:public superTypes:[dev.lounres.kone.contexts.KoneContext]' type=foo.bar.Foo
-      VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:foo.bar.CoolContext<kotlin.Int> [val]
-        CALL 'public final fun <get-bar> (): foo.bar.CoolContext<kotlin.Int> declared in foo.bar.Foo' type=foo.bar.CoolContext<kotlin.Int> origin=null
-          ARG <this>: GET_VAR 'val tmp_0: foo.bar.Foo declared in foo.bar.box' type=foo.bar.Foo origin=null
+      CALL 'public final fun localUnwrap (<this>: dev.lounres.kone.contexts.KoneContext.Companion, vararg koneContexts: dev.lounres.kone.contexts.KoneContext): kotlin.Unit declared in dev.lounres.kone.contexts' type=kotlin.Unit origin=null
+        ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.contexts.KoneContext.Companion
+        ARG koneContexts: VARARG type=kotlin.Array<out dev.lounres.kone.contexts.KoneContext> varargElementType=dev.lounres.kone.contexts.KoneContext
+          GET_OBJECT 'CLASS OBJECT name:Foo modality:FINAL visibility:public superTypes:[dev.lounres.kone.contexts.KoneContext]' type=foo.bar.Foo
       RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in foo.bar'
         WHEN type=kotlin.String origin=IF
           BRANCH
             if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
               ARG arg0: CALL 'public final fun makeItCool <X> (coolContext: foo.bar.CoolContext<X of foo.bar.makeItCool>): X of foo.bar.makeItCool declared in foo.bar' type=kotlin.Int origin=null
                 TYPE_ARG X: kotlin.Int
-                ARG coolContext: GET_VAR 'val tmp_1: foo.bar.CoolContext<kotlin.Int> declared in foo.bar.box' type=foo.bar.CoolContext<kotlin.Int> origin=null
+                ARG coolContext: ERROR_CALL 'Unresolved reference: this@R|dev/lounres/kone/contexts/<Kone contexts localUnwrap context holder>|' type=foo.bar.CoolContext<kotlin.Int>
               ARG arg1: CONST Int type=kotlin.Int value=57
             then: CONST String type=kotlin.String value="OK"
           BRANCH

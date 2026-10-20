@@ -3,6 +3,8 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
+@file:Suppress("FunctionName", "ObjectPropertyName")
+
 package dev.lounres.kone.contexts
 
 
@@ -11,7 +13,4 @@ private class ContextsPluginException(message: String? = null, reason: Throwable
 @PublishedApi
 internal fun contextsPluginExceptionForRuntimeDeclarations(): Nothing = throw ContextsPluginException(contextsPluginExceptionForRuntimeDeclarationsMessage)
 
-//@Deprecated(message = "...", level = HIDDEN)
-//public fun contextsPluginLambdaLeadingCall() {
-////    error("...")
-//}
+public fun <T> _koneContextsPluginScopeArgumentStub(): T = contextsPluginExceptionForRuntimeDeclarations()

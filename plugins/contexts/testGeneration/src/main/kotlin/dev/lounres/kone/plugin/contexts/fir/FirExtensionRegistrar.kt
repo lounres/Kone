@@ -5,11 +5,14 @@
 
 package dev.lounres.kone.plugin.contexts.fir
 
+import org.jetbrains.kotlin.fir.extensions.FirExtensionApiInternals
 import org.jetbrains.kotlin.fir.extensions.FirExtensionRegistrar
 
 
 class DeclarationExtensionRegistrar : FirExtensionRegistrar() {
+    @OptIn(FirExtensionApiInternals::class)
     override fun ExtensionRegistrarContext.configurePlugin() {
+        +::FirScopeCallsInjectorExtension
         +::FirLocalReceiversExpressionResolutionExtension
         +::FirLocalContextsExpressionResolutionExtension
         +::FirLocalUnwrapExpressionResolutionExtension

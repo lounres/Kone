@@ -24,8 +24,11 @@ const val localReceiversFunctionShortNameString = "localReceivers"
 const val localContextsFunctionShortNameString = "localContexts"
 const val localUnwrapFunctionShortNameString = "localUnwrap"
 const val koneLocalUnwrapFunctionShortNameString = "koneLocalUnwrap"
-//const val contextsFunctionShortNameString = "contexts"
+const val receiversFunctionShortNameString = "receivers"
+const val contextsFunctionShortNameString = "contexts"
+const val unwrapFunctionShortNameString = "unwrap"
 // Private runtime
+const val koneContextsPluginScopeArgumentStubFunctionShortNameString = "_koneContextsPluginScopeArgumentStub"
 
 val koneContextsPackageFQName = FqName(koneContextsPackageFQNameString)
 val koneRegistryPackageFQName = FqName(koneRegistryPackageFQNameString)
@@ -40,8 +43,11 @@ val localReceiversFunctionShortName = Name.identifier(localReceiversFunctionShor
 val localContextsFunctionShortName = Name.identifier(localContextsFunctionShortNameString)
 val localUnwrapFunctionShortName = Name.identifier(localUnwrapFunctionShortNameString)
 val koneLocalUnwrapFunctionShortName = Name.identifier(koneLocalUnwrapFunctionShortNameString)
-//val contextsFunctionShortName = Name.identifier(contextsFunctionShortNameString)
+val receiversFunctionShortName = Name.identifier(receiversFunctionShortNameString)
+val contextsFunctionShortName = Name.identifier(contextsFunctionShortNameString)
+val unwrapFunctionShortName = Name.identifier(unwrapFunctionShortNameString)
 // Private runtime
+val koneContextsPluginScopeArgumentStubFunctionShortName = Name.identifier(koneContextsPluginScopeArgumentStubFunctionShortNameString)
 
 // Library
 val koneContextClassId = ClassId(
@@ -90,9 +96,24 @@ val koneLocalUnwrapFunctionCallableId = CallableId(
     className = null,
     callableName = koneLocalUnwrapFunctionShortName,
 )
-//val contextsFunctionCallableId = CallableId(
-//    packageName = koneContextsPackageFQName,
-//    className = null,
-//    callableName = contextsFunctionShortName,
-//)
+val receiversFunctionCallableId = CallableId(
+    packageName = koneContextsPackageFQName,
+    className = null,
+    callableName = receiversFunctionShortName,
+)
+val contextsFunctionCallableId = CallableId(
+    packageName = koneContextsPackageFQName,
+    className = null,
+    callableName = contextsFunctionShortName,
+)
+val unwrapFunctionCallableId = CallableId(
+    packageName = koneContextsPackageFQName,
+    className = null,
+    callableName = unwrapFunctionShortName,
+)
 // Private runtime
+val koneContextsPluginScopeArgumentStubFunctionCallableId = CallableId(
+    packageName = koneContextsPackageFQName,
+    className = null,
+    callableName = koneContextsPluginScopeArgumentStubFunctionShortName,
+)

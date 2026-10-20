@@ -102,6 +102,8 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
     val localContextsIrSimpleFunctionSymbol: IrSimpleFunctionSymbol by lazy { finder.referenceFunctionThatOrFail(localContextsFunctionCallableId) }
     val localUnwrapIrSimpleFunctionSymbol: IrSimpleFunctionSymbol by lazy { finder.referenceFunctionThatOrFail(localUnwrapFunctionCallableId) }
     val koneLocalUnwrapIrSimpleFunctionSymbols: Set<IrSimpleFunctionSymbol> by lazy { finder.findFunctions(koneLocalUnwrapFunctionCallableId).toSet() }
-//    val contextsIrSimpleFunctionSymbol: IrSimpleFunctionSymbol by lazy { finder.referenceFunctionThatOrFail(contextsFunctionCallableId) }
+    val receiversIrSimpleFunctionSymbol: IrSimpleFunctionSymbol by lazy { finder.referenceFunctionThatOrFail(receiversFunctionCallableId) }
+    val contextsIrSimpleFunctionSymbol: IrSimpleFunctionSymbol by lazy { finder.referenceFunctionThatOrFail(contextsFunctionCallableId) }
+    val unwrapIrSimpleFunctionSymbol: IrSimpleFunctionSymbol by lazy { finder.referenceFunctionThatOrFail(unwrapFunctionCallableId) }
     // Private runtime
 }

@@ -187,23 +187,16 @@ FILE fqName:foo.bar fileName:/simpleLocalUnwrapUsage12.kt
     VALUE_PARAMETER kind:Context name:ring index:0 type:foo.bar.Ring<Number of foo.bar.double>
     VALUE_PARAMETER kind:ExtensionReceiver name:<this> index:1 type:Number of foo.bar.double
     BLOCK_BODY
-      VAR IR_TEMPORARY_VARIABLE name:tmp_0 type:foo.bar.Ring<Number of foo.bar.double> [val]
-        GET_VAR 'ring: foo.bar.Ring<Number of foo.bar.double> declared in foo.bar.double' type=foo.bar.Ring<Number of foo.bar.double> origin=null
-      VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:foo.bar.Plus<Number of foo.bar.double, kotlin.Long, Number of foo.bar.double> [val]
-        CALL 'public abstract fun <get-numberPlusLong> (): foo.bar.Plus<Number of foo.bar.Ring, kotlin.Long, Number of foo.bar.Ring> declared in foo.bar.Ring' type=foo.bar.Plus<Number of foo.bar.double, kotlin.Long, Number of foo.bar.double> origin=null
-          ARG <this>: GET_VAR 'val tmp_0: foo.bar.Ring<Number of foo.bar.double> declared in foo.bar.double' type=foo.bar.Ring<Number of foo.bar.double> origin=null
-      VAR IR_TEMPORARY_VARIABLE name:tmp_2 type:foo.bar.Plus<Number of foo.bar.double, Number of foo.bar.double, Number of foo.bar.double> [val]
-        CALL 'public abstract fun <get-numberPlusNumber> (): foo.bar.Plus<Number of foo.bar.Ring, Number of foo.bar.Ring, Number of foo.bar.Ring> declared in foo.bar.Ring' type=foo.bar.Plus<Number of foo.bar.double, Number of foo.bar.double, Number of foo.bar.double> origin=null
-          ARG <this>: GET_VAR 'val tmp_0: foo.bar.Ring<Number of foo.bar.double> declared in foo.bar.double' type=foo.bar.Ring<Number of foo.bar.double> origin=null
-      VAR IR_TEMPORARY_VARIABLE name:tmp_3 type:foo.bar.Minus<Number of foo.bar.double, Number of foo.bar.double, Number of foo.bar.double> [val]
-        CALL 'public abstract fun <get-numberMinusNumber> (): foo.bar.Minus<Number of foo.bar.Ring, Number of foo.bar.Ring, Number of foo.bar.Ring> declared in foo.bar.Ring' type=foo.bar.Minus<Number of foo.bar.double, Number of foo.bar.double, Number of foo.bar.double> origin=null
-          ARG <this>: GET_VAR 'val tmp_0: foo.bar.Ring<Number of foo.bar.double> declared in foo.bar.double' type=foo.bar.Ring<Number of foo.bar.double> origin=null
+      CALL 'public final fun localUnwrap (<this>: dev.lounres.kone.contexts.KoneContext.Companion, vararg koneContexts: dev.lounres.kone.contexts.KoneContext): kotlin.Unit declared in dev.lounres.kone.contexts' type=kotlin.Unit origin=null
+        ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.contexts.KoneContext.Companion
+        ARG koneContexts: VARARG type=kotlin.Array<out dev.lounres.kone.contexts.KoneContext> varargElementType=dev.lounres.kone.contexts.KoneContext
+          GET_VAR 'ring: foo.bar.Ring<Number of foo.bar.double> declared in foo.bar.double' type=foo.bar.Ring<Number of foo.bar.double> origin=null
       RETURN type=kotlin.Nothing from='public final fun double <Number> (ring: foo.bar.Ring<Number of foo.bar.double>, <this>: Number of foo.bar.double): Number of foo.bar.double declared in foo.bar'
         CALL 'public final fun plus <Left, Right, Result> (plus: foo.bar.Plus<Left of foo.bar.plus, Right of foo.bar.plus, Result of foo.bar.plus>, <this>: Left of foo.bar.plus, other: Right of foo.bar.plus): Result of foo.bar.plus declared in foo.bar' type=Number of foo.bar.double origin=PLUS
           TYPE_ARG Left: Number of foo.bar.double
           TYPE_ARG Right: Number of foo.bar.double
           TYPE_ARG Result: Number of foo.bar.double
-          ARG plus: GET_VAR 'val tmp_2: foo.bar.Plus<Number of foo.bar.double, Number of foo.bar.double, Number of foo.bar.double> declared in foo.bar.double' type=foo.bar.Plus<Number of foo.bar.double, Number of foo.bar.double, Number of foo.bar.double> origin=null
+          ARG plus: ERROR_CALL 'Unresolved reference: this@R|dev/lounres/kone/contexts/<Kone contexts localUnwrap context holder>|' type=foo.bar.Plus<Number of foo.bar.double, Number of foo.bar.double, Number of foo.bar.double>
           ARG <this>: GET_VAR '<this>: Number of foo.bar.double declared in foo.bar.double' type=Number of foo.bar.double origin=null
           ARG other: GET_VAR '<this>: Number of foo.bar.double declared in foo.bar.double' type=Number of foo.bar.double origin=null
   FUN name:minus visibility:public modality:FINAL returnType:Result of foo.bar.minus [operator]
@@ -265,19 +258,12 @@ FILE fqName:foo.bar fileName:/simpleLocalUnwrapUsage12.kt
     VALUE_PARAMETER kind:Context name:ring index:0 type:foo.bar.Ring<Number of foo.bar.test>
     VALUE_PARAMETER kind:Regular name:arg index:1 type:Number of foo.bar.test
     BLOCK_BODY
-      VAR IR_TEMPORARY_VARIABLE name:tmp_4 type:foo.bar.Ring<Number of foo.bar.test> [val]
-        GET_VAR 'ring: foo.bar.Ring<Number of foo.bar.test> declared in foo.bar.test' type=foo.bar.Ring<Number of foo.bar.test> origin=null
-      VAR IR_TEMPORARY_VARIABLE name:tmp_5 type:foo.bar.Plus<Number of foo.bar.test, kotlin.Long, Number of foo.bar.test> [val]
-        CALL 'public abstract fun <get-numberPlusLong> (): foo.bar.Plus<Number of foo.bar.Ring, kotlin.Long, Number of foo.bar.Ring> declared in foo.bar.Ring' type=foo.bar.Plus<Number of foo.bar.test, kotlin.Long, Number of foo.bar.test> origin=null
-          ARG <this>: GET_VAR 'val tmp_4: foo.bar.Ring<Number of foo.bar.test> declared in foo.bar.test' type=foo.bar.Ring<Number of foo.bar.test> origin=null
-      VAR IR_TEMPORARY_VARIABLE name:tmp_6 type:foo.bar.Plus<Number of foo.bar.test, Number of foo.bar.test, Number of foo.bar.test> [val]
-        CALL 'public abstract fun <get-numberPlusNumber> (): foo.bar.Plus<Number of foo.bar.Ring, Number of foo.bar.Ring, Number of foo.bar.Ring> declared in foo.bar.Ring' type=foo.bar.Plus<Number of foo.bar.test, Number of foo.bar.test, Number of foo.bar.test> origin=null
-          ARG <this>: GET_VAR 'val tmp_4: foo.bar.Ring<Number of foo.bar.test> declared in foo.bar.test' type=foo.bar.Ring<Number of foo.bar.test> origin=null
-      VAR IR_TEMPORARY_VARIABLE name:tmp_7 type:foo.bar.Minus<Number of foo.bar.test, Number of foo.bar.test, Number of foo.bar.test> [val]
-        CALL 'public abstract fun <get-numberMinusNumber> (): foo.bar.Minus<Number of foo.bar.Ring, Number of foo.bar.Ring, Number of foo.bar.Ring> declared in foo.bar.Ring' type=foo.bar.Minus<Number of foo.bar.test, Number of foo.bar.test, Number of foo.bar.test> origin=null
-          ARG <this>: GET_VAR 'val tmp_4: foo.bar.Ring<Number of foo.bar.test> declared in foo.bar.test' type=foo.bar.Ring<Number of foo.bar.test> origin=null
+      CALL 'public final fun localUnwrap (<this>: dev.lounres.kone.contexts.KoneContext.Companion, vararg koneContexts: dev.lounres.kone.contexts.KoneContext): kotlin.Unit declared in dev.lounres.kone.contexts' type=kotlin.Unit origin=null
+        ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.contexts.KoneContext.Companion
+        ARG koneContexts: VARARG type=kotlin.Array<out dev.lounres.kone.contexts.KoneContext> varargElementType=dev.lounres.kone.contexts.KoneContext
+          GET_VAR 'ring: foo.bar.Ring<Number of foo.bar.test> declared in foo.bar.test' type=foo.bar.Ring<Number of foo.bar.test> origin=null
       TYPE_OP type=kotlin.Unit origin=IMPLICIT_COERCION_TO_UNIT typeOperand=kotlin.Unit
         CALL 'public final fun double <Number> (ring: foo.bar.Ring<Number of foo.bar.double>, <this>: Number of foo.bar.double): Number of foo.bar.double declared in foo.bar' type=Number of foo.bar.test origin=null
           TYPE_ARG Number: Number of foo.bar.test
-          ARG ring: GET_VAR 'val tmp_4: foo.bar.Ring<Number of foo.bar.test> declared in foo.bar.test' type=foo.bar.Ring<Number of foo.bar.test> origin=null
+          ARG ring: ERROR_CALL 'Unresolved reference: this@R|dev/lounres/kone/contexts/<Kone contexts localUnwrap context holder>|' type=foo.bar.Ring<Number of foo.bar.test>
           ARG <this>: GET_VAR 'arg: Number of foo.bar.test declared in foo.bar.test' type=Number of foo.bar.test origin=null

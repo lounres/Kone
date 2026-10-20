@@ -1,0 +1,41 @@
+FILE: simpleKoneLocalUnwrapUsage1.kt
+    package foo.bar
+
+    public final class Foo : R|dev/lounres/kone/contexts/KoneContext| {
+        public constructor(): R|foo/bar/Foo| {
+            super<R|kotlin/Any|>()
+        }
+
+        public final val bar: R|kotlin/Int| = Int(57)
+            public get(): R|kotlin/Int|
+
+        public final data object Key : R|dev/lounres/kone/registry/RegistryKey<foo/bar/Foo>| {
+            private constructor(): R|foo/bar/Foo.Key| {
+                super<R|kotlin/Any|>()
+            }
+
+        }
+
+    }
+    context(foo: R|foo/bar/Foo|)
+    public final val baz: R|kotlin/Int|
+        public get(): R|kotlin/Int| {
+            ^ R|<local>/foo|.R|foo/bar/Foo.bar|
+        }
+    public final val koneContextRegsitry: R|dev/lounres/kone/contexts/KoneContextRegistry| = Q|dev/lounres/kone/contexts/KoneContextRegistry|.R|dev/lounres/kone/contexts/build|(<L> = build@fun R|@R|dev/lounres/kone/contexts/KoneContextRegistryBuilderDsl|()  dev/lounres/kone/registry/MutableOwnedProviderRegistry<dev/lounres/kone/contexts/KoneContextRegistry>|.<anonymous>(): R|kotlin/Unit| <inline=Inline, kind=EXACTLY_ONCE>  {
+        context(this@R|special/anonymous|) Q|foo/bar/Foo.Key|.R|dev/lounres/kone/registry/correspondsTo|<R|foo/bar/Foo|>(R|foo/bar/Foo.Foo|())
+    }
+    )
+        public get(): R|dev/lounres/kone/contexts/KoneContextRegistry|
+    public final fun box(): R|kotlin/String| {
+        R|foo/bar/koneContextRegsitry|.R|dev/lounres/kone/contexts/koneLocalUnwrap|(vararg(Q|foo/bar/Foo.Key|))
+        ^box when () {
+            ==(context(this@R|dev/lounres/kone/contexts/<Kone contexts koneLocalUnwrap context holder>|) R|foo/bar/baz|, Int(57)) ->  {
+                String(OK)
+            }
+            else ->  {
+                String(INCORRECT)
+            }
+        }
+
+    }
