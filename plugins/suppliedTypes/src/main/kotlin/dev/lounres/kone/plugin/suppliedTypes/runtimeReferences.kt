@@ -32,7 +32,9 @@ const val suppliedTypesPluginExceptionForRuntimeDeclarationsFunctionShortNameStr
 const val suppliedTypesPluginExceptionForPluginMachineryFunctionShortNameString = "suppliedTypesPluginExceptionForPluginMachinery"
 const val supplianceProvidedAnnotationShortNameString = "SupplianceProvided"
 const val noSuppliedTypeParameterInClassStubSingletonShortNameString = "NoSuppliedTypeParameterInClassStub"
-const val suppliedTypesStorageDelegateFunctionShortNameString = "suppliedTypesStorageDelegate"
+const val suppliedTypesStorageInitializationExceptionClassShortNameString = "SuppliedTypesStorageInitializationException"
+const val suppliedTypesStorageDelegateInitializationExceptionForGetterPropertyShortNameString = "suppliedTypesStorageDelegateInitializationExceptionForGetter"
+const val suppliedTypesStorageDelegateInitializationExceptionForSetterPropertyShortNameString = "suppliedTypesStorageDelegateInitializationExceptionForSetter"
 
 val koneSuppliedTypesPackageFQName = FqName(koneSuppliedTypesPackageFQNameString)
 // Library
@@ -55,7 +57,9 @@ val suppliedTypesPluginExceptionForRuntimeDeclarationsFunctionShortName = Name.i
 val suppliedTypesPluginExceptionForPluginMachineryFunctionShortName = Name.identifier(suppliedTypesPluginExceptionForPluginMachineryFunctionShortNameString)
 val supplianceProvidedAnnotationShortName = FqName(supplianceProvidedAnnotationShortNameString)
 val noSuppliedTypeParameterInClassStubSingletonShortName = FqName(noSuppliedTypeParameterInClassStubSingletonShortNameString)
-val suppliedTypesStorageDelegateFunctionShortName = Name.identifier(suppliedTypesStorageDelegateFunctionShortNameString)
+val suppliedTypesStorageInitializationExceptionClassShortName = FqName(suppliedTypesStorageInitializationExceptionClassShortNameString)
+val suppliedTypesStorageDelegateInitializationExceptionForGetterPropertyShortName = Name.identifier(suppliedTypesStorageDelegateInitializationExceptionForGetterPropertyShortNameString)
+val suppliedTypesStorageDelegateInitializationExceptionForSetterPropertyShortName = Name.identifier(suppliedTypesStorageDelegateInitializationExceptionForSetterPropertyShortNameString)
 
 // Library
 val suppliedTypeClassClassId = ClassId(
@@ -145,8 +149,18 @@ val noSuppliedTypeParameterInClassStubSingletonClassId = ClassId(
     relativeClassName = noSuppliedTypeParameterInClassStubSingletonShortName,
     isLocal = false,
 )
-val suppliedTypesStorageDelegateFunctionCallableId = CallableId(
+val suppliedTypesStorageInitializationExceptionClassClassId = ClassId(
+    packageFqName = koneSuppliedTypesPackageFQName,
+    relativeClassName = suppliedTypesStorageInitializationExceptionClassShortName,
+    isLocal = false,
+)
+val suppliedTypesStorageDelegateInitializationExceptionForGetterPropertyCallableId = CallableId(
     packageName = koneSuppliedTypesPackageFQName,
     className = null,
-    callableName = suppliedTypesStorageDelegateFunctionShortName,
+    callableName = suppliedTypesStorageDelegateInitializationExceptionForGetterPropertyShortName,
+)
+val suppliedTypesStorageDelegateInitializationExceptionForSetterPropertyCallableId = CallableId(
+    packageName = koneSuppliedTypesPackageFQName,
+    className = null,
+    callableName = suppliedTypesStorageDelegateInitializationExceptionForSetterPropertyShortName,
 )

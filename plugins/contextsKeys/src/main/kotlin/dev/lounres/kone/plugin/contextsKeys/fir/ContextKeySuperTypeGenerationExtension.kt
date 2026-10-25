@@ -22,6 +22,7 @@ import org.jetbrains.kotlin.fir.types.FirDynamicTypeRef
 import org.jetbrains.kotlin.fir.types.FirFunctionTypeRef
 import org.jetbrains.kotlin.fir.types.FirIntersectionTypeRef
 import org.jetbrains.kotlin.fir.types.FirResolvedTypeRef
+import org.jetbrains.kotlin.fir.types.FirUnionTypeRef
 import org.jetbrains.kotlin.fir.types.FirUnresolvedTypeRef
 import org.jetbrains.kotlin.fir.types.FirUserTypeRef
 import org.jetbrains.kotlin.fir.types.builder.buildResolvedTypeRef
@@ -72,6 +73,7 @@ class ContextKeySuperTypeGenerationExtension(session: FirSession) : FirSupertype
                                     is FirDynamicTypeRef -> TODO()
                                     is FirFunctionTypeRef -> TODO()
                                     is FirIntersectionTypeRef -> TODO()
+                                    is FirUnionTypeRef -> TODO()
                                 }
                                 else -> TODO()
                             }

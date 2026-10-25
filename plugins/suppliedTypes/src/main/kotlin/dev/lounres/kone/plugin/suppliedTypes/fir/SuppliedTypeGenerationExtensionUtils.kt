@@ -72,12 +72,6 @@ class SuppliedTypeGenerationExtensionUtils(private val session: FirSession) {
     val suppliedTypeFirClassLikeSymbol by lazy { symbolProvider.getClassLikeSymbolByClassId(suppliedTypeClassClassId)!! }
     val supplianceProvidedFirClassLikeSymbol by lazy { symbolProvider.getClassLikeSymbolByClassId(supplianceProvidedAnnotationClassId)!! }
     val noSuppliedTypeParameterInClassStubFirClassLikeSymbol by lazy { symbolProvider.getClassLikeSymbolByClassId(noSuppliedTypeParameterInClassStubSingletonClassId)!! }
-    val suppliedTypesStorageDelegateFirNamedFunctionSymbol by lazy {
-        symbolProvider.getTopLevelFunctionSymbols(
-            packageFqName = suppliedTypesStorageDelegateFunctionCallableId.packageName,
-            name = suppliedTypesStorageDelegateFunctionCallableId.callableName,
-        ).single()
-    }
     
     val suppliedTypeConeClassLikeType by lazy { suppliedTypeFirClassLikeSymbol.defaultType() }
     val supplianceProvidedConeClassLikeType by lazy { supplianceProvidedFirClassLikeSymbol.defaultType() }
@@ -115,12 +109,6 @@ class SuppliedTypeGenerationExtensionUtils(private val session: FirSession) {
     val supplianceProvidedFirResolvedTypeRef by lazy {
         buildResolvedTypeRef {
             coneType = supplianceProvidedConeClassLikeType
-        }
-    }
-    val suppliedTypesStorageDelegateFirResolvedNamedReference by lazy {
-        buildResolvedNamedReference {
-            name = Name.identifier("suppliedTypesStorageDelegate")
-            resolvedSymbol = suppliedTypesStorageDelegateFirNamedFunctionSymbol
         }
     }
     

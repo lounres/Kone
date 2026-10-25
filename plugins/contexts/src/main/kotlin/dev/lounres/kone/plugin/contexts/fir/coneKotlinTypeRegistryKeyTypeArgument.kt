@@ -9,6 +9,7 @@ import dev.lounres.kone.plugin.contexts.registryKeyClassId
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.resolve.providers.symbolProvider
 import org.jetbrains.kotlin.fir.resolve.substitution.substitutorByMap
+import org.jetbrains.kotlin.fir.resolve.typeParameterSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirClassSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirTypeAliasSymbol
 import org.jetbrains.kotlin.fir.types.*
@@ -26,6 +27,7 @@ fun ConeKotlinType.registryKeyTypeArgument(): ConeKotlinType? {
             is ConeIntegerConstantOperatorType -> {}
             is ConeIntegerLiteralConstantType -> {}
             is ConeIntersectionType -> typesToCheck += unwrappedType.intersectedTypes
+            is ConeUnionType -> typesToCheck += unwrappedType.primaryType
             is ConeStubTypeForTypeVariableInSubtyping -> {}
             is ConeTypeVariableType -> {}
             is ConeLookupTagBasedType -> when (unwrappedType) {
@@ -55,7 +57,6 @@ fun ConeKotlinType.registryKeyTypeArgument(): ConeKotlinType? {
                         }
                     }
                 }
-                else -> {}
             }
         }
     }

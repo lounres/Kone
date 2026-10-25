@@ -13,6 +13,7 @@ import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.expressions.impl.IrAnnotationImpl
 import org.jetbrains.kotlin.ir.expressions.impl.fromSymbolOwner
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
+import org.jetbrains.kotlin.ir.symbols.IrConstructorSymbol
 import org.jetbrains.kotlin.ir.symbols.IrPropertySymbol
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.types.IrSimpleType
@@ -80,6 +81,10 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
     val runIrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(CallableId(packageName = FqName("kotlin"), callableName = Name.identifier("run"))) {
         it.owner.parameters.size == 1
     }
+    val atomicReferenceIrClassSymbol = finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin.concurrent.atomics"), topLevelName = Name.identifier("AtomicReference")))
+    val atomicReferenceConstructorIrConstructorSymbol = atomicReferenceIrClassSymbol.owner.constructors.single().symbol
+    val atomicReferenceLoadIrSimpleFunctionSymbol = atomicReferenceIrClassSymbol.referenceFunctionThatOrFail("load")
+    val atomicReferenceCompareAndSetIrSimpleFunctionSymbol = atomicReferenceIrClassSymbol.referenceFunctionThatOrFail("compareAndSet")
     val readWritePropertyIrClassSymbol = finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin.properties"), topLevelName = Name.identifier("ReadWriteProperty")))
     val readWritePropertyGetValueIrSimpleFunctionSymbol = readWritePropertyIrClassSymbol.referenceFunctionThatOrFail("getValue")
     val readWritePropertySetValueIrSimpleFunctionSymbol = readWritePropertyIrClassSymbol.referenceFunctionThatOrFail("setValue")
@@ -97,6 +102,7 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
     }
     val pairIrClassSymbol = finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin"), topLevelName = Name.identifier("Pair")))
     val pairIrConstructorSymbol = pairIrClassSymbol.constructors.single()
+    val kProperty0 = finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin.reflect"), topLevelName = Name.identifier("KProperty0")))
     
     //  Library
     val suppliedTypeIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedTypeClassClassId)
@@ -138,24 +144,24 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
         supplianceProvidedAnnotationIrClassSymbol.defaultType,
         supplianceProvidedAnnotationIrClassSymbol.constructors.single(),
     )
-    val suppliedTypesStorageDelegateIrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(suppliedTypesStorageDelegateFunctionCallableId)
     val noSuppliedTypeParameterInClassStubIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(noSuppliedTypeParameterInClassStubSingletonClassId)
+    val suppliedTypesStorageInitializationExceptionIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedTypesStorageInitializationExceptionClassClassId)
+    val suppliedTypesStorageInitializationExceptionConstructorIrConstructorSymbol: IrConstructorSymbol = suppliedTypesStorageInitializationExceptionIrClassSymbol.constructors.single()
+    val suppliedTypesStorageInitializationExceptionIrType = suppliedTypesStorageInitializationExceptionIrClassSymbol.defaultType
+    val suppliedTypesStorageDelegateInitializationExceptionForGetterIrPropertySymbol = finder.findProperties(suppliedTypesStorageDelegateInitializationExceptionForGetterPropertyCallableId).single()
+    val suppliedTypesStorageDelegateInitializationExceptionForGetterGetterIrPropertySymbol = suppliedTypesStorageDelegateInitializationExceptionForGetterIrPropertySymbol.owner.getter!!.symbol
+    val suppliedTypesStorageDelegateInitializationExceptionForSetterIrPropertySymbol = finder.findProperties(suppliedTypesStorageDelegateInitializationExceptionForSetterPropertyCallableId).single()
+    val suppliedTypesStorageDelegateInitializationExceptionForSetterGetterIrPropertySymbol = suppliedTypesStorageDelegateInitializationExceptionForSetterIrPropertySymbol.owner.getter!!.symbol
     val suppliedProjectionIrType: IrSimpleType = suppliedProjectionIrClassSymbol.defaultType
     val listOfSuppliedTypeIrType = listIrClassSymbol.createType(hasQuestionMark = false, arguments = listOf(suppliedTypeIrType))
     val listOfSuppliedProjectionIrType = listIrClassSymbol.createType(hasQuestionMark = false, arguments = listOf(suppliedProjectionIrType))
     val mapOfStringAndListOfSuppliedTypeIrType = mapIrClassSymbol.createType(hasQuestionMark = false, arguments = listOf(pluginContext.irBuiltIns.stringType, listOfSuppliedTypeIrType))
-    val suppliedTypesStoragePropertyReturnIrType: IrType = readWritePropertyIrClassSymbol.createType(
-        hasQuestionMark = false,
-        arguments = listOf(
-            pluginContext.irBuiltIns.anyNType,
-            mapOfStringAndListOfSuppliedTypeIrType,
-        )
-    )
+    val nullableMapOfStringAndListOfSuppliedTypeIrType = mapIrClassSymbol.createType(hasQuestionMark = true, arguments = listOf(pluginContext.irBuiltIns.stringType, listOfSuppliedTypeIrType))
     val pairOfStringAndListOfSuppliedTypeIrType = pairIrClassSymbol.createType(
         hasQuestionMark = false, arguments = listOf(
             pluginContext.irBuiltIns.stringType,
             listOfSuppliedTypeIrType
         )
     )
-    val readWritePropertyOfNullableAnyAndMapOfStringAndListOfSuppliedTypeIrType = readWritePropertyIrClassSymbol.createType(hasQuestionMark = false, arguments = listOf(pluginContext.irBuiltIns.anyNType, mapOfStringAndListOfSuppliedTypeIrType))
+    val atomicReferenceOfNullableMapOfStringAndListOfSuppliedTypeIrType = atomicReferenceIrClassSymbol.createType(hasQuestionMark = false, arguments = listOf(nullableMapOfStringAndListOfSuppliedTypeIrType))
 }

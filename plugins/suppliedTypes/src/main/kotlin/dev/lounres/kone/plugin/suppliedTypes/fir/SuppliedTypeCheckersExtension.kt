@@ -46,6 +46,7 @@ import org.jetbrains.kotlin.fir.resolve.fullyExpandedType
 import org.jetbrains.kotlin.fir.resolve.providers.symbolProvider
 import org.jetbrains.kotlin.fir.resolve.toClassSymbol
 import org.jetbrains.kotlin.fir.resolve.toSymbol
+import org.jetbrains.kotlin.fir.resolve.typeParameterSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirClassLikeSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirClassSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirConstructorSymbol
@@ -63,6 +64,7 @@ import org.jetbrains.kotlin.fir.types.ConeStubType
 import org.jetbrains.kotlin.fir.types.ConeTypeParameterType
 import org.jetbrains.kotlin.fir.types.ConeTypeProjection
 import org.jetbrains.kotlin.fir.types.ConeTypeVariableType
+import org.jetbrains.kotlin.fir.types.ConeUnionType
 import org.jetbrains.kotlin.fir.types.renderReadable
 import org.jetbrains.kotlin.fir.types.toConeTypeProjection
 import org.jetbrains.kotlin.fir.types.unwrapLowerBound
@@ -140,10 +142,10 @@ class SuppliedTypeCheckersExtension(session: FirSession, val forbidTopLevel: Boo
                         is ConeCapturedType -> typeProjectionsToCheck.addAll(type.typeArguments)
                         is ConeIntegerLiteralType -> {}
                         is ConeIntersectionType -> typeProjectionsToCheck.addAll(type.intersectedTypes)
+                        is ConeUnionType -> typeProjectionsToCheck.add(type.primaryType) // TODO: Maybe add error types as well?
                         is ConeLookupTagBasedType -> when (type) {
                             is ConeClassLikeType -> typeProjectionsToCheck.addAll(type.typeArguments)
                             is ConeTypeParameterType -> if (type.lookupTag.typeParameterSymbol == typeParameterSymbol) return true
-                            else -> error("Unexpected 'ConeLookupTagBasedType' inheritor: ${type::class.qualifiedName}")
                         }
                         is ConeStubType -> {}
                         is ConeTypeVariableType -> {}
@@ -207,12 +209,12 @@ class SuppliedTypeCheckersExtension(session: FirSession, val forbidTopLevel: Boo
                         is ConeCapturedType -> typeProjectionsToCheck.addAll(type.typeArguments)
                         is ConeIntegerLiteralType -> {}
                         is ConeIntersectionType -> typeProjectionsToCheck.addAll(type.intersectedTypes)
+                        is ConeUnionType -> typeProjectionsToCheck.add(type.primaryType) // TODO: Maybe add error types as well?
                         is ConeLookupTagBasedType -> when (type) {
                             is ConeClassLikeType -> typeProjectionsToCheck.addAll(type.typeArguments)
                             is ConeTypeParameterType -> {
                                 if (type.lookupTag.typeParameterSymbol !in availableSupplyTypeParameters) return false
                             }
-                            else -> error("Unexpected 'ConeLookupTagBasedType' inheritor: ${type::class.qualifiedName}")
                         }
                         is ConeStubType -> {}
                         is ConeTypeVariableType -> {}

@@ -12,7 +12,6 @@ import dev.lounres.kone.plugin.suppliedTypes.noSuppliedTypeParameterInClassStubS
 import dev.lounres.kone.plugin.suppliedTypes.suppliableAnnotationClassId
 import dev.lounres.kone.plugin.suppliedTypes.supplianceProvidedAnnotationClassId
 import dev.lounres.kone.plugin.suppliedTypes.suppliedTypeClassClassId
-import dev.lounres.kone.plugin.suppliedTypes.suppliedTypesStorageDelegateFunctionCallableId
 import dev.lounres.kone.plugin.suppliedTypes.supplyAnnotationClassId
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.declarations.FirClassLikeDeclaration
@@ -21,7 +20,6 @@ import org.jetbrains.kotlin.fir.expressions.builder.buildAnnotationArgumentMappi
 import org.jetbrains.kotlin.fir.extensions.predicate.AbstractPredicate
 import org.jetbrains.kotlin.fir.extensions.predicate.LookupPredicate
 import org.jetbrains.kotlin.fir.extensions.predicateBasedProvider
-import org.jetbrains.kotlin.fir.references.builder.buildResolvedNamedReference
 import org.jetbrains.kotlin.fir.resolve.defaultType
 import org.jetbrains.kotlin.fir.resolve.providers.symbolProvider
 import org.jetbrains.kotlin.fir.symbols.impl.FirClassLikeSymbol
@@ -30,7 +28,6 @@ import org.jetbrains.kotlin.fir.types.builder.buildResolvedTypeRef
 import org.jetbrains.kotlin.fir.types.constructType
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
-import org.jetbrains.kotlin.name.Name
 
 
 class ContextsKeysGenerationExtensionUtils(private val session: FirSession) {
@@ -68,12 +65,6 @@ class ContextsKeysGenerationExtensionUtils(private val session: FirSession) {
     val suppliedTypeFirClassLikeSymbol by lazy { symbolProvider.getClassLikeSymbolByClassId(suppliedTypeClassClassId)!! }
     val supplianceProvidedFirClassLikeSymbol by lazy { symbolProvider.getClassLikeSymbolByClassId(supplianceProvidedAnnotationClassId)!! }
     val noSuppliedTypeParameterInClassStubFirClassLikeSymbol by lazy { symbolProvider.getClassLikeSymbolByClassId(noSuppliedTypeParameterInClassStubSingletonClassId)!! }
-    val suppliedTypesStorageDelegateFirNamedFunctionSymbol by lazy {
-        symbolProvider.getTopLevelFunctionSymbols(
-            packageFqName = suppliedTypesStorageDelegateFunctionCallableId.packageName,
-            name = suppliedTypesStorageDelegateFunctionCallableId.callableName,
-        ).single()
-    }
     
     val suppliedTypeConeClassLikeType by lazy { suppliedTypeFirClassLikeSymbol.defaultType() }
     val supplianceProvidedConeClassLikeType by lazy { supplianceProvidedFirClassLikeSymbol.defaultType() }
@@ -111,12 +102,6 @@ class ContextsKeysGenerationExtensionUtils(private val session: FirSession) {
     val supplianceProvidedFirResolvedTypeRef by lazy {
         buildResolvedTypeRef {
             coneType = supplianceProvidedConeClassLikeType
-        }
-    }
-    val suppliedTypesStorageDelegateFirResolvedNamedReference by lazy {
-        buildResolvedNamedReference {
-            name = Name.identifier("suppliedTypesStorageDelegate")
-            resolvedSymbol = suppliedTypesStorageDelegateFirNamedFunctionSymbol
         }
     }
     

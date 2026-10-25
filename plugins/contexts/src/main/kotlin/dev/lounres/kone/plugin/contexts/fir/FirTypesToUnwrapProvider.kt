@@ -15,6 +15,7 @@ import org.jetbrains.kotlin.fir.resolve.defaultType
 import org.jetbrains.kotlin.fir.resolve.providers.symbolProvider
 import org.jetbrains.kotlin.fir.resolve.substitution.ConeSubstitutor
 import org.jetbrains.kotlin.fir.resolve.substitution.substitutorByMap
+import org.jetbrains.kotlin.fir.resolve.typeParameterSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirClassSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirPropertySymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirTypeAliasSymbol
@@ -34,6 +35,7 @@ class FirTypesToUnwrapProvider(private val session: FirSession) {
                 is ConeIntegerConstantOperatorType -> {}
                 is ConeIntegerLiteralConstantType -> {}
                 is ConeIntersectionType -> unwrappedType.intersectedTypes.mapTo(toCheck) { it }
+                is ConeUnionType -> toCheck.add(unwrappedType.primaryType) // TODO: Maybe add error types as well?
                 is ConeStubTypeForTypeVariableInSubtyping -> {}
                 is ConeTypeVariableType -> {}
                 is ConeLookupTagBasedType -> when (unwrappedType) {
@@ -54,7 +56,6 @@ class FirTypesToUnwrapProvider(private val session: FirSession) {
                             }
                         }
                     }
-                    else -> {}
                 }
             }
         }
@@ -163,6 +164,7 @@ class FirTypesToUnwrapProvider(private val session: FirSession) {
                 is ConeIntegerConstantOperatorType -> {}
                 is ConeIntegerLiteralConstantType -> {}
                 is ConeIntersectionType -> unwrappedType.intersectedTypes.mapTo(toCheck) { TypeToVisit(it, subClassSymbols, subClassSubstitutors) }
+                is ConeUnionType -> toCheck.add(TypeToVisit(unwrappedType.primaryType, subClassSymbols, subClassSubstitutors)) // TODO: Maybe add error types as well?
                 is ConeStubTypeForTypeVariableInSubtyping -> {}
                 is ConeTypeVariableType -> {}
                 is ConeLookupTagBasedType -> when (unwrappedType) {
@@ -251,7 +253,6 @@ class FirTypesToUnwrapProvider(private val session: FirSession) {
                             }
                         }
                     }
-                    else -> {}
                 }
             }
         }

@@ -47,10 +47,10 @@ public abstract class KoneTestRunner : AbstractKotlinCompilerTest() {
 }
 
 public fun TestConfigurationBuilder.commonTestRunnerConfiguration(
-    runPipelineTillPhase: TestPhase = TestPhase.BACKEND,
+    runPipelineTillPhase: TestPhase = TestPhase.CODEGEN,
 ) {
     globalDefaults {
-        targetBackend = TargetBackend.JVM_IR
+        targetBackend = TargetBackend.JVM
         targetPlatform = JvmPlatforms.defaultJvmPlatform
         dependencyKind = DependencyKind.Binary
     }
@@ -59,7 +59,7 @@ public fun TestConfigurationBuilder.commonTestRunnerConfiguration(
         +FirDiagnosticsDirectives.ENABLE_PLUGIN_PHASES
         +FirDiagnosticsDirectives.FIR_DUMP
         +JvmEnvironmentConfigurationDirectives.FULL_JDK
-        TestPhaseDirectives.LATEST_PHASE_IN_PIPELINE with TestPhase.BACKEND
+        TestPhaseDirectives.LATEST_PHASE_IN_PIPELINE with TestPhase.CODEGEN
         TestPhaseDirectives.RUN_PIPELINE_TILL with runPipelineTillPhase
         LanguageSettingsDirectives.LANGUAGE with listOf(
             "+EnableDfaWarningsInK2",

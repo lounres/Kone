@@ -265,8 +265,11 @@ stal {
                         "-Xlocal-type-aliases",
                         "-Xname-based-destructuring=complete",
                         "-Xcollection-literals",
-                        "-Xallow-returns-result-of",
                         "-Xcompanion-blocks-and-extensions",
+                        "-Xfull-value-classes",
+                        // TODO: Waiting for JDK 28
+//                        "-Xvalhalla-value-classes",
+//                        "-Xjvm-enable-preview",
                         
                         // Kone compiler plugins order
                         "-Xcompiler-plugin-order=dev.lounres.kone.plugin.suppliedTypes>dev.lounres.kone.plugin.contextsKeys",
@@ -307,8 +310,11 @@ stal {
                         "-Xlocal-type-aliases",
                         "-Xname-based-destructuring=complete",
                         "-Xcollection-literals",
-                        "-Xallow-returns-result-of",
                         "-Xcompanion-blocks-and-extensions",
+                        "-Xfull-value-classes",
+                        // TODO: Waiting for JDK 28
+//                        "-Xvalhalla-value-classes",
+//                        "-Xjvm-enable-preview",
                         
                         // Kone compiler plugins order
                         "-Xcompiler-plugin-order=dev.lounres.kone.plugin.suppliedTypes>dev.lounres.kone.plugin.contextsKeys",
@@ -366,7 +372,11 @@ stal {
                 configure<KotlinMultiplatformExtension> {
                     configure<KotlinMultiplatformAndroidLibraryTarget> {
                         namespace = project.extra["androidNamespace"] as String
-                        compileSdk = (rootProject.extra["android.compileSdk"] as String).toInt()
+                        compileSdk {
+                            version = release((rootProject.extra["android.compileSdk"] as String).toInt()) {
+                                minorApiLevel = (rootProject.extra["android.compileSdkMinor"] as String).toInt()
+                            }
+                        }
                         minSdk = (rootProject.extra["android.minSdk"] as String).toInt()
 
                         withHostTestBuilder { }.configure { }

@@ -64,13 +64,13 @@ open class AbstractBackendTestForPhase6 : AbstractBackendTestForPhase(6u)
 open class AbstractBackendTestForPhase7 : AbstractBackendTestForPhase(7u)
 
 open class AbstractBackendTestComplete : AbstractBackendTest(::CompleteExtensionRegistrarConfigurator) {
-    override val runPipelineTillPhase: TestPhase get() = TestPhase.BACKEND
+    override val runPipelineTillPhase: TestPhase get() = TestPhase.CODEGEN
 }
 
 open class AbstractBoxTest : AbstractBackendTest(::CompleteExtensionRegistrarConfigurator, runJvmBoxTest = true) {
-    override val runPipelineTillPhase: TestPhase get() = TestPhase.BACKEND
+    override val runPipelineTillPhase: TestPhase get() = TestPhase.CODEGEN
 }
 
 open class AbstractTestWithoutPlugin: AbstractBackendTest(::TestExtensionRegistrarConfigurator, runJvmBoxTest = true) {
-    override val runPipelineTillPhase: TestPhase = TestPhase.BACKEND
+    override val runPipelineTillPhase: TestPhase = TestPhase.CODEGEN
 }

@@ -30,7 +30,13 @@ FILE fqName:<root> fileName:/suppliedTypeOfUsage28.kt
               ARG <this>: GET_FIELD 'FIELD PROPERTY_DELEGATE name:foo$delegate type:kotlin.Lazy<kotlin.String> visibility:private [final] declared in <root>.Foo' type=kotlin.Lazy<kotlin.String> origin=null
                 receiver: GET_VAR '<this>: <root>.Foo<T of <root>.Foo> declared in <root>.Foo.<get-foo>' type=<root>.Foo<T of <root>.Foo> origin=IMPLICIT_ARGUMENT
               ARG thisRef: GET_VAR '<this>: <root>.Foo<T of <root>.Foo> declared in <root>.Foo.<get-foo>' type=<root>.Foo<T of <root>.Foo> origin=null
-              ARG property: PROPERTY_REFERENCE 'public final foo: kotlin.String declared in <root>.Foo' field=null getter='public final fun <get-foo> (): kotlin.String declared in <root>.Foo' setter=null type=kotlin.reflect.KProperty1<<root>.Foo<*>, kotlin.String> origin=PROPERTY_REFERENCE_FOR_DELEGATE
+              ARG property: RICH_PROPERTY_REFERENCE type=kotlin.reflect.KProperty1<<root>.Foo<*>, kotlin.String> origin=PROPERTY_REFERENCE_FOR_DELEGATE reflectionTarget='public final foo: kotlin.String declared in <root>.Foo'
+                getter: FUN LOCAL_FUNCTION_FOR_LAMBDA name:foo visibility:local modality:FINAL returnType:kotlin.String
+                  VALUE_PARAMETER ADAPTER_PARAMETER_FOR_CALLABLE_REFERENCE kind:Regular name:p0 index:0 type:<root>.Foo<*>
+                  BLOCK_BODY
+                    RETURN type=kotlin.Nothing from='local final fun foo (p0: <root>.Foo<*>): kotlin.String declared in <root>.Foo.<get-foo>'
+                      CALL 'public final fun <get-foo> (): kotlin.String declared in <root>.Foo' type=kotlin.String origin=null
+                        ARG <this>: GET_VAR 'p0: <root>.Foo<*> declared in <root>.Foo.<get-foo>.foo' type=<root>.Foo<*> origin=null
     PROPERTY GENERATED[dev.lounres.kone.plugin.suppliedTypes.fir.SuppliedTypesStoragePropertyGenerationExtension.Key] name:suppliedTypesStorage visibility:public modality:OPEN [var]
       overridden:
         public abstract suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.suppliedTypes.SuppliableClass
