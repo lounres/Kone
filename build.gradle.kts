@@ -266,7 +266,8 @@ stal {
                         "-Xname-based-destructuring=complete",
                         "-Xcollection-literals",
                         "-Xcompanion-blocks-and-extensions",
-                        "-Xfull-value-classes",
+//                        "-Xfull-value-classes",
+                        
                         // TODO: Waiting for JDK 28
 //                        "-Xvalhalla-value-classes",
 //                        "-Xjvm-enable-preview",
