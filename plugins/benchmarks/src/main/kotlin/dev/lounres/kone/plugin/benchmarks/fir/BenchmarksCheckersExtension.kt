@@ -178,7 +178,7 @@ class BenchmarksCheckersExtension(session: FirSession) : FirAdditionalCheckersEx
             
             if (declaration.returnTypeRef.coneTypeOrNull != benchmarkResultConeClassLikeType)
                 reporter.reportOn(
-                    source = declaration.returnTypeRef.source,
+                    source = declaration.source,
                     factory = Errors.BENCHMARK_INCORRECT_RETURN_TYPE,
                     a = declaration.symbol,
                     context = context,
@@ -615,7 +615,7 @@ class BenchmarksCheckersExtension(session: FirSession) : FirAdditionalCheckersEx
         )
         val BENCHMARK_INCORRECT_RETURN_TYPE by KtDiagnosticFactory1Delegate<FirBasedSymbol<*>>(
             severity = ERROR,
-            defaultPositioningStrategy = SourceElementPositioningStrategies.DECLARATION_NAME,
+            defaultPositioningStrategy = SourceElementPositioningStrategies.DECLARATION_RETURN_TYPE,
         )
         val BENCHMARK_CONFIGURATION_PARAMETER_ACCESS by KtDiagnosticFactory1Delegate<FirPropertyAccessExpression>(
             severity = ERROR,

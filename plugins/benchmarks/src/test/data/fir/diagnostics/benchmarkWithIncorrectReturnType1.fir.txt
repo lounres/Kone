@@ -1,0 +1,5 @@
+FILE: benchmarkWithIncorrectReturnType1.kt
+    package foo.bar
+
+    @R|dev/lounres/kone/benchmarks/Benchmark|() public final fun myLovelyBenchmark(benchmarkConfiguration: R|dev/lounres/kone/benchmarks/BenchmarkConfiguration|): R|kotlin/Unit| {
+    }

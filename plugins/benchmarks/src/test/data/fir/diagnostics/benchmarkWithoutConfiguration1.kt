@@ -5,4 +5,4 @@ import kotlinx.benchmark.Blackhole
 
 
 @Benchmark
-fun <!BENCHMARK_WITHOUT_CONFIGURATION_PARAMETER!>myLovelyBenchmark<!>() {}
+fun <!BENCHMARK_WITHOUT_CONFIGURATION_PARAMETER!>myLovelyBenchmark<!>(): BenchmarkResult = benchmarkResult
