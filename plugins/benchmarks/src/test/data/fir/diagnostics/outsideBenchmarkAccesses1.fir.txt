@@ -1,0 +1,11 @@
+FILE: outsideBenchmarkAccesses1.kt
+    package foo.bar
+
+    public final fun myLovelyBenchmark(benchmarkConfiguration: R|dev/lounres/kone/benchmarks/BenchmarkConfiguration|): R|kotlin/Unit| {
+        R|dev/lounres/kone/benchmarks/inject|<R|kotlin/Unit|>(<L> = inject@fun <anonymous>(): R|kotlin/Unit| <inline=CrossInline>  {
+            ^@inject Unit
+        }
+        )
+        R|dev/lounres/kone/benchmarks/blackhole|
+        R|dev/lounres/kone/benchmarks/benchmarkResult|
+    }

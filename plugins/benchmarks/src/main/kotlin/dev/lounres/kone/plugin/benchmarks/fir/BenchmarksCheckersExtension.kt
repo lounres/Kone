@@ -7,6 +7,8 @@ package dev.lounres.kone.plugin.benchmarks.fir
 
 import dev.lounres.kone.plugin.benchmarks.benchmarkAnnotationClassId
 import dev.lounres.kone.plugin.benchmarks.benchmarkConfigurationClassClassId
+import dev.lounres.kone.plugin.benchmarks.benchmarkResultPropertyCallableId
+import dev.lounres.kone.plugin.benchmarks.blackholePropertyCallableId
 import dev.lounres.kone.plugin.benchmarks.injectDisposableFunctionCallableId
 import dev.lounres.kone.plugin.benchmarks.injectFunctionCallableId
 import dev.lounres.kone.scope
@@ -19,57 +21,24 @@ import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.analysis.checkers.MppCheckerKind
 import org.jetbrains.kotlin.fir.analysis.checkers.context.CheckerContext
 import org.jetbrains.kotlin.fir.analysis.checkers.declaration.DeclarationCheckers
+import org.jetbrains.kotlin.fir.analysis.checkers.declaration.FirFileChecker
 import org.jetbrains.kotlin.fir.analysis.checkers.declaration.FirNamedFunctionChecker
 import org.jetbrains.kotlin.fir.analysis.checkers.expression.ExpressionCheckers
 import org.jetbrains.kotlin.fir.analysis.checkers.expression.FirFunctionCallChecker
 import org.jetbrains.kotlin.fir.analysis.checkers.expression.FirPropertyAccessExpressionChecker
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirDiagnosticRenderers
 import org.jetbrains.kotlin.fir.analysis.extensions.FirAdditionalCheckersExtension
-import org.jetbrains.kotlin.fir.declarations.FirAnonymousFunction
-import org.jetbrains.kotlin.fir.declarations.FirAnonymousInitializer
-import org.jetbrains.kotlin.fir.declarations.FirAnonymousObject
-import org.jetbrains.kotlin.fir.declarations.FirBackingField
-import org.jetbrains.kotlin.fir.declarations.FirCallableDeclaration
-import org.jetbrains.kotlin.fir.declarations.FirClass
-import org.jetbrains.kotlin.fir.declarations.FirClassLikeDeclaration
-import org.jetbrains.kotlin.fir.declarations.FirCodeFragment
-import org.jetbrains.kotlin.fir.declarations.FirConstructor
-import org.jetbrains.kotlin.fir.declarations.FirDanglingModifierList
 import org.jetbrains.kotlin.fir.declarations.FirDeclaration
-import org.jetbrains.kotlin.fir.declarations.FirEnumEntry
-import org.jetbrains.kotlin.fir.declarations.FirErrorFunction
-import org.jetbrains.kotlin.fir.declarations.FirErrorPrimaryConstructor
-import org.jetbrains.kotlin.fir.declarations.FirErrorProperty
-import org.jetbrains.kotlin.fir.declarations.FirField
 import org.jetbrains.kotlin.fir.declarations.FirFile
-import org.jetbrains.kotlin.fir.declarations.FirFunction
-import org.jetbrains.kotlin.fir.declarations.FirMemberDeclaration
 import org.jetbrains.kotlin.fir.declarations.FirNamedFunction
-import org.jetbrains.kotlin.fir.declarations.FirProperty
-import org.jetbrains.kotlin.fir.declarations.FirPropertyAccessor
-import org.jetbrains.kotlin.fir.declarations.FirReceiverParameter
-import org.jetbrains.kotlin.fir.declarations.FirRegularClass
-import org.jetbrains.kotlin.fir.declarations.FirReplSnippet
-import org.jetbrains.kotlin.fir.declarations.FirScript
-import org.jetbrains.kotlin.fir.declarations.FirScriptReceiverParameter
-import org.jetbrains.kotlin.fir.declarations.FirTypeAlias
-import org.jetbrains.kotlin.fir.declarations.FirTypeParameter
-import org.jetbrains.kotlin.fir.declarations.FirValueParameter
-import org.jetbrains.kotlin.fir.declarations.FirVariable
 import org.jetbrains.kotlin.fir.declarations.getAnnotationByClassId
 import org.jetbrains.kotlin.fir.declarations.hasAnnotation
 import org.jetbrains.kotlin.fir.expressions.FirAnnotation
 import org.jetbrains.kotlin.fir.expressions.FirAnonymousFunctionExpression
-import org.jetbrains.kotlin.fir.expressions.FirCallableReferenceAccess
-import org.jetbrains.kotlin.fir.expressions.FirComponentCall
 import org.jetbrains.kotlin.fir.expressions.FirFunctionCall
-import org.jetbrains.kotlin.fir.expressions.FirImplicitInvokeCall
-import org.jetbrains.kotlin.fir.expressions.FirIntegerLiteralOperatorCall
 import org.jetbrains.kotlin.fir.expressions.FirPropertyAccessExpression
 import org.jetbrains.kotlin.fir.expressions.FirQualifiedAccessExpression
-import org.jetbrains.kotlin.fir.expressions.FirSuperReceiverExpression
-import org.jetbrains.kotlin.fir.expressions.FirThisReceiverExpression
-import org.jetbrains.kotlin.fir.expressions.FirWhenSubjectExpression
+import org.jetbrains.kotlin.fir.expressions.FirReturnExpression
 import org.jetbrains.kotlin.fir.expressions.arguments
 import org.jetbrains.kotlin.fir.references.symbol
 import org.jetbrains.kotlin.fir.resolve.defaultType
@@ -103,6 +72,13 @@ class BenchmarksCheckersExtension(session: FirSession) : FirAdditionalCheckersEx
             BenchmarkConfigurationParametersChecker,
             BenchmarkInjectableCallsCheckers,
             BenchmarkInsideBenchmarkChecker,
+            BlackholeInsideInjectionChecker,
+            BenchmarkResultAndReturnChecker,
+            InjectionInsideInjectionChecker,
+        )
+        
+        override val fileCheckers: Set<FirFileChecker> = setOf(
+            InjectionBlackholeAndBenchmarkResultCallsOutsideBenchmarkChecker,
         )
     }
     
@@ -252,6 +228,36 @@ class BenchmarksCheckersExtension(session: FirSession) : FirAdditionalCheckersEx
         }
     }
     
+    class BenchmarkInjectionBlockFinder(
+        context: CheckerContext,
+        private val subvisitor: FirVisitorVoid,
+    ) : DefaultFirVisitorVoid() {
+        private val injectFunctions = listOf(
+            context.session.symbolProvider.getTopLevelFunctionSymbols(
+                injectFunctionCallableId.packageName,
+                injectFunctionCallableId.callableName,
+            ).single(),
+            context.session.symbolProvider.getTopLevelFunctionSymbols(
+                injectDisposableFunctionCallableId.packageName,
+                injectDisposableFunctionCallableId.callableName,
+            ).single(),
+        )
+        
+        override fun visitFunctionCall(functionCall: FirFunctionCall) {
+            scope {
+                if (functionCall.calleeReference.symbol !in injectFunctions) return@scope
+                val argument = functionCall.arguments.singleOrNull()
+                if (argument !is FirAnonymousFunctionExpression) return@scope
+                
+                argument.anonymousFunction.body?.accept(subvisitor)
+                
+                return
+            }
+            
+            visitQualifiedAccessExpression(functionCall)
+        }
+    }
+    
     object BenchmarkInjectableCallsCheckers : FirNamedFunctionChecker(MppCheckerKind.Common) {
         context(context: CheckerContext, reporter: DiagnosticReporter)
         override fun check(declaration: FirNamedFunction) {
@@ -267,20 +273,21 @@ class BenchmarksCheckersExtension(session: FirSession) : FirAdditionalCheckersEx
             )
             
             declaration.accept(
-                BenchmarkInjectionBlockAccessor(
+                BenchmarkInjectionBlockFinder(
                     context = context,
-                    reporter = reporter,
-                    nonInjectableDeclarationSymbols = nonInjectableDeclarationSymbols,
+                    subvisitor = BenchmarkNonInjectableCallsReporter(
+                        context = context,
+                        reporter = reporter,
+                        nonInjectableDeclarationSymbols = nonInjectableDeclarationSymbols,
+                    )
                 )
             )
         }
         
-        class BenchmarkNonInjectableDeclarationsCollector(
+        private class BenchmarkNonInjectableDeclarationsCollector(
             private val context: CheckerContext,
             private val nonInjectableDeclarationSymbols: MutableSet<FirBasedSymbol<*>>,
-        ) : FirVisitorVoid() {
-            override fun visitElement(element: FirElement) { element.acceptChildren(this) }
-            
+        ) : DefaultFirVisitorVoid() {
             private val injectFunctions = listOf(
                 context.session.symbolProvider.getTopLevelFunctionSymbols(
                     injectFunctionCallableId.packageName,
@@ -298,189 +305,20 @@ class BenchmarksCheckersExtension(session: FirSession) : FirAdditionalCheckersEx
                     && functionCall.arguments.singleOrNull() is FirAnonymousFunctionExpression
                 ) return
                 
-                visitQualifiedAccessExpression(functionCall)
-            }
-            
-            override fun visitComponentCall(componentCall: FirComponentCall) {
-                visitFunctionCall(componentCall)
-            }
-            override fun visitImplicitInvokeCall(implicitInvokeCall: FirImplicitInvokeCall) {
-                visitFunctionCall(implicitInvokeCall)
-            }
-            override fun visitIntegerLiteralOperatorCall(integerLiteralOperatorCall: FirIntegerLiteralOperatorCall) {
-                visitFunctionCall(integerLiteralOperatorCall)
+                super.visitFunctionCall(functionCall)
             }
             
             override fun visitDeclaration(declaration: FirDeclaration) {
                 nonInjectableDeclarationSymbols += declaration.symbol
                 declaration.acceptChildren(this)
             }
-            
-            override fun visitReplSnippet(replSnippet: FirReplSnippet) {
-                visitDeclaration(replSnippet)
-            }
-            override fun visitDanglingModifierList(danglingModifierList: FirDanglingModifierList) {
-                visitDeclaration(danglingModifierList)
-            }
-            override fun visitMemberDeclaration(memberDeclaration: FirMemberDeclaration) {
-                visitDeclaration(memberDeclaration)
-            }
-            override fun visitCallableDeclaration(callableDeclaration: FirCallableDeclaration) {
-                visitMemberDeclaration(callableDeclaration)
-            }
-            override fun visitVariable(variable: FirVariable) {
-                visitCallableDeclaration(variable)
-            }
-            override fun visitValueParameter(valueParameter: FirValueParameter) {
-                visitVariable(valueParameter)
-            }
-            override fun visitField(field: FirField) {
-                visitVariable(field)
-            }
-            override fun visitBackingField(backingField: FirBackingField) {
-                visitVariable(backingField)
-            }
-            override fun visitProperty(property: FirProperty) {
-                visitVariable(property)
-            }
-            override fun visitErrorProperty(errorProperty: FirErrorProperty) {
-                visitProperty(errorProperty)
-            }
-            override fun visitEnumEntry(enumEntry: FirEnumEntry) {
-                visitVariable(enumEntry)
-            }
-            override fun visitFunction(function: FirFunction) {
-                visitCallableDeclaration(function)
-            }
-            override fun visitAnonymousFunction(anonymousFunction: FirAnonymousFunction) {
-                visitFunction(anonymousFunction)
-            }
-            override fun visitConstructor(constructor: FirConstructor) {
-                visitFunction(constructor)
-            }
-            override fun visitErrorPrimaryConstructor(errorPrimaryConstructor: FirErrorPrimaryConstructor) {
-                visitConstructor(errorPrimaryConstructor)
-            }
-            override fun visitNamedFunction(namedFunction: FirNamedFunction) {
-                visitFunction(namedFunction)
-            }
-            override fun visitPropertyAccessor(propertyAccessor: FirPropertyAccessor) {
-                visitFunction(propertyAccessor)
-            }
-            override fun visitErrorFunction(errorFunction: FirErrorFunction) {
-                visitFunction(errorFunction)
-            }
-            override fun visitClassLikeDeclaration(classLikeDeclaration: FirClassLikeDeclaration) {
-                visitMemberDeclaration(classLikeDeclaration)
-            }
-            override fun visitClass(klass: FirClass) {
-                visitClassLikeDeclaration(klass)
-            }
-            override fun visitRegularClass(regularClass: FirRegularClass) {
-                visitClass(regularClass)
-            }
-            override fun visitAnonymousObject(anonymousObject: FirAnonymousObject) {
-                visitClass(anonymousObject)
-            }
-            override fun visitTypeAlias(typeAlias: FirTypeAlias) {
-                visitClassLikeDeclaration(typeAlias)
-            }
-            override fun visitAnonymousInitializer(anonymousInitializer: FirAnonymousInitializer) {
-                visitDeclaration(anonymousInitializer)
-            }
-            override fun visitCodeFragment(codeFragment: FirCodeFragment) {
-                visitDeclaration(codeFragment)
-            }
-            override fun visitReceiverParameter(receiverParameter: FirReceiverParameter) {
-                visitDeclaration(receiverParameter)
-            }
-            override fun visitScriptReceiverParameter(scriptReceiverParameter: FirScriptReceiverParameter) {
-                visitReceiverParameter(scriptReceiverParameter)
-            }
-            override fun visitFile(file: FirFile) {
-                visitDeclaration(file)
-            }
-            override fun visitScript(script: FirScript) {
-                visitDeclaration(script)
-            }
-            override fun visitTypeParameter(typeParameter: FirTypeParameter) {
-                visitDeclaration(typeParameter)
-            }
         }
         
-        class BenchmarkInjectionBlockAccessor(
+        private class BenchmarkNonInjectableCallsReporter(
             private val context: CheckerContext,
             private val reporter: DiagnosticReporter,
             private val nonInjectableDeclarationSymbols: Set<FirBasedSymbol<*>>,
-        ) : FirVisitorVoid() {
-            override fun visitElement(element: FirElement) { element.acceptChildren(this) }
-            
-            private val callsReporter = BenchmarkNonInjectableCallsReporter(
-                context = context,
-                reporter = reporter,
-                nonInjectableDeclarationSymbols = nonInjectableDeclarationSymbols,
-            )
-            private val injectFunctions = listOf(
-                context.session.symbolProvider.getTopLevelFunctionSymbols(
-                    injectFunctionCallableId.packageName,
-                    injectFunctionCallableId.callableName,
-                ).single(),
-                context.session.symbolProvider.getTopLevelFunctionSymbols(
-                    injectDisposableFunctionCallableId.packageName,
-                    injectDisposableFunctionCallableId.callableName,
-                ).single(),
-            )
-            
-            override fun visitQualifiedAccessExpression(qualifiedAccessExpression: FirQualifiedAccessExpression) {
-                qualifiedAccessExpression.acceptChildren(this)
-            }
-            
-            override fun visitPropertyAccessExpression(propertyAccessExpression: FirPropertyAccessExpression) {
-                visitQualifiedAccessExpression(propertyAccessExpression)
-            }
-            override fun visitWhenSubjectExpression(whenSubjectExpression: FirWhenSubjectExpression) {
-                visitPropertyAccessExpression(whenSubjectExpression)
-            }
-            override fun visitCallableReferenceAccess(callableReferenceAccess: FirCallableReferenceAccess) {
-                visitQualifiedAccessExpression(callableReferenceAccess)
-            }
-            override fun visitFunctionCall(functionCall: FirFunctionCall) {
-                scope {
-                    if (functionCall.calleeReference.symbol !in injectFunctions) return@scope
-                    val argument = functionCall.arguments.singleOrNull()
-                    if (argument !is FirAnonymousFunctionExpression) return@scope
-                    
-                    argument.anonymousFunction.body?.accept(callsReporter)
-                    
-                    return
-                }
-                
-                visitQualifiedAccessExpression(functionCall)
-            }
-            override fun visitComponentCall(componentCall: FirComponentCall) {
-                visitFunctionCall(componentCall)
-            }
-            override fun visitImplicitInvokeCall(implicitInvokeCall: FirImplicitInvokeCall) {
-                visitFunctionCall(implicitInvokeCall)
-            }
-            override fun visitIntegerLiteralOperatorCall(integerLiteralOperatorCall: FirIntegerLiteralOperatorCall) {
-                visitFunctionCall(integerLiteralOperatorCall)
-            }
-            override fun visitThisReceiverExpression(thisReceiverExpression: FirThisReceiverExpression) {
-                visitQualifiedAccessExpression(thisReceiverExpression)
-            }
-            override fun visitSuperReceiverExpression(superReceiverExpression: FirSuperReceiverExpression) {
-                visitQualifiedAccessExpression(superReceiverExpression)
-            }
-        }
-        
-        class BenchmarkNonInjectableCallsReporter(
-            private val context: CheckerContext,
-            private val reporter: DiagnosticReporter,
-            private val nonInjectableDeclarationSymbols: Set<FirBasedSymbol<*>>,
-        ) : FirVisitorVoid() {
-            override fun visitElement(element: FirElement) { element.acceptChildren(this) }
-            
+        ) : DefaultFirVisitorVoid() {
             override fun visitQualifiedAccessExpression(qualifiedAccessExpression: FirQualifiedAccessExpression) {
                 val calleeSymbol = qualifiedAccessExpression.calleeReference.symbol
                 
@@ -493,35 +331,7 @@ class BenchmarksCheckersExtension(session: FirSession) : FirAdditionalCheckersEx
                     )
                 }
                 
-                qualifiedAccessExpression.acceptChildren(this)
-            }
-            
-            override fun visitPropertyAccessExpression(propertyAccessExpression: FirPropertyAccessExpression) {
-                visitQualifiedAccessExpression(propertyAccessExpression)
-            }
-            override fun visitWhenSubjectExpression(whenSubjectExpression: FirWhenSubjectExpression) {
-                visitPropertyAccessExpression(whenSubjectExpression)
-            }
-            override fun visitCallableReferenceAccess(callableReferenceAccess: FirCallableReferenceAccess) {
-                visitQualifiedAccessExpression(callableReferenceAccess)
-            }
-            override fun visitFunctionCall(functionCall: FirFunctionCall) {
-                visitQualifiedAccessExpression(functionCall)
-            }
-            override fun visitComponentCall(componentCall: FirComponentCall) {
-                visitFunctionCall(componentCall)
-            }
-            override fun visitImplicitInvokeCall(implicitInvokeCall: FirImplicitInvokeCall) {
-                visitFunctionCall(implicitInvokeCall)
-            }
-            override fun visitIntegerLiteralOperatorCall(integerLiteralOperatorCall: FirIntegerLiteralOperatorCall) {
-                visitFunctionCall(integerLiteralOperatorCall)
-            }
-            override fun visitThisReceiverExpression(thisReceiverExpression: FirThisReceiverExpression) {
-                visitQualifiedAccessExpression(thisReceiverExpression)
-            }
-            override fun visitSuperReceiverExpression(superReceiverExpression: FirSuperReceiverExpression) {
-                visitQualifiedAccessExpression(superReceiverExpression)
+                super.visitQualifiedAccessExpression(qualifiedAccessExpression)
             }
         }
     }
@@ -539,12 +349,10 @@ class BenchmarksCheckersExtension(session: FirSession) : FirAdditionalCheckersEx
             )
         }
         
-        class BenchmarkCallsReporter(
+        private class BenchmarkCallsReporter(
             private val context: CheckerContext,
             private val reporter: DiagnosticReporter,
-        ) : FirVisitorVoid() {
-            override fun visitElement(element: FirElement) { element.acceptChildren(this) }
-            
+        ) : DefaultFirVisitorVoid() {
             override fun visitQualifiedAccessExpression(qualifiedAccessExpression: FirQualifiedAccessExpression) {
                 val calleeSymbol = qualifiedAccessExpression.calleeReference.symbol
                 
@@ -563,35 +371,210 @@ class BenchmarksCheckersExtension(session: FirSession) : FirAdditionalCheckersEx
                     )
                 }
                 
-                qualifiedAccessExpression.acceptChildren(this)
+                super.visitQualifiedAccessExpression(qualifiedAccessExpression)
+            }
+        }
+    }
+    
+    object BlackholeInsideInjectionChecker : FirNamedFunctionChecker(MppCheckerKind.Common) {
+        context(context: CheckerContext, reporter: DiagnosticReporter)
+        override fun check(declaration: FirNamedFunction) {
+            if (!declaration.isBenchmark || declaration.isLocal || declaration.getContainingClassSymbol() != null) return
+            
+            declaration.accept(
+                BenchmarkInjectionBlockFinder(
+                    context = context,
+                    subvisitor = BlackholeInsideInjectionReporter(
+                        context = context,
+                        reporter = reporter,
+                    )
+                )
+            )
+        }
+        
+        private class BlackholeInsideInjectionReporter(
+            private val context: CheckerContext,
+            private val reporter: DiagnosticReporter,
+        ) : DefaultFirVisitorVoid() {
+            private val blackhole = context.session.symbolProvider
+                .getTopLevelPropertySymbols(
+                    blackholePropertyCallableId.packageName,
+                    blackholePropertyCallableId.callableName,
+                ).single()
+            
+            override fun visitQualifiedAccessExpression(qualifiedAccessExpression: FirQualifiedAccessExpression) {
+                val calleeSymbol = qualifiedAccessExpression.calleeReference.symbol
+                
+                if (calleeSymbol == blackhole) {
+                    reporter.reportOn(
+                        source = qualifiedAccessExpression.source,
+                        factory = Errors.BLACKHOLE_CALL_INSIDE_INJECTION,
+                        a = calleeSymbol,
+                        context = context,
+                    )
+                }
+                
+                super.visitQualifiedAccessExpression(qualifiedAccessExpression)
+            }
+        }
+    }
+    
+    object BenchmarkResultAndReturnChecker : FirNamedFunctionChecker(MppCheckerKind.Common) {
+        context(context: CheckerContext, reporter: DiagnosticReporter)
+        override fun check(declaration: FirNamedFunction) {
+            if (!declaration.isBenchmark || declaration.isLocal || declaration.getContainingClassSymbol() != null) return
+            
+            declaration.accept(
+                IncorrectBenchmarkResultAndReturnReporter(
+                    context = context,
+                    reporter = reporter,
+                    benchmark = declaration,
+                )
+            )
+        }
+        
+        private class IncorrectBenchmarkResultAndReturnReporter(
+            private val context: CheckerContext,
+            private val reporter: DiagnosticReporter,
+            private val benchmark: FirNamedFunction,
+        ) : DefaultFirVisitorVoid() {
+            private val benchmarkResult = context.session.symbolProvider
+                .getTopLevelPropertySymbols(
+                    benchmarkResultPropertyCallableId.packageName,
+                    benchmarkResultPropertyCallableId.callableName,
+                ).single()
+            
+            override fun visitQualifiedAccessExpression(qualifiedAccessExpression: FirQualifiedAccessExpression) {
+                val calleeSymbol = qualifiedAccessExpression.calleeReference.symbol
+                
+                if (calleeSymbol == benchmarkResult) {
+                    reporter.reportOn(
+                        source = qualifiedAccessExpression.source,
+                        factory = Errors.BENCHMARK_RESULT_IS_NOT_RETURNED_BY_BENCHMARK,
+                        a = calleeSymbol,
+                        context = context,
+                    )
+                }
+                
+                super.visitQualifiedAccessExpression(qualifiedAccessExpression)
             }
             
-            override fun visitPropertyAccessExpression(propertyAccessExpression: FirPropertyAccessExpression) {
-                visitQualifiedAccessExpression(propertyAccessExpression)
+            override fun visitReturnExpression(returnExpression: FirReturnExpression) {
+                if (returnExpression.target.labeledElement.symbol == benchmark.symbol) {
+                    val returnResult = returnExpression.result
+                    if (returnResult !is FirQualifiedAccessExpression || returnResult.calleeReference.symbol != benchmarkResult) {
+                        reporter.reportOn(
+                            source = returnExpression.source,
+                            factory = Errors.BENCHMARK_RESULT_IS_NOT_RETURNED_BY_BENCHMARK,
+                            a = benchmarkResult,
+                            context = context,
+                        )
+                    }
+                } else super.visitReturnExpression(returnExpression)
             }
-            override fun visitWhenSubjectExpression(whenSubjectExpression: FirWhenSubjectExpression) {
-                visitPropertyAccessExpression(whenSubjectExpression)
+        }
+    }
+    
+    object InjectionInsideInjectionChecker : FirNamedFunctionChecker(MppCheckerKind.Common) {
+        context(context: CheckerContext, reporter: DiagnosticReporter)
+        override fun check(declaration: FirNamedFunction) {
+            if (!declaration.isBenchmark || declaration.isLocal || declaration.getContainingClassSymbol() != null) return
+            
+            declaration.accept(
+                BenchmarkInjectionBlockFinder(
+                    context = context,
+                    subvisitor = BlackholeInsideInjectionReporter(
+                        context = context,
+                        reporter = reporter,
+                    )
+                )
+            )
+        }
+        
+        private class BlackholeInsideInjectionReporter(
+            private val context: CheckerContext,
+            private val reporter: DiagnosticReporter,
+        ) : DefaultFirVisitorVoid() {
+            private val injectFunctions = listOf(
+                context.session.symbolProvider.getTopLevelFunctionSymbols(
+                    injectFunctionCallableId.packageName,
+                    injectFunctionCallableId.callableName,
+                ).single(),
+                context.session.symbolProvider.getTopLevelFunctionSymbols(
+                    injectDisposableFunctionCallableId.packageName,
+                    injectDisposableFunctionCallableId.callableName,
+                ).single(),
+            )
+            
+            override fun visitQualifiedAccessExpression(qualifiedAccessExpression: FirQualifiedAccessExpression) {
+                val calleeSymbol = qualifiedAccessExpression.calleeReference.symbol
+                
+                if (calleeSymbol != null && calleeSymbol in injectFunctions) {
+                    reporter.reportOn(
+                        source = qualifiedAccessExpression.calleeReference.source,
+                        factory = Errors.INJECT_CALL_INSIDE_INJECTION,
+                        a = calleeSymbol,
+                        context = context,
+                    )
+                }
+                
+                super.visitQualifiedAccessExpression(qualifiedAccessExpression)
             }
-            override fun visitCallableReferenceAccess(callableReferenceAccess: FirCallableReferenceAccess) {
-                visitQualifiedAccessExpression(callableReferenceAccess)
+        }
+    }
+    
+    object InjectionBlackholeAndBenchmarkResultCallsOutsideBenchmarkChecker : FirFileChecker(MppCheckerKind.Common) {
+        context(context: CheckerContext, reporter: DiagnosticReporter)
+        override fun check(declaration: FirFile) {
+            declaration.accept(
+                InjectionBlackholeAndBenchmarkResultCallsOutsideBenchmarkReporter(
+                    context = context,
+                    reporter = reporter,
+                )
+            )
+        }
+        
+        private class InjectionBlackholeAndBenchmarkResultCallsOutsideBenchmarkReporter(
+            private val context: CheckerContext,
+            private val reporter: DiagnosticReporter,
+        ) : DefaultFirVisitorVoid() {
+            private val forbiddenCallables = listOf(
+                context.session.symbolProvider.getTopLevelFunctionSymbols(
+                    injectFunctionCallableId.packageName,
+                    injectFunctionCallableId.callableName,
+                ).single(),
+                context.session.symbolProvider.getTopLevelFunctionSymbols(
+                    injectDisposableFunctionCallableId.packageName,
+                    injectDisposableFunctionCallableId.callableName,
+                ).single(),
+                context.session.symbolProvider.getTopLevelPropertySymbols(
+                    blackholePropertyCallableId.packageName,
+                    blackholePropertyCallableId.callableName,
+                ).single(),
+                context.session.symbolProvider.getTopLevelPropertySymbols(
+                    benchmarkResultPropertyCallableId.packageName,
+                    benchmarkResultPropertyCallableId.callableName,
+                ).single(),
+            )
+            
+            override fun visitNamedFunction(namedFunction: FirNamedFunction) {
+                if (context(context) { namedFunction.isBenchmark } && !namedFunction.isLocal && namedFunction.getContainingClassSymbol() == null) return
+                super.visitNamedFunction(namedFunction)
             }
-            override fun visitFunctionCall(functionCall: FirFunctionCall) {
-                visitQualifiedAccessExpression(functionCall)
-            }
-            override fun visitComponentCall(componentCall: FirComponentCall) {
-                visitFunctionCall(componentCall)
-            }
-            override fun visitImplicitInvokeCall(implicitInvokeCall: FirImplicitInvokeCall) {
-                visitFunctionCall(implicitInvokeCall)
-            }
-            override fun visitIntegerLiteralOperatorCall(integerLiteralOperatorCall: FirIntegerLiteralOperatorCall) {
-                visitFunctionCall(integerLiteralOperatorCall)
-            }
-            override fun visitThisReceiverExpression(thisReceiverExpression: FirThisReceiverExpression) {
-                visitQualifiedAccessExpression(thisReceiverExpression)
-            }
-            override fun visitSuperReceiverExpression(superReceiverExpression: FirSuperReceiverExpression) {
-                visitQualifiedAccessExpression(superReceiverExpression)
+            
+            override fun visitQualifiedAccessExpression(qualifiedAccessExpression: FirQualifiedAccessExpression) {
+                val calleeSymbol = qualifiedAccessExpression.calleeReference.symbol
+                
+                if (calleeSymbol != null && calleeSymbol in forbiddenCallables) {
+                    reporter.reportOn(
+                        source = qualifiedAccessExpression.calleeReference.source,
+                        factory = Errors.INJECT_BLACKHOLE_OR_BENCHMARK_RESULT_OUTSIDE_BENCHMARKS,
+                        a = calleeSymbol,
+                        context = context,
+                    )
+                }
+                
+                super.visitQualifiedAccessExpression(qualifiedAccessExpression)
             }
         }
     }
@@ -622,11 +605,23 @@ class BenchmarksCheckersExtension(session: FirSession) : FirAdditionalCheckersEx
         val BENCHMARK_CALL_INSIDE_BENCHMARK by KtDiagnosticFactory1Delegate<FirBasedSymbol<*>>(
             severity = ERROR,
         )
+        val BLACKHOLE_CALL_INSIDE_INJECTION by KtDiagnosticFactory1Delegate<FirBasedSymbol<*>>(
+            severity = ERROR,
+        )
+        val BENCHMARK_RESULT_IS_NOT_RETURNED_BY_BENCHMARK by KtDiagnosticFactory1Delegate<FirBasedSymbol<*>>(
+            severity = ERROR,
+        )
+        val BENCHMARK_RETURNS_NOT_BENCHMARK_RESULT_PROPERTY by KtDiagnosticFactory1Delegate<FirBasedSymbol<*>>(
+            severity = ERROR,
+        )
+        val INJECT_CALL_INSIDE_INJECTION by KtDiagnosticFactory1Delegate<FirBasedSymbol<*>>(
+            severity = WARNING,
+        )
+        val INJECT_BLACKHOLE_OR_BENCHMARK_RESULT_OUTSIDE_BENCHMARKS by KtDiagnosticFactory1Delegate<FirBasedSymbol<*>>(
+            severity = ERROR,
+        )
         // TODO:
-        //  blackhole in injection block <- ERROR
-        //  benchmarkResult and returns in benchmarks <- ERROR
-        //  INJECT_IN_INJECT <- WARNING (useless)
-        //  inject/blackhole/benchmarkResult not in @Benchmark <- ERROR
+        //  wrong benchmark modifiers: suspend, inline, ???
         
         override fun getRendererFactory(): BaseDiagnosticRendererFactory = DefaultMessages
         
@@ -665,12 +660,37 @@ class BenchmarksCheckersExtension(session: FirSession) : FirAdditionalCheckersEx
                 map.put(
                     NON_INJECTABLE_ACCESS_INSIDE_INJECTION,
                     "Non-injectable entities (functions, properties, variables, classes, etc.) must not be accessed inside injection block. {0} is not injectable.",
-                    FirDiagnosticRenderers.DECLARATION_NAME,
+                    FirDiagnosticRenderers.SYMBOL,
                 )
                 map.put(
                     BENCHMARK_CALL_INSIDE_BENCHMARK,
-                    "{0} cannot be called inside benchmark ('@Benchmark'-annotated function) because it is benchmark itself.",
-                    FirDiagnosticRenderers.DECLARATION_NAME,
+                    "{0} must not be called inside benchmark ('@Benchmark'-annotated function) because it is benchmark itself.",
+                    FirDiagnosticRenderers.SYMBOL,
+                )
+                map.put(
+                    BLACKHOLE_CALL_INSIDE_INJECTION,
+                    "{0} must not be called inside injection block.",
+                    FirDiagnosticRenderers.SYMBOL,
+                )
+                map.put(
+                    BENCHMARK_RESULT_IS_NOT_RETURNED_BY_BENCHMARK,
+                    "{0} must be immediately returned by benchmark ('@Benchmark'-annotated function).",
+                    FirDiagnosticRenderers.SYMBOL,
+                )
+                map.put(
+                    BENCHMARK_RETURNS_NOT_BENCHMARK_RESULT_PROPERTY,
+                    "Benchmark ('@Benchmark'-annotated function) must return only {0}",
+                    FirDiagnosticRenderers.SYMBOL,
+                )
+                map.put(
+                    INJECT_CALL_INSIDE_INJECTION,
+                    "{0} call is useless inside injection block.",
+                    FirDiagnosticRenderers.SYMBOL,
+                )
+                map.put(
+                    INJECT_BLACKHOLE_OR_BENCHMARK_RESULT_OUTSIDE_BENCHMARKS,
+                    "{0} must not be called outside benchmarks.",
+                    FirDiagnosticRenderers.SYMBOL,
                 )
             }
         }
