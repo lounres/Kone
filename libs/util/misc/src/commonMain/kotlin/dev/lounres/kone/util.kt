@@ -19,6 +19,7 @@ import kotlin.contracts.contract
 public inline fun <Result> scope(block: () -> Result): Result {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+        returnsResultOf(block)
     }
     return block()
 }

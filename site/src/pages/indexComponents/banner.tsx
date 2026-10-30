@@ -25,7 +25,7 @@ export default function Banner() {
                     alt={translate({
                         message: "Kone logo",
                         id: "homepage.logo.alt",
-                        description: "Big Kone logo alternative text"
+                        description: "Small Kone logo alternative text"
                     })}
                     className={clsx(styles.logoBannerSmall)}
                 />

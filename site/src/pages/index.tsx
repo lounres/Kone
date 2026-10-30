@@ -21,7 +21,7 @@ export default function Home(): JSX.Element {
             description={translate({
                 message: "Kone is a set of Kotlin Multiplatform libraries that are made to simplify your experience of mathematical computer experiments",
                 id: "homepage.meta.description",
-                description: "Title of the homepage"
+                description: "Description of the homepage"
             })}>
             <Banner/>
             <main>

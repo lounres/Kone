@@ -1,0 +1,12 @@
+FILE: notTopLevelBenchmark1.kt
+    package foo.bar
+
+    public final object Foo : R|kotlin/Any| {
+        private constructor(): R|foo/bar/Foo| {
+            super<R|kotlin/Any|>()
+        }
+
+        @R|dev/lounres/kone/benchmarks/Benchmark|() public final fun myLovelyBenchmark(): R|kotlin/Unit| {
+        }
+
+    }
