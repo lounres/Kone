@@ -7,6 +7,7 @@ package dev.lounres.kone.plugin.benchmarks.fir
 
 import dev.lounres.kone.plugin.benchmarks.benchmarkAnnotationClassId
 import dev.lounres.kone.plugin.benchmarks.benchmarkConfigurationClassClassId
+import dev.lounres.kone.plugin.benchmarks.benchmarkResultClassClassId
 import dev.lounres.kone.plugin.benchmarks.benchmarkResultPropertyCallableId
 import dev.lounres.kone.plugin.benchmarks.blackholePropertyCallableId
 import dev.lounres.kone.plugin.benchmarks.injectDisposableFunctionCallableId
@@ -16,7 +17,6 @@ import dev.lounres.kone.util.kotlinCompilerUtils.KtDiagnosticFactory1Delegate
 import org.jetbrains.kotlin.diagnostics.*
 import org.jetbrains.kotlin.diagnostics.Severity.ERROR
 import org.jetbrains.kotlin.diagnostics.rendering.BaseDiagnosticRendererFactory
-import org.jetbrains.kotlin.fir.FirElement
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.analysis.checkers.MppCheckerKind
 import org.jetbrains.kotlin.fir.analysis.checkers.context.CheckerContext
@@ -70,6 +70,7 @@ class BenchmarksCheckersExtension(session: FirSession) : FirAdditionalCheckersEx
             BenchmarkMarkedNamedFunctionChecker,
             BenchmarkTypeParametersChecker,
             BenchmarkConfigurationParametersChecker,
+            BenchmarkReturnTypeChecker,
             BenchmarkInjectableCallsCheckers,
             BenchmarkInsideBenchmarkChecker,
             BlackholeInsideInjectionChecker,
@@ -163,6 +164,25 @@ class BenchmarksCheckersExtension(session: FirSession) : FirAdditionalCheckersEx
                 )
                 return
             }
+        }
+    }
+    
+    object BenchmarkReturnTypeChecker : FirNamedFunctionChecker(MppCheckerKind.Common) {
+        context(context: CheckerContext, reporter: DiagnosticReporter)
+        override fun check(declaration: FirNamedFunction) {
+            if (!declaration.isBenchmark || declaration.isLocal || declaration.getContainingClassSymbol() != null) return
+            
+            val benchmarkResultConeClassLikeType = context.session.symbolProvider
+                .getClassLikeSymbolByClassId(benchmarkResultClassClassId)!!
+                .defaultType()
+            
+            if (declaration.returnTypeRef.coneTypeOrNull != benchmarkResultConeClassLikeType)
+                reporter.reportOn(
+                    source = declaration.returnTypeRef.source,
+                    factory = Errors.BENCHMARK_INCORRECT_RETURN_TYPE,
+                    a = declaration.symbol,
+                    context = context,
+                )
         }
     }
     
@@ -586,10 +606,14 @@ class BenchmarksCheckersExtension(session: FirSession) : FirAdditionalCheckersEx
         val BENCHMARK_TYPE_PARAMETER by KtDiagnosticFactory1Delegate<FirTypeParameterSymbol>(
             severity = ERROR,
         )
-        val BENCHMARK_NOT_ONLY_CONFIGURATION_PARAMETER by KtDiagnosticFactory1Delegate<FirBasedSymbol<FirDeclaration>>(
+        val BENCHMARK_NOT_ONLY_CONFIGURATION_PARAMETER by KtDiagnosticFactory1Delegate<FirBasedSymbol<*>>(
             severity = ERROR,
         )
-        val BENCHMARK_WITHOUT_CONFIGURATION_PARAMETER by KtDiagnosticFactory1Delegate<FirBasedSymbol<FirDeclaration>>(
+        val BENCHMARK_WITHOUT_CONFIGURATION_PARAMETER by KtDiagnosticFactory1Delegate<FirBasedSymbol<*>>(
+            severity = ERROR,
+            defaultPositioningStrategy = SourceElementPositioningStrategies.DECLARATION_NAME,
+        )
+        val BENCHMARK_INCORRECT_RETURN_TYPE by KtDiagnosticFactory1Delegate<FirBasedSymbol<*>>(
             severity = ERROR,
             defaultPositioningStrategy = SourceElementPositioningStrategies.DECLARATION_NAME,
         )
@@ -645,6 +669,11 @@ class BenchmarksCheckersExtension(session: FirSession) : FirAdditionalCheckersEx
                 map.put(
                     BENCHMARK_WITHOUT_CONFIGURATION_PARAMETER,
                     "Benchmark ('@Benchmark'-annotated function) must have exactly one configuration parameter (parameter of type 'BenchmarkConfiguration'), but found none.",
+                    FirDiagnosticRenderers.DECLARATION_NAME,
+                )
+                map.put(
+                    BENCHMARK_INCORRECT_RETURN_TYPE,
+                    "Benchmark ('@Benchmark'-annotated function) must have 'BenchmarkResult' as its return type.",
                     FirDiagnosticRenderers.DECLARATION_NAME,
                 )
                 map.put(
