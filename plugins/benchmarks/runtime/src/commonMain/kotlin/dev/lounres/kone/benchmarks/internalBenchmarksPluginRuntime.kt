@@ -8,8 +8,13 @@ package dev.lounres.kone.benchmarks
 import kotlin.reflect.KClass
 
 
+private class BenchmarksPluginException(message: String? = null, reason: Throwable? = null) : IllegalStateException(message, reason)
+
+@PublishedApi
+internal fun benchmarksPluginExceptionForRuntimeDeclarations(): Nothing = throw BenchmarksPluginException(benchmarksPluginExceptionForRuntimeDeclarationsMessage)
+
 @Deprecated(
-    message = "",
+    message = internalsDeprecationAnnotationMessage,
     level = HIDDEN,
 )
 public data class InjectedValue<out T>(
@@ -18,7 +23,7 @@ public data class InjectedValue<out T>(
 )
 
 @Deprecated(
-    message = "",
+    message = internalsDeprecationAnnotationMessage,
     level = HIDDEN,
 )
 public fun runBenchmark(

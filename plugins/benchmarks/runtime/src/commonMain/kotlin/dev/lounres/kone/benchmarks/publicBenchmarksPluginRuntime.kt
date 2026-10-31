@@ -10,10 +10,10 @@ import kotlinx.benchmark.Blackhole
 @Target(FUNCTION)
 public annotation class Benchmark
 
-public val blackhole: Blackhole get() = error("... intrinsic ...")
+public val blackhole: Blackhole get() = benchmarksPluginExceptionForRuntimeDeclarations()
 
 public inline fun <T> inject(crossinline block: () -> T): T {
-    error("... intrinsic ...")
+    benchmarksPluginExceptionForRuntimeDeclarations()
 }
 
 public interface DisposableInjection<out T> {
@@ -28,7 +28,7 @@ public fun <T> DisposableInjection(value: T, dispose: () -> Unit): DisposableInj
     }
 
 public inline fun <T> injectDisposable(crossinline block: () -> DisposableInjection<T>): T {
-    error("... intrinsic ...")
+    benchmarksPluginExceptionForRuntimeDeclarations()
 }
 
 // TODO: Add ability to inject functions, properties, and classes. Not only benchmark parameters.
@@ -43,4 +43,4 @@ public class BenchmarkConfiguration
 
 public class BenchmarkResult
 
-public val benchmarkResult: BenchmarkResult get() = error("... intrinsic ...")
+public val benchmarkResult: BenchmarkResult get() = benchmarksPluginExceptionForRuntimeDeclarations()
