@@ -645,7 +645,9 @@ class BenchmarksCheckersExtension(session: FirSession) : FirAdditionalCheckersEx
             severity = ERROR,
         )
         // TODO:
-        //  wrong benchmark modifiers: suspend, inline, ???
+        //  wrong benchmark modifiers: suspend, inline, ??? <- ERROR
+        //  blackhole parameter <- WARNING?
+        //  non-root package <- ERROR
         
         override fun getRendererFactory(): BaseDiagnosticRendererFactory = DefaultMessages
         
