@@ -9,11 +9,15 @@ import org.jetbrains.kotlin.GeneratedDeclarationKey
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.builders.*
 import org.jetbrains.kotlin.ir.builders.declarations.addField
 import org.jetbrains.kotlin.ir.declarations.IrClass
+import org.jetbrains.kotlin.ir.declarations.IrDeclarationBase
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationOrigin
+import org.jetbrains.kotlin.ir.declarations.IrFunction
 import org.jetbrains.kotlin.ir.declarations.IrValueParameter
+import org.jetbrains.kotlin.ir.expressions.IrDeclarationReference
 import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.expressions.IrFunctionExpression
 import org.jetbrains.kotlin.ir.expressions.IrMemberAccessExpression
@@ -28,27 +32,32 @@ class BenchmarkBodyTransformer(
     private val pluginContext: IrPluginContext,
     private val irRuntimeReferences: IrRuntimeReferences,
     private val irBuilder: IrBuilder,
+    private val subdeclarationFunction: IrFunction,
     private val benchmarkClass: IrClass,
-    private val benchmarkFunctionDispatchReceiver: IrValueParameter,
-    private val benchmarkFunctionBlackholeParameter: IrValueParameter,
-//    private val subdeclarationIrBlockBodyBuilder: IrBlockBodyBuilder,
-    private val setupFunctionDispatchReceiver: IrValueParameter,
+    private val benchmarkFunction: IrFunction,
+    private val setupFunction: IrFunction,
     private val setupFunctionIrBlockBodyBuilder: IrBlockBodyBuilder,
     private val tearDownFunctionDispatchReceiver: IrValueParameter,
     private val tearDownFunctionIrBlockBodyBuilder: IrBlockBodyBuilder,
-    private val benchmarkBodyReplacements: Map<IrSymbol, (IrMemberAccessExpression<*>) -> IrExpression>,
-    injectionBlockReplacements: Map<IrSymbol, (IrMemberAccessExpression<*>) -> IrExpression>,
+    private val benchmarkBodyReplacements: Map<IrSymbol, (IrExpression) -> IrExpression>,
+    injectionBlockReplacements: Map<IrSymbol, (IrExpression) -> IrExpression>,
 ) : IrTransformer<Nothing?>() {
     private object Key : GeneratedDeclarationKey() {
         override fun toString(): String = "BenchmarkBodyTransformer.Key"
     }
     private val pluginDeclarationOrigin = IrDeclarationOrigin.GeneratedByPlugin(Key)
     
+    private val benchmarkFunctionDispatchReceiver: IrValueParameter = benchmarkFunction.parameters[0]
+    private val benchmarkFunctionBlackholeParameter: IrValueParameter = benchmarkFunction.parameters[1]
+    private val setupFunctionDispatchReceiver: IrValueParameter = setupFunction.parameters[0]
+    
     private val injectionBlockReplacements = injectionBlockReplacements.toMutableMap()
     private val benchmarkInjectionBlockTransformer = BenchmarkInjectionBlockTransformer(
         pluginContext = pluginContext,
         irRuntimeReferences = irRuntimeReferences,
         irBuilder = irBuilder,
+        subdeclarationFunction = subdeclarationFunction,
+        setupFunction = setupFunction,
         replacements = this.injectionBlockReplacements,
     )
     
@@ -56,9 +65,9 @@ class BenchmarkBodyTransformer(
     
     override fun visitMemberAccess(expression: IrMemberAccessExpression<*>, data: Nothing?): IrElement =
         when (expression.symbol) {
-            irRuntimeReferences.blackholePropertyIrPropertySymbol ->
+            irRuntimeReferences.blackholePropertyGetterIrSimpleFunctionSymbol ->
                 irBuilder.irGet(benchmarkFunctionBlackholeParameter)
-            irRuntimeReferences.benchmarkResultPropertyIrPropertySymbol ->
+            irRuntimeReferences.benchmarkResultPropertyGetterIrSimpleFunctionSymbol ->
                 benchmarksIrPluginException("Expected to already replace 'return benchmarkResult', but visited 'benchmarkResult'")
             irRuntimeReferences.injectFunctionIrSimpleFunctionSymbol -> {
                 val lambda = expression.arguments.singleOrNull() as? IrFunctionExpression ?: benchmarksIrPluginException("Unexpected arguments of 'inject' function call")
@@ -95,6 +104,7 @@ class BenchmarkBodyTransformer(
                         value = irCall(
                             callee = irRuntimeReferences.injectedValueConstructorIrConstructorSymbol,
                         ).apply {
+                            type = injectedValueOfTheType
                             typeArguments[0] = expression.type
                             arguments[0] = irCall(irRuntimeReferences.runIrSimpleFunctionSymbol).apply {
                                 type = expression.type
@@ -175,6 +185,7 @@ class BenchmarkBodyTransformer(
                         value = irCall(
                             callee = irRuntimeReferences.injectedValueConstructorIrConstructorSymbol,
                         ).apply {
+                            type = injectedValueOfTheType
                             typeArguments[0] = expression.type
                             arguments[0] = irCall(irRuntimeReferences.disposableInjectionValuePropertyGetterIrSimpleFunctionSymbol).apply {
                                 type = expression.type
@@ -231,11 +242,23 @@ class BenchmarkBodyTransformer(
             else -> super.visitMemberAccess(expression, data)
         }
     
+    override fun visitDeclarationReference(expression: IrDeclarationReference, data: Nothing?): IrExpression =
+        when (expression.symbol) {
+            in benchmarkBodyReplacements -> benchmarkBodyReplacements[expression.symbol]!!(expression)
+            else -> super.visitDeclarationReference(expression, data)
+        }
+    
+    override fun visitDeclaration(declaration: IrDeclarationBase, data: Nothing?): IrStatement {
+        if (declaration.parent === subdeclarationFunction) declaration.parent = benchmarkFunction
+        return super.visitDeclaration(declaration, data)
+    }
+    
     override fun visitReturn(expression: IrReturn, data: Nothing?): IrExpression {
         val value = expression.value
-        if (value is IrMemberAccessExpression<*> && value.symbol == irRuntimeReferences.benchmarkResultPropertyIrPropertySymbol) {
+        if (value is IrMemberAccessExpression<*> && value.symbol == irRuntimeReferences.benchmarkResultPropertyGetterIrSimpleFunctionSymbol) {
             expression.value = irBuilder.irUnit()
         }
+        if (expression.returnTargetSymbol == subdeclarationFunction.symbol) expression.returnTargetSymbol = benchmarkFunction.symbol
         return super.visitReturn(expression, data)
     }
 }

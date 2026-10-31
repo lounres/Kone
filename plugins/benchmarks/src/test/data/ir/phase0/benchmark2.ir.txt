@@ -1,0 +1,163 @@
+FILE fqName:foo.bar fileName:/benchmark2.kt
+  CLASS ENUM_CLASS name:Action modality:ABSTRACT visibility:public superTypes:[kotlin.Enum<foo.bar.Action>]
+    annotations:
+      Serializable(with = <null>)
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Action
+    ENUM_ENTRY name:Tanh57179
+      init: EXPRESSION_BODY
+        ENUM_CONSTRUCTOR_CALL 'private constructor <init> () declared in foo.bar.Action.Tanh57179'
+      class: CLASS ENUM_ENTRY name:Tanh57179 modality:FINAL visibility:private superTypes:[foo.bar.Action]
+        thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Action.Tanh57179
+        CONSTRUCTOR visibility:private returnType:foo.bar.Action.Tanh57179 [primary]
+          BLOCK_BODY
+            ENUM_CONSTRUCTOR_CALL 'private constructor <init> () declared in foo.bar.Action'
+            INSTANCE_INITIALIZER_CALL classDescriptor='CLASS ENUM_ENTRY name:Tanh57179 modality:FINAL visibility:private superTypes:[foo.bar.Action]' type=kotlin.Unit
+        FUN FAKE_OVERRIDE name:compareTo visibility:public modality:FINAL returnType:kotlin.Int [fake_override,operator]
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+          VALUE_PARAMETER kind:Regular name:other index:1 type:foo.bar.Action
+          overridden:
+            public final fun compareTo (other: foo.bar.Action): kotlin.Int declared in foo.bar.Action
+        FUN FAKE_OVERRIDE name:describeConstable visibility:public modality:FINAL returnType:@[FlexibleNullability] java.util.Optional<@[FlexibleNullability] java.lang.Enum.EnumDesc<@[FlexibleNullability] foo.bar.Action?>?>? [fake_override]
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+          overridden:
+            public final fun describeConstable (): @[FlexibleNullability] java.util.Optional<@[FlexibleNullability] java.lang.Enum.EnumDesc<@[FlexibleNullability] foo.bar.Action?>?>? declared in foo.bar.Action
+        FUN FAKE_OVERRIDE name:equals visibility:public modality:FINAL returnType:kotlin.Boolean [fake_override,operator]
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+          VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+          overridden:
+            public final fun equals (other: kotlin.Any?): kotlin.Boolean declared in foo.bar.Action
+        FUN FAKE_OVERRIDE name:hashCode visibility:public modality:FINAL returnType:kotlin.Int [fake_override]
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+          overridden:
+            public final fun hashCode (): kotlin.Int declared in foo.bar.Action
+        FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+          overridden:
+            public open fun toString (): kotlin.String declared in foo.bar.Action
+        FUN name:run visibility:public modality:OPEN returnType:kotlin.Unit
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Action.Tanh57179
+          VALUE_PARAMETER kind:Regular name:blackhole index:1 type:org.openjdk.jmh.infra.Blackhole
+          overridden:
+            public abstract fun run (blackhole: org.openjdk.jmh.infra.Blackhole): kotlin.Unit declared in foo.bar.Action
+          BLOCK_BODY
+            CALL 'public final fun consume (p0: kotlin.Double): kotlin.Unit declared in org.openjdk.jmh.infra.Blackhole' type=kotlin.Unit origin=null
+              ARG <this>: GET_VAR 'blackhole: org.openjdk.jmh.infra.Blackhole declared in foo.bar.Action.Tanh57179.run' type=org.openjdk.jmh.infra.Blackhole origin=null
+              ARG p0: CALL 'public final fun tanh (x: kotlin.Double): kotlin.Double declared in kotlin.math' type=kotlin.Double origin=null
+                ARG x: CONST Double type=kotlin.Double value=57.179
+        PROPERTY FAKE_OVERRIDE name:name visibility:public modality:FINAL [fake_override,val]
+          annotations:
+            IntrinsicConstEvaluation
+          overridden:
+            public final name: kotlin.String declared in foo.bar.Action
+          FUN FAKE_OVERRIDE name:<get-name> visibility:public modality:FINAL returnType:kotlin.String [fake_override]
+            VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+            correspondingProperty: PROPERTY FAKE_OVERRIDE name:name visibility:public modality:FINAL [fake_override,val]
+            overridden:
+              public final fun <get-name> (): kotlin.String declared in foo.bar.Action
+        PROPERTY FAKE_OVERRIDE name:ordinal visibility:public modality:FINAL [fake_override,val]
+          overridden:
+            public final ordinal: kotlin.Int declared in foo.bar.Action
+          FUN FAKE_OVERRIDE name:<get-ordinal> visibility:public modality:FINAL returnType:kotlin.Int [fake_override]
+            VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+            correspondingProperty: PROPERTY FAKE_OVERRIDE name:ordinal visibility:public modality:FINAL [fake_override,val]
+            overridden:
+              public final fun <get-ordinal> (): kotlin.Int declared in foo.bar.Action
+    CONSTRUCTOR visibility:private returnType:foo.bar.Action [primary]
+      BLOCK_BODY
+        ENUM_CONSTRUCTOR_CALL 'public constructor <init> (name: kotlin.String, ordinal: kotlin.Int) declared in kotlin.Enum'
+          TYPE_ARG E: foo.bar.Action
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS ENUM_CLASS name:Action modality:ABSTRACT visibility:public superTypes:[kotlin.Enum<foo.bar.Action>]' type=kotlin.Unit
+    FUN ENUM_CLASS_SPECIAL_MEMBER name:valueOf visibility:public modality:FINAL returnType:foo.bar.Action [companion]
+      VALUE_PARAMETER kind:Regular name:value index:0 type:kotlin.String
+      SYNTHETIC_BODY kind=ENUM_VALUEOF
+    FUN ENUM_CLASS_SPECIAL_MEMBER name:values visibility:public modality:FINAL returnType:kotlin.Array<foo.bar.Action> [companion]
+      SYNTHETIC_BODY kind=ENUM_VALUES
+    FUN FAKE_OVERRIDE name:compareTo visibility:public modality:FINAL returnType:kotlin.Int [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+      VALUE_PARAMETER kind:Regular name:other index:1 type:foo.bar.Action
+      overridden:
+        public final fun compareTo (other: E of kotlin.Enum): kotlin.Int declared in kotlin.Enum
+    FUN FAKE_OVERRIDE name:describeConstable visibility:public modality:FINAL returnType:@[FlexibleNullability] java.util.Optional<@[FlexibleNullability] java.lang.Enum.EnumDesc<@[FlexibleNullability] foo.bar.Action?>?>? [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+      overridden:
+        public final fun describeConstable (): @[FlexibleNullability] java.util.Optional<@[FlexibleNullability] java.lang.Enum.EnumDesc<@[FlexibleNullability] E of kotlin.Enum?>?>? declared in kotlin.Enum
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:FINAL returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public final fun equals (other: kotlin.Any?): kotlin.Boolean declared in kotlin.Enum
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:FINAL returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+      overridden:
+        public final fun hashCode (): kotlin.Int declared in kotlin.Enum
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+      overridden:
+        public open fun toString (): kotlin.String declared in kotlin.Enum
+    FUN name:run visibility:public modality:ABSTRACT returnType:kotlin.Unit
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Action
+      VALUE_PARAMETER kind:Regular name:blackhole index:1 type:org.openjdk.jmh.infra.Blackhole
+    PROPERTY ENUM_CLASS_SPECIAL_MEMBER name:entries visibility:public modality:FINAL [val]
+      FUN ENUM_CLASS_SPECIAL_MEMBER name:<get-entries> visibility:public modality:FINAL returnType:kotlin.enums.EnumEntries<foo.bar.Action> [companion]
+        correspondingProperty: PROPERTY ENUM_CLASS_SPECIAL_MEMBER name:entries visibility:public modality:FINAL [val]
+        SYNTHETIC_BODY kind=ENUM_ENTRIES
+    PROPERTY FAKE_OVERRIDE name:name visibility:public modality:FINAL [fake_override,val]
+      annotations:
+        IntrinsicConstEvaluation
+      overridden:
+        public final name: kotlin.String declared in kotlin.Enum
+      FUN FAKE_OVERRIDE name:<get-name> visibility:public modality:FINAL returnType:kotlin.String [fake_override]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+        correspondingProperty: PROPERTY FAKE_OVERRIDE name:name visibility:public modality:FINAL [fake_override,val]
+        overridden:
+          public final fun <get-name> (): kotlin.String declared in kotlin.Enum
+    PROPERTY FAKE_OVERRIDE name:ordinal visibility:public modality:FINAL [fake_override,val]
+      overridden:
+        public final ordinal: kotlin.Int declared in kotlin.Enum
+      FUN FAKE_OVERRIDE name:<get-ordinal> visibility:public modality:FINAL returnType:kotlin.Int [fake_override]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+        correspondingProperty: PROPERTY FAKE_OVERRIDE name:ordinal visibility:public modality:FINAL [fake_override,val]
+        overridden:
+          public final fun <get-ordinal> (): kotlin.Int declared in kotlin.Enum
+  FUN name:box visibility:public modality:FINAL returnType:kotlin.String
+    BLOCK_BODY
+      TYPE_OP type=kotlin.Unit origin=IMPLICIT_COERCION_TO_UNIT typeOperand=kotlin.Unit
+        CALL 'public final fun myLovelyBenchmark (action: foo.bar.Action, times: kotlin.UInt, benchmarkConfiguration: dev.lounres.kone.benchmarks.BenchmarkConfiguration): dev.lounres.kone.benchmarks.BenchmarkResult declared in foo.bar' type=dev.lounres.kone.benchmarks.BenchmarkResult origin=null
+          ARG action: GET_ENUM 'ENUM_ENTRY name:Tanh57179' type=foo.bar.Action
+          ARG times: CONST Int type=kotlin.UInt value=57179
+          ARG benchmarkConfiguration: CONSTRUCTOR_CALL 'public constructor <init> () declared in dev.lounres.kone.benchmarks.BenchmarkConfiguration' type=dev.lounres.kone.benchmarks.BenchmarkConfiguration origin=null
+      RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in foo.bar'
+        CONST String type=kotlin.String value="OK"
+  FUN name:myLovelyBenchmark visibility:public modality:FINAL returnType:dev.lounres.kone.benchmarks.BenchmarkResult
+    VALUE_PARAMETER kind:Regular name:action index:0 type:foo.bar.Action
+    VALUE_PARAMETER kind:Regular name:times index:1 type:kotlin.UInt
+    VALUE_PARAMETER kind:Regular name:benchmarkConfiguration index:2 type:dev.lounres.kone.benchmarks.BenchmarkConfiguration
+    annotations:
+      Benchmark
+    BLOCK_BODY
+      BLOCK type=kotlin.Unit origin=FOR_LOOP
+        VAR FOR_LOOP_ITERATOR name:tmp_0 type:kotlin.collections.Iterator<kotlin.UInt> [val]
+          CALL 'public final fun iterator (): kotlin.collections.Iterator<kotlin.UInt> declared in kotlin.ranges.UIntRange' type=kotlin.collections.Iterator<kotlin.UInt> origin=FOR_LOOP_ITERATOR
+            ARG <this>: CALL 'public final fun rangeUntil (other: kotlin.UInt): kotlin.ranges.UIntRange declared in kotlin.UInt' type=kotlin.ranges.UIntRange origin=RANGE_UNTIL
+              ARG <this>: CONST Int type=kotlin.UInt value=0
+              ARG other: CALL 'public final fun inject <T> (block: kotlin.Function0<T of dev.lounres.kone.benchmarks.inject>): T of dev.lounres.kone.benchmarks.inject declared in dev.lounres.kone.benchmarks' type=kotlin.UInt origin=null
+                TYPE_ARG T: kotlin.UInt
+                ARG block: FUN_EXPR type=kotlin.Function0<kotlin.UInt> origin=LAMBDA
+                  FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL returnType:kotlin.UInt
+                    BLOCK_BODY
+                      RETURN type=kotlin.Nothing from='local final fun <anonymous> (): kotlin.UInt declared in foo.bar.myLovelyBenchmark'
+                        CALL 'public final fun times (other: kotlin.UInt): kotlin.UInt declared in kotlin.UInt' type=kotlin.UInt origin=MUL
+                          ARG <this>: GET_VAR 'times: kotlin.UInt declared in foo.bar.myLovelyBenchmark' type=kotlin.UInt origin=null
+                          ARG other: CONST Int type=kotlin.UInt value=2
+        WHILE label=null origin=FOR_LOOP_INNER_WHILE
+          condition: CALL 'public abstract fun hasNext (): kotlin.Boolean declared in kotlin.collections.Iterator' type=kotlin.Boolean origin=FOR_LOOP_HAS_NEXT
+            ARG <this>: GET_VAR 'val tmp_0: kotlin.collections.Iterator<kotlin.UInt> declared in foo.bar.myLovelyBenchmark' type=kotlin.collections.Iterator<kotlin.UInt> origin=null
+          body: BLOCK type=kotlin.Unit origin=FOR_LOOP_INNER_WHILE
+            VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:kotlin.UInt [val]
+              CALL 'public abstract fun next (): T of kotlin.collections.Iterator declared in kotlin.collections.Iterator' type=kotlin.UInt origin=FOR_LOOP_NEXT
+                ARG <this>: GET_VAR 'val tmp_0: kotlin.collections.Iterator<kotlin.UInt> declared in foo.bar.myLovelyBenchmark' type=kotlin.collections.Iterator<kotlin.UInt> origin=null
+            CALL 'public abstract fun run (blackhole: org.openjdk.jmh.infra.Blackhole): kotlin.Unit declared in foo.bar.Action' type=kotlin.Unit origin=null
+              ARG <this>: GET_VAR 'action: foo.bar.Action declared in foo.bar.myLovelyBenchmark' type=foo.bar.Action origin=null
+              ARG blackhole: CALL 'public final fun <get-blackhole> (): org.openjdk.jmh.infra.Blackhole declared in dev.lounres.kone.benchmarks' type=org.openjdk.jmh.infra.Blackhole origin=GET_PROPERTY
+      RETURN type=kotlin.Nothing from='public final fun myLovelyBenchmark (action: foo.bar.Action, times: kotlin.UInt, benchmarkConfiguration: dev.lounres.kone.benchmarks.BenchmarkConfiguration): dev.lounres.kone.benchmarks.BenchmarkResult declared in foo.bar'
+        CALL 'public final fun <get-benchmarkResult> (): dev.lounres.kone.benchmarks.BenchmarkResult declared in dev.lounres.kone.benchmarks' type=dev.lounres.kone.benchmarks.BenchmarkResult origin=GET_PROPERTY

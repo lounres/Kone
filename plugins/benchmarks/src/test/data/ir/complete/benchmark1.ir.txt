@@ -1,5 +1,7 @@
 FILE fqName:foo.bar fileName:/benchmark1.kt
   CLASS ENUM_CLASS name:Action modality:ABSTRACT visibility:public superTypes:[kotlin.Enum<foo.bar.Action>]
+    annotations:
+      Serializable(with = <null>)
     thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Action
     ENUM_ENTRY name:Tanh57179
       init: EXPRESSION_BODY
@@ -121,6 +123,97 @@ FILE fqName:foo.bar fileName:/benchmark1.kt
     annotations:
       State(value = Scope.Benchmark)
     thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.KoneBenchmarkClassForMyLovelyBenchmark
+    FIELD GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:action type:kotlin.String visibility:public
+      annotations:
+        Param(value = "")
+      EXPRESSION_BODY
+        CONST String type=kotlin.String value=""
+    FIELD GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:action$deserialized type:foo.bar.Action? visibility:private/*private to this*/
+      EXPRESSION_BODY
+        CONST Null type=foo.bar.Action? value=null
+    FIELD GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:times type:kotlin.String visibility:public
+      annotations:
+        Param(value = "")
+      EXPRESSION_BODY
+        CONST String type=kotlin.String value=""
+    FIELD GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:times$deserialized type:kotlin.UInt? visibility:private/*private to this*/
+      EXPRESSION_BODY
+        CONST Null type=kotlin.UInt? value=null
+    CONSTRUCTOR GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] visibility:public returnType:foo.bar.KoneBenchmarkClassForMyLovelyBenchmark [primary]
+      BLOCK_BODY
+        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+    FUN GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:benchmark visibility:public modality:FINAL returnType:kotlin.Unit [companion]
+      VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] kind:Regular name:<this> index:0 type:foo.bar.KoneBenchmarkClassForMyLovelyBenchmark
+      VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] kind:Regular name:blackhole index:1 type:org.openjdk.jmh.infra.Blackhole
+      annotations:
+        Benchmark
+      BLOCK_BODY
+        VAR GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:tmp0 type:foo.bar.Action [val]
+          TYPE_OP type=foo.bar.Action origin=CAST typeOperand=foo.bar.Action
+            GET_FIELD 'FIELD GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:action$deserialized type:foo.bar.Action? visibility:private/*private to this*/ declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark' type=foo.bar.Action? origin=null
+              receiver: GET_VAR '<this>: foo.bar.KoneBenchmarkClassForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark.benchmark' type=foo.bar.KoneBenchmarkClassForMyLovelyBenchmark origin=null
+        VAR GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:tmp1 type:kotlin.UInt [val]
+          TYPE_OP type=kotlin.UInt origin=CAST typeOperand=kotlin.UInt
+            GET_FIELD 'FIELD GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:times$deserialized type:kotlin.UInt? visibility:private/*private to this*/ declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark' type=kotlin.UInt? origin=null
+              receiver: GET_VAR '<this>: foo.bar.KoneBenchmarkClassForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark.benchmark' type=foo.bar.KoneBenchmarkClassForMyLovelyBenchmark origin=null
+        BLOCK type=kotlin.Unit origin=FOR_LOOP
+          VAR FOR_LOOP_ITERATOR name:tmp_0 type:kotlin.collections.Iterator<kotlin.UInt> [val]
+            CALL 'public final fun iterator (): kotlin.collections.Iterator<kotlin.UInt> declared in kotlin.ranges.UIntRange' type=kotlin.collections.Iterator<kotlin.UInt> origin=FOR_LOOP_ITERATOR
+              ARG <this>: CALL 'public final fun rangeUntil (other: kotlin.UInt): kotlin.ranges.UIntRange declared in kotlin.UInt' type=kotlin.ranges.UIntRange origin=RANGE_UNTIL
+                ARG <this>: CONST Int type=kotlin.UInt value=0
+                ARG other: GET_VAR 'val tmp1: kotlin.UInt declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark.benchmark' type=kotlin.UInt origin=null
+          WHILE label=null origin=FOR_LOOP_INNER_WHILE
+            condition: CALL 'public abstract fun hasNext (): kotlin.Boolean declared in kotlin.collections.Iterator' type=kotlin.Boolean origin=FOR_LOOP_HAS_NEXT
+              ARG <this>: GET_VAR 'val tmp_0: kotlin.collections.Iterator<kotlin.UInt> declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark.benchmark' type=kotlin.collections.Iterator<kotlin.UInt> origin=null
+            body: BLOCK type=kotlin.Unit origin=FOR_LOOP_INNER_WHILE
+              VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:kotlin.UInt [val]
+                CALL 'public abstract fun next (): T of kotlin.collections.Iterator declared in kotlin.collections.Iterator' type=kotlin.UInt origin=FOR_LOOP_NEXT
+                  ARG <this>: GET_VAR 'val tmp_0: kotlin.collections.Iterator<kotlin.UInt> declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark.benchmark' type=kotlin.collections.Iterator<kotlin.UInt> origin=null
+              CALL 'public abstract fun run (blackhole: org.openjdk.jmh.infra.Blackhole): kotlin.Unit declared in foo.bar.Action' type=kotlin.Unit origin=null
+                ARG <this>: GET_VAR 'val tmp0: foo.bar.Action declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark.benchmark' type=foo.bar.Action origin=null
+                ARG blackhole: GET_VAR 'blackhole: org.openjdk.jmh.infra.Blackhole declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark.benchmark' type=org.openjdk.jmh.infra.Blackhole origin=null
+        RETURN type=kotlin.Nothing from='public final fun benchmark (<this>: foo.bar.KoneBenchmarkClassForMyLovelyBenchmark, blackhole: org.openjdk.jmh.infra.Blackhole): kotlin.Unit declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark'
+          GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Unit modality:FINAL visibility:public superTypes:[kotlin.Any]' type=kotlin.Unit
+    FUN GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:setup visibility:public modality:FINAL returnType:kotlin.Unit [companion]
+      VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] kind:Regular name:<this> index:0 type:foo.bar.KoneBenchmarkClassForMyLovelyBenchmark
+      annotations:
+        Setup(value = <null>)
+      BLOCK_BODY
+        VAR GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:tmp0 type:foo.bar.Action [val]
+          CALL 'public final fun decodeFromString <T> (string: kotlin.String): T of kotlinx.serialization.json.Json.decodeFromString declared in kotlinx.serialization.json.Json' type=foo.bar.Action origin=null
+            TYPE_ARG T: foo.bar.Action
+            ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Default modality:FINAL visibility:public [companion] superTypes:[kotlinx.serialization.json.Json]' type=kotlinx.serialization.json.Json.Default
+            ARG string: GET_FIELD 'FIELD GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:action type:kotlin.String visibility:public declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark' type=kotlin.String origin=null
+              receiver: GET_VAR '<this>: foo.bar.KoneBenchmarkClassForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark.setup' type=foo.bar.KoneBenchmarkClassForMyLovelyBenchmark origin=null
+        SET_FIELD 'FIELD GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:action$deserialized type:foo.bar.Action? visibility:private/*private to this*/ declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark' type=kotlin.Unit origin=null
+          receiver: GET_VAR '<this>: foo.bar.KoneBenchmarkClassForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark.setup' type=foo.bar.KoneBenchmarkClassForMyLovelyBenchmark origin=null
+          value: GET_VAR 'val tmp0: foo.bar.Action declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark.setup' type=foo.bar.Action origin=null
+        VAR GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:tmp1 type:kotlin.UInt [val]
+          CALL 'public final fun decodeFromString <T> (string: kotlin.String): T of kotlinx.serialization.json.Json.decodeFromString declared in kotlinx.serialization.json.Json' type=kotlin.UInt origin=null
+            TYPE_ARG T: kotlin.UInt
+            ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Default modality:FINAL visibility:public [companion] superTypes:[kotlinx.serialization.json.Json]' type=kotlinx.serialization.json.Json.Default
+            ARG string: GET_FIELD 'FIELD GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:times type:kotlin.String visibility:public declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark' type=kotlin.String origin=null
+              receiver: GET_VAR '<this>: foo.bar.KoneBenchmarkClassForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark.setup' type=foo.bar.KoneBenchmarkClassForMyLovelyBenchmark origin=null
+        SET_FIELD 'FIELD GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:times$deserialized type:kotlin.UInt? visibility:private/*private to this*/ declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark' type=kotlin.Unit origin=null
+          receiver: GET_VAR '<this>: foo.bar.KoneBenchmarkClassForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark.setup' type=foo.bar.KoneBenchmarkClassForMyLovelyBenchmark origin=null
+          value: GET_VAR 'val tmp1: kotlin.UInt declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark.setup' type=kotlin.UInt origin=null
+    FUN GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:tearDown visibility:public modality:FINAL returnType:kotlin.Unit [companion]
+      VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] kind:Regular name:<this> index:0 type:foo.bar.KoneBenchmarkClassForMyLovelyBenchmark
+      annotations:
+        TearDown(value = <null>)
+      BLOCK_BODY
+        SET_FIELD 'FIELD GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:times$deserialized type:kotlin.UInt? visibility:private/*private to this*/ declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark' type=kotlin.Unit origin=null
+          receiver: GET_VAR '<this>: foo.bar.KoneBenchmarkClassForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark.tearDown' type=foo.bar.KoneBenchmarkClassForMyLovelyBenchmark origin=null
+          value: CONST Null type=kotlin.UInt? value=null
+        SET_FIELD 'FIELD GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:times type:kotlin.String visibility:public declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark' type=kotlin.Unit origin=null
+          receiver: GET_VAR '<this>: foo.bar.KoneBenchmarkClassForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark.tearDown' type=foo.bar.KoneBenchmarkClassForMyLovelyBenchmark origin=null
+          value: CONST String type=kotlin.String value=""
+        SET_FIELD 'FIELD GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:action$deserialized type:foo.bar.Action? visibility:private/*private to this*/ declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark' type=kotlin.Unit origin=null
+          receiver: GET_VAR '<this>: foo.bar.KoneBenchmarkClassForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark.tearDown' type=foo.bar.KoneBenchmarkClassForMyLovelyBenchmark origin=null
+          value: CONST Null type=foo.bar.Action? value=null
+        SET_FIELD 'FIELD GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:action type:kotlin.String visibility:public declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark' type=kotlin.Unit origin=null
+          receiver: GET_VAR '<this>: foo.bar.KoneBenchmarkClassForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark.tearDown' type=foo.bar.KoneBenchmarkClassForMyLovelyBenchmark origin=null
+          value: CONST String type=kotlin.String value=""
   FUN name:box visibility:public modality:FINAL returnType:kotlin.String
     BLOCK_BODY
       TYPE_OP type=kotlin.Unit origin=IMPLICIT_COERCION_TO_UNIT typeOperand=kotlin.Unit
@@ -137,21 +230,31 @@ FILE fqName:foo.bar fileName:/benchmark1.kt
     annotations:
       Benchmark
     BLOCK_BODY
-      BLOCK type=kotlin.Unit origin=FOR_LOOP
-        VAR FOR_LOOP_ITERATOR name:tmp_0 type:kotlin.collections.Iterator<kotlin.UInt> [val]
-          CALL 'public final fun iterator (): kotlin.collections.Iterator<kotlin.UInt> declared in kotlin.ranges.UIntRange' type=kotlin.collections.Iterator<kotlin.UInt> origin=FOR_LOOP_ITERATOR
-            ARG <this>: CALL 'public final fun rangeUntil (other: kotlin.UInt): kotlin.ranges.UIntRange declared in kotlin.UInt' type=kotlin.ranges.UIntRange origin=RANGE_UNTIL
-              ARG <this>: CONST Int type=kotlin.UInt value=0
-              ARG other: GET_VAR 'times: kotlin.UInt declared in foo.bar.myLovelyBenchmark' type=kotlin.UInt origin=null
-        WHILE label=null origin=FOR_LOOP_INNER_WHILE
-          condition: CALL 'public abstract fun hasNext (): kotlin.Boolean declared in kotlin.collections.Iterator' type=kotlin.Boolean origin=FOR_LOOP_HAS_NEXT
-            ARG <this>: GET_VAR 'val tmp_0: kotlin.collections.Iterator<kotlin.UInt> declared in foo.bar.myLovelyBenchmark' type=kotlin.collections.Iterator<kotlin.UInt> origin=null
-          body: BLOCK type=kotlin.Unit origin=FOR_LOOP_INNER_WHILE
-            VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:kotlin.UInt [val]
-              CALL 'public abstract fun next (): T of kotlin.collections.Iterator declared in kotlin.collections.Iterator' type=kotlin.UInt origin=FOR_LOOP_NEXT
-                ARG <this>: GET_VAR 'val tmp_0: kotlin.collections.Iterator<kotlin.UInt> declared in foo.bar.myLovelyBenchmark' type=kotlin.collections.Iterator<kotlin.UInt> origin=null
-            CALL 'public abstract fun run (blackhole: org.openjdk.jmh.infra.Blackhole): kotlin.Unit declared in foo.bar.Action' type=kotlin.Unit origin=null
-              ARG <this>: GET_VAR 'action: foo.bar.Action declared in foo.bar.myLovelyBenchmark' type=foo.bar.Action origin=null
-              ARG blackhole: CALL 'public final fun <get-blackhole> (): org.openjdk.jmh.infra.Blackhole declared in dev.lounres.kone.benchmarks' type=org.openjdk.jmh.infra.Blackhole origin=GET_PROPERTY
+      VAR GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:tmp0 type:kotlin.String [val]
+        CALL 'public final fun encodeToString <T> (value: T of kotlinx.serialization.json.Json.encodeToString): kotlin.String declared in kotlinx.serialization.json.Json' type=kotlin.String origin=null
+          TYPE_ARG T: foo.bar.Action
+          ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Default modality:FINAL visibility:public [companion] superTypes:[kotlinx.serialization.json.Json]' type=kotlinx.serialization.json.Json.Default
+          ARG value: GET_VAR 'action: foo.bar.Action declared in foo.bar.myLovelyBenchmark' type=foo.bar.Action origin=null
+      VAR GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:tmp1 type:kotlin.String [val]
+        CALL 'public final fun encodeToString <T> (value: T of kotlinx.serialization.json.Json.encodeToString): kotlin.String declared in kotlinx.serialization.json.Json' type=kotlin.String origin=null
+          TYPE_ARG T: kotlin.UInt
+          ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Default modality:FINAL visibility:public [companion] superTypes:[kotlinx.serialization.json.Json]' type=kotlinx.serialization.json.Json.Default
+          ARG value: GET_VAR 'times: kotlin.UInt declared in foo.bar.myLovelyBenchmark' type=kotlin.UInt origin=null
       RETURN type=kotlin.Nothing from='public final fun myLovelyBenchmark (action: foo.bar.Action, times: kotlin.UInt, benchmarkConfiguration: dev.lounres.kone.benchmarks.BenchmarkConfiguration): dev.lounres.kone.benchmarks.BenchmarkResult declared in foo.bar'
-        CALL 'public final fun <get-benchmarkResult> (): dev.lounres.kone.benchmarks.BenchmarkResult declared in dev.lounres.kone.benchmarks' type=dev.lounres.kone.benchmarks.BenchmarkResult origin=GET_PROPERTY
+        CALL 'public final fun runBenchmark (benchmarkClass: kotlin.reflect.KClass<*>, parameters: kotlin.collections.Map<kotlin.String, kotlin.String>, configuration: dev.lounres.kone.benchmarks.BenchmarkConfiguration): dev.lounres.kone.benchmarks.BenchmarkResult declared in dev.lounres.kone.benchmarks' type=dev.lounres.kone.benchmarks.BenchmarkResult origin=null
+          ARG benchmarkClass: CLASS_REFERENCE 'CLASS GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] CLASS name:KoneBenchmarkClassForMyLovelyBenchmark modality:OPEN visibility:public superTypes:[kotlin.Any]' type=kotlin.reflect.KClass<foo.bar.KoneBenchmarkClassForMyLovelyBenchmark>
+          ARG parameters: CALL 'public final fun mapOf <K, V> (vararg pairs: kotlin.Pair<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf>): kotlin.collections.Map<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf> declared in kotlin.collections' type=kotlin.collections.Map<kotlin.String, kotlin.String> origin=null
+            TYPE_ARG K: kotlin.String
+            TYPE_ARG V: kotlin.String
+            ARG pairs: VARARG type=kotlin.Array<kotlin.Pair<kotlin.String, kotlin.String>> varargElementType=kotlin.Pair<kotlin.String, kotlin.String>
+              CONSTRUCTOR_CALL 'public constructor <init> (first: A of kotlin.Pair, second: B of kotlin.Pair) declared in kotlin.Pair' type=kotlin.Pair<kotlin.String, kotlin.String> origin=null
+                TYPE_ARG (of class) A: kotlin.String
+                TYPE_ARG (of class) B: kotlin.String
+                ARG first: CONST String type=kotlin.String value="action"
+                ARG second: GET_VAR 'val tmp0: kotlin.String declared in foo.bar.myLovelyBenchmark' type=kotlin.String origin=null
+              CONSTRUCTOR_CALL 'public constructor <init> (first: A of kotlin.Pair, second: B of kotlin.Pair) declared in kotlin.Pair' type=kotlin.Pair<kotlin.String, kotlin.String> origin=null
+                TYPE_ARG (of class) A: kotlin.String
+                TYPE_ARG (of class) B: kotlin.String
+                ARG first: CONST String type=kotlin.String value="times"
+                ARG second: GET_VAR 'val tmp1: kotlin.String declared in foo.bar.myLovelyBenchmark' type=kotlin.String origin=null
+          ARG configuration: GET_VAR 'benchmarkConfiguration: dev.lounres.kone.benchmarks.BenchmarkConfiguration declared in foo.bar.myLovelyBenchmark' type=dev.lounres.kone.benchmarks.BenchmarkConfiguration origin=null

@@ -1,5 +1,7 @@
 FILE fqName:foo.bar fileName:/benchmark1.kt
   CLASS ENUM_CLASS name:Action modality:ABSTRACT visibility:public superTypes:[kotlin.Enum<foo.bar.Action>]
+    annotations:
+      Serializable(with = <null>)
     thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Action
     ENUM_ENTRY name:Tanh57179
       init: EXPRESSION_BODY

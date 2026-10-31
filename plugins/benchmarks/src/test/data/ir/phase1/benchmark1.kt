@@ -2,9 +2,11 @@ package foo.bar
 
 import dev.lounres.kone.benchmarks.*
 import kotlinx.benchmark.Blackhole
+import kotlinx.serialization.*
 import kotlin.math.tanh
 
 
+@Serializable
 enum class Action {
     Tanh57179 {
         override fun run(blackhole: Blackhole) {

@@ -102,12 +102,21 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
     val kotlinxBlackholeClassIrClassSymbol by lazy { finder.referenceClassOrFail(kotlinxBlackholeClassClassId) }
     val kotlinxJsonClassIrClassSymbol by lazy { finder.referenceClassOrFail(kotlinxJsonClassClassId) }
     val kotlinxJsonCompanionIrClassSymbol by lazy { kotlinxJsonClassIrClassSymbol.owner.companionObject()!!.symbol }
-    val kotlinxJsonEncodeToStringFunctionIrSimpleFunctionSymbol by lazy { kotlinxJsonClassIrClassSymbol.referenceFunctionThatOrFail(kotlinxJsonEncodeToStringFunctionShortName) }
-    val kotlinxJsonDecodeFromStringFunctionIrSimpleFunctionSymbol by lazy { kotlinxJsonClassIrClassSymbol.referenceFunctionThatOrFail(kotlinxJsonDecodeFromStringFunctionShortName) }
+    val kotlinxJsonEncodeToStringFunctionIrSimpleFunctionSymbol by lazy {
+        kotlinxJsonClassIrClassSymbol.referenceFunctionThatOrFail(kotlinxJsonEncodeToStringFunctionShortName) { functionSymbol ->
+            functionSymbol.owner.isInline && functionSymbol.owner.typeParameters.let { it.size == 1 && it[0].isReified }
+        }
+    }
+    val kotlinxJsonDecodeFromStringFunctionIrSimpleFunctionSymbol by lazy {
+        kotlinxJsonClassIrClassSymbol.referenceFunctionThatOrFail(kotlinxJsonDecodeFromStringFunctionShortName) { functionSymbol ->
+            functionSymbol.owner.isInline && functionSymbol.owner.typeParameters.let { it.size == 1 && it[0].isReified }
+        }
+    }
     
     // Public runtime
     val benchmarkAnnotationIrClassSymbol by lazy { finder.referenceClassOrFail(benchmarkAnnotationClassId) }
     val blackholePropertyIrPropertySymbol by lazy { finder.referencePropertyThatOrFail(blackholePropertyCallableId) }
+    val blackholePropertyGetterIrSimpleFunctionSymbol by lazy { blackholePropertyIrPropertySymbol.owner.getter!!.symbol }
     val injectFunctionIrSimpleFunctionSymbol by lazy { finder.referenceFunctionThatOrFail(injectFunctionCallableId) }
     val disposableInjectionClassIrClassSymbol by lazy { finder.referenceClassOrFail(disposableInjectionClassClassId) }
     val disposableInjectionValuePropertyIrPropertySymbol by lazy { disposableInjectionClassIrClassSymbol.referencePropertyThatOrFail(Name.identifier("value")) }
@@ -117,6 +126,7 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
     val benchmarkConfigurationClassIrClassSymbol by lazy { finder.referenceClassOrFail(benchmarkConfigurationClassClassId) }
     val benchmarkResultClassIrClassSymbol by lazy { finder.referenceClassOrFail(benchmarkResultClassClassId) }
     val benchmarkResultPropertyIrPropertySymbol by lazy { finder.referencePropertyThatOrFail(benchmarkResultPropertyCallableId) }
+    val benchmarkResultPropertyGetterIrSimpleFunctionSymbol by lazy { benchmarkResultPropertyIrPropertySymbol.owner.getter!!.symbol }
     
     // Private runtime
     val injectedValueClassIrClassSymbol by lazy { finder.referenceClassOrFail(injectedValueClassClassId) }

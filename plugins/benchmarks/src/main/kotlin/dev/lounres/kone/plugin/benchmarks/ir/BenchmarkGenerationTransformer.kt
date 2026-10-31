@@ -83,6 +83,14 @@ class BenchmarkGenerationTransformer(
                     name = Name.identifier("setup")
                     visibility = DescriptorVisibilities.PUBLIC
                     returnType = pluginContext.irBuiltIns.unitType
+                }.apply {
+                    addValueParameter {
+                        origin = pluginDeclarationOrigin
+                        name = SpecialNames.THIS
+                        visibility = DescriptorVisibilities.PUBLIC
+                        kind = DispatchReceiver
+                        type = benchmarkClass.symbol.defaultType
+                    }
                 }
                 setupFunction.annotations = listOf(
                     irBuilder.irAnnotation(irRuntimeReferences.kotlinxSetupAnnotationIrClassSymbol.constructors.single()),
@@ -92,6 +100,14 @@ class BenchmarkGenerationTransformer(
                     name = Name.identifier("tearDown")
                     visibility = DescriptorVisibilities.PUBLIC
                     returnType = pluginContext.irBuiltIns.unitType
+                }.apply {
+                    addValueParameter {
+                        origin = pluginDeclarationOrigin
+                        name = SpecialNames.THIS
+                        visibility = DescriptorVisibilities.PUBLIC
+                        kind = DispatchReceiver
+                        type = benchmarkClass.symbol.defaultType
+                    }
                 }
                 tearDownFunction.annotations = listOf(
                     irBuilder.irAnnotation(irRuntimeReferences.kotlinxTearDownAnnotationIrClassSymbol.constructors.single()),
@@ -101,16 +117,25 @@ class BenchmarkGenerationTransformer(
                     name = Name.identifier("benchmark")
                     visibility = DescriptorVisibilities.PUBLIC
                     returnType = pluginContext.irBuiltIns.unitType
+                }.apply {
+                    addValueParameter {
+                        origin = pluginDeclarationOrigin
+                        name = SpecialNames.THIS
+                        visibility = DescriptorVisibilities.PUBLIC
+                        kind = DispatchReceiver
+                        type = benchmarkClass.symbol.defaultType
+                    }
+                    addValueParameter {
+                        origin = pluginDeclarationOrigin
+                        name = Name.identifier("blackhole")
+                        visibility = DescriptorVisibilities.PUBLIC
+                        kind = Regular
+                        type = irRuntimeReferences.kotlinxBlackholeClassIrClassSymbol.defaultType
+                    }
                 }
                 benchmarkFunction.annotations = listOf(
                     irBuilder.irAnnotation(irRuntimeReferences.kotlinxBenchmarkAnnotationIrClassSymbol.constructors.single()),
                 )
-                val benchmarkFunctionBlackholeParameter = benchmarkFunction.addValueParameter {
-                    origin = pluginDeclarationOrigin
-                    name = Name.identifier("blackhole")
-                    type = irRuntimeReferences.kotlinxBlackholeClassIrClassSymbol.defaultType
-                    visibility = DescriptorVisibilities.PUBLIC
-                }
                 val subdeclarationIrBlockBodyBuilder = IrBlockBodyBuilder(
                     context = pluginContext,
                     scope = Scope(subdeclaration.symbol),
@@ -136,8 +161,8 @@ class BenchmarkGenerationTransformer(
                     endOffset = UNDEFINED_OFFSET,
                 )
                 var benchmarkConfigurationParameter: IrValueParameter? = null
-                val benchmarkBodyReplacements = mutableMapOf<IrSymbol, (IrMemberAccessExpression<*>) -> IrExpression>()
-                val injectionBlockReplacements = mutableMapOf<IrSymbol, (IrMemberAccessExpression<*>) -> IrExpression>()
+                val benchmarkBodyReplacements = mutableMapOf<IrSymbol, (IrExpression) -> IrExpression>()
+                val injectionBlockReplacements = mutableMapOf<IrSymbol, (IrExpression) -> IrExpression>()
                 val subdeclarationBodyReplacements = mutableMapOf<IrValueParameterSymbol, IrVariable>()
                 for (parameter in subdeclaration.parameters) {
                     if (parameter.type == irRuntimeReferences.benchmarkConfigurationClassIrClassSymbol.defaultType) {
@@ -237,10 +262,10 @@ class BenchmarkGenerationTransformer(
                         pluginContext = pluginContext,
                         irRuntimeReferences = irRuntimeReferences,
                         irBuilder = irBuilder,
+                        subdeclarationFunction = subdeclaration,
                         benchmarkClass = benchmarkClass,
-                        benchmarkFunctionDispatchReceiver = benchmarkFunction.parameters[0],
-                        benchmarkFunctionBlackholeParameter = benchmarkFunctionBlackholeParameter,
-                        setupFunctionDispatchReceiver = setupFunction.parameters[0],
+                        benchmarkFunction = benchmarkFunction,
+                        setupFunction = setupFunction,
                         setupFunctionIrBlockBodyBuilder = setupFunctionIrBlockBodyBuilder,
                         tearDownFunctionDispatchReceiver = tearDownFunction.parameters[0],
                         tearDownFunctionIrBlockBodyBuilder = tearDownFunctionIrBlockBodyBuilder,

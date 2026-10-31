@@ -1,7 +1,7 @@
 FILE: benchmark1.kt
     package foo.bar
 
-    public final enum class Action : R|kotlin/Enum<foo/bar/Action>| {
+    @R|kotlinx/serialization/Serializable|() public final enum class Action : R|kotlin/Enum<foo/bar/Action>| {
         private constructor(): R|foo/bar/Action| {
             super<R|kotlin/Enum<foo/bar/Action>|>()
         }

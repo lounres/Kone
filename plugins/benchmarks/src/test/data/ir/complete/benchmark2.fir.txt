@@ -1,0 +1,53 @@
+FILE: benchmark2.kt
+    package foo.bar
+
+    @R|kotlinx/serialization/Serializable|() public final enum class Action : R|kotlin/Enum<foo/bar/Action>| {
+        private constructor(): R|foo/bar/Action| {
+            super<R|kotlin/Enum<foo/bar/Action>|>()
+        }
+
+        public final static enum entry Tanh57179: R|foo/bar/Action| = object : R|foo/bar/Action| {
+            private constructor(): R|foo/bar/<anonymous>| {
+                super<R|foo/bar/Action|>()
+            }
+
+            public open override fun run(blackhole: R|{kotlinx/benchmark/Blackhole=} org/openjdk/jmh/infra/Blackhole|): R|kotlin/Unit| {
+                R|<local>/blackhole|.R|org/openjdk/jmh/infra/Blackhole.consume|(R|kotlin/math/tanh|(Double(57.179)))
+            }
+
+        }
+
+        public abstract fun run(blackhole: R|{kotlinx/benchmark/Blackhole=} org/openjdk/jmh/infra/Blackhole|): R|kotlin/Unit|
+
+        public final static fun values(): R|kotlin/Array<foo/bar/Action>| {
+        }
+
+        public final static fun valueOf(value: R|kotlin/String|): R|foo/bar/Action| {
+        }
+
+        public final static val entries: R|kotlin/enums/EnumEntries<foo/bar/Action>|
+            public static get(): R|kotlin/enums/EnumEntries<foo/bar/Action>|
+
+    }
+    @R|dev/lounres/kone/benchmarks/Benchmark|() public final fun myLovelyBenchmark(action: R|foo/bar/Action|, times: R|kotlin/UInt|, benchmarkConfiguration: R|dev/lounres/kone/benchmarks/BenchmarkConfiguration|): R|dev/lounres/kone/benchmarks/BenchmarkResult| {
+         {
+            lval <iterator>: R|kotlin/collections/Iterator<kotlin/UInt>| = UInt(0).R|kotlin/UInt.rangeUntil|(R|dev/lounres/kone/benchmarks/inject|<R|kotlin/UInt|>(<L> = inject@fun <anonymous>(): R|kotlin/UInt| <inline=CrossInline>  {
+                ^ R|<local>/times|.R|kotlin/UInt.times|(UInt(2))
+            }
+            )).R|kotlin/ranges/UIntProgression.iterator|()
+            while(R|<local>/<iterator>|.R|SubstitutionOverride<kotlin/collections/Iterator.hasNext: R|kotlin/Boolean|>|()) {
+                lval <unused var>: R|kotlin/UInt| = R|<local>/<iterator>|.R|SubstitutionOverride<kotlin/collections/Iterator.next: R|kotlin/UInt|>|()
+                 {
+                    R|<local>/action|.R|foo/bar/Action.run|(R|dev/lounres/kone/benchmarks/blackhole|)
+                }
+
+            }
+
+        }
+
+        ^myLovelyBenchmark R|dev/lounres/kone/benchmarks/benchmarkResult|
+    }
+    public final fun box(): R|kotlin/String| {
+        lval <unused var>: R|dev/lounres/kone/benchmarks/BenchmarkResult| = R|foo/bar/myLovelyBenchmark|(Q|foo/bar/Action|.R|foo/bar/Action.Tanh57179|, UInt(57179), R|dev/lounres/kone/benchmarks/BenchmarkConfiguration.BenchmarkConfiguration|())
+        ^box String(OK)
+    }

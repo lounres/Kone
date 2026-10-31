@@ -3,6 +3,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(versions.kotlinx.benchmark.runtime)
+                api(versions.kotlinx.serialization.json)
             }
         }
         jvmMain {
