@@ -11,6 +11,7 @@ import dev.lounres.kone.plugin.benchmarks.fir.DeclarationExtensionRegistrar
 import dev.lounres.kone.plugin.benchmarks.fir.DiagnosticExtensionRegistrar
 import dev.lounres.kone.plugin.benchmarks.fir.FirBenchmarksExtensionRegistrar
 import dev.lounres.kone.plugin.benchmarks.ir.BenchmarksIrGenerationExtension
+import dev.lounres.kone.plugin.benchmarks.ir.TestIrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.compiler.plugin.CompilerPluginRegistrar.ExtensionStorage
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
@@ -101,6 +102,6 @@ class TestExtensionRegistrarConfigurator(testServices: TestServices) : Environme
 //        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
         
 //        FirExtensionRegistrarAdapter.registerExtension(FirSuppliedTypeExtensionRegistrar())
-//        IrGenerationExtension.registerExtension(TestIrGenerationExtension())
+        IrGenerationExtension.registerExtension(TestIrGenerationExtension())
     }
 }

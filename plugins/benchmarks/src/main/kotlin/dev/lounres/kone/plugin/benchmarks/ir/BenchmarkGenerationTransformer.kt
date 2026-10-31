@@ -90,6 +90,8 @@ class BenchmarkGenerationTransformer(
                         visibility = DescriptorVisibilities.PUBLIC
                         kind = DispatchReceiver
                         type = benchmarkClass.symbol.defaultType
+                    }.apply {
+                        kind = DispatchReceiver
                     }
                 }
                 setupFunction.annotations = listOf(
@@ -107,6 +109,8 @@ class BenchmarkGenerationTransformer(
                         visibility = DescriptorVisibilities.PUBLIC
                         kind = DispatchReceiver
                         type = benchmarkClass.symbol.defaultType
+                    }.apply {
+                        kind = DispatchReceiver
                     }
                 }
                 tearDownFunction.annotations = listOf(
@@ -124,6 +128,8 @@ class BenchmarkGenerationTransformer(
                         visibility = DescriptorVisibilities.PUBLIC
                         kind = DispatchReceiver
                         type = benchmarkClass.symbol.defaultType
+                    }.apply {
+                        kind = DispatchReceiver
                     }
                     addValueParameter {
                         origin = pluginDeclarationOrigin
@@ -179,7 +185,10 @@ class BenchmarkGenerationTransformer(
                             )
                             annotations = listOf(
                                 irAnnotation(irRuntimeReferences.kotlinxParamAnnotationIrClassSymbol.constructors.single()).apply {
-                                    arguments[0] = irString("")
+                                    arguments[0] = irVararg(
+                                        elementType = pluginContext.irBuiltIns.stringType,
+                                        values = listOf(irString("")),
+                                    )
                                 }
                             )
                         }

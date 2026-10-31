@@ -1,0 +1,383 @@
+FILE fqName:foo.bar fileName:/test.kt
+  CLASS CLASS name:KoneBenchmarkForMyLovelyBenchmark modality:FINAL visibility:public superTypes:[kotlin.Any]
+    annotations:
+      State(value = Scope.Benchmark)
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.KoneBenchmarkForMyLovelyBenchmark
+    PROPERTY name:action visibility:public modality:FINAL [var]
+      FIELD PROPERTY_BACKING_FIELD name:action type:kotlin.String visibility:private
+        annotations:
+          Param(value = [""] type=kotlin.Array<out kotlin.String> varargElementType=kotlin.String)
+        EXPRESSION_BODY
+          CONST String type=kotlin.String value=""
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-action> visibility:public modality:FINAL returnType:kotlin.String
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.KoneBenchmarkForMyLovelyBenchmark
+        correspondingProperty: PROPERTY name:action visibility:public modality:FINAL [var]
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-action> (): kotlin.String declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:action type:kotlin.String visibility:private' type=kotlin.String origin=null
+              receiver: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.<get-action>' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=null
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<set-action> visibility:public modality:FINAL returnType:kotlin.Unit
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.KoneBenchmarkForMyLovelyBenchmark
+        VALUE_PARAMETER kind:Regular name:<set-?> index:1 type:kotlin.String
+        correspondingProperty: PROPERTY name:action visibility:public modality:FINAL [var]
+        BLOCK_BODY
+          SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:action type:kotlin.String visibility:private' type=kotlin.Unit origin=null
+            receiver: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.<set-action>' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=null
+            value: GET_VAR '<set-?>: kotlin.String declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.<set-action>' type=kotlin.String origin=null
+    PROPERTY name:actionDeserialized visibility:public modality:FINAL [var]
+      FIELD PROPERTY_BACKING_FIELD name:actionDeserialized type:foo.bar.Action? visibility:private
+        EXPRESSION_BODY
+          CONST Null type=kotlin.Nothing? value=null
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-actionDeserialized> visibility:public modality:FINAL returnType:foo.bar.Action?
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.KoneBenchmarkForMyLovelyBenchmark
+        correspondingProperty: PROPERTY name:actionDeserialized visibility:public modality:FINAL [var]
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-actionDeserialized> (): foo.bar.Action? declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:actionDeserialized type:foo.bar.Action? visibility:private' type=foo.bar.Action? origin=null
+              receiver: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.<get-actionDeserialized>' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=null
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<set-actionDeserialized> visibility:public modality:FINAL returnType:kotlin.Unit
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.KoneBenchmarkForMyLovelyBenchmark
+        VALUE_PARAMETER kind:Regular name:<set-?> index:1 type:foo.bar.Action?
+        correspondingProperty: PROPERTY name:actionDeserialized visibility:public modality:FINAL [var]
+        BLOCK_BODY
+          SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:actionDeserialized type:foo.bar.Action? visibility:private' type=kotlin.Unit origin=null
+            receiver: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.<set-actionDeserialized>' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=null
+            value: GET_VAR '<set-?>: foo.bar.Action? declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.<set-actionDeserialized>' type=foo.bar.Action? origin=null
+    PROPERTY name:times visibility:public modality:FINAL [var]
+      FIELD PROPERTY_BACKING_FIELD name:times type:kotlin.String visibility:private
+        annotations:
+          Param(value = [""] type=kotlin.Array<out kotlin.String> varargElementType=kotlin.String)
+        EXPRESSION_BODY
+          CONST String type=kotlin.String value=""
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-times> visibility:public modality:FINAL returnType:kotlin.String
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.KoneBenchmarkForMyLovelyBenchmark
+        correspondingProperty: PROPERTY name:times visibility:public modality:FINAL [var]
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-times> (): kotlin.String declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:times type:kotlin.String visibility:private' type=kotlin.String origin=null
+              receiver: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.<get-times>' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=null
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<set-times> visibility:public modality:FINAL returnType:kotlin.Unit
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.KoneBenchmarkForMyLovelyBenchmark
+        VALUE_PARAMETER kind:Regular name:<set-?> index:1 type:kotlin.String
+        correspondingProperty: PROPERTY name:times visibility:public modality:FINAL [var]
+        BLOCK_BODY
+          SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:times type:kotlin.String visibility:private' type=kotlin.Unit origin=null
+            receiver: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.<set-times>' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=null
+            value: GET_VAR '<set-?>: kotlin.String declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.<set-times>' type=kotlin.String origin=null
+    PROPERTY name:timesDeserialized visibility:public modality:FINAL [var]
+      FIELD PROPERTY_BACKING_FIELD name:timesDeserialized type:kotlin.UInt? visibility:private
+        EXPRESSION_BODY
+          CONST Null type=kotlin.Nothing? value=null
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-timesDeserialized> visibility:public modality:FINAL returnType:kotlin.UInt?
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.KoneBenchmarkForMyLovelyBenchmark
+        correspondingProperty: PROPERTY name:timesDeserialized visibility:public modality:FINAL [var]
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-timesDeserialized> (): kotlin.UInt? declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:timesDeserialized type:kotlin.UInt? visibility:private' type=kotlin.UInt? origin=null
+              receiver: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.<get-timesDeserialized>' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=null
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<set-timesDeserialized> visibility:public modality:FINAL returnType:kotlin.Unit
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.KoneBenchmarkForMyLovelyBenchmark
+        VALUE_PARAMETER kind:Regular name:<set-?> index:1 type:kotlin.UInt?
+        correspondingProperty: PROPERTY name:timesDeserialized visibility:public modality:FINAL [var]
+        BLOCK_BODY
+          SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:timesDeserialized type:kotlin.UInt? visibility:private' type=kotlin.Unit origin=null
+            receiver: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.<set-timesDeserialized>' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=null
+            value: GET_VAR '<set-?>: kotlin.UInt? declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.<set-timesDeserialized>' type=kotlin.UInt? origin=null
+    PROPERTY name:injection1 visibility:public modality:FINAL [var]
+      FIELD PROPERTY_BACKING_FIELD name:injection1 type:dev.lounres.kone.benchmarks.InjectedValue<kotlin.UInt>? visibility:private
+        EXPRESSION_BODY
+          CONST Null type=kotlin.Nothing? value=null
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-injection1> visibility:public modality:FINAL returnType:dev.lounres.kone.benchmarks.InjectedValue<kotlin.UInt>?
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.KoneBenchmarkForMyLovelyBenchmark
+        correspondingProperty: PROPERTY name:injection1 visibility:public modality:FINAL [var]
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-injection1> (): dev.lounres.kone.benchmarks.InjectedValue<kotlin.UInt>? declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:injection1 type:dev.lounres.kone.benchmarks.InjectedValue<kotlin.UInt>? visibility:private' type=dev.lounres.kone.benchmarks.InjectedValue<kotlin.UInt>? origin=null
+              receiver: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.<get-injection1>' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=null
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<set-injection1> visibility:public modality:FINAL returnType:kotlin.Unit
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.KoneBenchmarkForMyLovelyBenchmark
+        VALUE_PARAMETER kind:Regular name:<set-?> index:1 type:dev.lounres.kone.benchmarks.InjectedValue<kotlin.UInt>?
+        correspondingProperty: PROPERTY name:injection1 visibility:public modality:FINAL [var]
+        BLOCK_BODY
+          SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:injection1 type:dev.lounres.kone.benchmarks.InjectedValue<kotlin.UInt>? visibility:private' type=kotlin.Unit origin=null
+            receiver: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.<set-injection1>' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=null
+            value: GET_VAR '<set-?>: dev.lounres.kone.benchmarks.InjectedValue<kotlin.UInt>? declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.<set-injection1>' type=dev.lounres.kone.benchmarks.InjectedValue<kotlin.UInt>? origin=null
+    CONSTRUCTOR visibility:public returnType:foo.bar.KoneBenchmarkForMyLovelyBenchmark [primary]
+      BLOCK_BODY
+        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:KoneBenchmarkForMyLovelyBenchmark modality:FINAL visibility:public superTypes:[kotlin.Any]' type=kotlin.Unit
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in kotlin.Any
+    FUN name:benchmark visibility:public modality:FINAL returnType:kotlin.Unit
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.KoneBenchmarkForMyLovelyBenchmark
+      VALUE_PARAMETER kind:Regular name:blackhole index:1 type:org.openjdk.jmh.infra.Blackhole
+      annotations:
+        Benchmark
+      BLOCK_BODY
+        VAR name:action type:foo.bar.Action [val]
+          CALL 'public final fun CHECK_NOT_NULL <T0> (arg0: T0 of kotlin.internal.ir.CHECK_NOT_NULL?): {T0 of kotlin.internal.ir.CHECK_NOT_NULL & Any} declared in kotlin.internal.ir' type=foo.bar.Action origin=EXCLEXCL
+            TYPE_ARG T0: foo.bar.Action
+            ARG arg0: CALL 'public final fun <get-actionDeserialized> (): foo.bar.Action? declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark' type=foo.bar.Action? origin=GET_PROPERTY
+              ARG <this>: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.benchmark' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=IMPLICIT_ARGUMENT
+        VAR name:times type:kotlin.UInt [val]
+          CALL 'public final fun CHECK_NOT_NULL <T0> (arg0: T0 of kotlin.internal.ir.CHECK_NOT_NULL?): {T0 of kotlin.internal.ir.CHECK_NOT_NULL & Any} declared in kotlin.internal.ir' type=kotlin.UInt origin=EXCLEXCL
+            TYPE_ARG T0: kotlin.UInt
+            ARG arg0: CALL 'public final fun <get-timesDeserialized> (): kotlin.UInt? declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark' type=kotlin.UInt? origin=GET_PROPERTY
+              ARG <this>: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.benchmark' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=IMPLICIT_ARGUMENT
+        VAR name:injection1 type:kotlin.UInt [val]
+          CALL 'public final fun <get-value> (): T of dev.lounres.kone.benchmarks.InjectedValue declared in dev.lounres.kone.benchmarks.InjectedValue' type=kotlin.UInt origin=GET_PROPERTY
+            ARG <this>: CALL 'public final fun CHECK_NOT_NULL <T0> (arg0: T0 of kotlin.internal.ir.CHECK_NOT_NULL?): {T0 of kotlin.internal.ir.CHECK_NOT_NULL & Any} declared in kotlin.internal.ir' type=dev.lounres.kone.benchmarks.InjectedValue<kotlin.UInt> origin=EXCLEXCL
+              TYPE_ARG T0: dev.lounres.kone.benchmarks.InjectedValue<kotlin.UInt>
+              ARG arg0: CALL 'public final fun <get-injection1> (): dev.lounres.kone.benchmarks.InjectedValue<kotlin.UInt>? declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark' type=dev.lounres.kone.benchmarks.InjectedValue<kotlin.UInt>? origin=GET_PROPERTY
+                ARG <this>: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.benchmark' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=IMPLICIT_ARGUMENT
+        BLOCK type=kotlin.Unit origin=FOR_LOOP
+          VAR FOR_LOOP_ITERATOR name:tmp_0 type:kotlin.collections.Iterator<kotlin.UInt> [val]
+            CALL 'public final fun iterator (): kotlin.collections.Iterator<kotlin.UInt> declared in kotlin.ranges.UIntRange' type=kotlin.collections.Iterator<kotlin.UInt> origin=FOR_LOOP_ITERATOR
+              ARG <this>: CALL 'public final fun rangeUntil (other: kotlin.UInt): kotlin.ranges.UIntRange declared in kotlin.UInt' type=kotlin.ranges.UIntRange origin=RANGE_UNTIL
+                ARG <this>: CONST Int type=kotlin.UInt value=0
+                ARG other: GET_VAR 'val injection1: kotlin.UInt declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.benchmark' type=kotlin.UInt origin=null
+          WHILE label=null origin=FOR_LOOP_INNER_WHILE
+            condition: CALL 'public abstract fun hasNext (): kotlin.Boolean declared in kotlin.collections.Iterator' type=kotlin.Boolean origin=FOR_LOOP_HAS_NEXT
+              ARG <this>: GET_VAR 'val tmp_0: kotlin.collections.Iterator<kotlin.UInt> declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.benchmark' type=kotlin.collections.Iterator<kotlin.UInt> origin=null
+            body: BLOCK type=kotlin.Unit origin=FOR_LOOP_INNER_WHILE
+              VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:kotlin.UInt [val]
+                CALL 'public abstract fun next (): T of kotlin.collections.Iterator declared in kotlin.collections.Iterator' type=kotlin.UInt origin=FOR_LOOP_NEXT
+                  ARG <this>: GET_VAR 'val tmp_0: kotlin.collections.Iterator<kotlin.UInt> declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.benchmark' type=kotlin.collections.Iterator<kotlin.UInt> origin=null
+              CALL 'public abstract fun run (blackhole: org.openjdk.jmh.infra.Blackhole): kotlin.Unit declared in foo.bar.Action' type=kotlin.Unit origin=null
+                ARG <this>: GET_VAR 'val action: foo.bar.Action declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.benchmark' type=foo.bar.Action origin=null
+                ARG blackhole: GET_VAR 'blackhole: org.openjdk.jmh.infra.Blackhole declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.benchmark' type=org.openjdk.jmh.infra.Blackhole origin=null
+    FUN name:setup visibility:public modality:FINAL returnType:kotlin.Unit
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.KoneBenchmarkForMyLovelyBenchmark
+      annotations:
+        Setup(value = <null>)
+      BLOCK_BODY
+        VAR name:actionDeserialized type:foo.bar.Action [val]
+          CALL 'public final fun decodeFromString <T> (string: kotlin.String): T of kotlinx.serialization.json.Json.Default.decodeFromString declared in kotlinx.serialization.json.Json.Default' type=foo.bar.Action origin=null
+            TYPE_ARG T: foo.bar.Action
+            ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Default modality:FINAL visibility:public [companion] superTypes:[kotlinx.serialization.json.Json]' type=kotlinx.serialization.json.Json.Default
+            ARG string: CALL 'public final fun <get-action> (): kotlin.String declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark' type=kotlin.String origin=GET_PROPERTY
+              ARG <this>: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.setup' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=IMPLICIT_ARGUMENT
+        CALL 'public final fun <set-actionDeserialized> (<set-?>: foo.bar.Action?): kotlin.Unit declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark' type=kotlin.Unit origin=EQ
+          ARG <this>: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.setup' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=null
+          ARG <set-?>: GET_VAR 'val actionDeserialized: foo.bar.Action declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.setup' type=foo.bar.Action origin=null
+        VAR name:timesDeserialized type:kotlin.UInt [val]
+          CALL 'public final fun decodeFromString <T> (string: kotlin.String): T of kotlinx.serialization.json.Json.Default.decodeFromString declared in kotlinx.serialization.json.Json.Default' type=kotlin.UInt origin=null
+            TYPE_ARG T: kotlin.UInt
+            ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Default modality:FINAL visibility:public [companion] superTypes:[kotlinx.serialization.json.Json]' type=kotlinx.serialization.json.Json.Default
+            ARG string: CALL 'public final fun <get-times> (): kotlin.String declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark' type=kotlin.String origin=GET_PROPERTY
+              ARG <this>: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.setup' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=IMPLICIT_ARGUMENT
+        CALL 'public final fun <set-timesDeserialized> (<set-?>: kotlin.UInt?): kotlin.Unit declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark' type=kotlin.Unit origin=EQ
+          ARG <this>: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.setup' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=null
+          ARG <set-?>: GET_VAR 'val timesDeserialized: kotlin.UInt declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.setup' type=kotlin.UInt origin=null
+        CALL 'public final fun <set-injection1> (<set-?>: dev.lounres.kone.benchmarks.InjectedValue<kotlin.UInt>?): kotlin.Unit declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark' type=kotlin.Unit origin=EQ
+          ARG <this>: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.setup' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=IMPLICIT_ARGUMENT
+          ARG <set-?>: CONSTRUCTOR_CALL 'public constructor <init> (value: T of dev.lounres.kone.benchmarks.InjectedValue, disposableInjection: dev.lounres.kone.benchmarks.DisposableInjection<T of dev.lounres.kone.benchmarks.InjectedValue>?) declared in dev.lounres.kone.benchmarks.InjectedValue' type=dev.lounres.kone.benchmarks.InjectedValue<kotlin.UInt> origin=null
+            TYPE_ARG (of class) T: kotlin.UInt
+            ARG value: CALL 'public final fun run <T, R> (<this>: T of kotlin.run, block: @[ExtensionFunctionType] kotlin.Function1<T of kotlin.run, R of kotlin.run>): R of kotlin.run declared in kotlin' type=kotlin.UInt origin=null
+              TYPE_ARG T: foo.bar.KoneBenchmarkForMyLovelyBenchmark
+              TYPE_ARG R: kotlin.UInt
+              ARG <this>: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.setup' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=IMPLICIT_ARGUMENT
+              ARG block: FUN_EXPR type=@[ExtensionFunctionType] kotlin.Function1<foo.bar.KoneBenchmarkForMyLovelyBenchmark, kotlin.UInt> origin=LAMBDA
+                FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL returnType:kotlin.UInt
+                  VALUE_PARAMETER kind:ExtensionReceiver name:$this$run index:0 type:foo.bar.KoneBenchmarkForMyLovelyBenchmark
+                  BLOCK_BODY
+                    RETURN type=kotlin.Nothing from='local final fun <anonymous> ($this$run: foo.bar.KoneBenchmarkForMyLovelyBenchmark): kotlin.UInt declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.setup'
+                      CALL 'public final fun times (other: kotlin.UInt): kotlin.UInt declared in kotlin.UInt' type=kotlin.UInt origin=MUL
+                        ARG <this>: GET_VAR 'val timesDeserialized: kotlin.UInt declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.setup' type=kotlin.UInt origin=null
+                        ARG other: CONST Int type=kotlin.UInt value=2
+            ARG disposableInjection: CONST Null type=kotlin.Nothing? value=null
+    FUN name:tearDown visibility:public modality:FINAL returnType:kotlin.Unit
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.KoneBenchmarkForMyLovelyBenchmark
+      annotations:
+        TearDown(value = <null>)
+      BLOCK_BODY
+        CALL 'public final fun <set-injection1> (<set-?>: dev.lounres.kone.benchmarks.InjectedValue<kotlin.UInt>?): kotlin.Unit declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark' type=kotlin.Unit origin=EQ
+          ARG <this>: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.tearDown' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=IMPLICIT_ARGUMENT
+          ARG <set-?>: CONST Null type=kotlin.Nothing? value=null
+        CALL 'public final fun <set-timesDeserialized> (<set-?>: kotlin.UInt?): kotlin.Unit declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark' type=kotlin.Unit origin=EQ
+          ARG <this>: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.tearDown' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=IMPLICIT_ARGUMENT
+          ARG <set-?>: CONST Null type=kotlin.Nothing? value=null
+        CALL 'public final fun <set-times> (<set-?>: kotlin.String): kotlin.Unit declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark' type=kotlin.Unit origin=EQ
+          ARG <this>: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.tearDown' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=IMPLICIT_ARGUMENT
+          ARG <set-?>: CONST String type=kotlin.String value=""
+        CALL 'public final fun <set-actionDeserialized> (<set-?>: foo.bar.Action?): kotlin.Unit declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark' type=kotlin.Unit origin=EQ
+          ARG <this>: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.tearDown' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=IMPLICIT_ARGUMENT
+          ARG <set-?>: CONST Null type=kotlin.Nothing? value=null
+        CALL 'public final fun <set-action> (<set-?>: kotlin.String): kotlin.Unit declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark' type=kotlin.Unit origin=EQ
+          ARG <this>: GET_VAR '<this>: foo.bar.KoneBenchmarkForMyLovelyBenchmark declared in foo.bar.KoneBenchmarkForMyLovelyBenchmark.tearDown' type=foo.bar.KoneBenchmarkForMyLovelyBenchmark origin=IMPLICIT_ARGUMENT
+          ARG <set-?>: CONST String type=kotlin.String value=""
+  CLASS ENUM_CLASS name:Action modality:ABSTRACT visibility:public superTypes:[kotlin.Enum<foo.bar.Action>]
+    annotations:
+      Serializable(with = <null>)
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Action
+    ENUM_ENTRY name:Tanh57179
+      init: EXPRESSION_BODY
+        ENUM_CONSTRUCTOR_CALL 'private constructor <init> () declared in foo.bar.Action.Tanh57179'
+      class: CLASS ENUM_ENTRY name:Tanh57179 modality:FINAL visibility:private superTypes:[foo.bar.Action]
+        thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.Action.Tanh57179
+        CONSTRUCTOR visibility:private returnType:foo.bar.Action.Tanh57179 [primary]
+          BLOCK_BODY
+            ENUM_CONSTRUCTOR_CALL 'private constructor <init> () declared in foo.bar.Action'
+            INSTANCE_INITIALIZER_CALL classDescriptor='CLASS ENUM_ENTRY name:Tanh57179 modality:FINAL visibility:private superTypes:[foo.bar.Action]' type=kotlin.Unit
+        FUN FAKE_OVERRIDE name:compareTo visibility:public modality:FINAL returnType:kotlin.Int [fake_override,operator]
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+          VALUE_PARAMETER kind:Regular name:other index:1 type:foo.bar.Action
+          overridden:
+            public final fun compareTo (other: foo.bar.Action): kotlin.Int declared in foo.bar.Action
+        FUN FAKE_OVERRIDE name:describeConstable visibility:public modality:FINAL returnType:@[FlexibleNullability] java.util.Optional<@[FlexibleNullability] java.lang.Enum.EnumDesc<@[FlexibleNullability] foo.bar.Action?>?>? [fake_override]
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+          overridden:
+            public final fun describeConstable (): @[FlexibleNullability] java.util.Optional<@[FlexibleNullability] java.lang.Enum.EnumDesc<@[FlexibleNullability] foo.bar.Action?>?>? declared in foo.bar.Action
+        FUN FAKE_OVERRIDE name:equals visibility:public modality:FINAL returnType:kotlin.Boolean [fake_override,operator]
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+          VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+          overridden:
+            public final fun equals (other: kotlin.Any?): kotlin.Boolean declared in foo.bar.Action
+        FUN FAKE_OVERRIDE name:hashCode visibility:public modality:FINAL returnType:kotlin.Int [fake_override]
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+          overridden:
+            public final fun hashCode (): kotlin.Int declared in foo.bar.Action
+        FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+          overridden:
+            public open fun toString (): kotlin.String declared in foo.bar.Action
+        FUN name:run visibility:public modality:OPEN returnType:kotlin.Unit
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Action.Tanh57179
+          VALUE_PARAMETER kind:Regular name:blackhole index:1 type:org.openjdk.jmh.infra.Blackhole
+          overridden:
+            public abstract fun run (blackhole: org.openjdk.jmh.infra.Blackhole): kotlin.Unit declared in foo.bar.Action
+          BLOCK_BODY
+            CALL 'public final fun consume (p0: kotlin.Double): kotlin.Unit declared in org.openjdk.jmh.infra.Blackhole' type=kotlin.Unit origin=null
+              ARG <this>: GET_VAR 'blackhole: org.openjdk.jmh.infra.Blackhole declared in foo.bar.Action.Tanh57179.run' type=org.openjdk.jmh.infra.Blackhole origin=null
+              ARG p0: CALL 'public final fun tanh (x: kotlin.Double): kotlin.Double declared in kotlin.math' type=kotlin.Double origin=null
+                ARG x: CONST Double type=kotlin.Double value=57.179
+        PROPERTY FAKE_OVERRIDE name:name visibility:public modality:FINAL [fake_override,val]
+          annotations:
+            IntrinsicConstEvaluation
+          overridden:
+            public final name: kotlin.String declared in foo.bar.Action
+          FUN FAKE_OVERRIDE name:<get-name> visibility:public modality:FINAL returnType:kotlin.String [fake_override]
+            VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+            correspondingProperty: PROPERTY FAKE_OVERRIDE name:name visibility:public modality:FINAL [fake_override,val]
+            overridden:
+              public final fun <get-name> (): kotlin.String declared in foo.bar.Action
+        PROPERTY FAKE_OVERRIDE name:ordinal visibility:public modality:FINAL [fake_override,val]
+          overridden:
+            public final ordinal: kotlin.Int declared in foo.bar.Action
+          FUN FAKE_OVERRIDE name:<get-ordinal> visibility:public modality:FINAL returnType:kotlin.Int [fake_override]
+            VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+            correspondingProperty: PROPERTY FAKE_OVERRIDE name:ordinal visibility:public modality:FINAL [fake_override,val]
+            overridden:
+              public final fun <get-ordinal> (): kotlin.Int declared in foo.bar.Action
+    CONSTRUCTOR visibility:private returnType:foo.bar.Action [primary]
+      BLOCK_BODY
+        ENUM_CONSTRUCTOR_CALL 'public constructor <init> (name: kotlin.String, ordinal: kotlin.Int) declared in kotlin.Enum'
+          TYPE_ARG E: foo.bar.Action
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS ENUM_CLASS name:Action modality:ABSTRACT visibility:public superTypes:[kotlin.Enum<foo.bar.Action>]' type=kotlin.Unit
+    FUN ENUM_CLASS_SPECIAL_MEMBER name:valueOf visibility:public modality:FINAL returnType:foo.bar.Action [companion]
+      VALUE_PARAMETER kind:Regular name:value index:0 type:kotlin.String
+      SYNTHETIC_BODY kind=ENUM_VALUEOF
+    FUN ENUM_CLASS_SPECIAL_MEMBER name:values visibility:public modality:FINAL returnType:kotlin.Array<foo.bar.Action> [companion]
+      SYNTHETIC_BODY kind=ENUM_VALUES
+    FUN FAKE_OVERRIDE name:compareTo visibility:public modality:FINAL returnType:kotlin.Int [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+      VALUE_PARAMETER kind:Regular name:other index:1 type:foo.bar.Action
+      overridden:
+        public final fun compareTo (other: E of kotlin.Enum): kotlin.Int declared in kotlin.Enum
+    FUN FAKE_OVERRIDE name:describeConstable visibility:public modality:FINAL returnType:@[FlexibleNullability] java.util.Optional<@[FlexibleNullability] java.lang.Enum.EnumDesc<@[FlexibleNullability] foo.bar.Action?>?>? [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+      overridden:
+        public final fun describeConstable (): @[FlexibleNullability] java.util.Optional<@[FlexibleNullability] java.lang.Enum.EnumDesc<@[FlexibleNullability] E of kotlin.Enum?>?>? declared in kotlin.Enum
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:FINAL returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public final fun equals (other: kotlin.Any?): kotlin.Boolean declared in kotlin.Enum
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:FINAL returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+      overridden:
+        public final fun hashCode (): kotlin.Int declared in kotlin.Enum
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+      overridden:
+        public open fun toString (): kotlin.String declared in kotlin.Enum
+    FUN name:run visibility:public modality:ABSTRACT returnType:kotlin.Unit
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Action
+      VALUE_PARAMETER kind:Regular name:blackhole index:1 type:org.openjdk.jmh.infra.Blackhole
+    PROPERTY ENUM_CLASS_SPECIAL_MEMBER name:entries visibility:public modality:FINAL [val]
+      FUN ENUM_CLASS_SPECIAL_MEMBER name:<get-entries> visibility:public modality:FINAL returnType:kotlin.enums.EnumEntries<foo.bar.Action> [companion]
+        correspondingProperty: PROPERTY ENUM_CLASS_SPECIAL_MEMBER name:entries visibility:public modality:FINAL [val]
+        SYNTHETIC_BODY kind=ENUM_ENTRIES
+    PROPERTY FAKE_OVERRIDE name:name visibility:public modality:FINAL [fake_override,val]
+      annotations:
+        IntrinsicConstEvaluation
+      overridden:
+        public final name: kotlin.String declared in kotlin.Enum
+      FUN FAKE_OVERRIDE name:<get-name> visibility:public modality:FINAL returnType:kotlin.String [fake_override]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+        correspondingProperty: PROPERTY FAKE_OVERRIDE name:name visibility:public modality:FINAL [fake_override,val]
+        overridden:
+          public final fun <get-name> (): kotlin.String declared in kotlin.Enum
+    PROPERTY FAKE_OVERRIDE name:ordinal visibility:public modality:FINAL [fake_override,val]
+      overridden:
+        public final ordinal: kotlin.Int declared in kotlin.Enum
+      FUN FAKE_OVERRIDE name:<get-ordinal> visibility:public modality:FINAL returnType:kotlin.Int [fake_override]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Enum<foo.bar.Action>
+        correspondingProperty: PROPERTY FAKE_OVERRIDE name:ordinal visibility:public modality:FINAL [fake_override,val]
+        overridden:
+          public final fun <get-ordinal> (): kotlin.Int declared in kotlin.Enum
+  FUN name:box visibility:public modality:FINAL returnType:kotlin.String
+    BLOCK_BODY
+      TYPE_OP type=kotlin.Unit origin=IMPLICIT_COERCION_TO_UNIT typeOperand=kotlin.Unit
+        CALL 'public final fun myLovelyBenchmark (action: foo.bar.Action, times: kotlin.UInt, benchmarkConfiguration: dev.lounres.kone.benchmarks.BenchmarkConfiguration): dev.lounres.kone.benchmarks.BenchmarkResult declared in foo.bar' type=dev.lounres.kone.benchmarks.BenchmarkResult origin=null
+          ARG action: GET_ENUM 'ENUM_ENTRY name:Tanh57179' type=foo.bar.Action
+          ARG times: CONST Int type=kotlin.UInt value=57179
+          ARG benchmarkConfiguration: CONSTRUCTOR_CALL 'public constructor <init> () declared in dev.lounres.kone.benchmarks.BenchmarkConfiguration' type=dev.lounres.kone.benchmarks.BenchmarkConfiguration origin=null
+      RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in foo.bar'
+        CONST String type=kotlin.String value="OK"
+  FUN name:myLovelyBenchmark visibility:public modality:FINAL returnType:dev.lounres.kone.benchmarks.BenchmarkResult
+    VALUE_PARAMETER kind:Regular name:action index:0 type:foo.bar.Action
+    VALUE_PARAMETER kind:Regular name:times index:1 type:kotlin.UInt
+    VALUE_PARAMETER kind:Regular name:benchmarkConfiguration index:2 type:dev.lounres.kone.benchmarks.BenchmarkConfiguration
+    annotations:
+      Benchmark
+    BLOCK_BODY
+      VAR name:actionSerialized type:kotlin.String [val]
+        CALL 'public final fun encodeToString <T> (value: T of kotlinx.serialization.json.Json.Default.encodeToString): kotlin.String declared in kotlinx.serialization.json.Json.Default' type=kotlin.String origin=null
+          TYPE_ARG T: foo.bar.Action
+          ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Default modality:FINAL visibility:public [companion] superTypes:[kotlinx.serialization.json.Json]' type=kotlinx.serialization.json.Json.Default
+          ARG value: GET_VAR 'action: foo.bar.Action declared in foo.bar.myLovelyBenchmark' type=foo.bar.Action origin=null
+      VAR name:timesSerialized type:kotlin.String [val]
+        CALL 'public final fun encodeToString <T> (value: T of kotlinx.serialization.json.Json.Default.encodeToString): kotlin.String declared in kotlinx.serialization.json.Json.Default' type=kotlin.String origin=null
+          TYPE_ARG T: kotlin.UInt
+          ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Default modality:FINAL visibility:public [companion] superTypes:[kotlinx.serialization.json.Json]' type=kotlinx.serialization.json.Json.Default
+          ARG value: GET_VAR 'times: kotlin.UInt declared in foo.bar.myLovelyBenchmark' type=kotlin.UInt origin=null
+      RETURN type=kotlin.Nothing from='public final fun myLovelyBenchmark (action: foo.bar.Action, times: kotlin.UInt, benchmarkConfiguration: dev.lounres.kone.benchmarks.BenchmarkConfiguration): dev.lounres.kone.benchmarks.BenchmarkResult declared in foo.bar'
+        CALL 'public final fun runBenchmark (benchmarkClass: kotlin.reflect.KClass<*>, parameters: kotlin.collections.Map<kotlin.String, kotlin.String>, configuration: dev.lounres.kone.benchmarks.BenchmarkConfiguration): dev.lounres.kone.benchmarks.BenchmarkResult declared in dev.lounres.kone.benchmarks' type=dev.lounres.kone.benchmarks.BenchmarkResult origin=null
+          ARG benchmarkClass: CLASS_REFERENCE 'CLASS CLASS name:KoneBenchmarkForMyLovelyBenchmark modality:FINAL visibility:public superTypes:[kotlin.Any]' type=kotlin.reflect.KClass<foo.bar.KoneBenchmarkForMyLovelyBenchmark>
+          ARG parameters: CALL 'public final fun mapOf <K, V> (vararg pairs: kotlin.Pair<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf>): kotlin.collections.Map<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf> declared in kotlin.collections' type=kotlin.collections.Map<kotlin.String, kotlin.String> origin=null
+            TYPE_ARG K: kotlin.String
+            TYPE_ARG V: kotlin.String
+            ARG pairs: VARARG type=kotlin.Array<out kotlin.Pair<kotlin.String, kotlin.String>> varargElementType=kotlin.Pair<kotlin.String, kotlin.String>
+              CONSTRUCTOR_CALL 'public constructor <init> (first: A of kotlin.Pair, second: B of kotlin.Pair) declared in kotlin.Pair' type=kotlin.Pair<kotlin.String, kotlin.String> origin=null
+                TYPE_ARG (of class) A: kotlin.String
+                TYPE_ARG (of class) B: kotlin.String
+                ARG first: CONST String type=kotlin.String value="action"
+                ARG second: GET_VAR 'val actionSerialized: kotlin.String declared in foo.bar.myLovelyBenchmark' type=kotlin.String origin=null
+              CONSTRUCTOR_CALL 'public constructor <init> (first: A of kotlin.Pair, second: B of kotlin.Pair) declared in kotlin.Pair' type=kotlin.Pair<kotlin.String, kotlin.String> origin=null
+                TYPE_ARG (of class) A: kotlin.String
+                TYPE_ARG (of class) B: kotlin.String
+                ARG first: CONST String type=kotlin.String value="times"
+                ARG second: GET_VAR 'val timesSerialized: kotlin.String declared in foo.bar.myLovelyBenchmark' type=kotlin.String origin=null
+          ARG configuration: GET_VAR 'benchmarkConfiguration: dev.lounres.kone.benchmarks.BenchmarkConfiguration declared in foo.bar.myLovelyBenchmark' type=dev.lounres.kone.benchmarks.BenchmarkConfiguration origin=null

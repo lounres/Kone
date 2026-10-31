@@ -1,0 +1,103 @@
+FILE: test.kt
+    package foo.bar
+
+    @R|kotlinx/serialization/Serializable|() public final enum class Action : R|kotlin/Enum<foo/bar/Action>| {
+        private constructor(): R|foo/bar/Action| {
+            super<R|kotlin/Enum<foo/bar/Action>|>()
+        }
+
+        public final static enum entry Tanh57179: R|foo/bar/Action| = object : R|foo/bar/Action| {
+            private constructor(): R|foo/bar/<anonymous>| {
+                super<R|foo/bar/Action|>()
+            }
+
+            public open override fun run(blackhole: R|{kotlinx/benchmark/Blackhole=} org/openjdk/jmh/infra/Blackhole|): R|kotlin/Unit| {
+                R|<local>/blackhole|.R|org/openjdk/jmh/infra/Blackhole.consume|(R|kotlin/math/tanh|(Double(57.179)))
+            }
+
+        }
+
+        public abstract fun run(blackhole: R|{kotlinx/benchmark/Blackhole=} org/openjdk/jmh/infra/Blackhole|): R|kotlin/Unit|
+
+        public final static fun values(): R|kotlin/Array<foo/bar/Action>| {
+        }
+
+        public final static fun valueOf(value: R|kotlin/String|): R|foo/bar/Action| {
+        }
+
+        public final static val entries: R|kotlin/enums/EnumEntries<foo/bar/Action>|
+            public static get(): R|kotlin/enums/EnumEntries<foo/bar/Action>|
+
+    }
+    @R|dev/lounres/kone/benchmarks/Benchmark|() public final fun myLovelyBenchmark(action: R|foo/bar/Action|, times: R|kotlin/UInt|, benchmarkConfiguration: R|dev/lounres/kone/benchmarks/BenchmarkConfiguration|): R|dev/lounres/kone/benchmarks/BenchmarkResult| {
+        lval actionSerialized: R|kotlin/String| = Q|kotlinx/serialization/json/Json|.R|kotlinx/serialization/json/Json.encodeToString|<R|foo/bar/Action|>(R|<local>/action|)
+        lval timesSerialized: R|kotlin/String| = Q|kotlinx/serialization/json/Json|.R|kotlinx/serialization/json/Json.encodeToString|<R|kotlin/UInt|>(R|<local>/times|)
+        ^myLovelyBenchmark R|dev/lounres/kone/benchmarks/runBenchmark|(<getClass>(Q|foo/bar/KoneBenchmarkForMyLovelyBenchmark|), R|kotlin/collections/mapOf|<R|kotlin/String|, R|kotlin/String|>(vararg(R|kotlin/Pair.Pair|<R|kotlin/String|, R|kotlin/String|>(String(action), R|<local>/actionSerialized|), R|kotlin/Pair.Pair|<R|kotlin/String|, R|kotlin/String|>(String(times), R|<local>/timesSerialized|))), R|<local>/benchmarkConfiguration|)
+    }
+    @R|{kotlinx/benchmark/State=} org/openjdk/jmh/annotations/State|(value = Q|kotlinx/benchmark/Scope|.R|org/openjdk/jmh/annotations/Scope.Benchmark| [evaluated = Q|kotlinx/benchmark/Scope|.R|org/openjdk/jmh/annotations/Scope.Benchmark|]) public final class KoneBenchmarkForMyLovelyBenchmark : R|kotlin/Any| {
+        public constructor(): R|foo/bar/KoneBenchmarkForMyLovelyBenchmark| {
+            super<R|kotlin/Any|>()
+        }
+
+        field:@R|{kotlinx/benchmark/Param=} org/openjdk/jmh/annotations/Param|(value = vararg(String()) [evaluated = vararg(String())]) public final var action: R|kotlin/String| = String()
+            public get(): R|kotlin/String|
+            public set(value: R|kotlin/String|): R|kotlin/Unit|
+
+        public final var actionDeserialized: R|foo/bar/Action?| = Null(null)
+            public get(): R|foo/bar/Action?|
+            public set(value: R|foo/bar/Action?|): R|kotlin/Unit|
+
+        field:@R|{kotlinx/benchmark/Param=} org/openjdk/jmh/annotations/Param|(value = vararg(String()) [evaluated = vararg(String())]) public final var times: R|kotlin/String| = String()
+            public get(): R|kotlin/String|
+            public set(value: R|kotlin/String|): R|kotlin/Unit|
+
+        public final var timesDeserialized: R|kotlin/UInt?| = Null(null)
+            public get(): R|kotlin/UInt?|
+            public set(value: R|kotlin/UInt?|): R|kotlin/Unit|
+
+        public final var injection1: R|dev/lounres/kone/benchmarks/InjectedValue<kotlin/UInt>?| = Null(null)
+            public get(): R|dev/lounres/kone/benchmarks/InjectedValue<kotlin/UInt>?|
+            public set(value: R|dev/lounres/kone/benchmarks/InjectedValue<kotlin/UInt>?|): R|kotlin/Unit|
+
+        @R|{kotlinx/benchmark/Setup=} org/openjdk/jmh/annotations/Setup|() public final fun setup(): R|kotlin/Unit| {
+            lval actionDeserialized: R|foo/bar/Action| = Q|kotlinx/serialization/json/Json|.R|kotlinx/serialization/json/Json.decodeFromString|<R|foo/bar/Action|>(this@R|foo/bar/KoneBenchmarkForMyLovelyBenchmark|.R|foo/bar/KoneBenchmarkForMyLovelyBenchmark.action|)
+            this@R|foo/bar/KoneBenchmarkForMyLovelyBenchmark|.R|foo/bar/KoneBenchmarkForMyLovelyBenchmark.actionDeserialized| = R|<local>/actionDeserialized|
+            lval timesDeserialized: R|kotlin/UInt| = Q|kotlinx/serialization/json/Json|.R|kotlinx/serialization/json/Json.decodeFromString|<R|kotlin/UInt|>(this@R|foo/bar/KoneBenchmarkForMyLovelyBenchmark|.R|foo/bar/KoneBenchmarkForMyLovelyBenchmark.times|)
+            this@R|foo/bar/KoneBenchmarkForMyLovelyBenchmark|.R|foo/bar/KoneBenchmarkForMyLovelyBenchmark.timesDeserialized| = R|<local>/timesDeserialized|
+            this@R|foo/bar/KoneBenchmarkForMyLovelyBenchmark|.R|foo/bar/KoneBenchmarkForMyLovelyBenchmark.injection1| = R|dev/lounres/kone/benchmarks/InjectedValue.InjectedValue|<R|kotlin/UInt|>(this@R|foo/bar/KoneBenchmarkForMyLovelyBenchmark|.R|kotlin/run|<R|foo/bar/KoneBenchmarkForMyLovelyBenchmark|, R|kotlin/UInt|>(<L> = run@fun R|foo/bar/KoneBenchmarkForMyLovelyBenchmark|.<anonymous>(): R|kotlin/UInt| <inline=Inline, kind=EXACTLY_ONCE>  {
+                ^ R|<local>/timesDeserialized|.R|kotlin/UInt.times|(UInt(2))
+            }
+            ), Null(null))
+        }
+
+        @R|{kotlinx/benchmark/Benchmark=} org/openjdk/jmh/annotations/Benchmark|() public final fun benchmark(blackhole: R|{kotlinx/benchmark/Blackhole=} org/openjdk/jmh/infra/Blackhole|): R|kotlin/Unit| {
+            lval action: R|foo/bar/Action| = this@R|foo/bar/KoneBenchmarkForMyLovelyBenchmark|.R|foo/bar/KoneBenchmarkForMyLovelyBenchmark.actionDeserialized|!!
+            lval times: R|kotlin/UInt| = this@R|foo/bar/KoneBenchmarkForMyLovelyBenchmark|.R|foo/bar/KoneBenchmarkForMyLovelyBenchmark.timesDeserialized|!!
+            lval injection1: R|kotlin/UInt| = this@R|foo/bar/KoneBenchmarkForMyLovelyBenchmark|.R|foo/bar/KoneBenchmarkForMyLovelyBenchmark.injection1|!!.R|SubstitutionOverride<dev/lounres/kone/benchmarks/InjectedValue.value: R|kotlin/UInt|>|
+             {
+                lval <iterator>: R|kotlin/collections/Iterator<kotlin/UInt>| = UInt(0).R|kotlin/UInt.rangeUntil|(R|<local>/injection1|).R|kotlin/ranges/UIntProgression.iterator|()
+                while(R|<local>/<iterator>|.R|SubstitutionOverride<kotlin/collections/Iterator.hasNext: R|kotlin/Boolean|>|()) {
+                    lval <unused var>: R|kotlin/UInt| = R|<local>/<iterator>|.R|SubstitutionOverride<kotlin/collections/Iterator.next: R|kotlin/UInt|>|()
+                     {
+                        R|<local>/action|.R|foo/bar/Action.run|(R|<local>/blackhole|)
+                    }
+
+                }
+
+            }
+
+        }
+
+        @R|{kotlinx/benchmark/TearDown=} org/openjdk/jmh/annotations/TearDown|() public final fun tearDown(): R|kotlin/Unit| {
+            this@R|foo/bar/KoneBenchmarkForMyLovelyBenchmark|.R|foo/bar/KoneBenchmarkForMyLovelyBenchmark.injection1| = Null(null)
+            this@R|foo/bar/KoneBenchmarkForMyLovelyBenchmark|.R|foo/bar/KoneBenchmarkForMyLovelyBenchmark.timesDeserialized| = Null(null)
+            this@R|foo/bar/KoneBenchmarkForMyLovelyBenchmark|.R|foo/bar/KoneBenchmarkForMyLovelyBenchmark.times| = String()
+            this@R|foo/bar/KoneBenchmarkForMyLovelyBenchmark|.R|foo/bar/KoneBenchmarkForMyLovelyBenchmark.actionDeserialized| = Null(null)
+            this@R|foo/bar/KoneBenchmarkForMyLovelyBenchmark|.R|foo/bar/KoneBenchmarkForMyLovelyBenchmark.action| = String()
+        }
+
+    }
+    public final fun box(): R|kotlin/String| {
+        lval <unused var>: R|dev/lounres/kone/benchmarks/BenchmarkResult| = R|foo/bar/myLovelyBenchmark|(Q|foo/bar/Action|.R|foo/bar/Action.Tanh57179|, UInt(57179), R|dev/lounres/kone/benchmarks/BenchmarkConfiguration.BenchmarkConfiguration|())
+        ^box String(OK)
+    }

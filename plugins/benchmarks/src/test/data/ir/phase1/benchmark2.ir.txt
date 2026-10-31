@@ -145,8 +145,8 @@ FILE fqName:foo.bar fileName:/benchmark2.kt
     CONSTRUCTOR GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] visibility:public returnType:foo.bar.KoneBenchmarkClassForMyLovelyBenchmark [primary]
       BLOCK_BODY
         DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
-    FUN GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:benchmark visibility:public modality:FINAL returnType:kotlin.Unit [companion]
-      VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] kind:Regular name:<this> index:0 type:foo.bar.KoneBenchmarkClassForMyLovelyBenchmark
+    FUN GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:benchmark visibility:public modality:FINAL returnType:kotlin.Unit
+      VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] kind:DispatchReceiver name:<this> index:0 type:foo.bar.KoneBenchmarkClassForMyLovelyBenchmark
       VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] kind:Regular name:blackhole index:1 type:org.openjdk.jmh.infra.Blackhole
       annotations:
         Benchmark
@@ -178,10 +178,10 @@ FILE fqName:foo.bar fileName:/benchmark2.kt
               CALL 'public abstract fun run (blackhole: org.openjdk.jmh.infra.Blackhole): kotlin.Unit declared in foo.bar.Action' type=kotlin.Unit origin=null
                 ARG <this>: GET_VAR 'val tmp0: foo.bar.Action declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark.benchmark' type=foo.bar.Action origin=null
                 ARG blackhole: GET_VAR 'blackhole: org.openjdk.jmh.infra.Blackhole declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark.benchmark' type=org.openjdk.jmh.infra.Blackhole origin=null
-        RETURN type=kotlin.Nothing from='public final fun benchmark (<this>: foo.bar.KoneBenchmarkClassForMyLovelyBenchmark, blackhole: org.openjdk.jmh.infra.Blackhole): kotlin.Unit declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark'
+        RETURN type=kotlin.Nothing from='public final fun benchmark (blackhole: org.openjdk.jmh.infra.Blackhole): kotlin.Unit declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark'
           GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Unit modality:FINAL visibility:public superTypes:[kotlin.Any]' type=kotlin.Unit
-    FUN GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:setup visibility:public modality:FINAL returnType:kotlin.Unit [companion]
-      VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] kind:Regular name:<this> index:0 type:foo.bar.KoneBenchmarkClassForMyLovelyBenchmark
+    FUN GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:setup visibility:public modality:FINAL returnType:kotlin.Unit
+      VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] kind:DispatchReceiver name:<this> index:0 type:foo.bar.KoneBenchmarkClassForMyLovelyBenchmark
       annotations:
         Setup(value = <null>)
       BLOCK_BODY
@@ -217,8 +217,8 @@ FILE fqName:foo.bar fileName:/benchmark2.kt
                         ARG <this>: GET_VAR 'val tmp1: kotlin.UInt declared in foo.bar.KoneBenchmarkClassForMyLovelyBenchmark.setup' type=kotlin.UInt origin=null
                         ARG other: CONST Int type=kotlin.UInt value=2
             ARG disposableInjection: CONST Null type=dev.lounres.kone.benchmarks.Benchmark<kotlin.UInt>? value=null
-    FUN GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:tearDown visibility:public modality:FINAL returnType:kotlin.Unit [companion]
-      VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] kind:Regular name:<this> index:0 type:foo.bar.KoneBenchmarkClassForMyLovelyBenchmark
+    FUN GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] name:tearDown visibility:public modality:FINAL returnType:kotlin.Unit
+      VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.benchmarks.ir.BenchmarkGenerationTransformer.Key] kind:DispatchReceiver name:<this> index:0 type:foo.bar.KoneBenchmarkClassForMyLovelyBenchmark
       annotations:
         TearDown(value = <null>)
       BLOCK_BODY
