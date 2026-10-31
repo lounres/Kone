@@ -36,7 +36,7 @@ fun DeclarationFinder.referenceClassOrFail(classId: ClassId): IrClassSymbol =
     findClass(classId) ?: couldNotFindClass(classId)
 inline fun DeclarationFinder.referenceFunctionThatOrFail(callableId: CallableId, predicate: (IrSimpleFunctionSymbol) -> Boolean = { true }): IrSimpleFunctionSymbol =
     findFunctions(callableId)
-        .also {
+        .also { // TODO: KT-73135
             val filtered = it.filter(predicate)
             if (filtered.size != 1) error("${filtered.size}!!!\n${filtered.joinToString(separator = "") { "  $it\n" }}")
         }
@@ -104,7 +104,7 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
     val pairIrConstructorSymbol = pairIrClassSymbol.constructors.single()
     val kProperty0 = finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin.reflect"), topLevelName = Name.identifier("KProperty0")))
     
-    //  Library
+    // Library
     val suppliedTypeIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedTypeClassClassId)
     val suppliedTypeIrType: IrType = suppliedTypeIrClassSymbol.createType(hasQuestionMark = false, arguments = emptyList())
     val suppliedTypeRegularIrClassSymbol: IrClassSymbol = finder.referenceClassOrFail(suppliedTypeRegularClassClassId)
