@@ -14,6 +14,20 @@ class BenchmarksIrGenerationExtension(
     private val lastPhase: UInt = UInt.MAX_VALUE,
 ) : IrGenerationExtension {
     override fun generate(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext) {
-        TODO("Not yet implemented")
+        var currentPhase = 0u
+        
+        val irRuntimeReferences = IrRuntimeReferences(pluginContext)
+        
+        if (currentPhase++ == lastPhase) return
+        
+        moduleFragment.accept(
+            BenchmarkGenerationTransformer(
+                pluginContext = pluginContext,
+                irRuntimeReferences = irRuntimeReferences,
+            ),
+            null
+        )
+        
+        if (currentPhase++ == lastPhase) return
     }
 }

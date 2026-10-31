@@ -5,12 +5,24 @@
 
 package dev.lounres.kone.benchmarks
 
+import kotlin.reflect.KClass
+
 
 @Deprecated(
     message = "",
     level = HIDDEN,
 )
 public data class InjectedValue<out T>(
-    val disposableInjection: DisposableInjection<T>,
-    val value: T
+    val value: T,
+    val disposableInjection: DisposableInjection<T>? = null,
 )
+
+@Deprecated(
+    message = "",
+    level = HIDDEN,
+)
+public fun runBenchmark(
+    benchmarkClass: KClass<*>,
+    parameters: Map<String, String>,
+    configuration: BenchmarkConfiguration,
+): BenchmarkResult = TODO()
