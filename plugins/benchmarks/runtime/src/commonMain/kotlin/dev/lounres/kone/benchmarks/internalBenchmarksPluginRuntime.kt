@@ -11,23 +11,19 @@ import kotlin.reflect.KClass
 private class BenchmarksPluginException(message: String? = null, reason: Throwable? = null) : IllegalStateException(message, reason)
 
 @PublishedApi
-internal fun benchmarksPluginExceptionForRuntimeDeclarations(): Nothing = throw BenchmarksPluginException(benchmarksPluginExceptionForRuntimeDeclarationsMessage)
+internal fun benchmarksPluginExceptionForRuntimeDeclarations(
+    message: String = benchmarksPluginExceptionForRuntimeDeclarationsMessage,
+): Nothing = throw BenchmarksPluginException(message)
 
-@Deprecated(
-    message = internalsDeprecationAnnotationMessage,
-    level = HIDDEN,
-)
+@Deprecated(message = internalsDeprecationAnnotationMessage, level = HIDDEN)
 public data class InjectedValue<out T>(
     val value: T,
     val disposableInjection: DisposableInjection<T>? = null,
 )
 
-@Deprecated(
-    message = internalsDeprecationAnnotationMessage,
-    level = HIDDEN,
-)
-public fun runBenchmark(
+@Deprecated(message = internalsDeprecationAnnotationMessage, level = HIDDEN)
+public expect fun runBenchmark(
     benchmarkClass: KClass<*>,
     parameters: Map<String, String>,
     configuration: BenchmarkConfiguration,
-): BenchmarkResult = TODO()
+): BenchmarkResult

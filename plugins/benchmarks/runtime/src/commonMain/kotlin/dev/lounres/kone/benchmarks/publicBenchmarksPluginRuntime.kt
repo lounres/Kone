@@ -6,6 +6,8 @@
 package dev.lounres.kone.benchmarks
 
 import kotlinx.benchmark.Blackhole
+import kotlinx.serialization.Serializable
+import kotlin.time.Duration
 
 @Target(FUNCTION)
 public annotation class Benchmark
@@ -37,10 +39,55 @@ public inline fun <T> injectDisposable(crossinline block: () -> DisposableInject
 
 // TODO: Add configuration classes
 
-public class BenchmarkConfiguration
+@Serializable
+public expect sealed interface BenchmarkModeConfiguration {
+    @Serializable
+    public class Throughput: BenchmarkModeConfiguration {
+        public val iterationTime: Duration
+    }
+    @Serializable
+    public class AverageTime: BenchmarkModeConfiguration {
+        public val iterationTime: Duration
+    }
+}
+
+@Serializable
+public expect class BenchmarkConfiguration {
+    public val numberOfWarmups: UInt
+    public val numberOfMeasurements: UInt
+    public val mode: BenchmarkModeConfiguration
+    
+    public companion object;
+}
+
+public expect fun BenchmarkConfiguration(
+    numberOfWarmups: UInt,
+    numberOfMeasurements: UInt,
+    mode: BenchmarkModeConfiguration,
+): BenchmarkConfiguration
 
 // TODO: Add results classes
 
-public class BenchmarkResult
+@Serializable
+public expect sealed interface BenchmarkModeResult<Configuration: BenchmarkModeConfiguration> {
+    public val configuration: Configuration
+    
+    @Serializable
+    public class Throughput: BenchmarkModeResult<BenchmarkModeConfiguration.Throughput> {
+        override val configuration: BenchmarkModeConfiguration.Throughput
+        public val operationsPerIteration: Double
+    }
+    
+    @Serializable
+    public class AverageTime: BenchmarkModeResult<BenchmarkModeConfiguration.AverageTime> {
+        override val configuration: BenchmarkModeConfiguration.AverageTime
+        public val operationDuration: Duration
+    }
+}
+
+@Serializable
+public expect class BenchmarkResult {
+    public val configuration: BenchmarkConfiguration
+}
 
 public val benchmarkResult: BenchmarkResult get() = benchmarksPluginExceptionForRuntimeDeclarations()

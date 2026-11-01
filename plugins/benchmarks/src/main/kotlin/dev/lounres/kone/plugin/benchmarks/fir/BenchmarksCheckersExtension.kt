@@ -648,6 +648,7 @@ class BenchmarksCheckersExtension(session: FirSession) : FirAdditionalCheckersEx
         //  wrong benchmark modifiers: suspend, inline, ??? <- ERROR
         //  blackhole parameter <- WARNING?
         //  non-root package <- ERROR
+        //  expect-actual is not yet supported <- ERROR (for now)
         
         override fun getRendererFactory(): BaseDiagnosticRendererFactory = DefaultMessages
         
