@@ -1,10 +1,5 @@
 import dev.lounres.kone.buildSrc.dsl.konePlugins
 
-plugins {
-    alias(versions.plugins.kotlin.compose)
-    alias(versions.plugins.compose.multiplatform)
-}
-
 konePlugins {
     +"suppliedTypes"
     +"contexts"
@@ -21,6 +16,10 @@ kotlin {
                 api(projects.libs.main.computationalGeometry)
                 api(projects.libs.misc.canvas)
                 api(versions.kotlinx.coroutines.core)
+            }
+        }
+        composeMain {
+            dependencies {
                 api(versions.compose.multiplatform.foundation)
             }
         }

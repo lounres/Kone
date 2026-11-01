@@ -2,6 +2,7 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class, KotlinxBenchmarkPluginInternalApi::class)
 
 import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
+import com.android.build.api.withAndroid
 import com.vanniktech.maven.publish.GradlePlugin
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinJvm
@@ -350,15 +351,19 @@ stal {
                     nodejs()
                 }
 
-                @OptIn(ExperimentalWasmDsl::class)
                 wasmJs {
                     browser()
                     nodejs()
                     d8()
                 }
+                
+//                @OptIn(ExperimentalWasmDsl::class)
+//                wasmWasi {
+//                    wasmtime()
+//                }
 
-//                linuxX64()
-//                mingwX64()
+                linuxX64()
+                mingwX64()
 //                macosX64()
 
 //                iosX64()
@@ -593,6 +598,21 @@ stal {
         "compose" {
             apply(versions.plugins.kotlin.compose)
             apply(versions.plugins.compose.multiplatform)
+            pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
+                configure<KotlinMultiplatformExtension> {
+                    applyDefaultHierarchyTemplate {
+                        sourceSetTrees(KotlinSourceSetTree.main, KotlinSourceSetTree.test)
+                        common {
+                            group("compose") {
+                                withJvm()
+                                group("web")
+                                @Suppress("UnstableApiUsage")
+                                withAndroid()
+                            }
+                        }
+                    }
+                }
+            }
         }
         "testBalloon" {
             pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
