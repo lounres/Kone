@@ -29,9 +29,10 @@ import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.name.SpecialNames
 
 
-class BenchmarkGenerationTransformer(
+class BenchmarkClassGenerationTransformer(
     private val pluginContext: IrPluginContext,
     private val irRuntimeReferences: IrRuntimeReferences,
+    private val benchmarkToGeneratedClass: MutableMap<IrSimpleFunction, GeneratedBenchmarkClassDescription>,
 ) : IrTransformer<Nothing?>() {
     private object Key : GeneratedDeclarationKey() {
         override fun toString(): String = "BenchmarkGenerationTransformer.Key"
@@ -170,6 +171,7 @@ class BenchmarkGenerationTransformer(
                 val benchmarkBodyReplacements = mutableMapOf<IrSymbol, (IrExpression) -> IrExpression>()
                 val injectionBlockReplacements = mutableMapOf<IrSymbol, (IrExpression) -> IrExpression>()
                 val subdeclarationBodyReplacements = mutableMapOf<IrValueParameterSymbol, IrVariable>()
+                val parametersDescription = mutableMapOf<IrValueParameter, IrField>()
                 for (parameter in subdeclaration.parameters) {
                     if (parameter.type == irRuntimeReferences.benchmarkConfigurationClassIrClassSymbol.defaultType) {
                         benchmarkConfigurationParameter = parameter
@@ -264,6 +266,7 @@ class BenchmarkGenerationTransformer(
                         benchmarkBodyReplacements[parameter.symbol] = { irBuilder.irGet(localBenchmarkVariable) }
                         injectionBlockReplacements[parameter.symbol] = { irBuilder.irGet(localSetupVariable) }
                         subdeclarationBodyReplacements[parameter.symbol] = localSubdeclarationVariable
+                        parametersDescription[parameter] = serializedField
                     }
                 }
                 val transformedBody = subdeclaration.body!!.transform(
@@ -340,7 +343,13 @@ class BenchmarkGenerationTransformer(
                 setupFunction.body = setupFunctionIrBlockBodyBuilder.doBuild()
                 tearDownFunction.body = tearDownFunctionIrBlockBodyBuilder.doBuild().also { it.statements.reverse() }
                 declaration.addChild(benchmarkClass)
-                
+                benchmarkToGeneratedClass[subdeclaration] = GeneratedBenchmarkClassDescription(
+                    benchmarkClass = benchmarkClass,
+                    parameters = parametersDescription,
+                    setupFunction = setupFunction,
+                    benchmarkFunction = benchmarkFunction,
+                    tearDownFunction = tearDownFunction,
+                )
             }
         }
         return declaration

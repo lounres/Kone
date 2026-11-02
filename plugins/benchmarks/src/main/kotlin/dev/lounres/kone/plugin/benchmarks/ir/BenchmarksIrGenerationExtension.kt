@@ -8,6 +8,7 @@ package dev.lounres.kone.plugin.benchmarks.ir
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
+import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 
 
 class BenchmarksIrGenerationExtension(
@@ -20,14 +21,28 @@ class BenchmarksIrGenerationExtension(
         
         if (currentPhase++ == lastPhase) return
         
+        val benchmarkToGeneratedClass = mutableMapOf<IrSimpleFunction, GeneratedBenchmarkClassDescription>()
+        
         moduleFragment.accept(
-            BenchmarkGenerationTransformer(
+            BenchmarkClassGenerationTransformer(
                 pluginContext = pluginContext,
                 irRuntimeReferences = irRuntimeReferences,
+                benchmarkToGeneratedClass = benchmarkToGeneratedClass,
             ),
             null
         )
         
         if (currentPhase++ == lastPhase) return
+        
+//        moduleFragment.accept(
+//            BenchmarksDeclareAndExecuteSuitesTransformer(
+//                pluginContext = pluginContext,
+//                irRuntimeReferences = irRuntimeReferences,
+//                benchmarkToGeneratedClass = benchmarkToGeneratedClass,
+//            ),
+//            null
+//        )
+//
+//        if (currentPhase++ == lastPhase) return
     }
 }

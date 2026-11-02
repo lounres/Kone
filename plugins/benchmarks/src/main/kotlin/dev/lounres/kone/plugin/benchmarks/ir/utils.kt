@@ -41,6 +41,7 @@ import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.fqNameWhenAvailable
 import org.jetbrains.kotlin.ir.util.hasAnnotation
 import org.jetbrains.kotlin.ir.util.isVararg
+import org.jetbrains.kotlin.ir.util.primaryConstructor
 import org.jetbrains.kotlin.name.*
 
 
@@ -78,7 +79,17 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
     val runIrSimpleFunctionSymbol = finder.referenceFunctionThatOrFail(CallableId(packageName = FqName("kotlin"), callableName = Name.identifier("run"))) {
         it.owner.parameters.size == 1
     }
+    val listIrClassSymbol = finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin.collections"), topLevelName = Name.identifier("List")))
+    val listOfIrSimpleFunction = finder.referenceFunctionThatOrFail(CallableId(FqName("kotlin.collections"), Name.identifier("listOf"))) { symbol ->
+        val parameters = symbol.owner.parameters
+        parameters.size == 1 && parameters[0].isVararg
+    }
+    val emptyListIrSimpleFunction = finder.referenceFunctionThatOrFail(CallableId(FqName("kotlin.collections"), Name.identifier("emptyList"))) { symbol ->
+        val parameters = symbol.owner.parameters
+        parameters.size == 0
+    }
     val mapIrClassSymbol = finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin.collections"), topLevelName = Name.identifier("Map")))
+    val mapGetIrSimpleFunction = mapIrClassSymbol.referenceFunctionThatOrFail(Name.identifier("get"))
     val mapOfIrSimpleFunction = finder.referenceFunctionThatOrFail(CallableId(FqName("kotlin.collections"), Name.identifier("mapOf"))) { symbol ->
         val parameters = symbol.owner.parameters
         parameters.size == 1 && parameters[0].isVararg
@@ -100,6 +111,7 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
     val kotlinxTearDownAnnotationIrClassSymbol by lazy { finder.referenceClassOrFail(kotlinxTearDownAnnotationClassId) }
     val kotlinxBenchmarkAnnotationIrClassSymbol by lazy { finder.referenceClassOrFail(kotlinxBenchmarkAnnotationClassId) }
     val kotlinxBlackholeClassIrClassSymbol by lazy { finder.referenceClassOrFail(kotlinxBlackholeClassClassId) }
+    val kotlinxBlackholeConstructorIrConstructorSymbol by lazy { kotlinxBlackholeClassIrClassSymbol.owner.primaryConstructor!!.symbol }
     val kotlinxJsonClassIrClassSymbol by lazy { finder.referenceClassOrFail(kotlinxJsonClassClassId) }
     val kotlinxJsonCompanionIrClassSymbol by lazy { kotlinxJsonClassIrClassSymbol.owner.companionObject()!!.symbol }
     val kotlinxJsonEncodeToStringFunctionIrSimpleFunctionSymbol by lazy {
@@ -112,6 +124,14 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
             functionSymbol.owner.isInline && functionSymbol.owner.typeParameters.let { it.size == 1 && it[0].isReified }
         }
     }
+    // TODO: Move the following
+    val kotlinxSuiteExecutorBaseIrClassSymbol by lazy { finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlinx.benchmark"), relativeClassName = FqName("SuiteExecutorBase"), isLocal = false)) }
+    val kotlinxSuiteExecutorBaseSuiteIrSimpleFunctionSymbol by lazy { kotlinxSuiteExecutorBaseIrClassSymbol.referenceFunctionThatOrFail(Name.identifier("suite")) }
+    val kotlinxSuiteDescriptorIrClassSymbol by lazy { finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlinx.benchmark"), relativeClassName = FqName("SuiteDescriptor"), isLocal = false)) }
+    val kotlinxSuiteDescriptorConstructorIrConstructorSymbol by lazy { kotlinxSuiteDescriptorIrClassSymbol.owner.primaryConstructor!!.symbol }
+    val kotlinxSuiteDescriptorAddIrSimpleFunctionSymbol by lazy { kotlinxSuiteDescriptorIrClassSymbol.referenceFunctionThatOrFail(Name.identifier("add")) }
+    val kotlinxBenchmarkDescriptorWithBlackholeParameterIrClassSymbol by lazy { finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlinx.benchmark"), relativeClassName = FqName("BenchmarkDescriptorWithBlackholeParameter"), isLocal = false)) }
+    val kotlinxBenchmarkDescriptorWithBlackholeParameterConstructorIrConstructorSymbol by lazy { kotlinxBenchmarkDescriptorWithBlackholeParameterIrClassSymbol.owner.primaryConstructor!!.symbol }
     
     // Public runtime
     val benchmarkAnnotationIrClassSymbol by lazy { finder.referenceClassOrFail(benchmarkAnnotationClassId) }
