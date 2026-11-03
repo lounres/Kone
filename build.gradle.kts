@@ -10,6 +10,8 @@ import com.vanniktech.maven.publish.KotlinMultiplatform
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.SourcesJar
 import dev.lounres.kone.buildSrc.dsl.*
+import dev.lounres.kone.buildSrc.koneCompilerOptions
+import dev.lounres.kone.buildSrc.koneOptIns
 import kotlinx.atomicfu.plugin.gradle.AtomicFUPluginExtension
 import kotlinx.benchmark.gradle.BenchmarksExtension
 import kotlinx.benchmark.gradle.KotlinJvmBenchmarkTarget
@@ -249,41 +251,8 @@ stal {
             configure<KotlinJvmProjectExtension> {
                 compilerOptions {
                     progressiveMode = true
-                    freeCompilerArgs.addAll(
-//                        "-Xklib-duplicated-unique-name-strategy=allow-all-with-warning",
-//                        "-Xvalue-classes",
-//                        "-Xcontract-syntax-v2",
-                        "-Xexpect-actual-classes",
-                        "-Xconsistent-data-class-copy-visibility",
-                        "-Xcontext-sensitive-resolution",
-                        "-Xreturn-value-checker=full",
-                        "-Xlocal-type-aliases",
-                        "-Xname-based-destructuring=complete",
-                        "-Xcollection-literals",
-                        "-Xcompanion-blocks-and-extensions",
-//                        "-Xfull-value-classes",
-                        
-                        // TODO: Waiting for JDK 28
-//                        "-Xvalhalla-value-classes",
-//                        "-Xjvm-enable-preview",
-                        
-                        // Kone compiler plugins order
-                        "-Xcompiler-plugin-order=dev.lounres.kone.plugin.suppliedTypes>dev.lounres.kone.plugin.contextsKeys",
-                    )
-                    optIn.addAll(
-                        listOf(
-                            "kotlin.experimental.ExperimentalTypeInference",
-                            "kotlin.contracts.ExperimentalContracts",
-                            "kotlin.ExperimentalStdlibApi",
-                            "kotlin.ExperimentalSubclassOptIn",
-                            "kotlin.ExperimentalUnsignedTypes",
-                            "kotlin.uuid.ExperimentalUuidApi",
-                            "kotlin.concurrent.atomics.ExperimentalAtomicApi",
-                            "kotlinx.serialization.ExperimentalSerializationApi",
-                            "dev.lounres.kone.annotations.UnstableKoneAPI",
-                            "dev.lounres.kone.annotations.ExperimentalKoneAPI",
-                        )
-                    )
+                    freeCompilerArgs.addAll(koneCompilerOptions)
+                    optIn.addAll(koneOptIns)
                     verbose = true
                 }
             }
@@ -295,41 +264,8 @@ stal {
                 
                 compilerOptions {
                     progressiveMode = true
-                    freeCompilerArgs.addAll(
-//                        "-Xklib-duplicated-unique-name-strategy=allow-all-with-warning",
-//                        "-Xvalue-classes",
-//                        "-Xcontract-syntax-v2",
-                        "-Xexpect-actual-classes",
-                        "-Xconsistent-data-class-copy-visibility",
-                        "-Xcontext-sensitive-resolution",
-                        "-Xreturn-value-checker=full",
-                        "-Xlocal-type-aliases",
-                        "-Xname-based-destructuring=complete",
-                        "-Xcollection-literals",
-                        "-Xcompanion-blocks-and-extensions",
-//                        "-Xfull-value-classes",
-                        
-                        // TODO: Waiting for JDK 28
-//                        "-Xvalhalla-value-classes",
-//                        "-Xjvm-enable-preview",
-                        
-                        // Kone compiler plugins order
-                        "-Xcompiler-plugin-order=dev.lounres.kone.plugin.suppliedTypes>dev.lounres.kone.plugin.contextsKeys",
-                    )
-                    optIn.set(
-                        listOf(
-                            "kotlin.experimental.ExperimentalTypeInference",
-                            "kotlin.contracts.ExperimentalContracts",
-                            "kotlin.ExperimentalStdlibApi",
-                            "kotlin.ExperimentalSubclassOptIn",
-                            "kotlin.ExperimentalUnsignedTypes",
-                            "kotlin.uuid.ExperimentalUuidApi",
-                            "kotlin.concurrent.atomics.ExperimentalAtomicApi",
-                            "kotlinx.serialization.ExperimentalSerializationApi",
-                            "dev.lounres.kone.annotations.UnstableKoneAPI",
-                            "dev.lounres.kone.annotations.ExperimentalKoneAPI",
-                        )
-                    )
+                    freeCompilerArgs.addAll(koneCompilerOptions)
+                    optIn.addAll(koneOptIns)
                     verbose = true
                 }
 
