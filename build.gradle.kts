@@ -24,14 +24,11 @@ import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.kotlin.allopen.gradle.AllOpenExtension
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJvmCompilation
 import java.io.ByteArrayOutputStream
-import java.time.LocalDateTime
-import java.time.ZoneId
 import kotlin.text.replace
 
 
@@ -60,10 +57,7 @@ buildscript {
 
 
 val koneBranch: String by lazy { grgit.branch.current().name }
-val now: LocalDateTime = LocalDateTime.now(ZoneId.of("UTC"))
-// FIXME
-val koneVersion = "0.0.0-experiment-${now.year}.${now.month.value}.${now.dayOfMonth}.${now.hour}"
-//val koneVersion = "0.0.0-experiment"
+val koneVersion = project.extra["koneVersion"] as String
 val koneGroup = project.extra["koneGroup"] as String
 val koneUrl = project.property("koneUrl") as String
 val koneBaseUrl = project.property("koneBaseUrl") as String

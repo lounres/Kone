@@ -1,3 +1,6 @@
+import java.time.LocalDateTime
+import java.time.ZoneId
+
 rootProject.name = "Kone"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
@@ -116,9 +119,14 @@ stal {
     }
 
     action {
+        val now: LocalDateTime = LocalDateTime.now(ZoneId.of("UTC"))
+        // FIXME
+        val koneVersion = "0.0.0-experiment-${now.year}.${now.month.value}.${now.dayOfMonth}.${now.hour}"
+        //val koneVersion = "0.0.0-experiment"
         gradle.allprojects {
             group = "${settings.extra["group"]}${project.path.replace(':', '.').let { if (it == ".") ".kone" else ".kone$it" }}"
-            project.extra["koneGroup"] = settings.extra["group"]
+            extra["koneVersion"] = koneVersion
+            extra["koneGroup"] = settings.extra["group"]
             extra["artifactId"] = ""
             extra["alias"] = ""
             extra["androidNamespace"] = ""
