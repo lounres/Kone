@@ -13,7 +13,8 @@ import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 import plguinDependencyArtifact
 import plguinDependencyGroup
-import runtimeDependency
+import runtimeDependencyArtifact
+import runtimeDependencyGroup
 
 
 @Suppress("unused")
@@ -23,9 +24,9 @@ class SuppliedTypesPlugin : KotlinCompilerPluginSupportPlugin {
     override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
         val project = kotlinCompilation.target.project
         
-        kotlinCompilation.defaultSourceSet.dependencies { api(runtimeDependency) }
+        kotlinCompilation.defaultSourceSet.dependencies { api("$runtimeDependencyGroup:$runtimeDependencyArtifact:$dependencyVersion") }
         if (kotlinCompilation.defaultSourceSet.implementationConfigurationName == "metadataCompilationImplementation") {
-            project.dependencies.add("commonMainImplementation", runtimeDependency)
+            project.dependencies.add("commonMainImplementation", "$runtimeDependencyGroup:$runtimeDependencyArtifact:$dependencyVersion")
         }
         
         return project.provider { emptyList() }

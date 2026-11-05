@@ -486,17 +486,13 @@ stal {
             val writePaths = tasks.register("writePaths") {
                 doFirst {
                     val parentProject = project.parent!!
-                    val pluginDependency = "$koneGroup:${parentProject.extra["artifactId"] as String}:$koneVersion"
-                    val runtimeDependency = "$koneGroup:${parentProject.childProjects["runtime"]!!.extra["artifactId"] as String}:$koneVersion"
                     constsSourceDirectory.also { it.mkdirs() }.resolve("Consts.kt").writeText(
                         """
                             internal val dependencyVersion: String = "$koneVersion"
                             internal val plguinDependencyGroup: String = "$koneGroup"
                             internal val plguinDependencyArtifact: String = "${parentProject.extra["artifactId"] as String}"
-                            internal val plguinDependency: String = "$pluginDependency"
                             internal val runtimeDependencyGroup: String = "$koneGroup"
                             internal val runtimeDependencyArtifact: String = "${parentProject.childProjects["runtime"]!!.extra["artifactId"] as String}"
-                            internal val runtimeDependency: String = "$runtimeDependency"
                         """.trimIndent()
                     )
                 }
