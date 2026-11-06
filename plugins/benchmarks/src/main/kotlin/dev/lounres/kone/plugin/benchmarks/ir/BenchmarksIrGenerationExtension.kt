@@ -33,16 +33,5 @@ class BenchmarksIrGenerationExtension(
         )
         
         if (currentPhase++ == lastPhase) return
-        
-//        moduleFragment.accept(
-//            BenchmarksDeclareAndExecuteSuitesTransformer(
-//                pluginContext = pluginContext,
-//                irRuntimeReferences = irRuntimeReferences,
-//                benchmarkToGeneratedClass = benchmarkToGeneratedClass,
-//            ),
-//            null
-//        )
-//
-//        if (currentPhase++ == lastPhase) return
     }
 }
