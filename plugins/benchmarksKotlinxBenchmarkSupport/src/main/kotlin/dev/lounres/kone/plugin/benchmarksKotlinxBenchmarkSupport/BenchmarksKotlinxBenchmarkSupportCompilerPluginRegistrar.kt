@@ -3,10 +3,10 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport
+package dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport
 
-import dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.fir.FirBenchmarksKotlinxBenchmarkSupportExtensionRegistrar
-import dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.ir.BenchmarksKotlinxBenchmarkSupportIrGenerationExtension
+import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.fir.FirBenchmarksKotlinxBenchmarkSupportExtensionRegistrar
+import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.ir.BenchmarksKotlinxBenchmarkSupportIrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.compiler.plugin.CompilerPluginRegistrar
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi

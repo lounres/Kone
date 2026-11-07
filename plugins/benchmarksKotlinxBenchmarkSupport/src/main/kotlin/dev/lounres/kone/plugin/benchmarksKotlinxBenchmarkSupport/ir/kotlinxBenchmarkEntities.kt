@@ -3,7 +3,7 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.ir
+package dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.ir
 
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrConstructor

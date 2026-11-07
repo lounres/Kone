@@ -3,16 +3,16 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.ir
+package dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.ir
 
-import dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.kotlinxBenchmarkModeAnnotationClassId
-import dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.kotlinxMeasurementAnnotationClassId
-import dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.kotlinxOutputTimeUnitAnnotationClassId
-import dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.kotlinxParamAnnotationClassId
-import dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.kotlinxSetupAnnotationClassId
-import dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.kotlinxStateAnnotationClassId
-import dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.kotlinxTearDownAnnotationClassId
-import dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.kotlinxWarmupAnnotationClassId
+import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.kotlinxBenchmarkModeAnnotationClassId
+import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.kotlinxMeasurementAnnotationClassId
+import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.kotlinxOutputTimeUnitAnnotationClassId
+import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.kotlinxParamAnnotationClassId
+import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.kotlinxSetupAnnotationClassId
+import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.kotlinxStateAnnotationClassId
+import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.kotlinxTearDownAnnotationClassId
+import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.kotlinxWarmupAnnotationClassId
 import dev.lounres.kone.scope
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.ir.declarations.IrClass

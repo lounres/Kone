@@ -3,7 +3,7 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.fir
+package dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.fir
 
 import org.jetbrains.kotlin.diagnostics.KtDiagnosticFactoryToRendererMap
 import org.jetbrains.kotlin.diagnostics.KtDiagnosticsContainer

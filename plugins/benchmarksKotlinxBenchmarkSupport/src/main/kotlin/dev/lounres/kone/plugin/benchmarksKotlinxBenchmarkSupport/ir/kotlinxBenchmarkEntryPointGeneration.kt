@@ -3,9 +3,9 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.ir
+package dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.ir
 
-import dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.KotlinxBenchmarkJsExecutor
+import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.KotlinxBenchmarkJsExecutor
 import dev.lounres.kone.scope
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
@@ -32,6 +32,7 @@ import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.name.SpecialNames
 import org.jetbrains.kotlin.resolve.scopes.MemberScope
 import org.jetbrains.kotlin.types.Variance.OUT_VARIANCE
+import kotlin.collections.iterator
 
 
 fun IrBlockBuilder.suiteDescriptorVariable(
@@ -999,7 +1000,7 @@ fun jsMainFile(
         module = moduleFragment.descriptor,
         fqName = FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated")
     ) {
-        override fun getMemberScope(): MemberScope = MemberScope.Empty
+        override fun getMemberScope(): MemberScope = Empty
     },
     module = moduleFragment
 ).apply {
@@ -1030,7 +1031,7 @@ fun wasmJsMainFile(
         module = moduleFragment.descriptor,
         fqName = FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated")
     ) {
-        override fun getMemberScope(): MemberScope = MemberScope.Empty
+        override fun getMemberScope(): MemberScope = Empty
     },
     module = moduleFragment
 ).apply {
@@ -1060,7 +1061,7 @@ fun wasmWasiMainFile(
         module = moduleFragment.descriptor,
         fqName = FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated")
     ) {
-        override fun getMemberScope(): MemberScope = MemberScope.Empty
+        override fun getMemberScope(): MemberScope = Empty
     },
     module = moduleFragment
 ).apply {
@@ -1091,7 +1092,7 @@ fun nativeMainFile(
         module = moduleFragment.descriptor,
         fqName = FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated")
     ) {
-        override fun getMemberScope(): MemberScope = MemberScope.Empty
+        override fun getMemberScope(): MemberScope = Empty
     },
     module = moduleFragment
 ).apply {
