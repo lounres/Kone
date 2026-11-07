@@ -76,21 +76,35 @@ FILE fqName:foo.bar fileName:/keyUsage2.kt
       PROPERTY GENERATED[dev.lounres.kone.plugin.contextsKeys.fir.ContextKeyGenerationExtension.Key] name:suppliedTypesStorage visibility:public modality:FINAL [var]
         overridden:
           public open suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.registry.SuppliedTypeRegistryKey
-        FIELD PROPERTY_BACKING_FIELD name:suppliedTypesStorage type:kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> visibility:private
+        FIELD PROPERTY_BACKING_FIELD name:suppliedTypesStorage type:kotlin.concurrent.atomics.AtomicReference<kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>?> visibility:private
           EXPRESSION_BODY
-            CALL 'public final fun suppliedTypesStorageDelegate (): kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> declared in dev.lounres.kone.suppliedTypes' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
+            CONSTRUCTOR_CALL 'public constructor <init> (value: T of kotlin.concurrent.atomics.AtomicReference) declared in kotlin.concurrent.atomics.AtomicReference' type=kotlin.concurrent.atomics.AtomicReference<kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>?> origin=null
+              TYPE_ARG (of class) T: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>?
+              ARG value: CONST Null type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>? value=null
         FUN DEFAULT_PROPERTY_ACCESSOR name:<get-suppliedTypesStorage> visibility:public modality:FINAL returnType:kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>
           VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Context1.Key<Element of foo.bar.Context1.Key>
           correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.contextsKeys.fir.ContextKeyGenerationExtension.Key] name:suppliedTypesStorage visibility:public modality:FINAL [var]
           overridden:
             public open fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.registry.SuppliedTypeRegistryKey
           BLOCK_BODY
-            RETURN type=kotlin.Nothing from='public final fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Context1.Key'
-              CALL 'public abstract fun getValue (thisRef: T of kotlin.properties.ReadWriteProperty, property: kotlin.reflect.KProperty<*>): V of kotlin.properties.ReadWriteProperty declared in kotlin.properties.ReadWriteProperty' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
-                ARG <this>: GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:suppliedTypesStorage type:kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> visibility:private' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
+            VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>? [val]
+              CALL 'public final fun load (): T of kotlin.concurrent.atomics.AtomicReference declared in kotlin.concurrent.atomics.AtomicReference' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>? origin=null
+                ARG <this>: GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:suppliedTypesStorage type:kotlin.concurrent.atomics.AtomicReference<kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>?> visibility:private' type=kotlin.concurrent.atomics.AtomicReference<kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>?> origin=null
                   receiver: GET_VAR '<this>: foo.bar.Context1.Key<Element of foo.bar.Context1.Key> declared in foo.bar.Context1.Key.<get-suppliedTypesStorage>' type=foo.bar.Context1.Key<Element of foo.bar.Context1.Key> origin=null
-                ARG thisRef: GET_VAR '<this>: foo.bar.Context1.Key<Element of foo.bar.Context1.Key> declared in foo.bar.Context1.Key.<get-suppliedTypesStorage>' type=foo.bar.Context1.Key<Element of foo.bar.Context1.Key> origin=null
-                ARG property: PROPERTY_REFERENCE 'public final suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Context1.Key' field=null getter='public final fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Context1.Key' setter='public final fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in foo.bar.Context1.Key' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
+            RETURN type=kotlin.Nothing from='public final fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Context1.Key'
+              WHEN type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
+                BRANCH
+                  if: CALL 'public final fun EQEQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQEQ
+                    ARG arg0: GET_VAR 'val tmp_1: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>? declared in foo.bar.Context1.Key.<get-suppliedTypesStorage>' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>? origin=null
+                    ARG arg1: CONST Null type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>? value=null
+                  then: THROW type=kotlin.Nothing
+                    CONSTRUCTOR_CALL 'public constructor <init> (message: kotlin.String?, reason: kotlin.Throwable?) declared in dev.lounres.kone.suppliedTypes.SuppliedTypesStorageInitializationException' type=dev.lounres.kone.suppliedTypes.SuppliedTypesStorageInitializationException origin=null
+                      ARG message: CALL 'public final fun <get-suppliedTypesStorageDelegateInitializationExceptionForGetter> (): kotlin.String declared in dev.lounres.kone.suppliedTypes' type=kotlin.String origin=null
+                      ARG reason: CONST Null type=kotlin.Throwable? value=null
+                BRANCH
+                  if: CONST Boolean type=kotlin.Boolean value=true
+                  then: TYPE_OP type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=IMPLICIT_CAST typeOperand=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>
+                    GET_VAR 'val tmp_1: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>? declared in foo.bar.Context1.Key.<get-suppliedTypesStorage>' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>? origin=null
         FUN GENERATED[dev.lounres.kone.plugin.contextsKeys.fir.ContextKeyGenerationExtension.Key] name:<set-suppliedTypesStorage> visibility:public modality:FINAL returnType:kotlin.Unit
           VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Context1.Key<Element of foo.bar.Context1.Key>
           VALUE_PARAMETER kind:Regular name:<set-?> index:1 type:kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>
@@ -98,27 +112,34 @@ FILE fqName:foo.bar fileName:/keyUsage2.kt
           overridden:
             public open fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in dev.lounres.kone.registry.SuppliedTypeRegistryKey
           BLOCK_BODY
-            CALL 'public abstract fun setValue (thisRef: T of kotlin.properties.ReadWriteProperty, property: kotlin.reflect.KProperty<*>, value: V of kotlin.properties.ReadWriteProperty): kotlin.Unit declared in kotlin.properties.ReadWriteProperty' type=kotlin.Unit origin=null
-              ARG <this>: GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:suppliedTypesStorage type:kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> visibility:private' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
-                receiver: GET_VAR '<this>: foo.bar.Context1.Key<Element of foo.bar.Context1.Key> declared in foo.bar.Context1.Key.<set-suppliedTypesStorage>' type=foo.bar.Context1.Key<Element of foo.bar.Context1.Key> origin=null
-              ARG thisRef: GET_VAR '<this>: foo.bar.Context1.Key<Element of foo.bar.Context1.Key> declared in foo.bar.Context1.Key.<set-suppliedTypesStorage>' type=foo.bar.Context1.Key<Element of foo.bar.Context1.Key> origin=null
-              ARG property: PROPERTY_REFERENCE 'public final suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Context1.Key' field=null getter='public final fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Context1.Key' setter='public final fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in foo.bar.Context1.Key' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
-              ARG value: GET_VAR '<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Context1.Key.<set-suppliedTypesStorage>' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
+            WHEN type=kotlin.Unit origin=null
+              BRANCH
+                if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCL
+                  ARG <this>: CALL 'public final fun compareAndSet (expectedValue: T of kotlin.concurrent.atomics.AtomicReference, newValue: T of kotlin.concurrent.atomics.AtomicReference): kotlin.Boolean declared in kotlin.concurrent.atomics.AtomicReference' type=kotlin.Boolean origin=null
+                    ARG <this>: GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:suppliedTypesStorage type:kotlin.concurrent.atomics.AtomicReference<kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>?> visibility:private' type=kotlin.concurrent.atomics.AtomicReference<kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>?> origin=null
+                      receiver: GET_VAR '<this>: foo.bar.Context1.Key<Element of foo.bar.Context1.Key> declared in foo.bar.Context1.Key.<set-suppliedTypesStorage>' type=foo.bar.Context1.Key<Element of foo.bar.Context1.Key> origin=null
+                    ARG expectedValue: CONST Null type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>? value=null
+                    ARG newValue: GET_VAR '<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Context1.Key.<set-suppliedTypesStorage>' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
+                then: THROW type=kotlin.Nothing
+                  CONSTRUCTOR_CALL 'public constructor <init> (message: kotlin.String?, reason: kotlin.Throwable?) declared in dev.lounres.kone.suppliedTypes.SuppliedTypesStorageInitializationException' type=dev.lounres.kone.suppliedTypes.SuppliedTypesStorageInitializationException origin=null
+                    ARG message: CALL 'public final fun <get-suppliedTypesStorageDelegateInitializationExceptionForSetter> (): kotlin.String declared in dev.lounres.kone.suppliedTypes' type=kotlin.String origin=null
+                    ARG reason: CONST Null type=kotlin.Throwable? value=null
       CONSTRUCTOR GENERATED[dev.lounres.kone.plugin.contextsKeys.fir.ContextKeyGenerationExtension.Key] visibility:public returnType:foo.bar.Context1.Key<Element of foo.bar.Context1.Key>
         VALUE_PARAMETER kind:Regular name:$suppliedTypeParameterFor_Element index:0 type:dev.lounres.kone.suppliedTypes.SuppliedType
           annotations:
             SupplianceProvided
           EXPRESSION_BODY
-            CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+            CALL 'public final fun of <T> (<this>: dev.lounres.kone.suppliedTypes.SuppliedType.Companion): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
               TYPE_ARG T: Element of foo.bar.Context1.Key
+              ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.suppliedTypes.SuppliedType.Companion
         annotations:
           SupplianceProvided
         BLOCK_BODY
           DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in foo.bar.Context1.Key'
             TYPE_ARG Element: Element of foo.bar.Context1.Key
-          VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:dev.lounres.kone.suppliedTypes.SuppliedType [val]
+          VAR IR_TEMPORARY_VARIABLE name:tmp_2 type:dev.lounres.kone.suppliedTypes.SuppliedType [val]
             GET_VAR '$suppliedTypeParameterFor_Element: dev.lounres.kone.suppliedTypes.SuppliedType declared in foo.bar.Context1.Key.<init>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
-          VAR IR_TEMPORARY_VARIABLE name:tmp_2 type:dev.lounres.kone.suppliedTypes.SuppliedType.Regular [val]
+          VAR IR_TEMPORARY_VARIABLE name:tmp_3 type:dev.lounres.kone.suppliedTypes.SuppliedType.Regular [val]
             CONSTRUCTOR_CALL 'public constructor <init> (fullyQualifiedName: kotlin.String, typeArguments: kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedProjection>, isNullable: kotlin.Boolean) declared in dev.lounres.kone.suppliedTypes.SuppliedType.Regular' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
               ARG fullyQualifiedName: CONST String type=kotlin.String value="foo.bar.Context1"
               ARG typeArguments: CALL 'public final fun listOf <T> (vararg elements: T of kotlin.collections.listOf): kotlin.collections.List<T of kotlin.collections.listOf> declared in kotlin.collections' type=kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedProjection> origin=null
@@ -126,7 +147,7 @@ FILE fqName:foo.bar fileName:/keyUsage2.kt
                 ARG elements: VARARG type=kotlin.Array<dev.lounres.kone.suppliedTypes.SuppliedProjection> varargElementType=dev.lounres.kone.suppliedTypes.SuppliedProjection
                   CONSTRUCTOR_CALL 'public constructor <init> (variance: kotlin.reflect.KVariance, type: dev.lounres.kone.suppliedTypes.SuppliedType) declared in dev.lounres.kone.suppliedTypes.SuppliedProjection.Regular' type=dev.lounres.kone.suppliedTypes.SuppliedProjection.Regular origin=null
                     ARG variance: GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:IN' type=kotlin.reflect.KVariance
-                    ARG type: GET_VAR 'val tmp_1: dev.lounres.kone.suppliedTypes.SuppliedType declared in foo.bar.Context1.Key.<init>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+                    ARG type: GET_VAR 'val tmp_2: dev.lounres.kone.suppliedTypes.SuppliedType declared in foo.bar.Context1.Key.<init>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
               ARG isNullable: CONST Boolean type=kotlin.Boolean value=false
           CALL 'public abstract fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in dev.lounres.kone.suppliedTypes.SuppliableClass' type=kotlin.Unit origin=null
             ARG <this>: GET_VAR '<this>: foo.bar.Context1.Key<Element of foo.bar.Context1.Key> declared in foo.bar.Context1.Key' type=foo.bar.Context1.Key<Element of foo.bar.Context1.Key> origin=null
@@ -141,7 +162,7 @@ FILE fqName:foo.bar fileName:/keyUsage2.kt
                   ARG second: CALL 'public final fun listOf <T> (vararg elements: T of kotlin.collections.listOf): kotlin.collections.List<T of kotlin.collections.listOf> declared in kotlin.collections' type=kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType> origin=null
                     TYPE_ARG T: dev.lounres.kone.suppliedTypes.SuppliedType
                     ARG elements: VARARG type=kotlin.Array<dev.lounres.kone.suppliedTypes.SuppliedType> varargElementType=dev.lounres.kone.suppliedTypes.SuppliedType
-                      GET_VAR 'val tmp_1: dev.lounres.kone.suppliedTypes.SuppliedType declared in foo.bar.Context1.Key.<init>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+                      GET_VAR 'val tmp_2: dev.lounres.kone.suppliedTypes.SuppliedType declared in foo.bar.Context1.Key.<init>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
                 CONSTRUCTOR_CALL 'public constructor <init> (first: A of kotlin.Pair, second: B of kotlin.Pair) declared in kotlin.Pair' type=kotlin.Pair<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
                   TYPE_ARG (of class) A: kotlin.String
                   TYPE_ARG (of class) B: kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>
@@ -149,7 +170,7 @@ FILE fqName:foo.bar fileName:/keyUsage2.kt
                   ARG second: CALL 'public final fun listOf <T> (vararg elements: T of kotlin.collections.listOf): kotlin.collections.List<T of kotlin.collections.listOf> declared in kotlin.collections' type=kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType> origin=null
                     TYPE_ARG T: dev.lounres.kone.suppliedTypes.SuppliedType
                     ARG elements: VARARG type=kotlin.Array<dev.lounres.kone.suppliedTypes.SuppliedType> varargElementType=dev.lounres.kone.suppliedTypes.SuppliedType
-                      GET_VAR 'val tmp_2: dev.lounres.kone.suppliedTypes.SuppliedType.Regular declared in foo.bar.Context1.Key.<init>' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
+                      GET_VAR 'val tmp_3: dev.lounres.kone.suppliedTypes.SuppliedType.Regular declared in foo.bar.Context1.Key.<init>' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
           CALL 'public open fun afterSuppliance (): kotlin.Unit declared in dev.lounres.kone.suppliedTypes.SuppliableClass' type=kotlin.Unit origin=null
             ARG <this>: GET_VAR '<this>: foo.bar.Context1.Key<Element of foo.bar.Context1.Key> declared in foo.bar.Context1.Key' type=foo.bar.Context1.Key<Element of foo.bar.Context1.Key> origin=null
       CONSTRUCTOR GENERATED[dev.lounres.kone.plugin.contextsKeys.fir.ContextKeyGenerationExtension.Key] visibility:public returnType:foo.bar.Context1.Key<Element of foo.bar.Context1.Key> [primary]
@@ -238,7 +259,7 @@ FILE fqName:foo.bar fileName:/keyUsage2.kt
                           FUN GENERATED[dev.lounres.kone.plugin.contextsKeys.ir.ContextsKeysImpliedKeysFillingIrTransformer.Key] name:impliedKeysRegistryBuilderLambda visibility:local modality:FINAL returnType:kotlin.Unit
                             VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.contextsKeys.ir.ContextsKeysImpliedKeysFillingIrTransformer.Key] kind:ExtensionReceiver name:<this> index:0 type:dev.lounres.kone.registry.ImpliedKeysRegistryBuilder<foo.bar.Context2<Element of foo.bar.Context2.Key>>
                             BLOCK_BODY
-                              VAR IR_TEMPORARY_VARIABLE name:tmp_3 type:dev.lounres.kone.suppliedTypes.SuppliedType [val]
+                              VAR IR_TEMPORARY_VARIABLE name:tmp_4 type:dev.lounres.kone.suppliedTypes.SuppliedType [val]
                                 CALL 'public abstract fun get (index: kotlin.Int): E of kotlin.collections.List declared in kotlin.collections.List' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
                                   ARG <this>: TYPE_OP type=kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType> origin=IMPLICIT_CAST typeOperand=kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>
                                     CALL 'public abstract fun get (key: K of kotlin.collections.Map): V of kotlin.collections.Map? declared in kotlin.collections.Map' type=kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>? origin=null
@@ -250,7 +271,7 @@ FILE fqName:foo.bar fileName:/keyUsage2.kt
                                 ARG <this>(index:0): GET_VAR '<this>: dev.lounres.kone.registry.ImpliedKeysRegistryBuilder<foo.bar.Context2<Element of foo.bar.Context2.Key>> declared in foo.bar.Context2.Key.impliedKeys.lazyInitializerLambda.impliedKeysRegistryBuilderLambda' type=dev.lounres.kone.registry.ImpliedKeysRegistryBuilder<foo.bar.Context2<Element of foo.bar.Context2.Key>> origin=null
                                 ARG <this>(index:1): CONSTRUCTOR_CALL 'public constructor <init> ($suppliedTypeParameterFor_Element: dev.lounres.kone.suppliedTypes.SuppliedType) declared in foo.bar.Context1.Key' type=foo.bar.Context1.Key<Element of foo.bar.Context2.Key> origin=null
                                   TYPE_ARG (of class) Element: Element of foo.bar.Context2.Key
-                                  ARG $suppliedTypeParameterFor_Element: GET_VAR 'val tmp_3: dev.lounres.kone.suppliedTypes.SuppliedType declared in foo.bar.Context2.Key.impliedKeys.lazyInitializerLambda.impliedKeysRegistryBuilderLambda' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+                                  ARG $suppliedTypeParameterFor_Element: GET_VAR 'val tmp_4: dev.lounres.kone.suppliedTypes.SuppliedType declared in foo.bar.Context2.Key.impliedKeys.lazyInitializerLambda.impliedKeysRegistryBuilderLambda' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
         FUN DEFAULT_PROPERTY_ACCESSOR name:<get-impliedKeys> visibility:public modality:FINAL returnType:dev.lounres.kone.registry.ImpliedKeysRegistry<foo.bar.Context2<Element of foo.bar.Context2.Key>>
           VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Context2.Key<Element of foo.bar.Context2.Key>
           correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.contextsKeys.fir.ContextKeyGenerationExtension.Key] name:impliedKeys visibility:public modality:FINAL [val]
@@ -264,21 +285,35 @@ FILE fqName:foo.bar fileName:/keyUsage2.kt
       PROPERTY GENERATED[dev.lounres.kone.plugin.contextsKeys.fir.ContextKeyGenerationExtension.Key] name:suppliedTypesStorage visibility:public modality:FINAL [var]
         overridden:
           public open suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.registry.SuppliedTypeRegistryKey
-        FIELD PROPERTY_BACKING_FIELD name:suppliedTypesStorage type:kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> visibility:private
+        FIELD PROPERTY_BACKING_FIELD name:suppliedTypesStorage type:kotlin.concurrent.atomics.AtomicReference<kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>?> visibility:private
           EXPRESSION_BODY
-            CALL 'public final fun suppliedTypesStorageDelegate (): kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> declared in dev.lounres.kone.suppliedTypes' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
+            CONSTRUCTOR_CALL 'public constructor <init> (value: T of kotlin.concurrent.atomics.AtomicReference) declared in kotlin.concurrent.atomics.AtomicReference' type=kotlin.concurrent.atomics.AtomicReference<kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>?> origin=null
+              TYPE_ARG (of class) T: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>?
+              ARG value: CONST Null type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>? value=null
         FUN DEFAULT_PROPERTY_ACCESSOR name:<get-suppliedTypesStorage> visibility:public modality:FINAL returnType:kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>
           VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Context2.Key<Element of foo.bar.Context2.Key>
           correspondingProperty: PROPERTY GENERATED[dev.lounres.kone.plugin.contextsKeys.fir.ContextKeyGenerationExtension.Key] name:suppliedTypesStorage visibility:public modality:FINAL [var]
           overridden:
             public open fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in dev.lounres.kone.registry.SuppliedTypeRegistryKey
           BLOCK_BODY
-            RETURN type=kotlin.Nothing from='public final fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Context2.Key'
-              CALL 'public abstract fun getValue (thisRef: T of kotlin.properties.ReadWriteProperty, property: kotlin.reflect.KProperty<*>): V of kotlin.properties.ReadWriteProperty declared in kotlin.properties.ReadWriteProperty' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
-                ARG <this>: GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:suppliedTypesStorage type:kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> visibility:private' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
+            VAR IR_TEMPORARY_VARIABLE name:tmp_5 type:kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>? [val]
+              CALL 'public final fun load (): T of kotlin.concurrent.atomics.AtomicReference declared in kotlin.concurrent.atomics.AtomicReference' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>? origin=null
+                ARG <this>: GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:suppliedTypesStorage type:kotlin.concurrent.atomics.AtomicReference<kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>?> visibility:private' type=kotlin.concurrent.atomics.AtomicReference<kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>?> origin=null
                   receiver: GET_VAR '<this>: foo.bar.Context2.Key<Element of foo.bar.Context2.Key> declared in foo.bar.Context2.Key.<get-suppliedTypesStorage>' type=foo.bar.Context2.Key<Element of foo.bar.Context2.Key> origin=null
-                ARG thisRef: GET_VAR '<this>: foo.bar.Context2.Key<Element of foo.bar.Context2.Key> declared in foo.bar.Context2.Key.<get-suppliedTypesStorage>' type=foo.bar.Context2.Key<Element of foo.bar.Context2.Key> origin=null
-                ARG property: PROPERTY_REFERENCE 'public final suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Context2.Key' field=null getter='public final fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Context2.Key' setter='public final fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in foo.bar.Context2.Key' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
+            RETURN type=kotlin.Nothing from='public final fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Context2.Key'
+              WHEN type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
+                BRANCH
+                  if: CALL 'public final fun EQEQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQEQ
+                    ARG arg0: GET_VAR 'val tmp_5: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>? declared in foo.bar.Context2.Key.<get-suppliedTypesStorage>' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>? origin=null
+                    ARG arg1: CONST Null type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>? value=null
+                  then: THROW type=kotlin.Nothing
+                    CONSTRUCTOR_CALL 'public constructor <init> (message: kotlin.String?, reason: kotlin.Throwable?) declared in dev.lounres.kone.suppliedTypes.SuppliedTypesStorageInitializationException' type=dev.lounres.kone.suppliedTypes.SuppliedTypesStorageInitializationException origin=null
+                      ARG message: CALL 'public final fun <get-suppliedTypesStorageDelegateInitializationExceptionForGetter> (): kotlin.String declared in dev.lounres.kone.suppliedTypes' type=kotlin.String origin=null
+                      ARG reason: CONST Null type=kotlin.Throwable? value=null
+                BRANCH
+                  if: CONST Boolean type=kotlin.Boolean value=true
+                  then: TYPE_OP type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=IMPLICIT_CAST typeOperand=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>
+                    GET_VAR 'val tmp_5: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>? declared in foo.bar.Context2.Key.<get-suppliedTypesStorage>' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>? origin=null
         FUN GENERATED[dev.lounres.kone.plugin.contextsKeys.fir.ContextKeyGenerationExtension.Key] name:<set-suppliedTypesStorage> visibility:public modality:FINAL returnType:kotlin.Unit
           VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.Context2.Key<Element of foo.bar.Context2.Key>
           VALUE_PARAMETER kind:Regular name:<set-?> index:1 type:kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>
@@ -286,27 +321,34 @@ FILE fqName:foo.bar fileName:/keyUsage2.kt
           overridden:
             public open fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in dev.lounres.kone.registry.SuppliedTypeRegistryKey
           BLOCK_BODY
-            CALL 'public abstract fun setValue (thisRef: T of kotlin.properties.ReadWriteProperty, property: kotlin.reflect.KProperty<*>, value: V of kotlin.properties.ReadWriteProperty): kotlin.Unit declared in kotlin.properties.ReadWriteProperty' type=kotlin.Unit origin=null
-              ARG <this>: GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:suppliedTypesStorage type:kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> visibility:private' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
-                receiver: GET_VAR '<this>: foo.bar.Context2.Key<Element of foo.bar.Context2.Key> declared in foo.bar.Context2.Key.<set-suppliedTypesStorage>' type=foo.bar.Context2.Key<Element of foo.bar.Context2.Key> origin=null
-              ARG thisRef: GET_VAR '<this>: foo.bar.Context2.Key<Element of foo.bar.Context2.Key> declared in foo.bar.Context2.Key.<set-suppliedTypesStorage>' type=foo.bar.Context2.Key<Element of foo.bar.Context2.Key> origin=null
-              ARG property: PROPERTY_REFERENCE 'public final suppliedTypesStorage: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Context2.Key' field=null getter='public final fun <get-suppliedTypesStorage> (): kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Context2.Key' setter='public final fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in foo.bar.Context2.Key' type=kotlin.properties.ReadWriteProperty<kotlin.Any?, kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>> origin=null
-              ARG value: GET_VAR '<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Context2.Key.<set-suppliedTypesStorage>' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
+            WHEN type=kotlin.Unit origin=null
+              BRANCH
+                if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCL
+                  ARG <this>: CALL 'public final fun compareAndSet (expectedValue: T of kotlin.concurrent.atomics.AtomicReference, newValue: T of kotlin.concurrent.atomics.AtomicReference): kotlin.Boolean declared in kotlin.concurrent.atomics.AtomicReference' type=kotlin.Boolean origin=null
+                    ARG <this>: GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:suppliedTypesStorage type:kotlin.concurrent.atomics.AtomicReference<kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>?> visibility:private' type=kotlin.concurrent.atomics.AtomicReference<kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>?> origin=null
+                      receiver: GET_VAR '<this>: foo.bar.Context2.Key<Element of foo.bar.Context2.Key> declared in foo.bar.Context2.Key.<set-suppliedTypesStorage>' type=foo.bar.Context2.Key<Element of foo.bar.Context2.Key> origin=null
+                    ARG expectedValue: CONST Null type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>? value=null
+                    ARG newValue: GET_VAR '<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> declared in foo.bar.Context2.Key.<set-suppliedTypesStorage>' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
+                then: THROW type=kotlin.Nothing
+                  CONSTRUCTOR_CALL 'public constructor <init> (message: kotlin.String?, reason: kotlin.Throwable?) declared in dev.lounres.kone.suppliedTypes.SuppliedTypesStorageInitializationException' type=dev.lounres.kone.suppliedTypes.SuppliedTypesStorageInitializationException origin=null
+                    ARG message: CALL 'public final fun <get-suppliedTypesStorageDelegateInitializationExceptionForSetter> (): kotlin.String declared in dev.lounres.kone.suppliedTypes' type=kotlin.String origin=null
+                    ARG reason: CONST Null type=kotlin.Throwable? value=null
       CONSTRUCTOR GENERATED[dev.lounres.kone.plugin.contextsKeys.fir.ContextKeyGenerationExtension.Key] visibility:public returnType:foo.bar.Context2.Key<Element of foo.bar.Context2.Key>
         VALUE_PARAMETER kind:Regular name:$suppliedTypeParameterFor_Element index:0 type:dev.lounres.kone.suppliedTypes.SuppliedType
           annotations:
             SupplianceProvided
           EXPRESSION_BODY
-            CALL 'public final fun suppliedTypeOf <T> (): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+            CALL 'public final fun of <T> (<this>: dev.lounres.kone.suppliedTypes.SuppliedType.Companion): dev.lounres.kone.suppliedTypes.SuppliedType declared in dev.lounres.kone.suppliedTypes' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
               TYPE_ARG T: Element of foo.bar.Context2.Key
+              ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.suppliedTypes.SuppliedType.Companion
         annotations:
           SupplianceProvided
         BLOCK_BODY
           DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in foo.bar.Context2.Key'
             TYPE_ARG Element: Element of foo.bar.Context2.Key
-          VAR IR_TEMPORARY_VARIABLE name:tmp_4 type:dev.lounres.kone.suppliedTypes.SuppliedType [val]
+          VAR IR_TEMPORARY_VARIABLE name:tmp_6 type:dev.lounres.kone.suppliedTypes.SuppliedType [val]
             GET_VAR '$suppliedTypeParameterFor_Element: dev.lounres.kone.suppliedTypes.SuppliedType declared in foo.bar.Context2.Key.<init>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
-          VAR IR_TEMPORARY_VARIABLE name:tmp_5 type:dev.lounres.kone.suppliedTypes.SuppliedType.Regular [val]
+          VAR IR_TEMPORARY_VARIABLE name:tmp_7 type:dev.lounres.kone.suppliedTypes.SuppliedType.Regular [val]
             CONSTRUCTOR_CALL 'public constructor <init> (fullyQualifiedName: kotlin.String, typeArguments: kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedProjection>, isNullable: kotlin.Boolean) declared in dev.lounres.kone.suppliedTypes.SuppliedType.Regular' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
               ARG fullyQualifiedName: CONST String type=kotlin.String value="foo.bar.Context2"
               ARG typeArguments: CALL 'public final fun listOf <T> (vararg elements: T of kotlin.collections.listOf): kotlin.collections.List<T of kotlin.collections.listOf> declared in kotlin.collections' type=kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedProjection> origin=null
@@ -314,7 +356,7 @@ FILE fqName:foo.bar fileName:/keyUsage2.kt
                 ARG elements: VARARG type=kotlin.Array<dev.lounres.kone.suppliedTypes.SuppliedProjection> varargElementType=dev.lounres.kone.suppliedTypes.SuppliedProjection
                   CONSTRUCTOR_CALL 'public constructor <init> (variance: kotlin.reflect.KVariance, type: dev.lounres.kone.suppliedTypes.SuppliedType) declared in dev.lounres.kone.suppliedTypes.SuppliedProjection.Regular' type=dev.lounres.kone.suppliedTypes.SuppliedProjection.Regular origin=null
                     ARG variance: GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:IN' type=kotlin.reflect.KVariance
-                    ARG type: GET_VAR 'val tmp_4: dev.lounres.kone.suppliedTypes.SuppliedType declared in foo.bar.Context2.Key.<init>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+                    ARG type: GET_VAR 'val tmp_6: dev.lounres.kone.suppliedTypes.SuppliedType declared in foo.bar.Context2.Key.<init>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
               ARG isNullable: CONST Boolean type=kotlin.Boolean value=false
           CALL 'public abstract fun <set-suppliedTypesStorage> (<set-?>: kotlin.collections.Map<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>>): kotlin.Unit declared in dev.lounres.kone.suppliedTypes.SuppliableClass' type=kotlin.Unit origin=null
             ARG <this>: GET_VAR '<this>: foo.bar.Context2.Key<Element of foo.bar.Context2.Key> declared in foo.bar.Context2.Key' type=foo.bar.Context2.Key<Element of foo.bar.Context2.Key> origin=null
@@ -329,7 +371,7 @@ FILE fqName:foo.bar fileName:/keyUsage2.kt
                   ARG second: CALL 'public final fun listOf <T> (vararg elements: T of kotlin.collections.listOf): kotlin.collections.List<T of kotlin.collections.listOf> declared in kotlin.collections' type=kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType> origin=null
                     TYPE_ARG T: dev.lounres.kone.suppliedTypes.SuppliedType
                     ARG elements: VARARG type=kotlin.Array<dev.lounres.kone.suppliedTypes.SuppliedType> varargElementType=dev.lounres.kone.suppliedTypes.SuppliedType
-                      GET_VAR 'val tmp_4: dev.lounres.kone.suppliedTypes.SuppliedType declared in foo.bar.Context2.Key.<init>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
+                      GET_VAR 'val tmp_6: dev.lounres.kone.suppliedTypes.SuppliedType declared in foo.bar.Context2.Key.<init>' type=dev.lounres.kone.suppliedTypes.SuppliedType origin=null
                 CONSTRUCTOR_CALL 'public constructor <init> (first: A of kotlin.Pair, second: B of kotlin.Pair) declared in kotlin.Pair' type=kotlin.Pair<kotlin.String, kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>> origin=null
                   TYPE_ARG (of class) A: kotlin.String
                   TYPE_ARG (of class) B: kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType>
@@ -337,7 +379,7 @@ FILE fqName:foo.bar fileName:/keyUsage2.kt
                   ARG second: CALL 'public final fun listOf <T> (vararg elements: T of kotlin.collections.listOf): kotlin.collections.List<T of kotlin.collections.listOf> declared in kotlin.collections' type=kotlin.collections.List<dev.lounres.kone.suppliedTypes.SuppliedType> origin=null
                     TYPE_ARG T: dev.lounres.kone.suppliedTypes.SuppliedType
                     ARG elements: VARARG type=kotlin.Array<dev.lounres.kone.suppliedTypes.SuppliedType> varargElementType=dev.lounres.kone.suppliedTypes.SuppliedType
-                      GET_VAR 'val tmp_5: dev.lounres.kone.suppliedTypes.SuppliedType.Regular declared in foo.bar.Context2.Key.<init>' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
+                      GET_VAR 'val tmp_7: dev.lounres.kone.suppliedTypes.SuppliedType.Regular declared in foo.bar.Context2.Key.<init>' type=dev.lounres.kone.suppliedTypes.SuppliedType.Regular origin=null
           CALL 'public open fun afterSuppliance (): kotlin.Unit declared in dev.lounres.kone.suppliedTypes.SuppliableClass' type=kotlin.Unit origin=null
             ARG <this>: GET_VAR '<this>: foo.bar.Context2.Key<Element of foo.bar.Context2.Key> declared in foo.bar.Context2.Key' type=foo.bar.Context2.Key<Element of foo.bar.Context2.Key> origin=null
       CONSTRUCTOR GENERATED[dev.lounres.kone.plugin.contextsKeys.fir.ContextKeyGenerationExtension.Key] visibility:public returnType:foo.bar.Context2.Key<Element of foo.bar.Context2.Key> [primary]

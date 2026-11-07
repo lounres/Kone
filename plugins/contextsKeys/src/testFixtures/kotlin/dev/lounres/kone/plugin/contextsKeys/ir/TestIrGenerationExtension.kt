@@ -19,13 +19,13 @@ import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
 import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 import org.jetbrains.kotlin.ir.expressions.IrCall
 import org.jetbrains.kotlin.ir.expressions.IrExpression
+import org.jetbrains.kotlin.ir.expressions.impl.IrConstImpl
 import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
 import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.util.addChild
 import org.jetbrains.kotlin.ir.util.callableId
 import org.jetbrains.kotlin.ir.util.copyFunctionSignatureFrom
 import org.jetbrains.kotlin.ir.util.substitute
-import org.jetbrains.kotlin.ir.util.toIrConst
 import org.jetbrains.kotlin.ir.visitors.IrElementTransformerVoid
 import org.jetbrains.kotlin.name.Name
 
@@ -88,7 +88,15 @@ class TestIrGenerationExtension : IrGenerationExtension {
                         substituteCallee.size == 1 -> {
                             expression.symbol = substituteCallee.single()
                             // The following will be a plugin bug, not a compiler one. Just Ignore it.
-                            expression.arguments.add(57.toIrConst(pluginContext.irBuiltIns.intType))
+                            
+                            expression.arguments.add(
+                                IrConstImpl.int(
+                                    startOffset = 0,
+                                    endOffset = 0,
+                                    type = pluginContext.irBuiltIns.intType,
+                                    value = 57
+                                )
+                            )
                         }
                         else -> {
                             error("Received several suppliances of function.\n  CallableId: ${callee.callableId}\n  Substitutee: ${callee.symbol}\n  Substitute candidates:${substituteCallee.joinToString(separator = "") { "\n    $it" }}")
