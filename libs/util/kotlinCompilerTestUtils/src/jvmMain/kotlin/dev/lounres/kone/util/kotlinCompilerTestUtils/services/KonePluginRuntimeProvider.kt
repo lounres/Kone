@@ -3,7 +3,7 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.plugin.suppliedTypes.services
+package dev.lounres.kone.util.kotlinCompilerTestUtils.services
 
 import org.jetbrains.kotlin.cli.jvm.config.addJvmClasspathRoots
 import org.jetbrains.kotlin.config.CompilerConfiguration
@@ -18,15 +18,15 @@ import org.jetbrains.kotlin.test.services.targetPlatform
 import java.io.File
 
 
-private val jvmPluginRuntimeClasspath = classpathFiles("runtime.jvm.classpath")
-private val jsPluginRuntimeClasspath = classpathFiles("runtime.js.classpath")
-
 private fun classpathFiles(property: String): List<File> {
     val property = System.getProperty(property) ?: error("Unable to get a valid classpath from '$property' property")
     return property.split(File.pathSeparator).map(::File)
 }
 
-class PluginRuntimeProvider(testServices: TestServices) : EnvironmentConfigurator(testServices) {
+private val jvmPluginRuntimeClasspath = classpathFiles("runtime.jvm.classpath")
+private val jsPluginRuntimeClasspath = classpathFiles("runtime.js.classpath")
+
+public class KonePluginRuntimeProvider(testServices: TestServices) : EnvironmentConfigurator(testServices) {
     override fun configureCompilerConfiguration(configuration: CompilerConfiguration, module: TestModule) {
         val targetPlatform = module.targetPlatform(testServices)
         when {
@@ -43,7 +43,7 @@ class PluginRuntimeProvider(testServices: TestServices) : EnvironmentConfigurato
     }
 }
 
-class PluginRuntimeClasspathProvider(testServices: TestServices) : RuntimeClasspathProvider(testServices) {
+public class KonePluginRuntimeClasspathProvider(testServices: TestServices) : RuntimeClasspathProvider(testServices) {
     override fun runtimeClassPaths(module: TestModule): List<File> {
         val targetPlatform = module.targetPlatform(testServices)
         return when {

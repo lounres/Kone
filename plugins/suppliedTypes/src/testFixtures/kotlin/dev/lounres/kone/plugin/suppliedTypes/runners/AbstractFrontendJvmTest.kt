@@ -8,19 +8,9 @@ package dev.lounres.kone.plugin.suppliedTypes.runners
 import dev.lounres.kone.plugin.suppliedTypes.services.FirCompleteExtensionRegistrarConfigurator
 import dev.lounres.kone.plugin.suppliedTypes.services.FirDeclarationsConfigurator
 import dev.lounres.kone.plugin.suppliedTypes.services.FirDiagnosticConfigurator
-import org.jetbrains.kotlin.test.Constructor
-import org.jetbrains.kotlin.test.builders.TestConfigurationBuilder
-import org.jetbrains.kotlin.test.services.EnvironmentConfigurator
-import org.jetbrains.kotlin.test.services.TestPhase
+import dev.lounres.kone.util.kotlinCompilerTestUtils.runners.KoneFrontendJvmTestRunner
 
 
-open class AbstractFrontendJvmTest(private val pluginConfigurator: Constructor<EnvironmentConfigurator>) : KoneSuppliedTypesJvmTestRunner() {
-    final override val runPipelineTillPhase: TestPhase = TestPhase.FRONTEND
-    final override fun configure(builder: TestConfigurationBuilder) {
-        builder.useConfigurators(pluginConfigurator)
-    }
-}
-
-open class AbstractFrontendJvmTestDeclarations : AbstractFrontendJvmTest(::FirDeclarationsConfigurator)
-open class AbstractFrontendJvmTestDiagnostic : AbstractFrontendJvmTest(::FirDiagnosticConfigurator)
-open class AbstractFrontendJvmTestComplete : AbstractFrontendJvmTest(::FirCompleteExtensionRegistrarConfigurator)
+open class AbstractFrontendJvmTestDeclarations : KoneFrontendJvmTestRunner(::FirDeclarationsConfigurator)
+open class AbstractFrontendJvmTestDiagnostic : KoneFrontendJvmTestRunner(::FirDiagnosticConfigurator)
+open class AbstractFrontendJvmTestComplete : KoneFrontendJvmTestRunner(::FirCompleteExtensionRegistrarConfigurator)

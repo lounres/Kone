@@ -5,70 +5,57 @@
 
 package dev.lounres.kone.plugin.benchmarks
 
-import dev.lounres.kone.plugin.benchmarks.runners.AbstractBackendTestComplete
-import dev.lounres.kone.plugin.benchmarks.runners.AbstractBackendTestForPhase0
-import dev.lounres.kone.plugin.benchmarks.runners.AbstractBackendTestForPhase1
-import dev.lounres.kone.plugin.benchmarks.runners.AbstractBackendTestForPhase2
-import dev.lounres.kone.plugin.benchmarks.runners.AbstractBackendTestForPhase3
-import dev.lounres.kone.plugin.benchmarks.runners.AbstractBackendTestForPhase4
-import dev.lounres.kone.plugin.benchmarks.runners.AbstractBackendTestForPhase5
-import dev.lounres.kone.plugin.benchmarks.runners.AbstractBackendTestForPhase6
-import dev.lounres.kone.plugin.benchmarks.runners.AbstractBackendTestForPhase7
-import dev.lounres.kone.plugin.benchmarks.runners.AbstractBoxTest
-import dev.lounres.kone.plugin.benchmarks.runners.AbstractTestWithoutPlugin
-import dev.lounres.kone.plugin.benchmarks.runners.AbstractFrontendTestDeclarations
-import dev.lounres.kone.plugin.benchmarks.runners.AbstractFrontendTestDiagnostic
-import dev.lounres.kone.plugin.benchmarks.runners.AbstractFrontendTestComplete
-import generatedTestsPath
+import dev.lounres.kone.plugin.benchmarks.runners.*
 import org.jetbrains.kotlin.generators.dsl.junit5.generateTestGroupSuiteWithJUnit5
-import testDataPath
+
 
 fun main() {
     generateTestGroupSuiteWithJUnit5 {
-        testGroup(testDataRoot = testDataPath, testsRoot = generatedTestsPath) {
-            testClass<AbstractFrontendTestDeclarations> {
-                model("fir/declarations")
+        testGroup(testDataRoot = System.getProperty("test.data.dir"), testsRoot = System.getProperty("test.generated.dir")) {
+            // JVM
+            testClass<AbstractFrontendJvmTestDeclarations> {
+                model("jvm/fir/declarations")
             }
-            testClass<AbstractFrontendTestDiagnostic> {
-                model("fir/diagnostics")
+            testClass<AbstractFrontendJvmTestDiagnostic> {
+                model("jvm/fir/diagnostics")
             }
-            testClass<AbstractFrontendTestComplete> {
-                model("fir/complete")
+            testClass<AbstractFrontendJvmTestComplete> {
+                model("jvm/fir/complete")
             }
             
-            testClass<AbstractBackendTestForPhase0> {
-                model("ir/phase0")
+            testClass<AbstractBackendJvmTestForPhase0> {
+                model("jvm/ir/phase0")
             }
-            testClass<AbstractBackendTestForPhase1> {
-                model("ir/phase1")
+            testClass<AbstractBackendJvmTestForPhase1> {
+                model("jvm/ir/phase1")
             }
 //            testClass<AbstractBackendTestForPhase2> {
-//                model("ir/phase2")
+//                model("jvm/ir/phase2")
 //            }
 //            testClass<AbstractBackendTestForPhase3> {
-//                model("ir/phase3")
+//                model("jvm/ir/phase3")
 //            }
 //            testClass<AbstractBackendTestForPhase4> {
-//                model("ir/phase4")
+//                model("jvm/ir/phase4")
 //            }
 //            testClass<AbstractBackendTestForPhase5> {
-//                model("ir/phase5")
+//                model("jvm/ir/phase5")
 //            }
 //            testClass<AbstractBackendTestForPhase6> {
-//                model("ir/phase6")
+//                model("jvm/ir/phase6")
 //            }
 //            testClass<AbstractBackendTestForPhase7> {
-//                model("ir/phase7")
+//                model("jvm/ir/phase7")
 //            }
-            testClass<AbstractBackendTestComplete> {
-                model("ir/complete")
+            testClass<AbstractBackendJvmTestComplete> {
+                model("jvm/ir/complete")
             }
-            testClass<AbstractBoxTest> {
-                model("ir/box")
+            testClass<AbstractBoxJvmTest> {
+                model("jvm/ir/box")
             }
             
-            testClass<AbstractTestWithoutPlugin> {
-                model("ir/test")
+            testClass<AbstractJvmTestWithoutPlugin> {
+                model("jvm/ir/test")
             }
         }
     }
