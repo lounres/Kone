@@ -83,7 +83,6 @@ stal {
         "plugins" {
             subdirs("kotlin compiler plugin", includeIf = { it.name !in listOf("fiktion") }) {
                 "runtime"("kotlin compiler plugin runtime")
-                "testGeneration"("kotlin compiler plugin test generator")
                 "gradleWrapper"("kotlin compiler plugin gradle wrapper")
             }
         }
@@ -104,7 +103,7 @@ stal {
         "gradle plugin" since { hasAnyOf("kotlin compiler plugin gradle wrapper") }
         // Kotlin setup
         "kotlin multiplatform" since { hasAnyOf("libs", "libs main extra", "bom", "kotlin compiler plugin runtime") }
-        "kotlin jvm" since { hasAnyOf("gradle plugin") || hasAnyOf("kotlin compiler plugin", "kotlin compiler plugin test generator") }
+        "kotlin jvm" since { hasAnyOf("gradle plugin", "kotlin compiler plugin") }
         "kotlin android" since { has("kotlin multiplatform") && hasAnyOf("libs", "kotlin compiler plugin runtime", "bom") }
         "kotlin common settings" since { hasAnyOf("kotlin multiplatform", "kotlin jvm") }
         "kotlin library settings" since { hasAnyOf("libs", "kotlin compiler plugin runtime", "algorithms", "assertions", "bom") }
