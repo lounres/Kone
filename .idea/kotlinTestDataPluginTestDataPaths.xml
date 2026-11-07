@@ -3,7 +3,11 @@
     <component name="TestDataPluginSettings">
         <option name="testDataFiles">
             <array>
-                <option value="$PROJECT_DIR$/plugins/**/testData"/>
+                <option value="$PROJECT_DIR$/plugins/benchmarks/testData"/>
+                <option value="$PROJECT_DIR$/plugins/benchmarksKotlinxBenchmarkSupport/testData"/>
+                <option value="$PROJECT_DIR$/plugins/contexts/testData"/>
+                <option value="$PROJECT_DIR$/plugins/contextsKeys/testData"/>
+                <option value="$PROJECT_DIR$/plugins/suppliedTypes/testData"/>
             </array>
         </option>
     </component>
