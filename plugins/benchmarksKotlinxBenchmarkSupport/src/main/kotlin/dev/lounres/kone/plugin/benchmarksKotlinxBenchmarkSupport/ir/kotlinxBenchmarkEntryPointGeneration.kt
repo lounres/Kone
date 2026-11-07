@@ -9,8 +9,7 @@ import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.KotlinxBenchmar
 import dev.lounres.kone.scope
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
-import org.jetbrains.kotlin.descriptors.impl.PackageFragmentDescriptorImpl
-import org.jetbrains.kotlin.ir.AbstractIrFileEntry
+import org.jetbrains.kotlin.descriptors.impl.MutablePackageFragmentDescriptor
 import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
 import org.jetbrains.kotlin.ir.builders.*
 import org.jetbrains.kotlin.ir.builders.declarations.addValueParameter
@@ -23,16 +22,11 @@ import org.jetbrains.kotlin.ir.expressions.impl.IrGetEnumValueImpl
 import org.jetbrains.kotlin.ir.types.createType
 import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.types.impl.makeTypeProjection
-import org.jetbrains.kotlin.ir.util.addChild
-import org.jetbrains.kotlin.ir.util.defaultType
-import org.jetbrains.kotlin.ir.util.getKFunctionType
-import org.jetbrains.kotlin.ir.util.invokeFun
+import org.jetbrains.kotlin.ir.util.*
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.name.SpecialNames
-import org.jetbrains.kotlin.resolve.scopes.MemberScope
 import org.jetbrains.kotlin.types.Variance.OUT_VARIANCE
-import kotlin.collections.iterator
 
 
 fun IrBlockBuilder.suiteDescriptorVariable(
@@ -54,6 +48,7 @@ fun IrBlockBuilder.suiteDescriptorVariable(
                 returnType = benchmarkClass.theClass.defaultType
                 name = SpecialNames.ANONYMOUS
             }.apply {
+                parent = scope.getLocalDeclarationParent()
                 body = DeclarationIrBuilder(pluginContext, symbol).run {
                     irBlockBody(UNDEFINED_OFFSET, UNDEFINED_OFFSET) {
                         +irReturn(
@@ -77,6 +72,7 @@ fun IrBlockBuilder.suiteDescriptorVariable(
                 returnType = benchmarkClass.theClass.defaultType
                 name = SpecialNames.ANONYMOUS
             }.apply {
+                parent = scope.getLocalDeclarationParent()
                 val benchmarkValueParameter = addValueParameter {
                     type = benchmarkClass.theClass.defaultType
                     name = Name.identifier("benchmark")
@@ -171,6 +167,7 @@ fun IrBlockBuilder.suiteDescriptorVariable(
                 returnType = pluginContext.irBuiltIns.unitType
                 name = SpecialNames.ANONYMOUS
             }.apply {
+                parent = scope.getLocalDeclarationParent()
                 val benchmarkValueParameter = addValueParameter {
                     type = benchmarkClass.theClass.defaultType
                     name = Name.identifier("benchmark")
@@ -202,6 +199,7 @@ fun IrBlockBuilder.suiteDescriptorVariable(
                 returnType = pluginContext.irBuiltIns.unitType
                 name = SpecialNames.ANONYMOUS
             }.apply {
+                parent = scope.getLocalDeclarationParent()
                 val benchmarkValueParameter = addValueParameter {
                     type = benchmarkClass.theClass.defaultType
                     name = Name.identifier("benchmark")
@@ -543,6 +541,7 @@ fun IrBlockBodyBuilder.jsDeclareAndExecuteSuitesArgument(
         returnType = pluginContext.irBuiltIns.unitType
         name = SpecialNames.ANONYMOUS
     }.apply {
+        parent = scope.getLocalDeclarationParent()
         val executorValueParameter = addValueParameter {
             type = irRuntimeReferences.kotlinxSuiteExecutorBaseClassIrClassSymbol.defaultType
             name = Name.identifier("executor")
@@ -599,6 +598,7 @@ fun IrBlockBodyBuilder.wasmJsDeclareAndExecuteSuitesArgument(
         returnType = pluginContext.irBuiltIns.unitType
         name = SpecialNames.ANONYMOUS
     }.apply {
+        parent = scope.getLocalDeclarationParent()
         val executorValueParameter = addValueParameter {
             type = irRuntimeReferences.kotlinxSuiteExecutorBaseClassIrClassSymbol.defaultType
             name = Name.identifier("executor")
@@ -655,6 +655,7 @@ fun IrBlockBodyBuilder.wasmWasiDeclareAndExecuteSuitesArgument(
         returnType = pluginContext.irBuiltIns.unitType
         name = SpecialNames.ANONYMOUS
     }.apply {
+        parent = scope.getLocalDeclarationParent()
         val executorValueParameter = addValueParameter {
             type = irRuntimeReferences.kotlinxSuiteExecutorBaseClassIrClassSymbol.defaultType
             name = Name.identifier("executor")
@@ -711,6 +712,7 @@ fun IrBlockBodyBuilder.nativeDeclareAndExecuteSuitesArgument(
         returnType = pluginContext.irBuiltIns.unitType
         name = SpecialNames.ANONYMOUS
     }.apply {
+        parent = scope.getLocalDeclarationParent()
         val executorValueParameter = addValueParameter {
             type = irRuntimeReferences.kotlinxSuiteExecutorBaseClassIrClassSymbol.defaultType
             name = Name.identifier("executor")
@@ -989,20 +991,14 @@ fun jsMainFile(
     kotlinxBenchmarkJsExecutor: KotlinxBenchmarkJsExecutor,
     benchmarkClasses: List<KotlinxBenchmarkClass>,
 ): IrFile = IrFileImpl(
-    fileEntry = object : AbstractIrFileEntry() {
-        override val name: String get() = "run.kt"
-        override val maxOffset: Int get() = -1
-        override val lineStartOffsets: IntArray get() = intArrayOf()
-        override val firstRelevantLineIndex: Int get() = -1
-        
-    },
-    packageFragmentDescriptor = object : PackageFragmentDescriptorImpl(
-        module = moduleFragment.descriptor,
-        fqName = FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated")
-    ) {
-        override fun getMemberScope(): MemberScope = Empty
-    },
-    module = moduleFragment
+    fileEntry = NaiveSourceBasedFileEntryImpl(
+        name = "run.kt",
+    ),
+    packageFragmentDescriptor = MutablePackageFragmentDescriptor(
+        moduleFragment.descriptor,
+        FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated")
+    ),
+    module = moduleFragment,
 ).apply {
     addChild(
         jsMain(
@@ -1020,20 +1016,14 @@ fun wasmJsMainFile(
     moduleFragment: IrModuleFragment,
     benchmarkClasses: List<KotlinxBenchmarkClass>,
 ): IrFile = IrFileImpl(
-    fileEntry = object : AbstractIrFileEntry() {
-        override val name: String get() = "run.kt"
-        override val maxOffset: Int get() = -1
-        override val lineStartOffsets: IntArray get() = intArrayOf()
-        override val firstRelevantLineIndex: Int get() = -1
-        
-    },
-    packageFragmentDescriptor = object : PackageFragmentDescriptorImpl(
-        module = moduleFragment.descriptor,
-        fqName = FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated")
-    ) {
-        override fun getMemberScope(): MemberScope = Empty
-    },
-    module = moduleFragment
+    fileEntry = NaiveSourceBasedFileEntryImpl(
+        name = "run.kt",
+    ),
+    packageFragmentDescriptor = MutablePackageFragmentDescriptor(
+        moduleFragment.descriptor,
+        FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated")
+    ),
+    module = moduleFragment,
 ).apply {
     addChild(
         wasmJsMain(
@@ -1050,20 +1040,14 @@ fun wasmWasiMainFile(
     moduleFragment: IrModuleFragment,
     benchmarkClasses: List<KotlinxBenchmarkClass>,
 ): IrFile = IrFileImpl(
-    fileEntry = object : AbstractIrFileEntry() {
-        override val name: String get() = "run.kt"
-        override val maxOffset: Int get() = -1
-        override val lineStartOffsets: IntArray get() = intArrayOf()
-        override val firstRelevantLineIndex: Int get() = -1
-        
-    },
-    packageFragmentDescriptor = object : PackageFragmentDescriptorImpl(
-        module = moduleFragment.descriptor,
-        fqName = FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated")
-    ) {
-        override fun getMemberScope(): MemberScope = Empty
-    },
-    module = moduleFragment
+    fileEntry = NaiveSourceBasedFileEntryImpl(
+        name = "run.kt",
+    ),
+    packageFragmentDescriptor = MutablePackageFragmentDescriptor(
+        moduleFragment.descriptor,
+        FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated")
+    ),
+    module = moduleFragment,
 ).apply {
     addChild(
         wasmWasiMain(
@@ -1081,20 +1065,14 @@ fun nativeMainFile(
     nativeTargetPresetName: String,
     benchmarkClasses: List<KotlinxBenchmarkClass>,
 ): IrFile = IrFileImpl(
-    fileEntry = object : AbstractIrFileEntry() {
-        override val name: String get() = "run.kt"
-        override val maxOffset: Int get() = -1
-        override val lineStartOffsets: IntArray get() = intArrayOf()
-        override val firstRelevantLineIndex: Int get() = -1
-        
-    },
-    packageFragmentDescriptor = object : PackageFragmentDescriptorImpl(
-        module = moduleFragment.descriptor,
-        fqName = FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated")
-    ) {
-        override fun getMemberScope(): MemberScope = Empty
-    },
-    module = moduleFragment
+    fileEntry = NaiveSourceBasedFileEntryImpl(
+        name = "run.kt",
+    ),
+    packageFragmentDescriptor = MutablePackageFragmentDescriptor(
+        moduleFragment.descriptor,
+        FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated")
+    ),
+    module = moduleFragment,
 ).apply {
     addChild(
         nativeMain(
