@@ -1,0 +1,10 @@
+FILE fqName:foo.bar fileName:/function1.kt
+  FUN name:baz visibility:public modality:FINAL returnType:Gee of foo.bar.baz?
+    TYPE_PARAMETER name:Gee index:0 variance: superTypes:[kotlin.Any?] reified:false
+      annotations:
+        Supply
+    annotations:
+      Suppliable
+    BLOCK_BODY
+      RETURN type=kotlin.Nothing from='public final fun baz <Gee> (): Gee of foo.bar.baz? declared in foo.bar'
+        CONST Null type=kotlin.Nothing? value=null

@@ -1,0 +1,18 @@
+FILE fqName:foo.bar fileName:/function4.kt
+  FUN name:baz visibility:public modality:FINAL returnType:Gee of foo.bar.baz?
+    TYPE_PARAMETER name:Gee index:0 variance: superTypes:[Doo of foo.bar.baz] reified:false
+    TYPE_PARAMETER name:Doo index:1 variance: superTypes:[kotlin.collections.List<Gee of foo.bar.baz>] reified:false
+      annotations:
+        Supply
+    VALUE_PARAMETER kind:ExtensionReceiver name:<this> index:0 type:kotlin.Int
+    VALUE_PARAMETER kind:Regular name:arg index:1 type:kotlin.String
+      EXPRESSION_BODY
+        CONST String type=kotlin.String value="57"
+    VALUE_PARAMETER kind:Regular name:arg2 index:2 type:kotlin.Long
+      EXPRESSION_BODY
+        CONST Long type=kotlin.Long value=179
+    annotations:
+      Suppliable
+    BLOCK_BODY
+      RETURN type=kotlin.Nothing from='public final fun baz <Gee, Doo> (<this>: kotlin.Int, arg: kotlin.String, arg2: kotlin.Long): Gee of foo.bar.baz? declared in foo.bar'
+        CONST Null type=kotlin.Nothing? value=null

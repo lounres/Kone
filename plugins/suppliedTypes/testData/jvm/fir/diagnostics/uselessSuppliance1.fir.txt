@@ -1,0 +1,5 @@
+FILE: uselessSuppliance1.kt
+    public abstract interface A<@R|dev/lounres/kone/suppliedTypes/Supply|() T> : R|kotlin/Any| {
+    }
+    public abstract interface B<@R|dev/lounres/kone/suppliedTypes/Supply|() S> : R|A<kotlin/collections/List<S>>| {
+    }

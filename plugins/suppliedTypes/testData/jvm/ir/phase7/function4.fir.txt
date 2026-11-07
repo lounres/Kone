@@ -1,0 +1,6 @@
+FILE: function4.kt
+    package foo.bar
+
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public final fun <Gee : R|Doo|, @R|dev/lounres/kone/suppliedTypes/Supply|() Doo : R|kotlin/collections/List<Gee>|> R|kotlin/Int|.baz(arg: R|kotlin/String| = String(57), arg2: R|kotlin/Long| = Long(179)): R|Gee?| {
+        ^baz Null(null)
+    }
