@@ -79,6 +79,8 @@ fabric.properties
 !.idea/copyright
 !.idea/vcs.xml
 !.idea/runConfigurations
+!.idea/externalDependencies.xml
+!.idea/kotlinTestDataPluginTestDataPaths.xml
 *.iml
 out
 gen
