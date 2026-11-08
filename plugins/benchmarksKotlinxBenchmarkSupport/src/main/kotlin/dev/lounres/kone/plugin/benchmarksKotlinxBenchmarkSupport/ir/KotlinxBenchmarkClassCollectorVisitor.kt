@@ -15,6 +15,7 @@ import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.kotlinxTearDown
 import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.kotlinxWarmupAnnotationClassId
 import dev.lounres.kone.scope
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
+import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrProperty
 import org.jetbrains.kotlin.ir.expressions.IrConst
@@ -29,6 +30,7 @@ import org.jetbrains.kotlin.ir.util.hasAnnotation
 import org.jetbrains.kotlin.ir.util.isLocal
 import org.jetbrains.kotlin.ir.util.properties
 import org.jetbrains.kotlin.ir.visitors.IrVisitorVoid
+import org.jetbrains.kotlin.ir.visitors.acceptChildrenVoid
 
 
 class KotlinxBenchmarkClassCollectorVisitor(
@@ -36,6 +38,8 @@ class KotlinxBenchmarkClassCollectorVisitor(
     private val irRuntimeReferences: IrRuntimeReferences,
     private val benchmarkClasses: MutableList<KotlinxBenchmarkClass>,
 ) : IrVisitorVoid() {
+    override fun visitElement(element: IrElement) { element.acceptChildrenVoid(this) }
+    
     override fun visitClass(declaration: IrClass) {
         if (
             !declaration.isInner
@@ -120,7 +124,7 @@ class KotlinxBenchmarkClassCollectorVisitor(
                     val annotation = property.annotations.firstOrNull { it.classId == kotlinxParamAnnotationClassId } ?: return@associateWith null
                     KotlinxBenchmarkParamDescription(
                         setter = setter,
-                        defaultValues = (annotation.arguments[1] as? IrVararg)?.elements?.mapNotNull { (it as? IrConst)?.value as? String } ?: return@associateWith null,
+                        defaultValues = (annotation.arguments[0] as? IrVararg)?.elements?.mapNotNull { (it as? IrConst)?.value as? String } ?: return@associateWith null,
                         kind = when (setter.parameters[1].type) {
                             pluginContext.irBuiltIns.byteType -> KotlinxBenchmarkParamDescription.Kind.Byte
                             pluginContext.irBuiltIns.shortType -> KotlinxBenchmarkParamDescription.Kind.Short

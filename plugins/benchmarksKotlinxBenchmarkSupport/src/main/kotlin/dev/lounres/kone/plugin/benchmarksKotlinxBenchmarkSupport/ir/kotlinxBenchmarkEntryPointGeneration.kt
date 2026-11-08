@@ -12,6 +12,7 @@ import dev.lounres.kone.scope
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.descriptors.impl.MutablePackageFragmentDescriptor
+import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
 import org.jetbrains.kotlin.ir.builders.*
 import org.jetbrains.kotlin.ir.builders.declarations.addValueParameter
@@ -25,6 +26,9 @@ import org.jetbrains.kotlin.ir.types.createType
 import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.types.impl.makeTypeProjection
 import org.jetbrains.kotlin.ir.util.*
+import org.jetbrains.kotlin.ir.visitors.IrVisitorVoid
+import org.jetbrains.kotlin.ir.visitors.acceptChildrenVoid
+import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.name.SpecialNames
@@ -857,10 +861,7 @@ fun jsMain(
         type = pluginContext.irBuiltIns.arrayClass.createType(
             hasQuestionMark = false,
             arguments = listOf(
-                makeTypeProjection(
-                    type = pluginContext.irBuiltIns.stringType,
-                    variance = OUT_VARIANCE,
-                ),
+                pluginContext.irBuiltIns.stringType,
             ),
         )
     }
@@ -901,10 +902,7 @@ fun wasmJsMain(
         type = pluginContext.irBuiltIns.arrayClass.createType(
             hasQuestionMark = false,
             arguments = listOf(
-                makeTypeProjection(
-                    type = pluginContext.irBuiltIns.stringType,
-                    variance = OUT_VARIANCE,
-                ),
+                pluginContext.irBuiltIns.stringType,
             ),
         )
     }
@@ -937,10 +935,7 @@ fun wasmWasiMain(
         type = pluginContext.irBuiltIns.arrayClass.createType(
             hasQuestionMark = false,
             arguments = listOf(
-                makeTypeProjection(
-                    type = pluginContext.irBuiltIns.stringType,
-                    variance = OUT_VARIANCE,
-                ),
+                pluginContext.irBuiltIns.stringType,
             ),
         )
     }
@@ -974,10 +969,7 @@ fun nativeMain(
         type = pluginContext.irBuiltIns.arrayClass.createType(
             hasQuestionMark = false,
             arguments = listOf(
-                makeTypeProjection(
-                    type = pluginContext.irBuiltIns.stringType,
-                    variance = OUT_VARIANCE,
-                ),
+                pluginContext.irBuiltIns.stringType,
             ),
         )
     }
@@ -1098,46 +1090,161 @@ fun nativeMainFile(
     )
 }
 
-//class JsMainFunctionBodyGenerationVisitor(
-//    private val pluginContext: IrPluginContext,
-//    private val irRuntimeReferences: IrRuntimeReferences,
-//    private val kotlinxBenchmarkJsExecutor: KotlinxBenchmarkJsExecutor,
-//    private val benchmarkClasses: List<KotlinxBenchmarkClass>,
-//) : IrVisitorVoid() {
-//    companion object {
-//        val entryPointCallableId = CallableId(
-//            packageName = FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated"),
-//            className = null,
-//            callableName = Name.identifier("main"),
-//        )
-//    }
-//
-//    override fun visitSimpleFunction(declaration: IrSimpleFunction) {
-//        if (!declaration.isLocal && declaration.callableId == entryPointCallableId && declaration.parameters.size == 0) {
-//            declaration.body = DeclarationIrBuilder(
-//                generatorContext = pluginContext,
-//                symbol = declaration.symbol,
-//            ).irBlockBody {
-//                +irCall(irRuntimeReferences.printlnFunctionIrSimpleFunctionSymbol).apply {
-//                    arguments[0] = irString("Hello, IR-generated benchmarks!")
-//                }
-////                val argsValueParameter = declaration.parameters.single()
-//                when (kotlinxBenchmarkJsExecutor) {
-//                    BenchmarkJs -> +jsRunBenchmarksViaBenchmarkJs(
-//                        pluginContext = pluginContext,
-//                        irRuntimeReferences = irRuntimeReferences,
-////                        argsValueParameter = argsValueParameter,
-//                        benchmarkClasses = benchmarkClasses,
-//                    )
-//                    BuiltIn -> +jsRunBenchmarksViaBuiltIn(
-//                        pluginContext = pluginContext,
-//                        irRuntimeReferences = irRuntimeReferences,
-////                        argsValueParameter = argsValueParameter,
-//                        benchmarkClasses = benchmarkClasses,
-//                    )
-//                }
-//            }
-//        }
-//        super.visitSimpleFunction(declaration)
-//    }
-//}
+class JsMainFunctionBodyGenerationVisitor(
+    private val pluginContext: IrPluginContext,
+    private val irRuntimeReferences: IrRuntimeReferences,
+    private val kotlinxBenchmarkJsExecutor: KotlinxBenchmarkJsExecutor,
+    private val benchmarkClasses: List<KotlinxBenchmarkClass>,
+) : IrVisitorVoid() {
+    companion object {
+        val entryPointCallableId = CallableId(
+            packageName = FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated"),
+            className = null,
+            callableName = Name.identifier("main"),
+        )
+    }
+    
+    override fun visitElement(element: IrElement) { element.acceptChildrenVoid(this) }
+
+    override fun visitSimpleFunction(declaration: IrSimpleFunction) {
+        if (declaration.isTopLevel && declaration.callableId == entryPointCallableId && declaration.parameters.size == 1) {
+            declaration.body = DeclarationIrBuilder(
+                generatorContext = pluginContext,
+                symbol = declaration.symbol,
+            ).irBlockBody {
+                +irCall(irRuntimeReferences.printlnFunctionIrSimpleFunctionSymbol).apply {
+                    arguments[0] = irString("Hello, IR-generated benchmarks!")
+                }
+                val argsValueParameter = declaration.parameters.single()
+                when (kotlinxBenchmarkJsExecutor) {
+                    BenchmarkJs -> +jsRunBenchmarksViaBenchmarkJs(
+                        pluginContext = pluginContext,
+                        irRuntimeReferences = irRuntimeReferences,
+                        argsValueParameter = argsValueParameter,
+                        benchmarkClasses = benchmarkClasses,
+                    )
+                    BuiltIn -> +jsRunBenchmarksViaBuiltIn(
+                        pluginContext = pluginContext,
+                        irRuntimeReferences = irRuntimeReferences,
+                        argsValueParameter = argsValueParameter,
+                        benchmarkClasses = benchmarkClasses,
+                    )
+                }
+            }
+        }
+        super.visitSimpleFunction(declaration)
+    }
+}
+
+class WasmJsMainFunctionBodyGenerationVisitor(
+    private val pluginContext: IrPluginContext,
+    private val irRuntimeReferences: IrRuntimeReferences,
+    private val benchmarkClasses: List<KotlinxBenchmarkClass>,
+) : IrVisitorVoid() {
+    companion object {
+        val entryPointCallableId = CallableId(
+            packageName = FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated"),
+            className = null,
+            callableName = Name.identifier("main"),
+        )
+    }
+    
+    override fun visitElement(element: IrElement) { element.acceptChildrenVoid(this) }
+    
+    override fun visitSimpleFunction(declaration: IrSimpleFunction) {
+        if (declaration.isTopLevel && declaration.callableId == entryPointCallableId && declaration.parameters.size == 1) {
+            declaration.body = DeclarationIrBuilder(
+                generatorContext = pluginContext,
+                symbol = declaration.symbol,
+            ).irBlockBody {
+                +irCall(irRuntimeReferences.printlnFunctionIrSimpleFunctionSymbol).apply {
+                    arguments[0] = irString("Hello, IR-generated benchmarks!")
+                }
+                val argsValueParameter = declaration.parameters.single()
+                +wasmJsRunBenchmarks(
+                    pluginContext = pluginContext,
+                    irRuntimeReferences = irRuntimeReferences,
+                    argsValueParameter = argsValueParameter,
+                    benchmarkClasses = benchmarkClasses,
+                )
+            }
+        }
+        super.visitSimpleFunction(declaration)
+    }
+}
+
+class WasmWasiMainFunctionBodyGenerationVisitor(
+    private val pluginContext: IrPluginContext,
+    private val irRuntimeReferences: IrRuntimeReferences,
+    private val benchmarkClasses: List<KotlinxBenchmarkClass>,
+) : IrVisitorVoid() {
+    companion object {
+        val entryPointCallableId = CallableId(
+            packageName = FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated"),
+            className = null,
+            callableName = Name.identifier("main"),
+        )
+    }
+    
+    override fun visitElement(element: IrElement) { element.acceptChildrenVoid(this) }
+    
+    override fun visitSimpleFunction(declaration: IrSimpleFunction) {
+        if (declaration.isTopLevel && declaration.callableId == entryPointCallableId && declaration.parameters.size == 1) {
+            declaration.body = DeclarationIrBuilder(
+                generatorContext = pluginContext,
+                symbol = declaration.symbol,
+            ).irBlockBody {
+                +irCall(irRuntimeReferences.printlnFunctionIrSimpleFunctionSymbol).apply {
+                    arguments[0] = irString("Hello, IR-generated benchmarks!")
+                }
+                val argsValueParameter = declaration.parameters.single()
+                +wasmWasiRunBenchmarks(
+                    pluginContext = pluginContext,
+                    irRuntimeReferences = irRuntimeReferences,
+                    argsValueParameter = argsValueParameter,
+                    benchmarkClasses = benchmarkClasses,
+                )
+            }
+        }
+        super.visitSimpleFunction(declaration)
+    }
+}
+
+class NativeMainFunctionBodyGenerationVisitor(
+    private val pluginContext: IrPluginContext,
+    private val irRuntimeReferences: IrRuntimeReferences,
+    private val nativeTargetPresetName: String,
+    private val benchmarkClasses: List<KotlinxBenchmarkClass>,
+) : IrVisitorVoid() {
+    companion object {
+        val entryPointCallableId = CallableId(
+            packageName = FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated"),
+            className = null,
+            callableName = Name.identifier("main"),
+        )
+    }
+    
+    override fun visitElement(element: IrElement) { element.acceptChildrenVoid(this) }
+    
+    override fun visitSimpleFunction(declaration: IrSimpleFunction) {
+        if (!declaration.isLocal && declaration.callableId == entryPointCallableId && declaration.parameters.size == 1) {
+            declaration.body = DeclarationIrBuilder(
+                generatorContext = pluginContext,
+                symbol = declaration.symbol,
+            ).irBlockBody {
+                +irCall(irRuntimeReferences.printlnFunctionIrSimpleFunctionSymbol).apply {
+                    arguments[0] = irString("Hello, IR-generated benchmarks!")
+                }
+                val argsValueParameter = declaration.parameters.single()
+                +nativeRunBenchmarks(
+                    pluginContext = pluginContext,
+                    irRuntimeReferences = irRuntimeReferences,
+                    nativeTargetPresetName = nativeTargetPresetName,
+                    argsValueParameter = argsValueParameter,
+                    benchmarkClasses = benchmarkClasses,
+                )
+            }
+        }
+        super.visitSimpleFunction(declaration)
+    }
+}

@@ -12,6 +12,7 @@ import org.jetbrains.kotlin.name.Name
 
 
 const val kotlinxBenchmarkPackageFQNameString = "kotlinx.benchmark"
+const val kotlinxBenchmarkJsPackageFQNameString = "kotlinx.benchmark.js"
 // Library
 const val kotlinxStateAnnotationShortNameString = "State"
 const val kotlinxScopeEnumShortNameString = "Scope"
@@ -38,6 +39,7 @@ const val kotlinxJsBenchmarkDescriptorWithNoBlackholeParameterClassShortNameStri
 const val kotlinxJsBenchmarkDescriptorWithBlackholeParameterClassShortNameString = "JsBenchmarkDescriptorWithBlackholeParameter"
 
 val kotlinxBenchmarkPackageFQName = FqName(kotlinxBenchmarkPackageFQNameString)
+val kotlinxBenchmarkJsPackageFQName = FqName(kotlinxBenchmarkJsPackageFQNameString)
 // Library
 val kotlinxStateAnnotationShortName = FqName(kotlinxStateAnnotationShortNameString)
 val kotlinxScopeEnumShortName = FqName(kotlinxScopeEnumShortNameString)
@@ -150,12 +152,12 @@ val kotlinxBenchmarkDescriptorWithBlackholeParameterClassClassId = ClassId(
     isLocal = false,
 )
 val kotlinxJsBenchmarkDescriptorWithNoBlackholeParameterClassClassId = ClassId(
-    packageFqName = kotlinxBenchmarkPackageFQName,
+    packageFqName = kotlinxBenchmarkJsPackageFQName,
     relativeClassName = kotlinxJsBenchmarkDescriptorWithNoBlackholeParameterClassShortName,
     isLocal = false,
 )
 val kotlinxJsBenchmarkDescriptorWithBlackholeParameterClassClassId = ClassId(
-    packageFqName = kotlinxBenchmarkPackageFQName,
+    packageFqName = kotlinxBenchmarkJsPackageFQName,
     relativeClassName = kotlinxJsBenchmarkDescriptorWithBlackholeParameterClassShortName,
     isLocal = false,
 )

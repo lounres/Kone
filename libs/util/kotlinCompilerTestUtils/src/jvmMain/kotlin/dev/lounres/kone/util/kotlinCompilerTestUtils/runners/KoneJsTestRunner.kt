@@ -69,7 +69,7 @@ public abstract class KoneJsTestRunner : KoneTestRunner() {
             }
             
             useFailureSuppressors(
-                ::PhasedPipelineChecker,
+//                ::PhasedPipelineChecker,
                 ::BlackBoxCodegenSuppressor,
                 ::FirFailingTestSuppressor,
             )

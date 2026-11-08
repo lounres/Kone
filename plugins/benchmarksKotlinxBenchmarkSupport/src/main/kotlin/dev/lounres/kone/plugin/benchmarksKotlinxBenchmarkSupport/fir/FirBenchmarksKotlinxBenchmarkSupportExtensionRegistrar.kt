@@ -5,12 +5,17 @@
 
 package dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.fir
 
+import org.jetbrains.kotlin.fir.extensions.FirDeclarationGenerationExtension
 import org.jetbrains.kotlin.fir.extensions.FirExtensionRegistrar
+import org.jetbrains.kotlin.fir.moduleData
 
 
 class FirBenchmarksKotlinxBenchmarkSupportExtensionRegistrar : FirExtensionRegistrar() {
     override fun ExtensionRegistrarContext.configurePlugin() {
-//        +::BenchmarksKotlinxBenchmarkSupportEntryPointGenerationExtension
+//        +FirDeclarationGenerationExtension.Factory {
+//            if (!it.moduleData.isCommon) BenchmarksKotlinxBenchmarkSupportEntryPointGenerationExtension(it)
+//            else object : FirDeclarationGenerationExtension(it) {}
+//        }
         +::BenchmarksKotlinxBenchmarkSupportCheckersExtension
         
         registerDiagnosticContainers(BenchmarksKotlinxBenchmarkSupportCheckersExtension.Errors)

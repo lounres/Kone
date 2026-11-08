@@ -6,16 +6,11 @@
 package dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.fir
 
 import org.jetbrains.kotlin.GeneratedDeclarationKey
-import org.jetbrains.kotlin.KtSourceElement
 import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.descriptors.Visibilities
-import org.jetbrains.kotlin.descriptors.Visibility
-import org.jetbrains.kotlin.fir.FirElement
 import org.jetbrains.kotlin.fir.FirSession
-import org.jetbrains.kotlin.fir.declarations.FirDeclarationStatus
 import org.jetbrains.kotlin.fir.declarations.builder.buildNamedFunction
 import org.jetbrains.kotlin.fir.declarations.builder.buildValueParameter
-import org.jetbrains.kotlin.fir.declarations.impl.FirDeclarationStatusImpl
 import org.jetbrains.kotlin.fir.declarations.impl.FirResolvedDeclarationStatusImpl
 import org.jetbrains.kotlin.fir.declarations.origin
 import org.jetbrains.kotlin.fir.extensions.ExperimentalTopLevelDeclarationsGenerationApi
@@ -24,13 +19,15 @@ import org.jetbrains.kotlin.fir.extensions.MemberGenerationContext
 import org.jetbrains.kotlin.fir.moduleData
 import org.jetbrains.kotlin.fir.resolve.providers.symbolProvider
 import org.jetbrains.kotlin.fir.symbols.impl.FirNamedFunctionSymbol
+import org.jetbrains.kotlin.fir.symbols.impl.FirValueParameterSymbol
 import org.jetbrains.kotlin.fir.types.builder.buildResolvedTypeRef
-import org.jetbrains.kotlin.fir.visitors.FirTransformer
-import org.jetbrains.kotlin.fir.visitors.FirVisitor
+import org.jetbrains.kotlin.fir.types.constructType
+import org.jetbrains.kotlin.fir.types.toTypeProjection
 import org.jetbrains.kotlin.name.CallableId
+import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
-import org.jetbrains.kotlin.resolve.ReturnValueStatus
+import org.jetbrains.kotlin.types.Variance
 
 
 class BenchmarksKotlinxBenchmarkSupportEntryPointGenerationExtension(session: FirSession) : FirDeclarationGenerationExtension(session) {
@@ -69,6 +66,24 @@ class BenchmarksKotlinxBenchmarkSupportEntryPointGenerationExtension(session: Fi
                 returnTypeRef = session.builtinTypes.unitType
                 name = callableId.callableName
                 symbol = FirNamedFunctionSymbol(callableId)
+                
+                valueParameters += buildValueParameter {
+                    moduleData = session.moduleData
+                    origin = Key.origin
+                    returnTypeRef = buildResolvedTypeRef {
+                        coneType = session.symbolProvider
+                            .getClassLikeSymbolByClassId(ClassId(packageFqName = FqName("kotlin"), topLevelName = Name.identifier("Array")))!!
+                            .constructType(
+                                typeArguments = arrayOf(
+                                    session.builtinTypes.stringType.coneType,
+                                ),
+                                isMarkedNullable = false,
+                            )
+                    }
+                    name = Name.identifier("args")
+                    symbol = FirValueParameterSymbol()
+                    containingDeclarationSymbol = this@buildNamedFunction.symbol
+                }
             }.symbol
         )
     }
