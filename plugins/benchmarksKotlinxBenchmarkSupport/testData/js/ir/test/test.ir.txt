@@ -1,0 +1,178 @@
+FILE fqName:foo.bar fileName:/benchmark1.kt
+  PROPERTY name:value visibility:public modality:FINAL [var]
+    FIELD PROPERTY_BACKING_FIELD name:value type:kotlin.Double visibility:private [static]
+      EXPRESSION_BODY
+        CONST Double type=kotlin.Double value=57.179
+    FUN DEFAULT_PROPERTY_ACCESSOR name:<get-value> visibility:public modality:FINAL returnType:kotlin.Double
+      correspondingProperty: PROPERTY name:value visibility:public modality:FINAL [var]
+      BLOCK_BODY
+        RETURN type=kotlin.Nothing from='public final fun <get-value> (): kotlin.Double declared in foo.bar'
+          GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:value type:kotlin.Double visibility:private [static]' type=kotlin.Double origin=null
+    FUN DEFAULT_PROPERTY_ACCESSOR name:<set-value> visibility:public modality:FINAL returnType:kotlin.Unit
+      VALUE_PARAMETER kind:Regular name:<set-?> index:0 type:kotlin.Double
+      correspondingProperty: PROPERTY name:value visibility:public modality:FINAL [var]
+      BLOCK_BODY
+        SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:value type:kotlin.Double visibility:private [static]' type=kotlin.Unit origin=null
+          value: GET_VAR '<set-?>: kotlin.Double declared in foo.bar.<set-value>' type=kotlin.Double origin=null
+  CLASS CLASS name:MyBenchmark modality:FINAL visibility:public superTypes:[kotlin.Any]
+    annotations:
+      State(value = Scope.Benchmark)
+      Measurement(iterations = 3, time = 1, timeUnit = BenchmarkTimeUnit.SECONDS, batchSize = <null>)
+      OutputTimeUnit(value = BenchmarkTimeUnit.MILLISECONDS)
+      BenchmarkMode(value = [Mode.Throughput] type=kotlin.Array<out kotlinx.benchmark.Mode> varargElementType=kotlinx.benchmark.Mode)
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.MyBenchmark
+    PROPERTY name:times visibility:public modality:FINAL [var]
+      annotations:
+        Param(value = ["5", "7"] type=kotlin.Array<out kotlin.String> varargElementType=kotlin.String)
+      FIELD PROPERTY_BACKING_FIELD name:times type:kotlin.UInt visibility:private
+        EXPRESSION_BODY
+          CONST Int type=kotlin.UInt value=0
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-times> visibility:public modality:FINAL returnType:kotlin.UInt
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.MyBenchmark
+        correspondingProperty: PROPERTY name:times visibility:public modality:FINAL [var]
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-times> (): kotlin.UInt declared in foo.bar.MyBenchmark'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:times type:kotlin.UInt visibility:private' type=kotlin.UInt origin=null
+              receiver: GET_VAR '<this>: foo.bar.MyBenchmark declared in foo.bar.MyBenchmark.<get-times>' type=foo.bar.MyBenchmark origin=null
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<set-times> visibility:public modality:FINAL returnType:kotlin.Unit
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.MyBenchmark
+        VALUE_PARAMETER kind:Regular name:<set-?> index:1 type:kotlin.UInt
+        correspondingProperty: PROPERTY name:times visibility:public modality:FINAL [var]
+        BLOCK_BODY
+          SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:times type:kotlin.UInt visibility:private' type=kotlin.Unit origin=null
+            receiver: GET_VAR '<this>: foo.bar.MyBenchmark declared in foo.bar.MyBenchmark.<set-times>' type=foo.bar.MyBenchmark origin=null
+            value: GET_VAR '<set-?>: kotlin.UInt declared in foo.bar.MyBenchmark.<set-times>' type=kotlin.UInt origin=null
+    CONSTRUCTOR visibility:public returnType:foo.bar.MyBenchmark [primary]
+      BLOCK_BODY
+        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:MyBenchmark modality:FINAL visibility:public superTypes:[kotlin.Any]' type=kotlin.Unit
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in kotlin.Any
+    FUN name:benchmark visibility:public modality:FINAL returnType:kotlin.Unit
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.MyBenchmark
+      VALUE_PARAMETER kind:Regular name:blackhole index:1 type:kotlinx.benchmark.Blackhole
+      annotations:
+        Benchmark
+      BLOCK_BODY
+        BLOCK type=kotlin.Unit origin=FOR_LOOP
+          VAR FOR_LOOP_ITERATOR name:tmp_0 type:kotlin.collections.Iterator<kotlin.UInt> [val]
+            CALL 'public final fun iterator (): kotlin.collections.Iterator<kotlin.UInt> declared in kotlin.ranges.UIntRange' type=kotlin.collections.Iterator<kotlin.UInt> origin=FOR_LOOP_ITERATOR
+              ARG <this>: CALL 'public final fun rangeUntil (other: kotlin.UInt): kotlin.ranges.UIntRange declared in kotlin.UInt' type=kotlin.ranges.UIntRange origin=RANGE_UNTIL
+                ARG <this>: CONST Int type=kotlin.UInt value=0
+                ARG other: CALL 'public final fun <get-times> (): kotlin.UInt declared in foo.bar.MyBenchmark' type=kotlin.UInt origin=GET_PROPERTY
+                  ARG <this>: GET_VAR '<this>: foo.bar.MyBenchmark declared in foo.bar.MyBenchmark.benchmark' type=foo.bar.MyBenchmark origin=IMPLICIT_ARGUMENT
+          WHILE label=null origin=FOR_LOOP_INNER_WHILE
+            condition: CALL 'public abstract fun hasNext (): kotlin.Boolean declared in kotlin.collections.Iterator' type=kotlin.Boolean origin=FOR_LOOP_HAS_NEXT
+              ARG <this>: GET_VAR 'val tmp_0: kotlin.collections.Iterator<kotlin.UInt> declared in foo.bar.MyBenchmark.benchmark' type=kotlin.collections.Iterator<kotlin.UInt> origin=null
+            body: BLOCK type=kotlin.Unit origin=FOR_LOOP_INNER_WHILE
+              VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:kotlin.UInt [val]
+                CALL 'public abstract fun next (): T of kotlin.collections.Iterator declared in kotlin.collections.Iterator' type=kotlin.UInt origin=FOR_LOOP_NEXT
+                  ARG <this>: GET_VAR 'val tmp_0: kotlin.collections.Iterator<kotlin.UInt> declared in foo.bar.MyBenchmark.benchmark' type=kotlin.collections.Iterator<kotlin.UInt> origin=null
+              CALL 'public final fun consume (d: kotlin.Double): kotlin.Unit declared in kotlinx.benchmark.Blackhole' type=kotlin.Unit origin=null
+                ARG <this>: GET_VAR 'blackhole: kotlinx.benchmark.Blackhole declared in foo.bar.MyBenchmark.benchmark' type=kotlinx.benchmark.Blackhole origin=null
+                ARG d: CALL 'public final fun tanh (x: kotlin.Double): kotlin.Double declared in kotlin.math' type=kotlin.Double origin=null
+                  ARG x: CALL 'public final fun <get-value> (): kotlin.Double declared in foo.bar' type=kotlin.Double origin=GET_PROPERTY
+FILE fqName:dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated fileName:/run.kt
+  FUN name:main visibility:public modality:FINAL returnType:kotlin.Unit
+    VALUE_PARAMETER kind:Regular name:args index:0 type:kotlin.Array<kotlin.String>
+    annotations:
+      OptIn(markerClass = [KotlinxBenchmarkRuntimeInternalApi::class] type=kotlin.Array<out kotlin.reflect.KClass<out kotlin.Annotation>> varargElementType=kotlin.reflect.KClass<out kotlin.Annotation>)
+    BLOCK_BODY
+      CALL 'public final fun println (message: kotlin.Any?): kotlin.Unit declared in kotlin.io' type=kotlin.Unit origin=null
+        ARG message: CONST String type=kotlin.String value="Hello, IR-generated benchmarks!"
+      CALL 'public final fun runBenchmarks (name: kotlin.String, args: kotlin.Array<out kotlin.String>, declareAndExecuteSuites: kotlin.Function1<kotlinx.benchmark.SuiteExecutorBase, kotlin.Unit>): kotlin.Unit declared in kotlinx.benchmark.js' type=kotlin.Unit origin=null
+        ARG name: CONST String type=kotlin.String value="js"
+        ARG args: GET_VAR 'args: kotlin.Array<kotlin.String> declared in dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated.main' type=kotlin.Array<kotlin.String> origin=null
+        ARG declareAndExecuteSuites: FUN_EXPR type=kotlin.Function1<kotlinx.benchmark.SuiteExecutorBase, kotlin.Unit> origin=LAMBDA
+          FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL returnType:kotlin.Unit
+            VALUE_PARAMETER kind:Regular name:executor index:0 type:kotlinx.benchmark.SuiteExecutorBase
+            BLOCK_BODY
+              VAR name:suite type:kotlinx.benchmark.SuiteDescriptor<foo.bar.MyBenchmark> [val]
+                CONSTRUCTOR_CALL 'public constructor <init> (name: kotlin.String, factory: kotlin.Function0<T of kotlinx.benchmark.SuiteDescriptor>, parametrize: kotlin.Function2<T of kotlinx.benchmark.SuiteDescriptor, kotlin.collections.Map<kotlin.String, kotlin.String>, kotlin.Unit>, setup: kotlin.Function1<T of kotlinx.benchmark.SuiteDescriptor, kotlin.Unit>, teardown: kotlin.Function1<T of kotlinx.benchmark.SuiteDescriptor, kotlin.Unit>, parameters: kotlin.collections.List<kotlin.String>, defaultParameters: kotlin.collections.Map<kotlin.String, kotlin.collections.List<kotlin.String>>, iterations: kotlin.Int, warmups: kotlin.Int, iterationTime: kotlinx.benchmark.IterationTime, outputTimeUnit: kotlinx.benchmark.BenchmarkTimeUnit, mode: kotlinx.benchmark.Mode) declared in kotlinx.benchmark.SuiteDescriptor' type=kotlinx.benchmark.SuiteDescriptor<foo.bar.MyBenchmark> origin=null
+                  TYPE_ARG (of class) T: foo.bar.MyBenchmark
+                  ARG name: CONST String type=kotlin.String value="foo.bar.MyBenchmark"
+                  ARG factory: FUN_EXPR type=kotlin.Function0<foo.bar.MyBenchmark> origin=LAMBDA
+                    FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL returnType:foo.bar.MyBenchmark
+                      BLOCK_BODY
+                        RETURN type=kotlin.Nothing from='local final fun <anonymous> (): foo.bar.MyBenchmark declared in dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated.main.<anonymous>'
+                          CONSTRUCTOR_CALL 'public constructor <init> () declared in foo.bar.MyBenchmark' type=foo.bar.MyBenchmark origin=null
+                  ARG parametrize: FUN_EXPR type=kotlin.Function2<foo.bar.MyBenchmark, kotlin.collections.Map<kotlin.String, kotlin.String>, kotlin.Unit> origin=LAMBDA
+                    FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL returnType:kotlin.Unit
+                      VALUE_PARAMETER kind:Regular name:benchmark index:0 type:foo.bar.MyBenchmark
+                      VALUE_PARAMETER kind:Regular name:parameters index:1 type:kotlin.collections.Map<kotlin.String, kotlin.String>
+                      BLOCK_BODY
+                        CALL 'public final fun <set-times> (<set-?>: kotlin.UInt): kotlin.Unit declared in foo.bar.MyBenchmark' type=kotlin.Unit origin=EQ
+                          ARG <this>: GET_VAR 'benchmark: foo.bar.MyBenchmark declared in dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated.main.<anonymous>.<anonymous>' type=foo.bar.MyBenchmark origin=null
+                          ARG <set-?>: CALL 'public final fun toUInt (<this>: kotlin.String): kotlin.UInt declared in kotlin.text' type=kotlin.UInt origin=null
+                            ARG <this>: CALL 'public final fun CHECK_NOT_NULL <T0> (arg0: T0 of kotlin.internal.ir.CHECK_NOT_NULL?): {T0 of kotlin.internal.ir.CHECK_NOT_NULL & Any} declared in kotlin.internal.ir' type=kotlin.String origin=EXCLEXCL
+                              TYPE_ARG T0: kotlin.String
+                              ARG arg0: CALL 'public abstract fun get (key: K of kotlin.collections.Map): V of kotlin.collections.Map? declared in kotlin.collections.Map' type=kotlin.String? origin=GET_ARRAY_ELEMENT
+                                ARG <this>: GET_VAR 'parameters: kotlin.collections.Map<kotlin.String, kotlin.String> declared in dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated.main.<anonymous>.<anonymous>' type=kotlin.collections.Map<kotlin.String, kotlin.String> origin=null
+                                ARG key: CONST String type=kotlin.String value="times"
+                  ARG setup: FUN_EXPR type=kotlin.Function1<foo.bar.MyBenchmark, kotlin.Unit> origin=LAMBDA
+                    FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL returnType:kotlin.Unit
+                      VALUE_PARAMETER kind:Regular name:it index:0 type:foo.bar.MyBenchmark
+                      BLOCK_BODY
+                        RETURN type=kotlin.Nothing from='local final fun <anonymous> (it: foo.bar.MyBenchmark): kotlin.Unit declared in dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated.main.<anonymous>'
+                          GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Unit modality:FINAL visibility:public superTypes:[kotlin.Any]' type=kotlin.Unit
+                  ARG teardown: FUN_EXPR type=kotlin.Function1<foo.bar.MyBenchmark, kotlin.Unit> origin=LAMBDA
+                    FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL returnType:kotlin.Unit
+                      VALUE_PARAMETER kind:Regular name:it index:0 type:foo.bar.MyBenchmark
+                      BLOCK_BODY
+                        RETURN type=kotlin.Nothing from='local final fun <anonymous> (it: foo.bar.MyBenchmark): kotlin.Unit declared in dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated.main.<anonymous>'
+                          GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Unit modality:FINAL visibility:public superTypes:[kotlin.Any]' type=kotlin.Unit
+                  ARG parameters: CALL 'public final fun listOf <T> (element: T of kotlin.collections.listOf): kotlin.collections.List<T of kotlin.collections.listOf> declared in kotlin.collections' type=kotlin.collections.List<kotlin.String> origin=null
+                    TYPE_ARG T: kotlin.String
+                    ARG element: CONST String type=kotlin.String value="times"
+                  ARG defaultParameters: CALL 'public final fun mapOf <K, V> (pair: kotlin.Pair<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf>): kotlin.collections.Map<K of kotlin.collections.mapOf, V of kotlin.collections.mapOf> declared in kotlin.collections' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<kotlin.String>> origin=null
+                    TYPE_ARG K: kotlin.String
+                    TYPE_ARG V: kotlin.collections.List<kotlin.String>
+                    ARG pair: CONSTRUCTOR_CALL 'public constructor <init> (first: A of kotlin.Pair, second: B of kotlin.Pair) declared in kotlin.Pair' type=kotlin.Pair<kotlin.String, kotlin.collections.List<kotlin.String>> origin=null
+                      TYPE_ARG (of class) A: kotlin.String
+                      TYPE_ARG (of class) B: kotlin.collections.List<kotlin.String>
+                      ARG first: CONST String type=kotlin.String value="times"
+                      ARG second: CALL 'public final fun listOf <T> (vararg elements: T of kotlin.collections.listOf): kotlin.collections.List<T of kotlin.collections.listOf> declared in kotlin.collections' type=kotlin.collections.List<kotlin.String> origin=null
+                        TYPE_ARG T: kotlin.String
+                        ARG elements: VARARG type=kotlin.Array<out kotlin.String> varargElementType=kotlin.String
+                          CONST String type=kotlin.String value="5"
+                          CONST String type=kotlin.String value="7"
+                  ARG iterations: CONST Int type=kotlin.Int value=3
+                  ARG warmups: CONST Int type=kotlin.Int value=5
+                  ARG iterationTime: CONSTRUCTOR_CALL 'public constructor <init> (value: kotlin.Long, timeUnit: kotlinx.benchmark.BenchmarkTimeUnit) declared in kotlinx.benchmark.IterationTime' type=kotlinx.benchmark.IterationTime origin=null
+                    ARG value: CONST Long type=kotlin.Long value=1
+                    ARG timeUnit: GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:SECONDS' type=kotlinx.benchmark.BenchmarkTimeUnit
+                  ARG outputTimeUnit: GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:MILLISECONDS' type=kotlinx.benchmark.BenchmarkTimeUnit
+              CALL 'public final fun add (benchmark: kotlinx.benchmark.BenchmarkDescriptor<T of kotlinx.benchmark.SuiteDescriptor>): kotlin.Unit declared in kotlinx.benchmark.SuiteDescriptor' type=kotlin.Unit origin=null
+                ARG <this>: GET_VAR 'val suite: kotlinx.benchmark.SuiteDescriptor<foo.bar.MyBenchmark> declared in dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated.main.<anonymous>' type=kotlinx.benchmark.SuiteDescriptor<foo.bar.MyBenchmark> origin=null
+                ARG benchmark: CONSTRUCTOR_CALL 'public constructor <init> (name: kotlin.String, suite: kotlinx.benchmark.SuiteDescriptor<T of kotlinx.benchmark.js.JsBenchmarkDescriptorWithBlackholeParameter>, blackhole: kotlinx.benchmark.Blackhole, function: @[ExtensionFunctionType] kotlin.Function2<T of kotlinx.benchmark.js.JsBenchmarkDescriptorWithBlackholeParameter, kotlinx.benchmark.Blackhole, kotlin.Any?>, async: kotlin.Boolean) declared in kotlinx.benchmark.js.JsBenchmarkDescriptorWithBlackholeParameter' type=kotlinx.benchmark.js.JsBenchmarkDescriptorWithBlackholeParameter<foo.bar.MyBenchmark> origin=null
+                  TYPE_ARG (of class) T: foo.bar.MyBenchmark
+                  ARG name: CONST String type=kotlin.String value="foo.bar.MyBenchmark.benchmark"
+                  ARG suite: GET_VAR 'val suite: kotlinx.benchmark.SuiteDescriptor<foo.bar.MyBenchmark> declared in dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated.main.<anonymous>' type=kotlinx.benchmark.SuiteDescriptor<foo.bar.MyBenchmark> origin=null
+                  ARG blackhole: CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlinx.benchmark.Blackhole' type=kotlinx.benchmark.Blackhole origin=null
+                  ARG function: RICH_FUNCTION_REFERENCE type=kotlin.reflect.KFunction2<foo.bar.MyBenchmark, @[ParameterName(name = "blackhole")] kotlinx.benchmark.Blackhole, kotlin.Unit> origin=null reflectionTarget='public final fun benchmark (blackhole: kotlinx.benchmark.Blackhole): kotlin.Unit declared in foo.bar.MyBenchmark'
+                    overriddenFunctionSymbol: public abstract fun invoke (p1: P1 of kotlin.reflect.KFunction2, p2: P2 of kotlin.reflect.KFunction2): R of kotlin.reflect.KFunction2 declared in kotlin.reflect.KFunction2
+                    invoke: FUN LOCAL_FUNCTION_FOR_LAMBDA name:benchmark visibility:local modality:FINAL returnType:kotlin.Unit
+                      VALUE_PARAMETER ADAPTER_PARAMETER_FOR_CALLABLE_REFERENCE kind:Regular name:p0 index:0 type:foo.bar.MyBenchmark
+                      VALUE_PARAMETER ADAPTER_PARAMETER_FOR_CALLABLE_REFERENCE kind:Regular name:p1 index:1 type:@[ParameterName(name = "blackhole")] kotlinx.benchmark.Blackhole
+                      BLOCK_BODY
+                        RETURN type=kotlin.Nothing from='local final fun benchmark (p0: foo.bar.MyBenchmark, p1: @[ParameterName(name = "blackhole")] kotlinx.benchmark.Blackhole): kotlin.Unit declared in dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated.main.<anonymous>'
+                          CALL 'public final fun benchmark (blackhole: kotlinx.benchmark.Blackhole): kotlin.Unit declared in foo.bar.MyBenchmark' type=kotlin.Unit origin=null
+                            ARG <this>: GET_VAR 'p0: foo.bar.MyBenchmark declared in dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated.main.<anonymous>.benchmark' type=foo.bar.MyBenchmark origin=null
+                            ARG blackhole: GET_VAR 'p1: @[ParameterName(name = "blackhole")] kotlinx.benchmark.Blackhole declared in dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated.main.<anonymous>.benchmark' type=@[ParameterName(name = "blackhole")] kotlinx.benchmark.Blackhole origin=null
+              CALL 'public final fun suite <T> (descriptor: kotlinx.benchmark.SuiteDescriptor<T of kotlinx.benchmark.SuiteExecutorBase.suite>): kotlin.Unit declared in kotlinx.benchmark.SuiteExecutorBase' type=kotlin.Unit origin=null
+                TYPE_ARG T: foo.bar.MyBenchmark
+                ARG <this>: GET_VAR 'executor: kotlinx.benchmark.SuiteExecutorBase declared in dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated.main.<anonymous>' type=kotlinx.benchmark.SuiteExecutorBase origin=null
+                ARG descriptor: GET_VAR 'val suite: kotlinx.benchmark.SuiteDescriptor<foo.bar.MyBenchmark> declared in dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated.main.<anonymous>' type=kotlinx.benchmark.SuiteDescriptor<foo.bar.MyBenchmark> origin=null
+              CALL 'public abstract fun run (): kotlin.Unit declared in kotlinx.benchmark.SuiteExecutorBase' type=kotlin.Unit origin=null
+                ARG <this>: GET_VAR 'executor: kotlinx.benchmark.SuiteExecutorBase declared in dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated.main.<anonymous>' type=kotlinx.benchmark.SuiteExecutorBase origin=null

@@ -1,0 +1,56 @@
+FILE: benchmark1.kt
+    package foo.bar
+
+    public final var value: R|kotlin/Double| = Double(57.179)
+        public get(): R|kotlin/Double|
+        public set(value: R|kotlin/Double|): R|kotlin/Unit|
+    @R|kotlinx/benchmark/State|(value = Q|kotlinx/benchmark/Scope|.R|kotlinx/benchmark/Scope.Benchmark| [evaluated = Q|kotlinx/benchmark/Scope|.R|kotlinx/benchmark/Scope.Benchmark|]) @R|kotlinx/benchmark/Measurement|(iterations = Int(3) [evaluated = Int(3)], time = Int(1) [evaluated = Int(1)], timeUnit = Q|kotlinx/benchmark/BenchmarkTimeUnit|.R|kotlinx/benchmark/BenchmarkTimeUnit.SECONDS| [evaluated = Q|kotlinx/benchmark/BenchmarkTimeUnit|.R|kotlinx/benchmark/BenchmarkTimeUnit.SECONDS|]) @R|kotlinx/benchmark/OutputTimeUnit|(value = Q|kotlinx/benchmark/BenchmarkTimeUnit|.R|kotlinx/benchmark/BenchmarkTimeUnit.MILLISECONDS| [evaluated = Q|kotlinx/benchmark/BenchmarkTimeUnit|.R|kotlinx/benchmark/BenchmarkTimeUnit.MILLISECONDS|]) @R|kotlinx/benchmark/BenchmarkMode|(value = vararg(Q|kotlinx/benchmark/Mode|.R|kotlinx/benchmark/Mode.Throughput|) [evaluated = vararg(Q|kotlinx/benchmark/Mode|.R|kotlinx/benchmark/Mode.Throughput|)]) public final class MyBenchmark : R|kotlin/Any| {
+        public constructor(): R|foo/bar/MyBenchmark| {
+            super<R|kotlin/Any|>()
+        }
+
+        @R|kotlinx/benchmark/Param|(value = vararg(String(5), String(7)) [evaluated = vararg(String(5), String(7))]) public final var times: R|kotlin/UInt| = UInt(0)
+            public get(): R|kotlin/UInt|
+            public set(value: R|kotlin/UInt|): R|kotlin/Unit|
+
+        @R|kotlinx/benchmark/Benchmark|() public final fun benchmark(blackhole: R|kotlinx/benchmark/Blackhole|): R|kotlin/Unit| {
+             {
+                lval <iterator>: R|kotlin/collections/Iterator<kotlin/UInt>| = UInt(0).R|kotlin/UInt.rangeUntil|(this@R|foo/bar/MyBenchmark|.R|foo/bar/MyBenchmark.times|).R|kotlin/ranges/UIntProgression.iterator|()
+                while(R|<local>/<iterator>|.R|SubstitutionOverride<kotlin/collections/Iterator.hasNext: R|kotlin/Boolean|>|()) {
+                    lval <unused var>: R|kotlin/UInt| = R|<local>/<iterator>|.R|SubstitutionOverride<kotlin/collections/Iterator.next: R|kotlin/UInt|>|()
+                     {
+                        R|<local>/blackhole|.R|kotlinx/benchmark/Blackhole.consume|(R|kotlin/math/tanh|(R|foo/bar/value|))
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+FILE: run.kt
+    package dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated
+
+    @R|kotlin/OptIn|(markerClass = vararg(<getClass>(Q|kotlinx/benchmark/internal/KotlinxBenchmarkRuntimeInternalApi|)) [evaluated = vararg(<getClass>(Q|kotlinx/benchmark/internal/KotlinxBenchmarkRuntimeInternalApi|))]) public final fun main(args: R|kotlin/Array<kotlin/String>|): R|kotlin/Unit| {
+        R|kotlin/io/println|(String(Hello, IR-generated benchmarks!))
+        R|kotlinx/benchmark/js/runBenchmarks|(String(js), R|<local>/args|, <L> = runBenchmarks@fun <anonymous>(executor: R|kotlinx/benchmark/SuiteExecutorBase|): R|kotlin/Unit| <inline=NoInline>  {
+            lval suite: R|kotlinx/benchmark/SuiteDescriptor<foo/bar/MyBenchmark>| = R|kotlinx/benchmark/SuiteDescriptor.SuiteDescriptor|<R|foo/bar/MyBenchmark|>(String(foo.bar.MyBenchmark), SuiteDescriptor@fun <anonymous>(): R|foo/bar/MyBenchmark| <inline=NoInline>  {
+                ^ R|foo/bar/MyBenchmark.MyBenchmark|()
+            }
+            , SuiteDescriptor@fun <anonymous>(benchmark: R|foo/bar/MyBenchmark|, parameters: R|kotlin/collections/Map<kotlin/String, kotlin/String>|): R|kotlin/Unit| <inline=NoInline>  {
+                R|<local>/benchmark|.R|foo/bar/MyBenchmark.times| = R|<local>/parameters|.R|SubstitutionOverride<kotlin/collections/Map.get: R|kotlin/String?|>|(String(times))!!.R|kotlin/text/toUInt|()
+            }
+            , SuiteDescriptor@fun <anonymous>(it: R|foo/bar/MyBenchmark|): R|kotlin/Unit| <inline=NoInline>  {
+                ^@SuiteDescriptor Unit
+            }
+            , SuiteDescriptor@fun <anonymous>(it: R|foo/bar/MyBenchmark|): R|kotlin/Unit| <inline=NoInline>  {
+                ^@SuiteDescriptor Unit
+            }
+            , R|kotlin/collections/listOf|<R|kotlin/String|>(String(times)), R|kotlin/collections/mapOf|<R|kotlin/String|, R|kotlin/collections/List<kotlin/String>|>(R|kotlin/Pair.Pair|<R|kotlin/String|, R|kotlin/collections/List<kotlin/String>|>(String(times), R|kotlin/collections/listOf|<R|kotlin/String|>(vararg(String(5), String(7))))), Int(3), Int(5), R|kotlinx/benchmark/IterationTime.IterationTime|(Long(1), Q|kotlinx/benchmark/BenchmarkTimeUnit|.R|kotlinx/benchmark/BenchmarkTimeUnit.SECONDS|), Q|kotlinx/benchmark/BenchmarkTimeUnit|.R|kotlinx/benchmark/BenchmarkTimeUnit.MILLISECONDS|)
+            R|<local>/suite|.R|SubstitutionOverride<kotlinx/benchmark/SuiteDescriptor.add: R|kotlin/Unit|>|(R|kotlinx/benchmark/js/JsBenchmarkDescriptorWithBlackholeParameter.JsBenchmarkDescriptorWithBlackholeParameter|<R|foo/bar/MyBenchmark|>(String(foo.bar.MyBenchmark.benchmark), R|<local>/suite|, R|kotlinx/benchmark/Blackhole.Blackhole|(), Q|foo/bar/MyBenchmark|::R|foo/bar/MyBenchmark.benchmark|))
+            R|<local>/executor|.R|kotlinx/benchmark/SuiteExecutorBase.suite|<R|foo/bar/MyBenchmark|>(R|<local>/suite|)
+            R|<local>/executor|.R|kotlinx/benchmark/SuiteExecutorBase.run|()
+        }
+        )
+    }

@@ -17,6 +17,7 @@ import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
 import org.jetbrains.kotlin.ir.builders.*
 import org.jetbrains.kotlin.ir.builders.declarations.addValueParameter
 import org.jetbrains.kotlin.ir.builders.declarations.buildFun
+import org.jetbrains.kotlin.ir.builders.declarations.buildRichReferenceWrapper
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.declarations.impl.IrFileImpl
 import org.jetbrains.kotlin.ir.expressions.IrCall
@@ -24,7 +25,6 @@ import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.expressions.impl.IrGetEnumValueImpl
 import org.jetbrains.kotlin.ir.types.createType
 import org.jetbrains.kotlin.ir.types.defaultType
-import org.jetbrains.kotlin.ir.types.impl.makeTypeProjection
 import org.jetbrains.kotlin.ir.util.*
 import org.jetbrains.kotlin.ir.visitors.IrVisitorVoid
 import org.jetbrains.kotlin.ir.visitors.acceptChildrenVoid
@@ -32,7 +32,6 @@ import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.name.SpecialNames
-import org.jetbrains.kotlin.types.Variance.OUT_VARIANCE
 
 
 fun IrBlockBuilder.suiteDescriptorVariable(
@@ -63,12 +62,12 @@ fun IrBlockBuilder.suiteDescriptorVariable(
                     }
                 }
             },
-            superType = pluginContext.irBuiltIns.getKFunctionType(
-                returnType = benchmarkClass.theClass.defaultType,
-                parameterTypes = listOf(),
+            superType = pluginContext.irBuiltIns.functionN(0).symbol.createType(
+                hasQuestionMark = false,
+                arguments = listOf(benchmarkClass.theClass.defaultType),
             ),
             reflectionTargetSymbol = null,
-            overriddenFunctionSymbol = pluginContext.irBuiltIns.kFunctionN(0).invokeFun!!.symbol,
+            overriddenFunctionSymbol = pluginContext.irBuiltIns.functionN(0).invokeFun!!.symbol,
             captures = listOf(),
             origin = null,
         )
@@ -149,9 +148,9 @@ fun IrBlockBuilder.suiteDescriptorVariable(
                     }
                 }
             },
-            superType = pluginContext.irBuiltIns.getKFunctionType(
-                returnType = pluginContext.irBuiltIns.unitType,
-                parameterTypes = listOf(
+            superType = pluginContext.irBuiltIns.functionN(2).symbol.createType(
+                hasQuestionMark = false,
+                arguments = listOf(
                     benchmarkClass.theClass.defaultType,
                     irRuntimeReferences.mapIrClassSymbol.createType(
                         hasQuestionMark = false,
@@ -160,10 +159,11 @@ fun IrBlockBuilder.suiteDescriptorVariable(
                             pluginContext.irBuiltIns.stringType,
                         )
                     ),
+                    pluginContext.irBuiltIns.unitType,
                 ),
             ),
             reflectionTargetSymbol = null,
-            overriddenFunctionSymbol = pluginContext.irBuiltIns.kFunctionN(2).invokeFun!!.symbol,
+            overriddenFunctionSymbol = pluginContext.irBuiltIns.functionN(2).invokeFun!!.symbol,
             captures = listOf(),
             origin = null,
         )
@@ -188,14 +188,15 @@ fun IrBlockBuilder.suiteDescriptorVariable(
                     }
                 }
             },
-            superType = pluginContext.irBuiltIns.getKFunctionType(
-                returnType = pluginContext.irBuiltIns.unitType,
-                parameterTypes = listOf(
+            superType = pluginContext.irBuiltIns.functionN(1).symbol.createType(
+                hasQuestionMark = false,
+                arguments = listOf(
                     benchmarkClass.theClass.defaultType,
+                    pluginContext.irBuiltIns.unitType,
                 ),
             ),
             reflectionTargetSymbol = null,
-            overriddenFunctionSymbol = pluginContext.irBuiltIns.kFunctionN(1).invokeFun!!.symbol,
+            overriddenFunctionSymbol = pluginContext.irBuiltIns.functionN(1).invokeFun!!.symbol,
             captures = listOf(),
             origin = null,
         )
@@ -220,14 +221,15 @@ fun IrBlockBuilder.suiteDescriptorVariable(
                     }
                 }
             },
-            superType = pluginContext.irBuiltIns.getKFunctionType(
-                returnType = pluginContext.irBuiltIns.unitType,
-                parameterTypes = listOf(
+            superType = pluginContext.irBuiltIns.functionN(1).symbol.createType(
+                hasQuestionMark = false,
+                arguments = listOf(
                     benchmarkClass.theClass.defaultType,
+                    pluginContext.irBuiltIns.unitType,
                 ),
             ),
             reflectionTargetSymbol = null,
-            overriddenFunctionSymbol = pluginContext.irBuiltIns.kFunctionN(1).invokeFun!!.symbol,
+            overriddenFunctionSymbol = pluginContext.irBuiltIns.functionN(1).invokeFun!!.symbol,
             captures = listOf(),
             origin = null,
         )
@@ -379,21 +381,26 @@ fun IrBlockBuilder.jsAddBenchmarkDescriptor(
         arguments[0] = irString(benchmarkMethod.theMethod.fqName.asString())
         arguments[1] = irGet(suiteDescriptorVariable)
         arguments[2] = irCall(irRuntimeReferences.kotlinxBlackholeConstructorIrConstructorSymbol)
+        val theMethodArity = 1 + if (benchmarkMethod.blackholeValueParameter != null) 1 else 0
         arguments[3] = irRichFunctionReference(
-            invokeFunction = benchmarkMethod.theMethod,
-            superType = pluginContext.irBuiltIns.getKFunctionType(
-                returnType = pluginContext.irBuiltIns.unitType,
-                parameterTypes = listOfNotNull(
+            invokeFunction = pluginContext.irBuiltIns.buildRichReferenceWrapper(
+                target = benchmarkMethod.theMethod,
+                parent = scope.getLocalDeclarationParent(),
+                boundReceiverType = null,
+                parameterTypes = benchmarkMethod.theMethod.parameters.map { it.type },
+                returnType = benchmarkMethod.theMethod.returnType,
+            ),
+            superType = pluginContext.irBuiltIns.kFunctionN(theMethodArity).symbol.createType(
+                hasQuestionMark = false,
+                arguments = listOfNotNull(
                     benchmarkClass.theClass.defaultType,
                     if (benchmarkMethod.blackholeValueParameter != null) irRuntimeReferences.kotlinxBlackholeClassIrClassSymbol.defaultType
                     else null,
+                    pluginContext.irBuiltIns.unitType,
                 ),
             ),
             reflectionTargetSymbol = benchmarkMethod.theMethod.symbol,
-            overriddenFunctionSymbol = pluginContext.irBuiltIns.kFunctionN(
-                2 + if (benchmarkMethod.blackholeValueParameter != null) 1
-                else 0
-            ).invokeFun!!.symbol,
+            overriddenFunctionSymbol = pluginContext.irBuiltIns.kFunctionN(theMethodArity).invokeFun!!.symbol,
             captures = listOf(),
             origin = null,
         )
@@ -425,21 +432,26 @@ fun IrBlockBuilder.wasmJsAddBenchmarkDescriptor(
         arguments[0] = irString(benchmarkMethod.theMethod.fqName.asString())
         arguments[1] = irGet(suiteDescriptorVariable)
         arguments[2] = irCall(irRuntimeReferences.kotlinxBlackholeConstructorIrConstructorSymbol)
+        val theMethodArity = 1 + if (benchmarkMethod.blackholeValueParameter != null) 1 else 0
         arguments[3] = irRichFunctionReference(
-            invokeFunction = benchmarkMethod.theMethod,
-            superType = pluginContext.irBuiltIns.getKFunctionType(
-                returnType = pluginContext.irBuiltIns.unitType,
-                parameterTypes = listOfNotNull(
+            invokeFunction = pluginContext.irBuiltIns.buildRichReferenceWrapper(
+                target = benchmarkMethod.theMethod,
+                parent = scope.getLocalDeclarationParent(),
+                boundReceiverType = null,
+                parameterTypes = benchmarkMethod.theMethod.parameters.map { it.type },
+                returnType = benchmarkMethod.theMethod.returnType,
+            ),
+            superType = pluginContext.irBuiltIns.kFunctionN(theMethodArity).symbol.createType(
+                hasQuestionMark = false,
+                arguments = listOfNotNull(
                     benchmarkClass.theClass.defaultType,
                     if (benchmarkMethod.blackholeValueParameter != null) irRuntimeReferences.kotlinxBlackholeClassIrClassSymbol.defaultType
                     else null,
+                    pluginContext.irBuiltIns.unitType,
                 ),
             ),
             reflectionTargetSymbol = benchmarkMethod.theMethod.symbol,
-            overriddenFunctionSymbol = pluginContext.irBuiltIns.kFunctionN(
-                2 + if (benchmarkMethod.blackholeValueParameter != null) 1
-                else 0
-            ).invokeFun!!.symbol,
+            overriddenFunctionSymbol = pluginContext.irBuiltIns.kFunctionN(theMethodArity).invokeFun!!.symbol,
             captures = listOf(),
             origin = null,
         )
@@ -471,21 +483,26 @@ fun IrBlockBuilder.wasmWasiAddBenchmarkDescriptor(
         arguments[0] = irString(benchmarkMethod.theMethod.fqName.asString())
         arguments[1] = irGet(suiteDescriptorVariable)
         arguments[2] = irCall(irRuntimeReferences.kotlinxBlackholeConstructorIrConstructorSymbol)
+        val theMethodArity = 1 + if (benchmarkMethod.blackholeValueParameter != null) 1 else 0
         arguments[3] = irRichFunctionReference(
-            invokeFunction = benchmarkMethod.theMethod,
-            superType = pluginContext.irBuiltIns.getKFunctionType(
-                returnType = pluginContext.irBuiltIns.unitType,
-                parameterTypes = listOfNotNull(
+            invokeFunction = pluginContext.irBuiltIns.buildRichReferenceWrapper(
+                target = benchmarkMethod.theMethod,
+                parent = scope.getLocalDeclarationParent(),
+                boundReceiverType = null,
+                parameterTypes = benchmarkMethod.theMethod.parameters.map { it.type },
+                returnType = benchmarkMethod.theMethod.returnType,
+            ),
+            superType = pluginContext.irBuiltIns.kFunctionN(theMethodArity).symbol.createType(
+                hasQuestionMark = false,
+                arguments = listOfNotNull(
                     benchmarkClass.theClass.defaultType,
                     if (benchmarkMethod.blackholeValueParameter != null) irRuntimeReferences.kotlinxBlackholeClassIrClassSymbol.defaultType
                     else null,
+                    pluginContext.irBuiltIns.unitType,
                 ),
             ),
             reflectionTargetSymbol = benchmarkMethod.theMethod.symbol,
-            overriddenFunctionSymbol = pluginContext.irBuiltIns.kFunctionN(
-                2 + if (benchmarkMethod.blackholeValueParameter != null) 1
-                else 0
-            ).invokeFun!!.symbol,
+            overriddenFunctionSymbol = pluginContext.irBuiltIns.kFunctionN(theMethodArity).invokeFun!!.symbol,
             captures = listOf(),
             origin = null,
         )
@@ -517,21 +534,26 @@ fun IrBlockBuilder.nativeAddBenchmarkDescriptor(
         arguments[0] = irString(benchmarkMethod.theMethod.fqName.asString())
         arguments[1] = irGet(suiteDescriptorVariable)
         arguments[2] = irCall(irRuntimeReferences.kotlinxBlackholeConstructorIrConstructorSymbol)
+        val theMethodArity = 1 + if (benchmarkMethod.blackholeValueParameter != null) 1 else 0
         arguments[3] = irRichFunctionReference(
-            invokeFunction = benchmarkMethod.theMethod,
-            superType = pluginContext.irBuiltIns.getKFunctionType(
-                returnType = pluginContext.irBuiltIns.unitType,
-                parameterTypes = listOfNotNull(
+            invokeFunction = pluginContext.irBuiltIns.buildRichReferenceWrapper(
+                target = benchmarkMethod.theMethod,
+                parent = scope.getLocalDeclarationParent(),
+                boundReceiverType = null,
+                parameterTypes = benchmarkMethod.theMethod.parameters.map { it.type },
+                returnType = benchmarkMethod.theMethod.returnType,
+            ),
+            superType = pluginContext.irBuiltIns.kFunctionN(theMethodArity).symbol.createType(
+                hasQuestionMark = false,
+                arguments = listOfNotNull(
                     benchmarkClass.theClass.defaultType,
                     if (benchmarkMethod.blackholeValueParameter != null) irRuntimeReferences.kotlinxBlackholeClassIrClassSymbol.defaultType
                     else null,
+                    pluginContext.irBuiltIns.unitType,
                 ),
             ),
             reflectionTargetSymbol = benchmarkMethod.theMethod.symbol,
-            overriddenFunctionSymbol = pluginContext.irBuiltIns.kFunctionN(
-                2 + if (benchmarkMethod.blackholeValueParameter != null) 1
-                else 0
-            ).invokeFun!!.symbol,
+            overriddenFunctionSymbol = pluginContext.irBuiltIns.kFunctionN(theMethodArity).invokeFun!!.symbol,
             captures = listOf(),
             origin = null,
         )
@@ -583,14 +605,15 @@ fun IrBlockBodyBuilder.jsDeclareAndExecuteSuitesArgument(
             }
         }
     },
-    superType = pluginContext.irBuiltIns.getKFunctionType(
-        returnType = pluginContext.irBuiltIns.unitType,
-        parameterTypes = listOf(
+    superType = pluginContext.irBuiltIns.functionN(1).symbol.createType(
+        hasQuestionMark = false,
+        arguments = listOf(
             irRuntimeReferences.kotlinxSuiteExecutorBaseClassIrClassSymbol.defaultType,
+            pluginContext.irBuiltIns.unitType,
         ),
     ),
     reflectionTargetSymbol = null,
-    overriddenFunctionSymbol = pluginContext.irBuiltIns.kFunctionN(1).invokeFun!!.symbol,
+    overriddenFunctionSymbol = pluginContext.irBuiltIns.functionN(1).invokeFun!!.symbol,
     captures = listOf(),
     origin = null,
 )
@@ -640,14 +663,15 @@ fun IrBlockBodyBuilder.wasmJsDeclareAndExecuteSuitesArgument(
             }
         }
     },
-    superType = pluginContext.irBuiltIns.getKFunctionType(
-        returnType = pluginContext.irBuiltIns.unitType,
-        parameterTypes = listOf(
+    superType = pluginContext.irBuiltIns.functionN(1).symbol.createType(
+        hasQuestionMark = false,
+        arguments = listOf(
             irRuntimeReferences.kotlinxSuiteExecutorBaseClassIrClassSymbol.defaultType,
+            pluginContext.irBuiltIns.unitType,
         ),
     ),
     reflectionTargetSymbol = null,
-    overriddenFunctionSymbol = pluginContext.irBuiltIns.kFunctionN(1).invokeFun!!.symbol,
+    overriddenFunctionSymbol = pluginContext.irBuiltIns.functionN(1).invokeFun!!.symbol,
     captures = listOf(),
     origin = null,
 )
@@ -697,14 +721,15 @@ fun IrBlockBodyBuilder.wasmWasiDeclareAndExecuteSuitesArgument(
             }
         }
     },
-    superType = pluginContext.irBuiltIns.getKFunctionType(
-        returnType = pluginContext.irBuiltIns.unitType,
-        parameterTypes = listOf(
+    superType = pluginContext.irBuiltIns.functionN(1).symbol.createType(
+        hasQuestionMark = false,
+        arguments = listOf(
             irRuntimeReferences.kotlinxSuiteExecutorBaseClassIrClassSymbol.defaultType,
+            pluginContext.irBuiltIns.unitType,
         ),
     ),
     reflectionTargetSymbol = null,
-    overriddenFunctionSymbol = pluginContext.irBuiltIns.kFunctionN(1).invokeFun!!.symbol,
+    overriddenFunctionSymbol = pluginContext.irBuiltIns.functionN(1).invokeFun!!.symbol,
     captures = listOf(),
     origin = null,
 )
@@ -754,14 +779,15 @@ fun IrBlockBodyBuilder.nativeDeclareAndExecuteSuitesArgument(
             }
         }
     },
-    superType = pluginContext.irBuiltIns.getKFunctionType(
-        returnType = pluginContext.irBuiltIns.unitType,
-        parameterTypes = listOf(
+    superType = pluginContext.irBuiltIns.functionN(1).symbol.createType(
+        hasQuestionMark = false,
+        arguments = listOf(
             irRuntimeReferences.kotlinxSuiteExecutorBaseClassIrClassSymbol.defaultType,
+            pluginContext.irBuiltIns.unitType,
         ),
     ),
     reflectionTargetSymbol = null,
-    overriddenFunctionSymbol = pluginContext.irBuiltIns.kFunctionN(1).invokeFun!!.symbol,
+    overriddenFunctionSymbol = pluginContext.irBuiltIns.functionN(1).invokeFun!!.symbol,
     captures = listOf(),
     origin = null,
 )
@@ -998,7 +1024,7 @@ fun jsMainFile(
     benchmarkClasses: List<KotlinxBenchmarkClass>,
 ): IrFile = IrFileImpl(
     fileEntry = NaiveSourceBasedFileEntryImpl(
-        name = "run.kt",
+        name = "/run.kt",
     ),
     packageFragmentDescriptor = MutablePackageFragmentDescriptor(
         moduleFragment.descriptor,
@@ -1023,7 +1049,7 @@ fun wasmJsMainFile(
     benchmarkClasses: List<KotlinxBenchmarkClass>,
 ): IrFile = IrFileImpl(
     fileEntry = NaiveSourceBasedFileEntryImpl(
-        name = "run.kt",
+        name = "/run.kt",
     ),
     packageFragmentDescriptor = MutablePackageFragmentDescriptor(
         moduleFragment.descriptor,
@@ -1047,7 +1073,7 @@ fun wasmWasiMainFile(
     benchmarkClasses: List<KotlinxBenchmarkClass>,
 ): IrFile = IrFileImpl(
     fileEntry = NaiveSourceBasedFileEntryImpl(
-        name = "run.kt",
+        name = "/run.kt",
     ),
     packageFragmentDescriptor = MutablePackageFragmentDescriptor(
         moduleFragment.descriptor,
@@ -1072,7 +1098,7 @@ fun nativeMainFile(
     benchmarkClasses: List<KotlinxBenchmarkClass>,
 ): IrFile = IrFileImpl(
     fileEntry = NaiveSourceBasedFileEntryImpl(
-        name = "run.kt",
+        name = "/run.kt",
     ),
     packageFragmentDescriptor = MutablePackageFragmentDescriptor(
         moduleFragment.descriptor,
