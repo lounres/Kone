@@ -11,6 +11,7 @@ import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.NATIVE_COMPILER_PLUGIN_CLASSPATH_CONFIGURATION_NAME
 import org.jetbrains.kotlin.gradle.plugin.PLUGIN_CLASSPATH_CONFIGURATION_NAME
 
 
@@ -18,6 +19,7 @@ public class KonePluginsCollector(private val project: Project) {
     public operator fun String.unaryPlus() {
         project.dependencies {
             add(PLUGIN_CLASSPATH_CONFIGURATION_NAME, project(":plugins:${this@unaryPlus}"))
+            add(NATIVE_COMPILER_PLUGIN_CLASSPATH_CONFIGURATION_NAME, project(":plugins:${this@unaryPlus}"))
         }
         project.pluginManager.withPlugins("org.jetbrains.kotlin.multiplatform") {
             project.configure<KotlinMultiplatformExtension> {

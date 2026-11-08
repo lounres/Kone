@@ -37,6 +37,7 @@ public val koneOptIns: List<String> = listOf(
     "kotlin.uuid.ExperimentalUuidApi",
     "kotlin.concurrent.atomics.ExperimentalAtomicApi",
     "kotlinx.serialization.ExperimentalSerializationApi",
+    "org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI",
     "dev.lounres.kone.annotations.UnstableKoneAPI",
     "dev.lounres.kone.annotations.ExperimentalKoneAPI",
 )
