@@ -28,6 +28,8 @@ import org.jetbrains.kotlin.konan.target.presetName
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.platform.JsPlatform
 import org.jetbrains.kotlin.platform.jvm.JvmPlatform
+import org.jetbrains.kotlin.platform.konan.NativePlatform
+import org.jetbrains.kotlin.platform.konan.NativePlatformUnspecifiedTarget
 import org.jetbrains.kotlin.platform.konan.NativePlatformWithTarget
 import org.jetbrains.kotlin.platform.wasm.WasmPlatformWithTarget
 
@@ -163,12 +165,15 @@ class BenchmarksKotlinxBenchmarkSupportIrGenerationExtension(
                 )
                 pluginContext.metadataDeclarationRegistrar.registerFunctionAsMetadataVisible(file.declarations.single() as IrSimpleFunction)
             }
-            simplePlatform is NativePlatformWithTarget -> {
+            simplePlatform is NativePlatform -> {
                 val file = nativeMainFile(
                     pluginContext = pluginContext,
                     irRuntimeReferences = irRuntimeReferences,
                     moduleFragment = moduleFragment,
-                    nativeTargetPresetName = simplePlatform.target.presetName,
+                    nativeTargetPresetName = when (simplePlatform) {
+                        NativePlatformUnspecifiedTarget -> simplePlatform.targetName
+                        is NativePlatformWithTarget -> simplePlatform.target.presetName
+                    },
                     benchmarkClasses = buildList {
                         moduleFragment.accept(
                             KotlinxBenchmarkClassCollectorVisitor(

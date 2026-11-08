@@ -25,15 +25,15 @@ class BenchmarksKotlinxBenchmarkSupportCompilerPluginRegistrar : CompilerPluginR
 //        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
         
         FirExtensionRegistrarAdapter.registerExtension(FirBenchmarksKotlinxBenchmarkSupportExtensionRegistrar())
-        IrGenerationExtension.registerExtension(
-            BenchmarksKotlinxBenchmarkSupportIrGenerationExtension(
-                kotlinxBenchmarkJsExecutor = configuration[KotlinxBenchmarkJsExecutor.compilerConfigurationKey] ?: KotlinxBenchmarkJsExecutor.default,
-            )
-        )
 //        IrGenerationExtension.registerExtension(
-//            BenchmarksKotlinxBenchmarkSupportFirBasedIrGenerationExtension(
+//            BenchmarksKotlinxBenchmarkSupportIrGenerationExtension(
 //                kotlinxBenchmarkJsExecutor = configuration[KotlinxBenchmarkJsExecutor.compilerConfigurationKey] ?: KotlinxBenchmarkJsExecutor.default,
 //            )
 //        )
+        IrGenerationExtension.registerExtension(
+            BenchmarksKotlinxBenchmarkSupportFirBasedIrGenerationExtension(
+                kotlinxBenchmarkJsExecutor = configuration[KotlinxBenchmarkJsExecutor.compilerConfigurationKey] ?: KotlinxBenchmarkJsExecutor.default,
+            )
+        )
     }
 }

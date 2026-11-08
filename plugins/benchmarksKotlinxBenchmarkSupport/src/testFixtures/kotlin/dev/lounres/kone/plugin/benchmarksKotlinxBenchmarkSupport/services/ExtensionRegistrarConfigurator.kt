@@ -10,6 +10,7 @@ package dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.services
 import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.fir.DeclarationExtensionRegistrar
 import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.fir.DiagnosticExtensionRegistrar
 import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.fir.FirBenchmarksKotlinxBenchmarkSupportExtensionRegistrar
+import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.ir.BenchmarksKotlinxBenchmarkSupportFirBasedIrGenerationExtension
 import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.ir.BenchmarksKotlinxBenchmarkSupportIrGenerationExtension
 import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.ir.TestIrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
@@ -74,8 +75,14 @@ class IrPartialExtensionRegistrarConfigurator(
 //        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
 
         FirExtensionRegistrarAdapter.registerExtension(FirBenchmarksKotlinxBenchmarkSupportExtensionRegistrar())
+//        IrGenerationExtension.registerExtension(
+//            BenchmarksKotlinxBenchmarkSupportIrGenerationExtension(
+//                kotlinxBenchmarkJsExecutor = BenchmarkJs,
+//                lastPhase = lastPhase
+//            )
+//        )
         IrGenerationExtension.registerExtension(
-            BenchmarksKotlinxBenchmarkSupportIrGenerationExtension(
+            BenchmarksKotlinxBenchmarkSupportFirBasedIrGenerationExtension(
                 kotlinxBenchmarkJsExecutor = BenchmarkJs,
                 lastPhase = lastPhase
             )
@@ -91,8 +98,13 @@ class CompleteExtensionRegistrarConfigurator(testServices: TestServices) : Envir
 //        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
         
         FirExtensionRegistrarAdapter.registerExtension(FirBenchmarksKotlinxBenchmarkSupportExtensionRegistrar())
+//        IrGenerationExtension.registerExtension(
+//            BenchmarksKotlinxBenchmarkSupportIrGenerationExtension(
+//                kotlinxBenchmarkJsExecutor = BenchmarkJs,
+//            )
+//        )
         IrGenerationExtension.registerExtension(
-            BenchmarksKotlinxBenchmarkSupportIrGenerationExtension(
+            BenchmarksKotlinxBenchmarkSupportFirBasedIrGenerationExtension(
                 kotlinxBenchmarkJsExecutor = BenchmarkJs,
             )
         )

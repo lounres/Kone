@@ -9,11 +9,19 @@ import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.KotlinxBenchmar
 import org.jetbrains.kotlin.GeneratedDeclarationKey
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
+import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
+import org.jetbrains.kotlin.ir.builders.irBlockBody
+import org.jetbrains.kotlin.ir.builders.irCall
+import org.jetbrains.kotlin.ir.builders.irString
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
-import org.jetbrains.kotlin.ir.visitors.acceptVoid
+import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 import org.jetbrains.kotlin.konan.target.presetName
+import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.platform.JsPlatform
 import org.jetbrains.kotlin.platform.jvm.JvmPlatform
+import org.jetbrains.kotlin.platform.konan.NativePlatform
+import org.jetbrains.kotlin.platform.konan.NativePlatformUnspecifiedTarget
 import org.jetbrains.kotlin.platform.konan.NativePlatformWithTarget
 import org.jetbrains.kotlin.platform.wasm.WasmPlatformWithTarget
 import org.jetbrains.kotlin.platform.wasm.WasmTarget.JS
@@ -40,29 +48,71 @@ class BenchmarksKotlinxBenchmarkSupportFirBasedIrGenerationExtension(
         when {
             simplePlatform is JvmPlatform -> {}
             simplePlatform is JsPlatform -> {
-                moduleFragment.acceptVoid(
-                    JsMainFunctionBodyGenerationVisitor(
-                        pluginContext = pluginContext,
-                        irRuntimeReferences = irRuntimeReferences,
-                        kotlinxBenchmarkJsExecutor = kotlinxBenchmarkJsExecutor,
-                        benchmarkClasses = buildList {
-                            moduleFragment.accept(
-                                KotlinxBenchmarkClassCollectorVisitor(
-                                    pluginContext = pluginContext,
-                                    irRuntimeReferences = irRuntimeReferences,
-                                    benchmarkClasses = this
-                                ),
-                                null
-                            )
-                        },
-                    )
-                )
+                val mainFunction = moduleFragment
+                    .files
+                    .filter { it.packageFqName == FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated") }
+                    .flatMap { it.declarations }
+                    .filterIsInstance<IrSimpleFunction>()
+                    .filter {
+                        it.name == Name.identifier("main") && it.parameters.size == 1
+                    }
+                    .single()
+                mainFunction.body = DeclarationIrBuilder(
+                    generatorContext = pluginContext,
+                    symbol = mainFunction.symbol,
+                ).irBlockBody {
+                    +irCall(irRuntimeReferences.printlnFunctionIrSimpleFunctionSymbol).apply {
+                        arguments[0] = irString("Hello, IR-generated benchmarks!")
+                    }
+                    val argsValueParameter = mainFunction.parameters.single()
+                    val benchmarkClasses = buildList {
+                        moduleFragment.accept(
+                            KotlinxBenchmarkClassCollectorVisitor(
+                                pluginContext = pluginContext,
+                                irRuntimeReferences = irRuntimeReferences,
+                                benchmarkClasses = this
+                            ),
+                            null
+                        )
+                    }
+                    when (kotlinxBenchmarkJsExecutor) {
+                        BenchmarkJs -> +jsRunBenchmarksViaBenchmarkJs(
+                            pluginContext = pluginContext,
+                            irRuntimeReferences = irRuntimeReferences,
+                            argsValueParameter = argsValueParameter,
+                            benchmarkClasses = benchmarkClasses,
+                        )
+                        BuiltIn -> +jsRunBenchmarksViaBuiltIn(
+                            pluginContext = pluginContext,
+                            irRuntimeReferences = irRuntimeReferences,
+                            argsValueParameter = argsValueParameter,
+                            benchmarkClasses = benchmarkClasses,
+                        )
+                    }
+                }
             }
             simplePlatform is WasmPlatformWithTarget && simplePlatform.target == JS -> {
-                moduleFragment.acceptVoid(
-                    WasmJsMainFunctionBodyGenerationVisitor(
+                val mainFunction = moduleFragment
+                    .files
+                    .filter { it.packageFqName == FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated") }
+                    .flatMap { it.declarations }
+                    .filterIsInstance<IrSimpleFunction>()
+                    .filter {
+                        it.name == Name.identifier("main") && it.parameters.size == 1
+                    }
+                    .single()
+                mainFunction.body = DeclarationIrBuilder(
+                    generatorContext = pluginContext,
+                    symbol = mainFunction.symbol,
+                ).irBlockBody {
+                    +irCall(irRuntimeReferences.printlnFunctionIrSimpleFunctionSymbol).apply {
+                        arguments[0] = irString("Hello, IR-generated benchmarks!")
+                    }
+                    val argsValueParameter = mainFunction.parameters.single()
+                    +wasmJsRunBenchmarks(
                         pluginContext = pluginContext,
                         irRuntimeReferences = irRuntimeReferences,
+                        argsValueParameter = argsValueParameter,
                         benchmarkClasses = buildList {
                             moduleFragment.accept(
                                 KotlinxBenchmarkClassCollectorVisitor(
@@ -74,13 +124,30 @@ class BenchmarksKotlinxBenchmarkSupportFirBasedIrGenerationExtension(
                             )
                         },
                     )
-                )
+                }
             }
             simplePlatform is WasmPlatformWithTarget && simplePlatform.target == WASI -> {
-                moduleFragment.acceptVoid(
-                    WasmWasiMainFunctionBodyGenerationVisitor(
+                val mainFunction = moduleFragment
+                    .files
+                    .filter { it.packageFqName == FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated") }
+                    .flatMap { it.declarations }
+                    .filterIsInstance<IrSimpleFunction>()
+                    .filter {
+                        it.name == Name.identifier("main") && it.parameters.size == 1
+                    }
+                    .single()
+                mainFunction.body = DeclarationIrBuilder(
+                    generatorContext = pluginContext,
+                    symbol = mainFunction.symbol,
+                ).irBlockBody {
+                    +irCall(irRuntimeReferences.printlnFunctionIrSimpleFunctionSymbol).apply {
+                        arguments[0] = irString("Hello, IR-generated benchmarks!")
+                    }
+                    val argsValueParameter = mainFunction.parameters.single()
+                    +wasmWasiRunBenchmarks(
                         pluginContext = pluginContext,
                         irRuntimeReferences = irRuntimeReferences,
+                        argsValueParameter = argsValueParameter,
                         benchmarkClasses = buildList {
                             moduleFragment.accept(
                                 KotlinxBenchmarkClassCollectorVisitor(
@@ -92,14 +159,34 @@ class BenchmarksKotlinxBenchmarkSupportFirBasedIrGenerationExtension(
                             )
                         },
                     )
-                )
+                }
             }
-            simplePlatform is NativePlatformWithTarget -> {
-                moduleFragment.acceptVoid(
-                    NativeMainFunctionBodyGenerationVisitor(
+            simplePlatform is NativePlatform -> {
+                val mainFunction = moduleFragment
+                    .files
+                    .filter { it.packageFqName == FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated") }
+                    .flatMap { it.declarations }
+                    .filterIsInstance<IrSimpleFunction>()
+                    .filter {
+                        it.name == Name.identifier("main") && it.parameters.size == 1
+                    }
+                    .single()
+                mainFunction.body = DeclarationIrBuilder(
+                    generatorContext = pluginContext,
+                    symbol = mainFunction.symbol,
+                ).irBlockBody {
+                    +irCall(irRuntimeReferences.printlnFunctionIrSimpleFunctionSymbol).apply {
+                        arguments[0] = irString("Hello, IR-generated benchmarks!")
+                    }
+                    val argsValueParameter = mainFunction.parameters.single()
+                    +nativeRunBenchmarks(
                         pluginContext = pluginContext,
                         irRuntimeReferences = irRuntimeReferences,
-                        nativeTargetPresetName = simplePlatform.target.presetName,
+                        nativeTargetPresetName = when (simplePlatform) {
+                            NativePlatformUnspecifiedTarget -> simplePlatform.targetName
+                            is NativePlatformWithTarget -> simplePlatform.target.presetName
+                        },
+                        argsValueParameter = argsValueParameter,
                         benchmarkClasses = buildList {
                             moduleFragment.accept(
                                 KotlinxBenchmarkClassCollectorVisitor(
@@ -111,7 +198,7 @@ class BenchmarksKotlinxBenchmarkSupportFirBasedIrGenerationExtension(
                             )
                         },
                     )
-                )
+                }
             }
         }
         
