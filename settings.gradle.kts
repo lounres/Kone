@@ -1,5 +1,8 @@
 import java.time.LocalDateTime
 import java.time.ZoneId
+import kotlin.io.path.isDirectory
+import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.name
 
 rootProject.name = "Kone"
 
@@ -62,10 +65,12 @@ plugins {
 stal {
     structure {
         taggedWith("version catalog")
-        defaultIncludeIf = { it.listFiles { file: File -> file.name != "build" || !file.isDirectory }?.isNotEmpty() == true }
+        defaultIncludeIf = { directory ->
+            !directory.resolve(".ignore.stal").exists() && directory.toPath().listDirectoryEntries().any { it.name != "build" || !it.isDirectory() }
+        }
         "libs" {
             "main" {
-                subdirs("libs main", includeIf = { it.name !in listOf<String>("hooks", "computations", "polynomial") }) { // TODO: Enable the projects eventually
+                subdirs("libs main") {
                     "algorithms"("libs main algorithms")
                     "assertions"("libs main assertions")
                     "benchmarks"("libs main benchmarks")
@@ -73,7 +78,7 @@ stal {
                 }
             }
             "misc" {
-                subdirs("libs misc", includeIf = { it.name !in listOf("lattices", "planimetricsCalculus") }) // TODO: Enable the projects eventually
+                subdirs("libs misc")
             }
             "util" {
                 subdirs("libs util")
@@ -81,7 +86,7 @@ stal {
         }
 //        "bom"("bom")
         "plugins" {
-            subdirs("kotlin compiler plugin", includeIf = { it.name !in listOf("fiktion") }) {
+            subdirs("kotlin compiler plugin") {
                 "runtime"("kotlin compiler plugin runtime")
                 "gradleWrapper"("kotlin compiler plugin gradle wrapper")
             }
