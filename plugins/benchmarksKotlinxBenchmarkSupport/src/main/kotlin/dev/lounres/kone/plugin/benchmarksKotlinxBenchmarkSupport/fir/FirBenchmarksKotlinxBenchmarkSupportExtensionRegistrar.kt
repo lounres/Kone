@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.fir.extensions.FirExtensionRegistrar
 
 class FirBenchmarksKotlinxBenchmarkSupportExtensionRegistrar : FirExtensionRegistrar() {
     override fun ExtensionRegistrarContext.configurePlugin() {
+//        +::BenchmarksKotlinxBenchmarkSupportEntryPointGenerationExtension
         +::BenchmarksKotlinxBenchmarkSupportCheckersExtension
         
         registerDiagnosticContainers(BenchmarksKotlinxBenchmarkSupportCheckersExtension.Errors)

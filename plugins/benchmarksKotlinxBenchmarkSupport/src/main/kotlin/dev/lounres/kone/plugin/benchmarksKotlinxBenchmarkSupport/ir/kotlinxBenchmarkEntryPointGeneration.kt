@@ -6,6 +6,8 @@
 package dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.ir
 
 import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.KotlinxBenchmarkJsExecutor
+import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.KotlinxBenchmarkJsExecutor.BenchmarkJs
+import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.KotlinxBenchmarkJsExecutor.BuiltIn
 import dev.lounres.kone.scope
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
@@ -1095,3 +1097,47 @@ fun nativeMainFile(
         )
     )
 }
+
+//class JsMainFunctionBodyGenerationVisitor(
+//    private val pluginContext: IrPluginContext,
+//    private val irRuntimeReferences: IrRuntimeReferences,
+//    private val kotlinxBenchmarkJsExecutor: KotlinxBenchmarkJsExecutor,
+//    private val benchmarkClasses: List<KotlinxBenchmarkClass>,
+//) : IrVisitorVoid() {
+//    companion object {
+//        val entryPointCallableId = CallableId(
+//            packageName = FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated"),
+//            className = null,
+//            callableName = Name.identifier("main"),
+//        )
+//    }
+//
+//    override fun visitSimpleFunction(declaration: IrSimpleFunction) {
+//        if (!declaration.isLocal && declaration.callableId == entryPointCallableId && declaration.parameters.size == 0) {
+//            declaration.body = DeclarationIrBuilder(
+//                generatorContext = pluginContext,
+//                symbol = declaration.symbol,
+//            ).irBlockBody {
+//                +irCall(irRuntimeReferences.printlnFunctionIrSimpleFunctionSymbol).apply {
+//                    arguments[0] = irString("Hello, IR-generated benchmarks!")
+//                }
+////                val argsValueParameter = declaration.parameters.single()
+//                when (kotlinxBenchmarkJsExecutor) {
+//                    BenchmarkJs -> +jsRunBenchmarksViaBenchmarkJs(
+//                        pluginContext = pluginContext,
+//                        irRuntimeReferences = irRuntimeReferences,
+////                        argsValueParameter = argsValueParameter,
+//                        benchmarkClasses = benchmarkClasses,
+//                    )
+//                    BuiltIn -> +jsRunBenchmarksViaBuiltIn(
+//                        pluginContext = pluginContext,
+//                        irRuntimeReferences = irRuntimeReferences,
+////                        argsValueParameter = argsValueParameter,
+//                        benchmarkClasses = benchmarkClasses,
+//                    )
+//                }
+//            }
+//        }
+//        super.visitSimpleFunction(declaration)
+//    }
+//}
