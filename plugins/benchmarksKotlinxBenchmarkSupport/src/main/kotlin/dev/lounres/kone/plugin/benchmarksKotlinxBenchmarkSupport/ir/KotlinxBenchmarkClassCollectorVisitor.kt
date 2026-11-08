@@ -5,6 +5,7 @@
 
 package dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.ir
 
+import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.kotlinxBenchmarkAnnotationClassId
 import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.kotlinxBenchmarkModeAnnotationClassId
 import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.kotlinxMeasurementAnnotationClassId
 import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.kotlinxOutputTimeUnitAnnotationClassId
@@ -65,6 +66,7 @@ class KotlinxBenchmarkClassCollectorVisitor(
                 }.toList(),
                 benchmarkMethods = declaration.functions
                     .mapNotNull { method ->
+                        if (!method.hasAnnotation(kotlinxBenchmarkAnnotationClassId)) return@mapNotNull null
                         if (method.parameters.size > 2) return@mapNotNull null
                         KotlinxBenchmarkMethod(
                             theMethod = method,

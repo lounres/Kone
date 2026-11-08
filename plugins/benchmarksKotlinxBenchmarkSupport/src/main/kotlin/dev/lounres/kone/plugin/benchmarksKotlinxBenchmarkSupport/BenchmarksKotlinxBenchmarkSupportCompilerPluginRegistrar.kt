@@ -6,6 +6,7 @@
 package dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport
 
 import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.fir.FirBenchmarksKotlinxBenchmarkSupportExtensionRegistrar
+import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.ir.BenchmarksKotlinxBenchmarkSupportFirBasedIrGenerationExtension
 import dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.ir.BenchmarksKotlinxBenchmarkSupportIrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.compiler.plugin.CompilerPluginRegistrar
@@ -29,5 +30,10 @@ class BenchmarksKotlinxBenchmarkSupportCompilerPluginRegistrar : CompilerPluginR
                 kotlinxBenchmarkJsExecutor = configuration[KotlinxBenchmarkJsExecutor.compilerConfigurationKey] ?: KotlinxBenchmarkJsExecutor.default,
             )
         )
+//        IrGenerationExtension.registerExtension(
+//            BenchmarksKotlinxBenchmarkSupportFirBasedIrGenerationExtension(
+//                kotlinxBenchmarkJsExecutor = configuration[KotlinxBenchmarkJsExecutor.compilerConfigurationKey] ?: KotlinxBenchmarkJsExecutor.default,
+//            )
+//        )
     }
 }
