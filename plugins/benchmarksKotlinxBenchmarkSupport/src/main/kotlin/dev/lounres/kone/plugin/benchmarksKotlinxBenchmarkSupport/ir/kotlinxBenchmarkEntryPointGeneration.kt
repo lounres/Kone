@@ -866,6 +866,9 @@ fun jsMain(
         generatorContext = pluginContext,
         symbol = symbol,
     ).irBlockBody {
+        +irCall(irRuntimeReferences.printlnFunctionIrSimpleFunctionSymbol).apply {
+            arguments[0] = irString("Hello, IR-generated benchmarks!")
+        }
         when (kotlinxBenchmarkJsExecutor) {
             BenchmarkJs -> +jsRunBenchmarksViaBenchmarkJs(
                 pluginContext = pluginContext,
@@ -907,6 +910,9 @@ fun wasmJsMain(
         generatorContext = pluginContext,
         symbol = symbol,
     ).irBlockBody {
+        +irCall(irRuntimeReferences.printlnFunctionIrSimpleFunctionSymbol).apply {
+            arguments[0] = irString("Hello, IR-generated benchmarks!")
+        }
         +wasmJsRunBenchmarks(
             pluginContext = pluginContext,
             irRuntimeReferences = irRuntimeReferences,
@@ -940,6 +946,9 @@ fun wasmWasiMain(
         generatorContext = pluginContext,
         symbol = symbol,
     ).irBlockBody {
+        +irCall(irRuntimeReferences.printlnFunctionIrSimpleFunctionSymbol).apply {
+            arguments[0] = irString("Hello, IR-generated benchmarks!")
+        }
         +wasmWasiRunBenchmarks(
             pluginContext = pluginContext,
             irRuntimeReferences = irRuntimeReferences,
@@ -974,6 +983,9 @@ fun nativeMain(
         generatorContext = pluginContext,
         symbol = symbol,
     ).irBlockBody {
+        +irCall(irRuntimeReferences.printlnFunctionIrSimpleFunctionSymbol).apply {
+            arguments[0] = irString("Hello, IR-generated benchmarks!")
+        }
         +nativeRunBenchmarks(
             pluginContext = pluginContext,
             irRuntimeReferences = irRuntimeReferences,
@@ -996,7 +1008,7 @@ fun jsMainFile(
     ),
     packageFragmentDescriptor = MutablePackageFragmentDescriptor(
         moduleFragment.descriptor,
-        FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated")
+        FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated"),
     ),
     module = moduleFragment,
 ).apply {
@@ -1021,7 +1033,7 @@ fun wasmJsMainFile(
     ),
     packageFragmentDescriptor = MutablePackageFragmentDescriptor(
         moduleFragment.descriptor,
-        FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated")
+        FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated"),
     ),
     module = moduleFragment,
 ).apply {
@@ -1045,7 +1057,7 @@ fun wasmWasiMainFile(
     ),
     packageFragmentDescriptor = MutablePackageFragmentDescriptor(
         moduleFragment.descriptor,
-        FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated")
+        FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated"),
     ),
     module = moduleFragment,
 ).apply {
@@ -1070,7 +1082,7 @@ fun nativeMainFile(
     ),
     packageFragmentDescriptor = MutablePackageFragmentDescriptor(
         moduleFragment.descriptor,
-        FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated")
+        FqName("dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated"),
     ),
     module = moduleFragment,
 ).apply {

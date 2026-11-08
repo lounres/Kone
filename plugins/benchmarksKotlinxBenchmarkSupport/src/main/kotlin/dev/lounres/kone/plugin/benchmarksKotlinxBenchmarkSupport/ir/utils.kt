@@ -132,6 +132,7 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
             it.owner.parameters.let { it.size == 1 && it[0].kind == ExtensionReceiver && it[0].type == pluginContext.irBuiltIns.charSequenceClass.defaultType}
         }
     }
+    val emptyArrayFunctionIrSimpleFunctionSymbol by lazy { finder.referenceFunctionThatOrFail(CallableId(FqName("kotlin"), Name.identifier("emptyArray"))) }
     val listIrClassSymbol = finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin.collections"), topLevelName = Name.identifier("List")))
     val listOfIrSimpleFunction = finder.referenceFunctionThatOrFail(CallableId(FqName("kotlin.collections"), Name.identifier("listOf"))) { symbol ->
         val parameters = symbol.owner.parameters
@@ -145,6 +146,12 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
     }
     val pairIrClassSymbol = finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin"), topLevelName = Name.identifier("Pair")))
     val pairIrConstructorSymbol = pairIrClassSymbol.constructors.single()
+    val printlnFunctionIrSimpleFunctionSymbol by lazy {
+        finder.referenceFunctionThatOrFail(CallableId(FqName("kotlin.io"), Name.identifier("println"))) {
+            it.owner.parameters.let { it.size == 1 && it[0].type == pluginContext.irBuiltIns.anyNType }
+        }
+    }
+    val jsExportAnnotationIrClassSymbol by lazy { finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin.js"), topLevelName = Name.identifier("JsExport"))) }
     
     // Library
     val kotlinxBenchmarkModeAnnotationIrClassSymbol by lazy { finder.referenceClassOrFail(kotlinxBenchmarkModeAnnotationClassId) }
