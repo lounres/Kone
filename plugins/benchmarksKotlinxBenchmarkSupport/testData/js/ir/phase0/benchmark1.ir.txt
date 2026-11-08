@@ -83,3 +83,6 @@ FILE fqName:foo.bar fileName:/benchmark1.kt
                 ARG <this>: GET_VAR 'blackhole: kotlinx.benchmark.Blackhole declared in foo.bar.MyBenchmark.benchmark' type=kotlinx.benchmark.Blackhole origin=null
                 ARG d: CALL 'public final fun tanh (x: kotlin.Double): kotlin.Double declared in kotlin.math' type=kotlin.Double origin=null
                   ARG x: CALL 'public final fun <get-value> (): kotlin.Double declared in foo.bar' type=kotlin.Double origin=GET_PROPERTY
+FILE fqName:dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated fileName:dev/lounres/kone/plugin/benchmarks/kotlinxBenchmarkSupport/generated/__GENERATED__CALLABLES__.kt
+  FUN GENERATED[dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.fir.BenchmarksKotlinxBenchmarkSupportEntryPointGenerationExtension.Key] name:main visibility:public modality:FINAL returnType:kotlin.Unit
+    VALUE_PARAMETER GENERATED[dev.lounres.kone.plugin.benchmarksKotlinxBenchmarkSupport.fir.BenchmarksKotlinxBenchmarkSupportEntryPointGenerationExtension.Key] kind:Regular name:args index:0 type:kotlin.Array<kotlin.String>

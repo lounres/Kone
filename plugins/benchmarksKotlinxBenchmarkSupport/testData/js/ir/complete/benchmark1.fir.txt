@@ -29,3 +29,7 @@ FILE: benchmark1.kt
         }
 
     }
+FILE: dev/lounres/kone/plugin/benchmarks/kotlinxBenchmarkSupport/generated/__GENERATED__CALLABLES__.kt
+    package dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated
+
+    public final fun main(args: R|kotlin/Array<kotlin/String>|): R|kotlin/Unit|
