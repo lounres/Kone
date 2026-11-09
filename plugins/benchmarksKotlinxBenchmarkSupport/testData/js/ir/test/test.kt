@@ -22,7 +22,7 @@ class MyBenchmark {
 }
 
 // FILE: run.kt
-package dev.lounres.kone.plugin.benchmarks.kotlinxBenchmarkSupport.generated
+package dev.lounres.kone.plugins.benchmarksKotlinxBenchmarkSupport.generated
 
 import kotlinx.benchmark.js.*
 import kotlinx.benchmark.*

@@ -5,12 +5,12 @@
 
 @file:OptIn(ExperimentalCompilerApi::class)
 
-package dev.lounres.kone.plugin.fiktion.services
+package dev.lounres.kone.plugins.fiktion.services
 
-import dev.lounres.kone.plugin.fiktion.fir.DeclarationExtensionRegistrar
-import dev.lounres.kone.plugin.fiktion.fir.DiagnosticExtensionRegistrar
-import dev.lounres.kone.plugin.fiktion.fir.FirFiktionExtensionRegistrar
-import dev.lounres.kone.plugin.fiktion.ir.fiktionIrGenerationExtension
+import dev.lounres.kone.plugins.fiktion.fir.DeclarationExtensionRegistrar
+import dev.lounres.kone.plugins.fiktion.fir.DiagnosticExtensionRegistrar
+import dev.lounres.kone.plugins.fiktion.fir.FirFiktionExtensionRegistrar
+import dev.lounres.kone.plugins.fiktion.ir.fiktionIrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.compiler.plugin.CompilerPluginRegistrar.ExtensionStorage

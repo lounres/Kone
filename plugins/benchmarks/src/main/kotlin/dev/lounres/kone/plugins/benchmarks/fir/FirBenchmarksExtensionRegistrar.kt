@@ -1,0 +1,17 @@
+/*
+ * Copyright © 2026 Gleb Minaev
+ * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
+ */
+
+package dev.lounres.kone.plugins.benchmarks.fir
+
+import org.jetbrains.kotlin.fir.extensions.FirExtensionRegistrar
+
+
+class FirBenchmarksExtensionRegistrar : FirExtensionRegistrar() {
+    override fun ExtensionRegistrarContext.configurePlugin() {
+        +::BenchmarksCheckersExtension
+        
+        registerDiagnosticContainers(BenchmarksCheckersExtension.Errors)
+    }
+}

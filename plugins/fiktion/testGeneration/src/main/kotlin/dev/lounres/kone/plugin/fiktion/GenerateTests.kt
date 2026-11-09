@@ -3,16 +3,16 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.plugin.fiktion
+package dev.lounres.kone.plugins.fiktion
 
-import dev.lounres.kone.plugin.fiktion.runners.AbstractFrontendTestComplete
-import dev.lounres.kone.plugin.fiktion.runners.AbstractFrontendTestDeclarations
-import dev.lounres.kone.plugin.fiktion.runners.AbstractFrontendTestDiagnostic
-import dev.lounres.kone.plugin.fiktion.runners.AbstractTestWithoutPlugin
-import dev.lounres.kone.plugin.fiktion.runners.AbstractErasureBackendTestComplete
-import dev.lounres.kone.plugin.fiktion.runners.AbstractErasureBoxTest
-import dev.lounres.kone.plugin.fiktion.runners.AbstractInterceptionBackendTestComplete
-import dev.lounres.kone.plugin.fiktion.runners.AbstractInterceptionBoxTest
+import dev.lounres.kone.plugins.fiktion.runners.AbstractFrontendTestComplete
+import dev.lounres.kone.plugins.fiktion.runners.AbstractFrontendTestDeclarations
+import dev.lounres.kone.plugins.fiktion.runners.AbstractFrontendTestDiagnostic
+import dev.lounres.kone.plugins.fiktion.runners.AbstractTestWithoutPlugin
+import dev.lounres.kone.plugins.fiktion.runners.AbstractErasureBackendTestComplete
+import dev.lounres.kone.plugins.fiktion.runners.AbstractErasureBoxTest
+import dev.lounres.kone.plugins.fiktion.runners.AbstractInterceptionBackendTestComplete
+import dev.lounres.kone.plugins.fiktion.runners.AbstractInterceptionBoxTest
 import generatedTestsPath
 import org.jetbrains.kotlin.generators.dsl.junit5.generateTestGroupSuiteWithJUnit5
 import testDataPath

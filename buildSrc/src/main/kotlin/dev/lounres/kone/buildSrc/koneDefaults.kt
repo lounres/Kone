@@ -25,7 +25,7 @@ public val koneCompilerOptions: List<String> = listOf(
 //    "-Xjvm-enable-preview",
     
     // Kone compiler plugins order
-    "-Xcompiler-plugin-order=dev.lounres.kone.plugin.suppliedTypes>dev.lounres.kone.plugin.contextsKeys",
+    "-Xcompiler-plugin-order=dev.lounres.kone.plugins.suppliedTypes>dev.lounres.kone.plugins.contextsKeys",
 )
 
 public val koneOptIns: List<String> = listOf(

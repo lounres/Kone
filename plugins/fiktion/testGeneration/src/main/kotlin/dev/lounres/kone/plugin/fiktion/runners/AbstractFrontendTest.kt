@@ -3,11 +3,11 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.plugin.fiktion.runners
+package dev.lounres.kone.plugins.fiktion.runners
 
-import dev.lounres.kone.plugin.fiktion.services.FirCompleteExtensionRegistrarConfigurator
-import dev.lounres.kone.plugin.fiktion.services.FirDeclarationsConfigurator
-import dev.lounres.kone.plugin.fiktion.services.FirDiagnosticConfigurator
+import dev.lounres.kone.plugins.fiktion.services.FirCompleteExtensionRegistrarConfigurator
+import dev.lounres.kone.plugins.fiktion.services.FirDeclarationsConfigurator
+import dev.lounres.kone.plugins.fiktion.services.FirDiagnosticConfigurator
 import org.jetbrains.kotlin.test.Constructor
 import org.jetbrains.kotlin.test.builders.TestConfigurationBuilder
 import org.jetbrains.kotlin.test.services.EnvironmentConfigurator

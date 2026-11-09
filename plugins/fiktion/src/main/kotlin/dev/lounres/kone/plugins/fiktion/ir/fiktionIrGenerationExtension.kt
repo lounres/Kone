@@ -1,0 +1,19 @@
+/*
+ * Copyright © 2026 Gleb Minaev
+ * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
+ */
+
+package dev.lounres.kone.plugins.fiktion.ir
+
+import dev.lounres.kone.plugins.fiktion.ir.erasure.FiktionErasureIrGenerationExtension
+import dev.lounres.kone.plugins.fiktion.ir.interception.FiktionInterceptionIrGenerationExtension
+import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
+import org.jetbrains.kotlin.cli.common.messages.MessageCollector
+
+
+fun fiktionIrGenerationExtension(
+//    messageCollector: MessageCollector,
+    eraseFiktion: Boolean,
+): IrGenerationExtension =
+    if (eraseFiktion) FiktionErasureIrGenerationExtension()
+    else FiktionInterceptionIrGenerationExtension()

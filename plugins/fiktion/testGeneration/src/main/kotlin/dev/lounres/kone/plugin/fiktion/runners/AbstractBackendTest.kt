@@ -3,10 +3,10 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.plugin.fiktion.runners
+package dev.lounres.kone.plugins.fiktion.runners
 
-import dev.lounres.kone.plugin.fiktion.services.ErasureExtensionRegistrarConfigurator
-import dev.lounres.kone.plugin.fiktion.services.InterceptionExtensionRegistrarConfigurator
+import dev.lounres.kone.plugins.fiktion.services.ErasureExtensionRegistrarConfigurator
+import dev.lounres.kone.plugins.fiktion.services.InterceptionExtensionRegistrarConfigurator
 import org.jetbrains.kotlin.test.Constructor
 import org.jetbrains.kotlin.test.backend.BlackBoxCodegenSuppressor
 import org.jetbrains.kotlin.test.backend.handlers.IrTextDumpHandler
