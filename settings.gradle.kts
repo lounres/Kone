@@ -33,10 +33,7 @@ dependencyResolutionManagement {
         mavenCentral()
         gradlePluginPortal()
         maven("https://repo.kotlin.link")
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")
-        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev")
-        maven("https://packages.jetbrains.team/maven/p/ij/intellij-dependencies/")
+        maven("https://packages.jetbrains.team/maven/p/compiler-plugin-dev-kit/eap")
         mavenLocal()
     }
     
@@ -53,73 +50,53 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
-        maven("https://packages.jetbrains.team/maven/p/ij/intellij-dependencies/")
+        maven("https://packages.jetbrains.team/maven/p/compiler-plugin-dev-kit/eap")
     }
 }
 
 plugins {
     id("dev.lounres.gradle.stal") version "0.4.0"
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+    kotlin("compiler.plugin.devkit") version "0.0.4-dev-375"
 }
 
 stal {
     structure {
-        taggedWith("version catalog")
+        taggedWith("version catalog", "publishing")
         defaultIncludeIf = { directory ->
             !directory.resolve(".ignore.stal").exists() && directory.toPath().listDirectoryEntries().any { it.name != "build" || !it.isDirectory() }
         }
         "libs" {
             "main" {
-                subdirs("libs main") {
-                    "algorithms"("libs main algorithms")
-                    "assertions"("libs main assertions")
-                    "benchmarks"("libs main benchmarks")
-                    "examples"("libs main examples")
+                subdirs("libs main", "libs public", "libs", "kotlin multiplatform", "kotlin library settings", "publishing", "testBalloon", "dokka") {
+                    "algorithms"("libs main algorithms", "libs main extra", "kotlin multiplatform", "kotlin library settings")
+                    "assertions"("libs main assertions", "libs main extra", "kotlin multiplatform", "kotlin library settings")
+                    "benchmarks"("libs main benchmarks", "libs main extra", "kotlin multiplatform")
+                    "examples"("libs main examples", "libs main extra", "kotlin multiplatform")
                 }
             }
             "misc" {
-                subdirs("libs misc")
+                subdirs("libs misc", "libs public", "libs", "kotlin multiplatform", "kotlin library settings", "publishing", "testBalloon", "dokka")
             }
             "util" {
-                subdirs("libs util")
+                subdirs("libs util", "libs", "kotlin multiplatform", "kotlin library settings", "publishing", "dokka")
             }
         }
-//        "bom"("bom")
+//        "bom"("bom", "kotlin multiplatform", "kotlin library settings", "publishing")
         "plugins" {
-            subdirs("kotlin compiler plugin") {
-                "runtime"("kotlin compiler plugin runtime")
-                "gradleWrapper"("kotlin compiler plugin gradle wrapper")
+            "util"("kotlin compiler library")
+            "testUtil"("kotlin compiler library")
+            subdirs("kotlin compiler plugin", "publishing") {
+                "runtime"("kotlin compiler plugin runtime", "kotlin multiplatform", "kotlin library settings", "publishing", "dokka")
+//                "gradleWrapper"("kotlin compiler plugin gradle wrapper", "kotlin jvm")
             }
         }
         "docs"()
     }
 
     tag {
-        // Grouping tags
-        "libs main extra" since { hasAnyOf("libs main algorithms", "libs main assertions", "libs main benchmarks", "libs main examples") }
-        "libs public" since { hasAnyOf("libs main", "libs misc") }
-        "libs" since { hasAnyOf("libs main", "libs misc", "libs util") }
-        // Extra structure
-        "algorithms" since { has("libs main algorithms") }
-        "assertions" since { has("libs main assertions") }
-        "benchmarks" since { has("libs main benchmarks") }
-        "examples" since { has("libs main examples") }
-        // Gradle plugin setup
-        "gradle plugin" since { hasAnyOf("kotlin compiler plugin gradle wrapper") }
-        // Kotlin setup
-        "kotlin multiplatform" since { hasAnyOf("libs", "libs main extra", "bom", "kotlin compiler plugin runtime") }
-        "kotlin jvm" since { hasAnyOf("gradle plugin", "kotlin compiler plugin") }
-        "kotlin android" since { has("kotlin multiplatform") && hasAnyOf("libs", "kotlin compiler plugin runtime", "bom") }
-        "kotlin common settings" since { hasAnyOf("kotlin multiplatform", "kotlin jvm") }
-        "kotlin library settings" since { hasAnyOf("libs", "kotlin compiler plugin runtime", "algorithms", "assertions", "bom") }
-        // Extra
-        "testBalloon" since { has("libs public") }
-//        "kover" since { has("libs public") }
-        "kotlin jvm publication" since { hasAnyOf("kotlin compiler plugin") }
-        "kotlin multiplatform publication" since { hasAnyOf("libs", "bom", "kotlin compiler plugin runtime") }
-        "gradle plugin publication" since { hasAnyOf("kotlin compiler plugin gradle wrapper") }
-        "publishing" since { hasAnyOf("version catalog", "libs", "kotlin compiler plugin", "kotlin compiler plugin runtime", "kotlin compiler plugin gradle wrapper", /*"bom"*/) }
-        "dokka" since { hasAnyOf("libs", "kotlin compiler plugin runtime") }
+        "kotlin multiplatform publication" since { has("publishing") && has("kotlin multiplatform") }
+        "kotlin jvm publication" since { has("publishing") && has("kotlin jvm") }
     }
 
     action {
@@ -164,25 +141,27 @@ stal {
             extra["alias"] = "bom"
             extra["androidNamespace"] = "dev.lounres.kone.bom"
         }
+        "kotlin compiler library" {
+            extra["artifactId"] = "kone.plugins.${project.name}"
+//            extra["alias"] = "plugins-${project.name}"
+        }
         "kotlin compiler plugin" {
-            extra["artifactId"] = "kone.plugin.${project.name}"
-//            extra["alias"] = "plugin-${project.name}"
+            extra["artifactId"] = "kone.plugins.${project.name}"
+//            extra["alias"] = "plugins-${project.name}"
         }
         "kotlin compiler plugin runtime" {
-            extra["artifactId"] = "kone.plugin.${project.parent!!.name}.runtime"
-//            extra["alias"] = "plugin-${project.parent!!.name}-runtime"
-            extra["androidNamespace"] = "dev.lounres.kone.plugin.${project.parent!!.name}.runtime"
-            extra["jvmTargetVersion"] = settings.extra["pluginRuntimeJvmTargetVersion"]
-            extra["jvmVendor"] = settings.extra["pluginRuntimeJvmVendor"]
+            extra["artifactId"] = "kone.plugins.${project.parent!!.name}.runtime"
+//            extra["alias"] = "plugins-${project.parent!!.name}-runtime"
+            extra["androidNamespace"] = "dev.lounres.kone.plugins.${project.parent!!.name}.runtime"
         }
         "kotlin compiler plugin gradle wrapper" {
-            extra["artifactId"] = "kone.plugin.${project.parent!!.name}.gradle"
+            extra["artifactId"] = "kone.plugins.${project.parent!!.name}.gradle"
             extra["alias"] = "plugin-${project.parent!!.name}"
         }
         "version catalog" {
             extra["artifactId"] = "kone.versionCatalog"
         }
-        "benchmarks" {
+        "libs main benchmarks" {
             extra["jvmTargetVersion"] = settings.extra["benchmatrksJvmTargetVersion"]
             extra["jvmVendor"] = settings.extra["benchmatrksJvmVendor"]
         }

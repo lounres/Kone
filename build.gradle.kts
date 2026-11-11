@@ -19,8 +19,12 @@ import net.schmizz.sshj.SSHClient
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier
 import org.gradle.accessors.dm.LibrariesForVersions
 import org.gradle.accessors.dm.RootProjectAccessor
+import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.kotlin.allopen.gradle.AllOpenExtension
+import org.jetbrains.kotlin.compiler.plugin.devkit.DevKitCompilerConfigExtension
+import org.jetbrains.kotlin.compiler.plugin.devkit.DevKitCompilerLibrary
+import org.jetbrains.kotlin.compiler.plugin.devkit.DevKitCompilerPlugin
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
@@ -30,9 +34,6 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJvmCompilation
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinUsages
-import org.jetbrains.kotlin.gradle.targets.wasm.d8.D8EnvSpec
-import org.jetbrains.kotlin.gradle.targets.wasm.d8.D8Plugin
 import java.io.ByteArrayOutputStream
 
 
@@ -40,6 +41,7 @@ plugins {
     `kotlin-dsl` apply false
 //    alias(versions.plugins.kotlin.multiplatform) apply false
     alias(versions.plugins.android.library) apply false
+    pluginDevKit("compiler-plugin") apply false
     alias(versions.plugins.kotlinx.atomicfu) apply false
     alias(versions.plugins.kotlin.compose) apply false
     alias(versions.plugins.compose.multiplatform) apply false
@@ -258,11 +260,19 @@ stal {
                     verbose = true
                 }
             }
+            
+            tasks.withType<Test> {
+                useJUnitPlatform()
+                maxHeapSize = "4g"
+            }
         }
         "kotlin multiplatform" {
             apply(versions.plugins.kotlin.multiplatform)
             configure<KotlinMultiplatformExtension> {
-                applyDefaultHierarchyTemplate()
+                jvmToolchain {
+                    languageVersion = JavaLanguageVersion.of(project.extra["jvmTargetVersion"] as String)
+                    vendor = JvmVendorSpec.matching(project.extra["jvmVendor"] as String)
+                }
                 
                 compilerOptions {
                     progressiveMode = true
@@ -270,6 +280,8 @@ stal {
                     optIn.addAll(koneOptIns)
                     verbose = true
                 }
+                
+                applyDefaultHierarchyTemplate()
 
                 jvm {
                     testRuns.all {
@@ -304,6 +316,11 @@ stal {
 //                iosSimulatorArm64()
 //                macosArm64()
             }
+            
+            tasks.withType<Test> {
+                useJUnitPlatform()
+                maxHeapSize = "4g"
+            }
         }
         "kotlin android" {
             apply(versions.plugins.android.library)
@@ -326,203 +343,58 @@ stal {
                 }
             }
         }
-        "kotlin common settings" {
-            pluginManager.withPlugins(versions.plugins.kotlin.jvm, versions.plugins.kotlin.multiplatform) {
-                configure<KotlinProjectExtension> {
-                    jvmToolchain {
-                        languageVersion = JavaLanguageVersion.of(project.extra["jvmTargetVersion"] as String)
-                        vendor = JvmVendorSpec.matching(project.extra["jvmVendor"] as String)
-                    }
-                }
-            }
-            tasks.withType<Test> {
-                useJUnitPlatform()
-                maxHeapSize = "4g"
-            }
-        }
         "kotlin library settings" {
             configure<KotlinProjectExtension> {
                 explicitApi = Warning
             }
         }
-        @OptIn(ExperimentalWasmDsl::class)
-        @Suppress("UnstableApiUsage")
-        "kotlin compiler plugin" {
-            apply<JavaTestFixturesPlugin>()
-            apply<D8Plugin>()
-            
-            val testDataDir = layout.projectDirectory.dir("testData")
-            val generatedTestsDirectory = layout.buildDirectory.dir("generated/kotlinCompilerPluginTestGenerator/test").get()
-            
-            configure<SourceSetContainer> {
-                named("test") {
-                    java.srcDir(generatedTestsDirectory)
-                }
-            }
-            
-            pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
-                configure<KotlinJvmProjectExtension> {
-                    sourceSets {
-                        named("main") {
-                            dependencies {
-                                compileOnly(versions.kotlin.compiler)
-                                implementation(projects.libs.util.kotlinCompilerUtils)
-                            }
-                        }
-                        named("test") {
-                            dependencies {
-                                implementation(versions.kotlin.compiler)
-                                implementation(versions.kotlin.reflect)
-                                implementation(versions.kotlin.compiler.internal.test.framework)
-
-//                                implementation(project.dependencies.platform(versions.junit.bom))
-                                implementation(versions.junit.jupiter)
-                                implementation(versions.junit.platform.commons)
-                                implementation(versions.junit.platform.launcher)
-//                                implementation(versions.junit.platform.runner)
-                                implementation(versions.junit.platform.suite.api)
-                            }
-                        }
-                        named("testFixtures") {
-                            dependencies {
-                                implementation(versions.kotlin.compiler)
-                                implementation(versions.kotlin.reflect)
-                                implementation(versions.kotlin.compiler.internal.test.framework)
-                                
-                                api(projects.libs.util.kotlinCompilerTestUtils)
-                            }
-                        }
-                    }
-                }
-            }
-            
-            val testArtifacts: Configuration = configurations.create("testArtifact")
-            
-            val pluginRuntimeClasspath = configurations.dependencyScope("pluginRuntimeClasspath") {
-                isTransitive = false
-            }
-            val jvmPluginRuntimeClasspath = configurations.resolvable("jvmPluginRuntimeClasspath") {
-                extendsFrom(pluginRuntimeClasspath)
-            }
-            val jsPluginRuntimeClasspath = configurations.resolvable("jsPluginRuntimeClasspath") {
-                extendsFrom(pluginRuntimeClasspath)
-                attributes {
-                    attribute(Usage.USAGE_ATTRIBUTE, objects.named(KotlinUsages.KOTLIN_RUNTIME))
-                    attribute(KotlinPlatformType.attribute, KotlinPlatformType.js)
-                }
-            }
-            
-            dependencies {
-                pluginRuntimeClasspath(childProjects["runtime"]!!)
-                
-                // Dependencies required to run the internal test framework.
-                testArtifacts(kotlin("stdlib")) // TODO: Replace
-                testArtifacts(kotlin("stdlib-jdk8"))
-                testArtifacts(versions.kotlin.reflect)
-                testArtifacts(versions.kotlin.test)
-                testArtifacts(versions.kotlin.script.runtime)
-                testArtifacts(versions.kotlin.annotations.jvm)
-                
-                testArtifacts(kotlin("stdlib-js")) // TODO: Replace
-                testArtifacts(kotlin("test-js"))
-            }
-            
-            tasks.named<Test>("test") {
-                dependsOn(testArtifacts)
-                dependsOn(jvmPluginRuntimeClasspath)
-                dependsOn(jsPluginRuntimeClasspath)
-                
-                useJUnitPlatform()
-                
-                val d8EnvSpec = project.the<D8EnvSpec>()
-                dependsOn(with(d8EnvSpec) { project.d8SetupTaskProvider })
-                
-                fun setLibraryProperty(propName: String, jarName: String) {
-                    val path = testArtifacts.files
-                        .find { """$jarName-\d.*""".toRegex().matches(it.name) }
-                        ?.absolutePath
-                        ?: return
-                    systemProperty(propName, path)
-                }
-                
-                doFirst {
-                    systemProperty("test.data.dir", testDataDir.asFile.absolutePath)
-                    
-                    systemProperty("runtime.jvm.classpath", jvmPluginRuntimeClasspath.get().asPath)
-                    systemProperty("runtime.js.classpath", jsPluginRuntimeClasspath.get().asPath)
-                    
-                    // Properties required to run the internal test framework.
-                    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-stdlib", "kotlin-stdlib")
-                    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-stdlib-jdk8", "kotlin-stdlib-jdk8")
-                    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-reflect", "kotlin-reflect")
-                    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-test", "kotlin-test")
-                    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-script-runtime", "kotlin-script-runtime")
-                    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-annotations-jvm", "kotlin-annotations-jvm")
-                    
-                    systemProperty("idea.ignore.disabled.plugins", "true")
-                    systemProperty("idea.home.path", rootDir)
-                    
-                    // Properties required to run JS tests from the internal test framework.
-                    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-stdlib-js", "kotlin-stdlib-js")
-                    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-test-js", "kotlin-test-js")
-                    
-                    systemProperty("javascript.engine.path.V8", d8EnvSpec.executable.get())
-                    systemProperty("javascript.engine.path.repl", "${layout.projectDirectory.file("repl.js").asFile}")
-                    systemProperty("kotlin.js.test.root.out.dir", "${layout.buildDirectory.get().asFile}/js-test-output")
-                }
-            }
-            
-            val generateTests = tasks.register<JavaExec>("generateTests") {
-                inputs.dir(testDataDir)
-                    .withPropertyName("testData")
-                    .withPathSensitivity(PathSensitivity.RELATIVE)
-                outputs.dir(generatedTestsDirectory)
-                    .withPropertyName("generatedTests")
-                
-                classpath = project.the<SourceSetContainer>().getByName("testFixtures").runtimeClasspath
-                mainClass = "dev.lounres.kone.plugin.${project.name}.GenerateTestsKt"
-                
-                systemProperty("test.data.dir", testDataDir.asFile.absolutePath)
-                systemProperty("test.generated.dir", generatedTestsDirectory.asFile.absolutePath)
-            }
-            
-            tasks.named("compileTestKotlin") {
-                dependsOn(generateTests)
-            }
+        "kotlin compiler library" {
+            apply<DevKitCompilerLibrary>()
         }
-        "kotlin compiler plugin gradle wrapper" {
-            val constsSourceDirectory = projectDir.resolve("build/generated/konePluginConsts/main")
-            
-            val writePaths = tasks.register("writePaths") {
-                doFirst {
-                    val parentProject = project.parent!!
-                    constsSourceDirectory.also { it.mkdirs() }.resolve("Consts.kt").writeText(
-                        """
-                            internal val dependencyVersion: String = "$koneVersion"
-                            internal val plguinDependencyGroup: String = "$koneGroup"
-                            internal val plguinDependencyArtifact: String = "${parentProject.extra["artifactId"] as String}"
-                            internal val runtimeDependencyGroup: String = "$koneGroup"
-                            internal val runtimeDependencyArtifact: String = "${parentProject.childProjects["runtime"]!!.extra["artifactId"] as String}"
-                        """.trimIndent()
-                    )
-                }
+        "kotlin compiler plugin" {
+            apply<DevKitCompilerPlugin>()
+
+            configure<DevKitCompilerConfigExtension> {
+                pluginPackage = "${extra["koneGroup"]}.${extra["artifactId"]}"
+
+                componentRegistrar = "${extra["koneGroup"]}.${extra["artifactId"]}.SuppliedTypesCompilerPluginRegistrar"
+                commandLineProcessor = "${extra["koneGroup"]}.${extra["artifactId"]}.SuppliedTypesCommandLineProcessor"
+
+                companionLibrary(childProjects["runtime"]!!)
+
+                generateTestsClass = "${extra["koneGroup"]}.${extra["artifactId"]}.GenerateTestsKt"
             }
-            
-            pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
-                configure<KotlinJvmProjectExtension> {
-                    sourceSets {
-                        named("main") {
-                            kotlin.srcDir(constsSourceDirectory)
-                            dependencies {
-                                implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.versions.kotlin.asProvider().get()}") // TODO: Replace
-                            }
+
+            configure<KotlinMultiplatformExtension> {
+                jvmToolchain {
+                    languageVersion = JavaLanguageVersion.of(project.extra["jvmTargetVersion"] as String)
+                    vendor = JvmVendorSpec.matching(project.extra["jvmVendor"] as String)
+                }
+                
+                compilerOptions {
+                    progressiveMode = true
+                    freeCompilerArgs.addAll(koneCompilerOptions)
+                    optIn.addAll(koneOptIns)
+                    verbose = true
+                }
+
+                sourceSets {
+                    commonMain {
+                        dependencies {
+                            implementation(projects.plugins.util)
+                        }
+                    }
+                    named("commonTestFixtures") {
+                        dependencies {
+                            implementation(projects.plugins.testUtil)
                         }
                     }
                 }
-                
-                tasks.named("compileKotlin") {
-                    dependsOn(writePaths)
-                }
+            }
+            
+            tasks.withType<Test> {
+                useJUnitPlatform()
+                maxHeapSize = "4g"
             }
         }
         "atomicfu" {
@@ -587,7 +459,7 @@ stal {
         "kover" {
             apply(versions.plugins.kotlinx.kover)
         }
-        "algorithms" {
+        "libs main algorithms" {
             pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
                 logger.error("algorithm source set setting is not yet implemented for Kotlin/JVM plug-in")
 //                configure<KotlinJvmProjectExtension> {
@@ -619,7 +491,7 @@ stal {
                 }
             }
         }
-        "assertions" {
+        "libs main assertions" {
             pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
                 logger.error("assertions source set setting is not yet implemented for Kotlin/JVM plug-in")
 //                configure<KotlinJvmProjectExtension> {
@@ -682,7 +554,7 @@ stal {
                 }
             }
         }
-        "benchmarks" {
+        "libs main benchmarks" {
             apply(versions.plugins.kotlinx.benchmark)
             apply(versions.plugins.kotlin.allopen)
             the<AllOpenExtension>().annotation("org.openjdk.jmh.annotations.State")
@@ -780,7 +652,7 @@ stal {
                 }
             }
         }
-        "examples" {
+        "libs main examples" {
             pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
                 logger.error("examples are not yet implemented for Kotlin/JVM plug-in")
 //                configure<KotlinJvmProjectExtension> {
