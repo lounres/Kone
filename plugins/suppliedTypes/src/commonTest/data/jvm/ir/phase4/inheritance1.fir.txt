@@ -1,0 +1,5 @@
+FILE: inheritance1.kt
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public abstract interface Foo<@R|dev/lounres/kone/suppliedTypes/Supply|() T> : R|kotlin/Any|, R|dev/lounres/kone/suppliedTypes/SuppliableClass| {
+    }
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public abstract interface Bar<@R|dev/lounres/kone/suppliedTypes/Supply|() U> : R|Foo<kotlin/collections/Map<out U, *>>|, R|dev/lounres/kone/suppliedTypes/SuppliableClass| {
+    }

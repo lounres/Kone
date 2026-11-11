@@ -1,0 +1,7 @@
+FILE: supplianceOfClassTypeArguments1.kt
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public abstract interface A<@R|dev/lounres/kone/suppliedTypes/Supply|() T> : R|kotlin/Any|, R|dev/lounres/kone/suppliedTypes/SuppliableClass| {
+    }
+    public final typealias A2<P, Q> = R|A<kotlin/collections/Map<Q, P>>|
+    public final typealias A3<P, Q> = R|{A2<kotlin/collections/List<P>, Q>=} A<kotlin/collections/Map<Q, kotlin/collections/List<P>>>|
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public abstract interface B<X, Y, Z> : R|{A3<X, Z>=} A<kotlin/collections/Map<Z, kotlin/collections/List<X>>>|, R|dev/lounres/kone/suppliedTypes/SuppliableClass| {
+    }

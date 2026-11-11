@@ -1,6 +1,13 @@
+pluginDevKit {
+    testDataLibraries {
+        common(projects.libs.main.suppliedTypes)
+        common(versions.kotlinx.serialization.core)
+    }
+}
+
 kotlin {
     sourceSets {
-        main {
+        commonMain {
             dependencies {
                 implementation(projects.libs.util.mapOperations)
             }

@@ -1,0 +1,7 @@
+FILE: method5.kt
+    package foo.bar
+
+    public abstract interface Foo : R|kotlin/Any| {
+        @R|dev/lounres/kone/suppliedTypes/Suppliable|() public abstract fun <@R|dev/lounres/kone/suppliedTypes/Supply|() Gee> baz(): R|Gee?|
+
+    }

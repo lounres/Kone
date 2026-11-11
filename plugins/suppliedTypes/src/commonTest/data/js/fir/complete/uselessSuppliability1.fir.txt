@@ -1,0 +1,3 @@
+FILE: uselessSuppliability1.kt
+    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public abstract interface Foo : R|kotlin/Any|, R|dev/lounres/kone/suppliedTypes/SuppliableClass| {
+    }
