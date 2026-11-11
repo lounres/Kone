@@ -407,6 +407,18 @@ stal {
                 val runtimeProject = project.parent!!.childProjects["runtime"]!!
                 companionLibrary(runtimeProject, group = runtimeProject.extra["koneGroup"], version = runtimeProject.extra["koneVersion"])
             }
+            
+            configure<GradlePluginDevelopmentExtension> {
+                plugins {
+                    register("kotlinCompilerPluginGradleWrapper") {
+                        id = "${extra["koneGroup"]}.${extra["artifactId"]}"
+//                        displayName = ""
+//                        description = ""
+//                        tags = listOf()
+                        implementationClass = "${extra["koneGroup"]}.${extra["artifactId"]}.KoneCompilerPluginGradleWrapper"
+                    }
+                }
+            }
         }
         "atomicfu" {
             apply(versions.plugins.kotlinx.atomicfu)

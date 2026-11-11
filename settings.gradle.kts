@@ -155,8 +155,8 @@ stal {
             extra["androidNamespace"] = "dev.lounres.kone.plugins.${project.parent!!.name}.runtime"
         }
         "kotlin compiler plugin gradle wrapper" {
-            extra["artifactId"] = "kone.plugins.${project.parent!!.name}.gradle"
-            extra["alias"] = "plugin-${project.parent!!.name}"
+            extra["artifactId"] = "kone.plugins.${project.parent!!.name}.gradleWrapper"
+            extra["alias"] = "plugins-${project.parent!!.name}"
         }
         "version catalog" {
             extra["artifactId"] = "kone.versionCatalog"
