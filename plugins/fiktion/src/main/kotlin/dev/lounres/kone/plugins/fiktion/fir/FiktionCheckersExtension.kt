@@ -8,7 +8,7 @@ package dev.lounres.kone.plugins.fiktion.fir
 import dev.lounres.kone.plugins.fiktion.fiktionImaginaryClassId
 import dev.lounres.kone.plugins.fiktion.fiktionRealClassId
 import dev.lounres.kone.plugins.fiktion.fir.FiktionCheckersExtension.Companion.Imaginarity.Imaginary
-import dev.lounres.kone.util.kotlinCompilerUtils.KtDiagnosticFactory1Delegate
+import dev.lounres.kone.plugins.utils.KtDiagnosticFactory1Delegate
 import org.jetbrains.kotlin.diagnostics.AbstractKtDiagnosticFactory
 import org.jetbrains.kotlin.diagnostics.DiagnosticReporter
 import org.jetbrains.kotlin.diagnostics.KtDiagnosticFactoryToRendererMap

@@ -7,8 +7,8 @@ package dev.lounres.kone.plugins.fiktion.runners
 
 import dev.lounres.kone.plugins.fiktion.services.PluginRuntimeClasspathProvider
 import dev.lounres.kone.plugins.fiktion.services.PluginRuntimeProvider
-import dev.lounres.kone.util.kotlinCompilerTestUtils.runners.KoneTestRunner
-import dev.lounres.kone.util.kotlinCompilerTestUtils.runners.commonTestRunnerConfiguration
+import dev.lounres.kone.plugins.testUtils.runners.KoneTestRunner
+import dev.lounres.kone.plugins.testUtils.runners.commonTestRunnerConfiguration
 import org.jetbrains.kotlin.test.TestInfrastructureInternals
 import org.jetbrains.kotlin.test.builders.TestConfigurationBuilder
 import org.jetbrains.kotlin.test.services.TestPhase

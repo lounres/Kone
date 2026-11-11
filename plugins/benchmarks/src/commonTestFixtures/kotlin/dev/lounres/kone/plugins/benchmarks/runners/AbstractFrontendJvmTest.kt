@@ -8,7 +8,7 @@ package dev.lounres.kone.plugins.benchmarks.runners
 import dev.lounres.kone.plugins.benchmarks.services.FirCompleteExtensionRegistrarConfigurator
 import dev.lounres.kone.plugins.benchmarks.services.FirDeclarationsConfigurator
 import dev.lounres.kone.plugins.benchmarks.services.FirDiagnosticConfigurator
-import dev.lounres.kone.util.kotlinCompilerTestUtils.runners.KoneFrontendJvmTestRunner
+import dev.lounres.kone.plugins.testUtils.runners.KoneFrontendJvmTestRunner
 
 
 open class AbstractFrontendJvmTestDeclarations : KoneFrontendJvmTestRunner(::FirDeclarationsConfigurator)

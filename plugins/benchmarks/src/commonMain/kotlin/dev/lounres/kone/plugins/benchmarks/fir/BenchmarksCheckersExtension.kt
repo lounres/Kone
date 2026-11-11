@@ -13,7 +13,7 @@ import dev.lounres.kone.plugins.benchmarks.blackholePropertyCallableId
 import dev.lounres.kone.plugins.benchmarks.injectDisposableFunctionCallableId
 import dev.lounres.kone.plugins.benchmarks.injectFunctionCallableId
 import dev.lounres.kone.scope
-import dev.lounres.kone.util.kotlinCompilerUtils.KtDiagnosticFactory1Delegate
+import dev.lounres.kone.plugins.utils.KtDiagnosticFactory1Delegate
 import org.jetbrains.kotlin.diagnostics.*
 import org.jetbrains.kotlin.diagnostics.Severity.ERROR
 import org.jetbrains.kotlin.diagnostics.rendering.BaseDiagnosticRendererFactory
