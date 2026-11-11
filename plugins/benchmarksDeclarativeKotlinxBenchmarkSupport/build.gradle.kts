@@ -1,6 +1,6 @@
 kotlin {
     sourceSets {
-        main {
+        commonMain {
             dependencies {
                 implementation(projects.libs.util.misc)
             }
