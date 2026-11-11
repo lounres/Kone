@@ -5,18 +5,9 @@
 
 package dev.lounres.kone.misc.benchmarks.support.kotlinxBenchmark
 
+import dev.lounres.kone.misc.benchmarks.KoneBenchmarkExecutor
+import kotlinx.benchmark.internal.KotlinxBenchmarkRuntimeInternalApi
 
-private data object KotlinxBenchmarkBenchmarkExecutor : KoneBenchmarkExecutor<KotlinxBenchmarkConfiguration, KotlinxBenchmarkBenchmark, KotlinxBenchmarkResult> {
-    override fun execute(configuration: KotlinxBenchmarkConfiguration, benchmark: KotlinxBenchmarkBenchmark) {
-        runBenchmarks(
-            name = "mingwX64",
-            args = TODO(),
-        ) {
-            it.suite(benchmark)
-            it.run()
-        }
-    }
-}
 
-public val KoneBenchmarkExecutor.Companion.kotlinxBenchmark: KoneBenchmarkExecutor<KotlinxBenchmarkConfiguration, KotlinxBenchmarkBenchmark, KotlinxBenchmarkResult>
-    get() = KotlinxBenchmarkBenchmarkExecutor
+@OptIn(KotlinxBenchmarkRuntimeInternalApi::class)
+public expect val KoneBenchmarkExecutor.Companion.kotlinxBenchmark: KoneBenchmarkExecutor<KotlinxBenchmarkConfiguration, KotlinxBenchmarkBenchmark, KotlinxBenchmarkResult>

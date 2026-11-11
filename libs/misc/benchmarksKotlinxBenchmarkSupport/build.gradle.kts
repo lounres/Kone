@@ -27,5 +27,11 @@ kotlin {
                 api(versions.kotlinx.benchmark.runtime)
             }
         }
+        
+        jvmMain {
+            dependencies {
+                api(versions.jmh.core)
+            }
+        }
     }
 }
