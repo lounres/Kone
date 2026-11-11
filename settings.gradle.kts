@@ -112,7 +112,7 @@ stal {
             extra["alias"] = ""
             extra["androidNamespace"] = ""
             extra["isDokkaConfigured"] = false
-            extra["jvmTargetVersion"] = settings.extra["jvmTargetVersion"]
+            extra["jvmTargetVersion"] = (settings.extra["jvmTargetVersion"] as String).toInt()
             extra["jvmVendor"] = settings.extra["jvmVendor"]
         }
         "libs main" {
@@ -162,7 +162,7 @@ stal {
             extra["artifactId"] = "kone.versionCatalog"
         }
         "libs main benchmarks" {
-            extra["jvmTargetVersion"] = settings.extra["benchmatrksJvmTargetVersion"]
+            extra["jvmTargetVersion"] = (settings.extra["benchmatrksJvmTargetVersion"] as String).toInt()
             extra["jvmVendor"] = settings.extra["benchmatrksJvmVendor"]
         }
         "dokka" {

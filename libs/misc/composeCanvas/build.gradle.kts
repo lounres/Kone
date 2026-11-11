@@ -9,6 +9,10 @@ konePlugins {
 }
 
 kotlin {
+    jvmToolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+    
     sourceSets {
         commonMain {
             dependencies {

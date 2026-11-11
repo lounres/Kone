@@ -248,6 +248,11 @@ stal {
         "kotlin jvm" {
             apply(versions.plugins.kotlin.jvm)
             configure<KotlinJvmProjectExtension> {
+                jvmToolchain {
+                    languageVersion = JavaLanguageVersion.of(project.extra["jvmTargetVersion"] as Int)
+                    vendor = JvmVendorSpec.matching(project.extra["jvmVendor"] as String)
+                }
+                
                 compilerOptions {
                     progressiveMode = true
                     freeCompilerArgs.addAll(koneCompilerOptions)
@@ -265,7 +270,7 @@ stal {
             apply(versions.plugins.kotlin.multiplatform)
             configure<KotlinMultiplatformExtension> {
                 jvmToolchain {
-                    languageVersion = JavaLanguageVersion.of(project.extra["jvmTargetVersion"] as String)
+                    languageVersion = JavaLanguageVersion.of(project.extra["jvmTargetVersion"] as Int)
                     vendor = JvmVendorSpec.matching(project.extra["jvmVendor"] as String)
                 }
                 
@@ -364,7 +369,7 @@ stal {
 
             configure<KotlinMultiplatformExtension> {
                 jvmToolchain {
-                    languageVersion = JavaLanguageVersion.of(project.extra["jvmTargetVersion"] as String)
+                    languageVersion = JavaLanguageVersion.of(project.extra["jvmTargetVersion"] as Int)
                     vendor = JvmVendorSpec.matching(project.extra["jvmVendor"] as String)
                 }
                 
