@@ -5,6 +5,8 @@
 
 package dev.lounres.kone.misc.benchmarks.declarative
 
+import kotlin.jvm.JvmName
+
 
 public interface KoneBenchmarkInjectionContext<out Injection>
 
@@ -16,4 +18,4 @@ public val <Injection> KoneBenchmarkInjectionContext<Injection>.injection: Injec
 
 @KoneBenchmarkInjectable
 context(_: KoneBenchmarkInjectionContext<Injection>)
-public val <Injection> injection: Injection get() = error("... intrinsic ...")
+public val <Injection> injection: Injection @JvmName("injectionContextual") get() = error("... intrinsic ...")

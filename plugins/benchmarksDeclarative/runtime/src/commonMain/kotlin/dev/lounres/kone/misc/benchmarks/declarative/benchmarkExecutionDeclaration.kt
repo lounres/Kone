@@ -5,6 +5,8 @@
 
 package dev.lounres.kone.misc.benchmarks.declarative
 
+import kotlin.jvm.JvmName
+
 
 @Target(FUNCTION)
 public annotation class KoneBenchmarkExecutionDeclaration
@@ -18,4 +20,4 @@ public fun interface KoneBenchmarkExecutionDeclarationContext<Configuration, Inj
 public val <Result> KoneBenchmarkExecutionDeclarationContext<*, *, Result>.benchmarkResult: Result get() = error("... intrinsic ...")
 
 context(_: KoneBenchmarkExecutionDeclarationContext<*, *, Result>)
-public val <Result> benchmarkResult: Result get() = error("... intrinsic ...")
+public val <Result> benchmarkResult: Result @JvmName("benchmarkResultContextual") get() = error("... intrinsic ...")
