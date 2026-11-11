@@ -8,7 +8,7 @@ package dev.lounres.kone.plugins.contexts.runners
 import dev.lounres.kone.plugins.contexts.services.CompleteExtensionRegistrarConfigurator
 import dev.lounres.kone.plugins.contexts.services.IrPartialExtensionRegistrarConfigurator
 import dev.lounres.kone.plugins.contexts.services.TestExtensionRegistrarConfigurator
-import dev.lounres.kone.util.kotlinCompilerTestUtils.runners.KoneBackendJvmTestRunner
+import dev.lounres.kone.plugins.testUtils.runners.KoneBackendJvmTestRunner
 import org.jetbrains.kotlin.test.services.TestPhase
 
 
