@@ -8,7 +8,6 @@ import com.vanniktech.maven.publish.*
 import dev.lounres.kone.buildSrc.dsl.apply
 import dev.lounres.kone.buildSrc.dsl.withEach
 import dev.lounres.kone.buildSrc.dsl.withPlugin
-import dev.lounres.kone.buildSrc.dsl.withPlugins
 import dev.lounres.kone.buildSrc.koneCompilerOptions
 import dev.lounres.kone.buildSrc.koneOptIns
 import kotlinx.atomicfu.plugin.gradle.AtomicFUPluginExtension
@@ -19,16 +18,10 @@ import net.schmizz.sshj.SSHClient
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier
 import org.gradle.accessors.dm.LibrariesForVersions
 import org.gradle.accessors.dm.RootProjectAccessor
-import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.kotlin.allopen.gradle.AllOpenExtension
-import org.jetbrains.kotlin.compiler.plugin.devkit.DevKitCompilerConfigExtension
-import org.jetbrains.kotlin.compiler.plugin.devkit.DevKitCompilerLibrary
-import org.jetbrains.kotlin.compiler.plugin.devkit.DevKitCompilerPlugin
-import org.jetbrains.kotlin.compiler.plugin.devkit.DevKitGradlePlugin
-import org.jetbrains.kotlin.compiler.plugin.devkit.GradlePluginConfigExtension
+import org.jetbrains.kotlin.compiler.plugin.devkit.*
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -358,7 +351,9 @@ stal {
 
             configure<DevKitCompilerConfigExtension> {
                 pluginPackage = "${extra["koneGroup"]}.${extra["artifactId"]}"
-
+                
+                ideaSinceBuild = IdeBuildNumber("263")
+                
                 componentRegistrar = "${extra["koneGroup"]}.${extra["artifactId"]}.CompilerPluginRegistrar"
                 commandLineProcessor = "${extra["koneGroup"]}.${extra["artifactId"]}.CommandLineProcessor"
 

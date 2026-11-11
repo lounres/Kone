@@ -57,7 +57,7 @@ pluginManagement {
 plugins {
     id("dev.lounres.gradle.stal") version "0.4.0"
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
-    kotlin("compiler.plugin.devkit") version "0.0.4-dev-375"
+    kotlin("compiler.plugin.devkit") version "0.0.4-dev-380"
 }
 
 stal {
