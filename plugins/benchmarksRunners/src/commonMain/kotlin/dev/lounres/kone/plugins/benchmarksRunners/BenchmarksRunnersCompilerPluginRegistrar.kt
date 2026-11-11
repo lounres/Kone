@@ -9,18 +9,13 @@ import dev.lounres.kone.plugins.benchmarksRunners.fir.FirBenchmarksRunnersExtens
 import dev.lounres.kone.plugins.benchmarksRunners.ir.BenchmarksRunnersFirBasedIrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.compiler.plugin.CompilerPluginRegistrar
-import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
+import org.jetbrains.kotlin.compiler.plugin.devkit.DevKitComponentRegistrar
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.fir.extensions.FirExtensionRegistrarAdapter
 
 
-@OptIn(ExperimentalCompilerApi::class)
-class BenchmarksRunnersCompilerPluginRegistrar : CompilerPluginRegistrar() {
-    override val pluginId: String get() = "dev.lounres.kone.plugins.benchmarksRunners"
-    
-    override val supportsK2: Boolean get() = true
-    
-    override fun ExtensionStorage.registerExtensions(configuration: CompilerConfiguration) {
+class BenchmarksRunnersCompilerPluginRegistrar : DevKitComponentRegistrar {
+    override fun CompilerPluginRegistrar.ExtensionStorage.registerExtensions(configuration: CompilerConfiguration) {
 //        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
         
         FirExtensionRegistrarAdapter.registerExtension(FirBenchmarksRunnersExtensionRegistrar())
@@ -30,9 +25,7 @@ class BenchmarksRunnersCompilerPluginRegistrar : CompilerPluginRegistrar() {
 //            )
 //        )
         IrGenerationExtension.registerExtension(
-            BenchmarksRunnersFirBasedIrGenerationExtension(
-                kotlinxBenchmarkJsExecutor = configuration[KotlinxBenchmarkJsExecutor.compilerConfigurationKey] ?: KotlinxBenchmarkJsExecutor.default,
-            )
+            BenchmarksRunnersFirBasedIrGenerationExtension()
         )
     }
 }
