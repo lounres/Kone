@@ -25,6 +25,8 @@ import org.jetbrains.kotlin.allopen.gradle.AllOpenExtension
 import org.jetbrains.kotlin.compiler.plugin.devkit.DevKitCompilerConfigExtension
 import org.jetbrains.kotlin.compiler.plugin.devkit.DevKitCompilerLibrary
 import org.jetbrains.kotlin.compiler.plugin.devkit.DevKitCompilerPlugin
+import org.jetbrains.kotlin.compiler.plugin.devkit.DevKitGradlePlugin
+import org.jetbrains.kotlin.compiler.plugin.devkit.GradlePluginConfigExtension
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
@@ -357,8 +359,8 @@ stal {
             configure<DevKitCompilerConfigExtension> {
                 pluginPackage = "${extra["koneGroup"]}.${extra["artifactId"]}"
 
-                componentRegistrar = "${extra["koneGroup"]}.${extra["artifactId"]}.SuppliedTypesCompilerPluginRegistrar"
-                commandLineProcessor = "${extra["koneGroup"]}.${extra["artifactId"]}.SuppliedTypesCommandLineProcessor"
+                componentRegistrar = "${extra["koneGroup"]}.${extra["artifactId"]}.CompilerPluginRegistrar"
+                commandLineProcessor = "${extra["koneGroup"]}.${extra["artifactId"]}.CommandLineProcessor"
 
                 companionLibrary(childProjects["runtime"]!!)
 
@@ -395,6 +397,15 @@ stal {
             tasks.withType<Test> {
                 useJUnitPlatform()
                 maxHeapSize = "4g"
+            }
+        }
+        "kotlin compiler plugin gradle wrapper" {
+            apply<DevKitGradlePlugin>()
+            
+            configure<GradlePluginConfigExtension> {
+                compilerPlugin(project.parent!!)
+                val runtimeProject = project.parent!!.childProjects["runtime"]!!
+                companionLibrary(runtimeProject, group = runtimeProject.extra["koneGroup"], version = runtimeProject.extra["koneVersion"])
             }
         }
         "atomicfu" {

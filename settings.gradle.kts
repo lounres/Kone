@@ -88,7 +88,7 @@ stal {
             "testUtil"("kotlin compiler library")
             subdirs("kotlin compiler plugin", "publishing") {
                 "runtime"("kotlin compiler plugin runtime", "kotlin multiplatform", "kotlin library settings", "publishing", "dokka")
-//                "gradleWrapper"("kotlin compiler plugin gradle wrapper", "kotlin jvm")
+                "gradleWrapper"("kotlin compiler plugin gradle wrapper")
             }
         }
         "docs"()

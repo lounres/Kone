@@ -14,7 +14,7 @@ import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.fir.extensions.FirExtensionRegistrarAdapter
 
 
-class BenchmarksRunnersCompilerPluginRegistrar : DevKitComponentRegistrar {
+class CompilerPluginRegistrar : DevKitComponentRegistrar {
     override fun CompilerPluginRegistrar.ExtensionStorage.registerExtensions(configuration: CompilerConfiguration) {
 //        val messageCollector = configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
         

@@ -11,7 +11,7 @@ import org.jetbrains.kotlin.compiler.plugin.devkit.DevKitCLP
 import org.jetbrains.kotlin.config.CompilerConfiguration
 
 
-class ContextsCommandLineProcessor : DevKitCLP {
+class CommandLineProcessor : DevKitCLP {
     override val pluginOptions: Collection<CliOption> = listOf()
     
     override fun processOption(

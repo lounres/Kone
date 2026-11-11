@@ -5,7 +5,7 @@ gradlePlugin {
 //            displayName = ""
 //            description = ""
 //            tags = listOf()
-            implementationClass = "dev.lounres.kone.plugin.suppliedTypes.gradle.SuppliedTypesPlugin"
+            implementationClass = "dev.lounres.kone.plugin.suppliedTypes.gradleWrapper.SuppliedTypesPlugin"
         }
     }
 }
