@@ -7,15 +7,11 @@ package dev.lounres.kone.plugins.contexts
 
 import org.jetbrains.kotlin.compiler.plugin.AbstractCliOption
 import org.jetbrains.kotlin.compiler.plugin.CliOption
-import org.jetbrains.kotlin.compiler.plugin.CommandLineProcessor
-import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
+import org.jetbrains.kotlin.compiler.plugin.devkit.DevKitCLP
 import org.jetbrains.kotlin.config.CompilerConfiguration
 
 
-@OptIn(ExperimentalCompilerApi::class)
-class ContextsCommandLineProcessor : CommandLineProcessor {
-    override val pluginId: String = "dev.lounres.kone.plugins.contexts"
-    
+class ContextsCommandLineProcessor : DevKitCLP {
     override val pluginOptions: Collection<CliOption> = listOf()
     
     override fun processOption(

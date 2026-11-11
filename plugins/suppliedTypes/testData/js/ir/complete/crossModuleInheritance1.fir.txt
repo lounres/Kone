@@ -1,8 +1,0 @@
-Module: foo
-FILE: module_foo_crossModuleInheritance1.kt
-    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public abstract interface Foo<@R|dev/lounres/kone/suppliedTypes/Supply|() T> : R|kotlin/Any|, R|dev/lounres/kone/suppliedTypes/SuppliableClass| {
-    }
-Module: bar
-FILE: module_bar_crossModuleInheritance1.kt
-    @R|dev/lounres/kone/suppliedTypes/Suppliable|() public abstract interface Bar<@R|dev/lounres/kone/suppliedTypes/Supply|() U> : R|Foo<kotlin/collections/Map<out U, *>>|, R|dev/lounres/kone/suppliedTypes/SuppliableClass| {
-    }
