@@ -14,7 +14,9 @@ import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.IrPropertySymbol
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.types.createType
+import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.types.impl.makeTypeProjection
+import org.jetbrains.kotlin.ir.types.makeNullable
 import org.jetbrains.kotlin.ir.util.classIdOrFail
 import org.jetbrains.kotlin.ir.util.companionObject
 import org.jetbrains.kotlin.ir.util.constructors
@@ -24,7 +26,6 @@ import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
-import org.jetbrains.kotlin.types.Variance
 
 
 class BenchmarksIrPluginException(message: String? = null, reason: Throwable? = null) : RuntimeException(message, reason)
@@ -61,7 +62,7 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
             it.owner.parameters.getOrNull(1)?.type == pluginContext.irBuiltIns.intType
         }
     }
-    val pairClassIrClassSymbol by lazy { finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlinx"), isLocal = false, relativeClassName = FqName("Pair"))) }
+    val pairClassIrClassSymbol by lazy { finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin"), isLocal = false, relativeClassName = FqName("Pair"))) }
     val pairConstructorIrConstructorSymbol by lazy { pairClassIrClassSymbol.owner.primaryConstructor!!.symbol }
     val arraySizePropertyIrPropertySymbol by lazy { finder.referencePropertyThatOrFail(CallableId(packageName = FqName("kotlin"), className = FqName("Array"), callableName = Name.identifier("size"))) }
     val arraySizeGetterIrSimpleFunctionSymbol by lazy { arraySizePropertyIrPropertySymbol.owner.getter!!.symbol }
@@ -72,11 +73,12 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
         finder.referenceFunctionThatOrFail(CallableId(packageName = FqName("kotlin.collections"), className = null, callableName = Name.identifier("drop"))) {
             val owner = it.owner
             if (owner.typeParameters.size != 1 || owner.parameters.size != 2) return@referenceFunctionThatOrFail false
+            if (owner.parameters[0].kind != ExtensionReceiver || owner.parameters[1].kind != Regular) return@referenceFunctionThatOrFail false
             if (
                 owner.parameters[0].type != pluginContext.irBuiltIns.arrayClass.createType(
                     hasQuestionMark = false,
                     arguments = listOf(
-                        makeTypeProjection(pluginContext.irBuiltIns.stringType, OUT_VARIANCE),
+                        makeTypeProjection(owner.typeParameters[0].defaultType, OUT_VARIANCE),
                     )
                 )
             ) return@referenceFunctionThatOrFail false
@@ -94,13 +96,22 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
         finder.referenceFunctionThatOrFail(CallableId(packageName = FqName("kotlin.collections"), className = null, callableName = Name.identifier("associate"))) {
             val owner = it.owner
             if (owner.typeParameters.size != 3 || owner.parameters.size != 2) return@referenceFunctionThatOrFail false
+            if (owner.parameters[0].kind != ExtensionReceiver || owner.parameters[1].kind != Regular) return@referenceFunctionThatOrFail false
+            if (
+                owner.parameters[0].type != pluginContext.irBuiltIns.iterableClass.createType(
+                    hasQuestionMark = false,
+                    arguments = listOf(
+                        owner.typeParameters[0].defaultType,
+                    )
+                )
+            ) return@referenceFunctionThatOrFail false
             true
         }
     }
     val illegalArgumentExceptionClassIrClassSymbol by lazy { finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin"), isLocal = false, relativeClassName = FqName("IllegalArgumentException"))) }
     val illegalArgumentExceptionConstructorStringIrConstructorSymbol by lazy {
         illegalArgumentExceptionClassIrClassSymbol.constructors.single {
-            it.owner.parameters.size == 1 && it.owner.parameters[0].type == pluginContext.irBuiltIns.stringType
+            it.owner.parameters.size == 1 && it.owner.parameters[0].type == pluginContext.irBuiltIns.stringType.makeNullable()
         }
     }
     

@@ -32,7 +32,7 @@ class KotlinxRunnerFunctionsCollectorVisitor(
                 else -> return@scope
             }
             val runnerAnnotation = declaration.annotations.singleOrNull { it.classId == koneBenchmarkRunnerAnnotationClassId } ?: return@scope
-            val runnerName = (runnerAnnotation.arguments[0] as? IrConst)?.value?.let { it as String } ?: return@scope
+            val runnerName = (runnerAnnotation.arguments[0] as? IrConst)?.value?.let { it as String } ?: declaration.fqName.asString()
             runnerDescriptions += RunnerDescription(
                 name = runnerName,
                 theRunnerFunction = declaration,
