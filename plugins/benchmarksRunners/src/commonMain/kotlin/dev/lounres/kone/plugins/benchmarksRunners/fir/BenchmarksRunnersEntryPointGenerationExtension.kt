@@ -37,7 +37,7 @@ class BenchmarksRunnersEntryPointGenerationExtension(session: FirSession) : FirD
     override fun hasPackage(packageFqName: FqName): Boolean = packageFqName == entryPointCallableId.packageName
     
     @ExperimentalTopLevelDeclarationsGenerationApi
-    override fun getTopLevelCallableIds(): Set<CallableId> = setOf(entryPointCallableId)
+    override fun getTopLevelCallableIds(): Set<CallableId> = setOfNotNull(entryPointCallableId.takeIf { !session.moduleData.isCommon })
     
     override fun generateFunctions(
         callableId: CallableId,
