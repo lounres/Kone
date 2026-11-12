@@ -250,7 +250,7 @@ stal {
             configure<KotlinJvmProjectExtension> {
                 jvmToolchain {
                     languageVersion = JavaLanguageVersion.of(project.extra["jvmTargetVersion"] as Int)
-                    vendor = JvmVendorSpec.matching(project.extra["jvmVendor"] as String)
+                    vendor = JvmVendorSpec.of(project.extra["jvmVendor"] as String)
                 }
                 
                 compilerOptions {
@@ -271,7 +271,7 @@ stal {
             configure<KotlinMultiplatformExtension> {
                 jvmToolchain {
                     languageVersion = JavaLanguageVersion.of(project.extra["jvmTargetVersion"] as Int)
-                    vendor = JvmVendorSpec.matching(project.extra["jvmVendor"] as String)
+                    vendor = JvmVendorSpec.of(project.extra["jvmVendor"] as String)
                 }
                 
                 compilerOptions {
@@ -370,7 +370,7 @@ stal {
             configure<KotlinMultiplatformExtension> {
                 jvmToolchain {
                     languageVersion = JavaLanguageVersion.of(project.extra["jvmTargetVersion"] as Int)
-                    vendor = JvmVendorSpec.matching(project.extra["jvmVendor"] as String)
+                    vendor = JvmVendorSpec.of(project.extra["jvmVendor"] as String)
                 }
                 
                 compilerOptions {
