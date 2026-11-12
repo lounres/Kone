@@ -5,16 +5,26 @@
 
 package dev.lounres.kone.plugins.contextsKeys
 
+import dev.lounres.kone.plugins.contextsKeys.runners.AbstractBackendJsTestComplete
+import dev.lounres.kone.plugins.contextsKeys.runners.AbstractBackendJsTestForPhase0
+import dev.lounres.kone.plugins.contextsKeys.runners.AbstractBackendJsTestForPhase1
+import dev.lounres.kone.plugins.contextsKeys.runners.AbstractBackendJsTestForPhase2
+import dev.lounres.kone.plugins.contextsKeys.runners.AbstractBackendJsTestForPhase3
 import dev.lounres.kone.plugins.contextsKeys.runners.AbstractBackendJvmTestComplete
 import dev.lounres.kone.plugins.contextsKeys.runners.AbstractBackendJvmTestForPhase0
 import dev.lounres.kone.plugins.contextsKeys.runners.AbstractBackendJvmTestForPhase1
 import dev.lounres.kone.plugins.contextsKeys.runners.AbstractBackendJvmTestForPhase2
 import dev.lounres.kone.plugins.contextsKeys.runners.AbstractBackendJvmTestForPhase3
+import dev.lounres.kone.plugins.contextsKeys.runners.AbstractBoxJsTest
 import dev.lounres.kone.plugins.contextsKeys.runners.AbstractBoxJvmTest
+import dev.lounres.kone.plugins.contextsKeys.runners.AbstractFrontendJsTestComplete
+import dev.lounres.kone.plugins.contextsKeys.runners.AbstractFrontendJsTestDeclarations
+import dev.lounres.kone.plugins.contextsKeys.runners.AbstractFrontendJsTestDiagnostic
 import dev.lounres.kone.plugins.contextsKeys.runners.AbstractJvmTestWithoutPlugin
 import dev.lounres.kone.plugins.contextsKeys.runners.AbstractFrontendJvmTestDeclarations
 import dev.lounres.kone.plugins.contextsKeys.runners.AbstractFrontendJvmTestDiagnostic
 import dev.lounres.kone.plugins.contextsKeys.runners.AbstractFrontendJvmTestComplete
+import dev.lounres.kone.plugins.contextsKeys.runners.AbstractJsTestWithoutPlugin
 import org.jetbrains.kotlin.compiler.plugin.devkit.generateDevKitTestsWithJUnit5
 
 
@@ -64,6 +74,52 @@ fun main() {
 
         testClass<AbstractJvmTestWithoutPlugin> {
             model("jvm/ir/test")
+        }
+        
+        // JS
+        testClass<AbstractFrontendJsTestDeclarations> {
+            model("js/fir/declarations")
+        }
+        testClass<AbstractFrontendJsTestDiagnostic> {
+            model("js/fir/diagnostics")
+        }
+        testClass<AbstractFrontendJsTestComplete> {
+            model("js/fir/complete")
+        }
+        
+        testClass<AbstractBackendJsTestForPhase0> {
+            model("js/ir/phase0")
+        }
+        testClass<AbstractBackendJsTestForPhase1> {
+            model("js/ir/phase1")
+        }
+        testClass<AbstractBackendJsTestForPhase2> {
+            model("js/ir/phase2")
+        }
+        testClass<AbstractBackendJsTestForPhase3> {
+            model("js/ir/phase3")
+        }
+//            testClass<AbstractBackendTestForPhase4> {
+//                model("js/ir/phase4")
+//            }
+//            testClass<AbstractBackendTestForPhase5> {
+//                model("js/ir/phase5")
+//            }
+//            testClass<AbstractBackendTestForPhase6> {
+//                model("js/ir/phase6")
+//            }
+//            testClass<AbstractBackendTestForPhase7> {
+//                model("js/ir/phase7")
+//            }
+        testClass<AbstractBackendJsTestComplete> {
+            model("js/ir/complete")
+        }
+        testClass<AbstractBoxJsTest> {
+            model("js/ir/box")
+        }
+        
+        testClass<AbstractJsTestWithoutPlugin> {
+            model("js/ir/test")
         }
     }
 }
