@@ -39,8 +39,8 @@ public abstract class KoneBackendJsTestRunner(
         }
         
         commonConfigurationForJsBackendSecondStageTest(
-            pathToTestDir = "${System.getProperty("test.data.dir")}/js/ir",
-            testGroupOutputDirPrefix = "box/",
+            pathToTestDir = "",
+            testGroupOutputDirPrefix = "box/js",
             backendFacades = AbstractJsBlackBoxCodegenTestBase.JsBackendFacades.WithRecompilation
         )
         
