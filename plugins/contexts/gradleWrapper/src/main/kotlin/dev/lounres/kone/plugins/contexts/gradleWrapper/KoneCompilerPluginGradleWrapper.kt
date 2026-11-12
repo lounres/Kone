@@ -9,4 +9,4 @@ import org.jetbrains.kotlin.compiler.plugin.devkit.DevKitSupportPlugin
 
 
 @Suppress("unused")
-class KoneCompilerPluginGradleWrapper : DevKitSupportPlugin(PluginInfo.PLUGIN_INFO)
+class KoneCompilerPluginGradleWrapper : DevKitSupportPlugin(KonePluginInfo.PLUGIN_INFO)

@@ -4,6 +4,8 @@
 //import org.gradle.accessors.dm.LibrariesForLibs
 import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import com.android.build.api.withAndroid
+import com.github.gmazzo.buildconfig.BuildConfigExtension
+import com.github.gmazzo.buildconfig.BuildConfigType
 import com.vanniktech.maven.publish.*
 import dev.lounres.kone.buildSrc.dsl.apply
 import dev.lounres.kone.buildSrc.dsl.withEach
@@ -405,10 +407,56 @@ stal {
         "kotlin compiler plugin gradle wrapper" {
             apply<DevKitGradlePlugin>()
             
+            
+            val pluginProject = project.parent!!
+            val runtimeProject = project.parent!!.childProjects["runtime"]!!
+            
             configure<GradlePluginConfigExtension> {
-                compilerPlugin(project.parent!!)
-                val runtimeProject = project.parent!!.childProjects["runtime"]!!
-                companionLibrary(runtimeProject, group = runtimeProject.extra["koneGroup"], version = runtimeProject.extra["koneVersion"])
+                compilerPlugin(pluginProject)
+                companionLibrary(runtimeProject)
+            }
+            
+            configure<BuildConfigExtension> {
+                forClass("KonePluginInfo") {
+                    useKotlinOutput { topLevelConstants = false }
+                    val pluginId =
+                        buildConfigField("PLUGIN_ID") {
+                            type(String::class)
+                            expression("\"${pluginProject.extra["koneGroup"]}.${pluginProject.extra["artifactId"]}\"")
+                        }
+                    val pluginArtifact =
+                        buildConfigField("PLUGIN_ARTIFACT") {
+                            type("org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact")
+                            expression(
+                                """
+                                |SubpluginArtifact(
+                                |  groupId = "${pluginProject.extra["koneGroup"]}",
+                                |  artifactId = "${pluginProject.extra["artifactId"]}",
+                                |  version = "${pluginProject.extra["koneVersion"]}",
+                                |)
+                                """.trimMargin()
+                            )
+                        }
+                    val companionLibraryCoordinates =
+                        buildConfigField("COMPANION_LIBRARY_COORDINATES") {
+                            type("List<String>")
+                            expression(
+                                "listOf(\"${runtimeProject.extra["koneGroup"]}:${runtimeProject.extra["artifactId"]}:${runtimeProject.extra["koneVersion"]}\")"
+                            )
+                        }
+                    buildConfigField("PLUGIN_INFO") {
+                        type.value(BuildConfigType("org.jetbrains.kotlin.compiler.plugin.devkit.DevKitPluginInfo"))
+                        expression(
+                            """
+                            |DevKitPluginInfo(
+                            |  id = ${pluginId.name},
+                            |  artifact = ${pluginArtifact.name},
+                            |  companionLibraryCoordinates = ${companionLibraryCoordinates.name},
+                            |)
+                            """.trimMargin()
+                        )
+                    }
+                }
             }
             
             configure<GradlePluginDevelopmentExtension> {

@@ -8,4 +8,4 @@ package dev.lounres.kone.plugins.suppliedTypes.gradleWrapper
 import org.jetbrains.kotlin.compiler.plugin.devkit.DevKitSupportPlugin
 
 
-class KoneCompilerPluginGradleWrapper : DevKitSupportPlugin(PluginInfo.PLUGIN_INFO)
+class KoneCompilerPluginGradleWrapper : DevKitSupportPlugin(KonePluginInfo.PLUGIN_INFO)
