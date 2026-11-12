@@ -8,6 +8,7 @@ import com.vanniktech.maven.publish.*
 import dev.lounres.kone.buildSrc.dsl.apply
 import dev.lounres.kone.buildSrc.dsl.withEach
 import dev.lounres.kone.buildSrc.dsl.withPlugin
+import dev.lounres.kone.buildSrc.dsl.withPlugins
 import dev.lounres.kone.buildSrc.koneCompilerOptions
 import dev.lounres.kone.buildSrc.koneOptIns
 import kotlinx.atomicfu.plugin.gradle.AtomicFUPluginExtension
@@ -344,8 +345,10 @@ stal {
             }
         }
         "kotlin library settings" {
-            configure<KotlinProjectExtension> {
-                explicitApi = Warning
+            pluginManager.withPlugins(versions.plugins.kotlin.jvm, versions.plugins.kotlin.multiplatform) {
+                configure<KotlinProjectExtension> {
+                    explicitApi = Warning
+                }
             }
         }
         "kotlin compiler library" {
