@@ -167,12 +167,16 @@ stal {
             extra["androidNamespace"] = "dev.lounres.kone.bom"
         }
         "kotlin compiler library" {
-            extra["jvmTargetVersion"] = (settings.extra["compilerJvmTargetVersion"] as String).toInt()
-            extra["jvmVendor"] = settings.extra["compilerJvmVendor"]
+//            extra["jvmTargetVersion"] = (settings.extra["compilerJvmTargetVersion"] as String).toInt()
+//            extra["jvmVendor"] = settings.extra["compilerJvmVendor"]
         }
         "kotlin compiler plugin" {
-            extra["jvmTargetVersion"] = (settings.extra["compilerJvmTargetVersion"] as String).toInt()
-            extra["jvmVendor"] = settings.extra["compilerJvmVendor"]
+//            extra["jvmTargetVersion"] = (settings.extra["compilerJvmTargetVersion"] as String).toInt()
+//            extra["jvmVendor"] = settings.extra["compilerJvmVendor"]
+        }
+        "kotlin compiler plugin gradle wrapper" {
+            extra["jvmTargetVersion"] = (settings.extra["compilerPluginGradleWrapperJvmTargetVersion"] as String).toInt()
+            extra["jvmVendor"] = settings.extra["compilerPluginGradleWrapperJvmVendor"]
         }
         "dokka" {
             extra["isDokkaConfigured"] = true
