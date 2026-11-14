@@ -127,6 +127,10 @@ stal {
             extra["alias"] = "${parentProject.name}.${project.name}"
             extra["androidNamespace"] = "dev.lounres.kone.${parentProject.name}.${project.name}"
         }
+        "libs main benchmarks" {
+            extra["jvmTargetVersion"] = (settings.extra["benchmatrksJvmTargetVersion"] as String).toInt()
+            extra["jvmVendor"] = settings.extra["benchmatrksJvmVendor"]
+        }
         "libs misc" {
             extra["koneArtifactId"] = "kone.misc.${project.name}"
             extra["alias"] = "misc-${project.name}"
@@ -137,34 +141,38 @@ stal {
             extra["alias"] = "util-${project.name}"
             extra["androidNamespace"] = "dev.lounres.kone.util.${project.name}"
         }
-        "bom" {
-            extra["koneArtifactId"] = "kone.bom"
-            extra["alias"] = "bom"
-            extra["androidNamespace"] = "dev.lounres.kone.bom"
-        }
-        "kotlin compiler library" {
+        case { hasAnyOf("plugins util", "plugins testUtil") } implies {
             extra["koneArtifactId"] = "kone.plugins.${project.name}"
 //            extra["alias"] = "plugins-${project.name}"
         }
-        "kotlin compiler plugin" {
+        "plugins" {
             extra["koneArtifactId"] = "kone.plugins.${project.name}"
 //            extra["alias"] = "plugins-${project.name}"
         }
-        "kotlin compiler plugin runtime" {
+        "plugins runtime" {
             extra["koneArtifactId"] = "kone.plugins.${project.parent!!.name}.runtime"
 //            extra["alias"] = "plugins-${project.parent!!.name}-runtime"
             extra["androidNamespace"] = "dev.lounres.kone.plugins.${project.parent!!.name}.runtime"
         }
-        "kotlin compiler plugin gradle wrapper" {
+        "plugins gradleWrapper" {
             extra["koneArtifactId"] = "kone.plugins.${project.parent!!.name}.gradleWrapper"
             extra["alias"] = "plugins-${project.parent!!.name}"
         }
         "version catalog" {
             extra["koneArtifactId"] = "kone.versionCatalog"
         }
-        "libs main benchmarks" {
-            extra["jvmTargetVersion"] = (settings.extra["benchmatrksJvmTargetVersion"] as String).toInt()
-            extra["jvmVendor"] = settings.extra["benchmatrksJvmVendor"]
+        "bom" {
+            extra["koneArtifactId"] = "kone.bom"
+            extra["alias"] = "bom"
+            extra["androidNamespace"] = "dev.lounres.kone.bom"
+        }
+        "kotlin compiler library" {
+            extra["jvmTargetVersion"] = (settings.extra["compilerJvmTargetVersion"] as String).toInt()
+            extra["jvmVendor"] = settings.extra["compilerJvmVendor"]
+        }
+        "kotlin compiler plugin" {
+            extra["jvmTargetVersion"] = (settings.extra["compilerJvmTargetVersion"] as String).toInt()
+            extra["jvmVendor"] = settings.extra["compilerJvmVendor"]
         }
         "dokka" {
             extra["isDokkaConfigured"] = true
