@@ -1,5 +1,6 @@
 plugins {
     `kotlin-dsl`
+    alias(versions.plugins.kotlinx.serialization)
 }
 
 kotlin {
@@ -12,6 +13,7 @@ kotlin {
         }
         functionalTest {
             dependencies {
+                implementation(versions.kotlinx.serialization.json)
                 runtimeOnly(projects.libs.misc.benchmarks)
             }
         }

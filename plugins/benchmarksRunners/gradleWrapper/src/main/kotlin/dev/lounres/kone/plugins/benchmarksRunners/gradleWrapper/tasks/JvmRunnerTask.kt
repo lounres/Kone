@@ -43,7 +43,7 @@ object KoneBenchmarksJvmRunnersGenerator : KoneBenchmarksRunnersGenerator<Kotlin
             
             args = buildList {
                 add(configuration.runnerName.get())
-                for ((argumentName, argumentValue) in configuration.arguments.get()) {
+                for ([argumentName, argumentValue] in configuration.arguments.get()) {
                     add(argumentName)
                     add(argumentValue)
                 }

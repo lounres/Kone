@@ -1,9 +1,9 @@
-package foo.bar
+package common
 
 import dev.lounres.kone.misc.benchmarks.runners.*
 
 
 @KoneBenchmarkRunner
 fun doIt() {
-    println("Hello from jvm runner!")
+    println("Hello from common runner!")
 }

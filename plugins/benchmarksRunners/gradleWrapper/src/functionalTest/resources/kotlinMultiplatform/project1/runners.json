@@ -1,0 +1,8 @@
+{
+    "common runner jvm execution": {
+        "taskName": "runJvmMainBenchmarkCommonRunner"
+    },
+    "jvm runner jvm execution": {
+        "taskName": "runJvmMainBenchmarkJvmRunner"
+    }
+}
