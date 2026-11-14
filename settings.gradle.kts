@@ -84,19 +84,20 @@ stal {
         }
 //        "bom"("bom", "kotlin multiplatform", "kotlin library settings", "publishing")
         "plugins" {
-            "util"("kotlin compiler library", "kotlin library settings")
-            "testUtil"("kotlin compiler library", "kotlin library settings")
-            subdirs("kotlin compiler plugin", "publishing") {
-                "runtime"("kotlin compiler plugin runtime", "kotlin multiplatform", "kotlin library settings", "publishing", "dokka")
-                "gradleWrapper"("kotlin compiler plugin gradle wrapper", "testBalloon")
+            "util"("plugins util", "kotlin compiler library", "kotlin library settings")
+            "testUtil"("plugins testUtil", "kotlin compiler library", "kotlin library settings")
+            subdirs("plugins", "kotlin compiler plugin", "publishing") {
+                "runtime"("plugins runtime", "kotlin compiler plugin runtime", "kotlin multiplatform", "kotlin library settings", "publishing", "dokka")
+                "gradleWrapper"("plugins gradleWrapper", "kotlin compiler plugin gradle wrapper", "testBalloon")
             }
         }
         "docs"()
     }
 
     tag {
-        "kotlin multiplatform publication" since { has("publishing") && has("kotlin multiplatform") }
+        "kotlin multiplatform publication" since { has("publishing") && hasAnyOf("kotlin multiplatform", "kotlin compiler library", "kotlin compiler plugin") }
         "kotlin jvm publication" since { has("publishing") && has("kotlin jvm") }
+        "gradle plugin publication" since { has("publishing") && has("kotlin compiler plugin gradle wrapper") }
     }
 
     action {

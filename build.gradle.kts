@@ -26,6 +26,7 @@ import org.jetbrains.kotlin.allopen.gradle.AllOpenExtension
 import org.jetbrains.kotlin.compiler.plugin.devkit.*
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
+import org.jetbrains.kotlin.gradle.dsl.HasConfigurableKotlinCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
@@ -239,30 +240,26 @@ gradle.projectsEvaluated {
 
 stal {
     action {
-        "gradle plugin" {
-            apply(plugin = "java-gradle-plugin")
-            apply(plugin = "org.gradle.kotlin.kotlin-dsl")
-            
-            configure<GradlePluginDevelopmentExtension> {
-                website = rootProject.property("koneGradlePluginsWebsite") as String
-                vcsUrl = rootProject.property("koneGradlePluginsVcsUrl") as String
+        fun <KPE> KPE.commonSettings() where KPE : KotlinProjectExtension, KPE : HasConfigurableKotlinCompilerOptions<*> {
+            jvmToolchain {
+                languageVersion = JavaLanguageVersion.of(project.extra["jvmTargetVersion"] as Int)
+                vendor = JvmVendorSpec.of(project.extra["jvmVendor"] as String)
             }
+            
+            compilerOptions {
+                progressiveMode = true
+                freeCompilerArgs.addAll(koneCompilerOptions)
+                optIn.addAll(koneOptIns)
+                verbose = true
+            }
+        }
+        fun GradlePluginDevelopmentExtension.commonSettings() {
+            website = rootProject.property("koneGradlePluginsWebsite") as String
+            vcsUrl = rootProject.property("koneGradlePluginsVcsUrl") as String
         }
         "kotlin jvm" {
             apply(versions.plugins.kotlin.jvm)
-            configure<KotlinJvmProjectExtension> {
-                jvmToolchain {
-                    languageVersion = JavaLanguageVersion.of(project.extra["jvmTargetVersion"] as Int)
-                    vendor = JvmVendorSpec.of(project.extra["jvmVendor"] as String)
-                }
-                
-                compilerOptions {
-                    progressiveMode = true
-                    freeCompilerArgs.addAll(koneCompilerOptions)
-                    optIn.addAll(koneOptIns)
-                    verbose = true
-                }
-            }
+            the<KotlinJvmProjectExtension>().commonSettings()
             
             tasks.withType<Test> {
                 useJUnitPlatform()
@@ -271,18 +268,9 @@ stal {
         }
         "kotlin multiplatform" {
             apply(versions.plugins.kotlin.multiplatform)
+            apply(versions.plugins.android.library)
             configure<KotlinMultiplatformExtension> {
-                jvmToolchain {
-                    languageVersion = JavaLanguageVersion.of(project.extra["jvmTargetVersion"] as Int)
-                    vendor = JvmVendorSpec.of(project.extra["jvmVendor"] as String)
-                }
-                
-                compilerOptions {
-                    progressiveMode = true
-                    freeCompilerArgs.addAll(koneCompilerOptions)
-                    optIn.addAll(koneOptIns)
-                    verbose = true
-                }
+                commonSettings()
                 
                 applyDefaultHierarchyTemplate()
 
@@ -318,32 +306,26 @@ stal {
 //                iosArm64()
 //                iosSimulatorArm64()
 //                macosArm64()
+                
+                configure<KotlinMultiplatformAndroidLibraryTarget> {
+                    namespace = project.extra["androidNamespace"] as String
+                    compileSdk {
+                        version = release((rootProject.extra["android.compileSdk"] as String).toInt()) {
+                            minorApiLevel = (rootProject.extra["android.compileSdkMinor"] as String).toInt()
+                        }
+                    }
+                    minSdk = (rootProject.extra["android.minSdk"] as String).toInt()
+                    
+                    withHostTestBuilder { }.configure { }
+                    withDeviceTestBuilder {
+                        sourceSetTreeName = "test"
+                    }
+                }
             }
             
             tasks.withType<Test> {
                 useJUnitPlatform()
                 maxHeapSize = "4g"
-            }
-        }
-        "kotlin android" {
-            apply(versions.plugins.android.library)
-            pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
-                configure<KotlinMultiplatformExtension> {
-                    configure<KotlinMultiplatformAndroidLibraryTarget> {
-                        namespace = project.extra["androidNamespace"] as String
-                        compileSdk {
-                            version = release((rootProject.extra["android.compileSdk"] as String).toInt()) {
-                                minorApiLevel = (rootProject.extra["android.compileSdkMinor"] as String).toInt()
-                            }
-                        }
-                        minSdk = (rootProject.extra["android.minSdk"] as String).toInt()
-
-                        withHostTestBuilder { }.configure { }
-                        withDeviceTestBuilder {
-                            sourceSetTreeName = "test"
-                        }
-                    }
-                }
             }
         }
         "kotlin library settings" {
@@ -355,6 +337,7 @@ stal {
         }
         "kotlin compiler library" {
             apply<DevKitCompilerLibrary>()
+            the<KotlinMultiplatformExtension>().commonSettings()
         }
         "kotlin compiler plugin" {
             apply<DevKitCompilerPlugin>()
@@ -366,25 +349,13 @@ stal {
                 
                 componentRegistrar = "${extra["koneGroup"]}.${extra["koneArtifactId"]}.CompilerPluginRegistrar"
                 commandLineProcessor = "${extra["koneGroup"]}.${extra["koneArtifactId"]}.CommandLineProcessor"
-
-                companionLibrary(childProjects["runtime"]!!)
-
+                
                 generateTestsClass = "${extra["koneGroup"]}.${extra["koneArtifactId"]}.GenerateTestsKt"
             }
-
+            
             configure<KotlinMultiplatformExtension> {
-                jvmToolchain {
-                    languageVersion = JavaLanguageVersion.of(project.extra["jvmTargetVersion"] as Int)
-                    vendor = JvmVendorSpec.of(project.extra["jvmVendor"] as String)
-                }
+                commonSettings()
                 
-                compilerOptions {
-                    progressiveMode = true
-                    freeCompilerArgs.addAll(koneCompilerOptions)
-                    optIn.addAll(koneOptIns)
-                    verbose = true
-                }
-
                 sourceSets {
                     commonMain {
                         dependencies {
@@ -407,65 +378,13 @@ stal {
         "kotlin compiler plugin gradle wrapper" {
             apply<DevKitGradlePlugin>()
             
-            
-            val pluginProject = project.parent!!
-            val runtimeProject = project.parent!!.childProjects["runtime"]!!
-            
-            configure<GradlePluginConfigExtension> {
-                compilerPlugin(pluginProject)
-                companionLibrary(runtimeProject)
-            }
-            
             configure<KotlinJvmProjectExtension> {
+                commonSettings()
                 sourceSets {
                     named("functionalTest") {
                         dependencies {
                             implementation(versions.testBalloon.framework.core)
-                            runtimeOnly(runtimeProject)
                         }
-                    }
-                }
-            }
-            
-            configure<BuildConfigExtension> {
-                forClass("KonePluginInfo") {
-                    useKotlinOutput { topLevelConstants = false }
-                    val pluginId =
-                        buildConfigField("PLUGIN_ID") {
-                            type(String::class)
-                            expression("\"${pluginProject.extra["koneGroup"]}.${pluginProject.extra["koneArtifactId"]}\"")
-                        }
-                    val pluginArtifact =
-                        buildConfigField("PLUGIN_ARTIFACT") {
-                            type("org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact")
-                            expression(
-                                """
-                                |SubpluginArtifact(
-                                |  groupId = "${pluginProject.extra["koneGroup"]}",
-                                |  artifactId = "${pluginProject.extra["koneArtifactId"]}",
-                                |  version = "${pluginProject.extra["koneVersion"]}",
-                                |)
-                                """.trimMargin()
-                            )
-                        }
-                    val companionLibraryCoordinates =
-                        buildConfigField("COMPANION_LIBRARY_COORDINATES") {
-                            type("List<String>")
-                            expression(
-                                "listOf(\"${runtimeProject.extra["koneGroup"]}:${runtimeProject.extra["koneArtifactId"]}:${runtimeProject.extra["koneVersion"]}\")"
-                            )
-                        }
-                    buildConfigField("PLUGIN_INFO") {
-                        type.value(BuildConfigType("org.jetbrains.kotlin.compiler.plugin.devkit.DevKitPluginInfo"))
-                        expression(
-                            """
-                            |DevKitPluginInfo(
-                            |  id = ${pluginId.name},
-                            |  artifact = ${pluginArtifact.name},
-                            |  companionLibraryCoordinates = ${companionLibraryCoordinates.name},
-                            |)
-                            """.trimMargin()
-                        )
                     }
                 }
             }
@@ -473,82 +392,15 @@ stal {
             tasks.withType<Test> {
                 useJUnitPlatform()
                 maxHeapSize = "4g"
-                systemProperty("kone.plugin.gradleWrapper.functionalTest.resources.path", project.projectDir.resolve("src/functionalTest/resources").absolutePath)
             }
             
-            configure<GradlePluginDevelopmentExtension> {
-                plugins {
-                    register("kotlinCompilerPluginGradleWrapper") {
-                        id = "${extra["koneGroup"]}.${extra["koneArtifactId"]}"
-//                        displayName = ""
-//                        description = ""
-//                        tags = listOf()
-                        implementationClass = "${extra["koneGroup"]}.${extra["koneArtifactId"]}.KoneCompilerPluginGradleWrapper"
-                    }
-                }
-            }
+            the<GradlePluginDevelopmentExtension>().commonSettings()
         }
-        "atomicfu" {
-            apply(versions.plugins.kotlinx.atomicfu)
-            configure<AtomicFUPluginExtension> {
-                transformJvm = true
-                jvmVariant = "VH"
-            }
-        }
-        "compose" {
-            apply(versions.plugins.kotlin.compose)
-            apply(versions.plugins.compose.multiplatform)
-            pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
-                configure<KotlinMultiplatformExtension> {
-                    applyDefaultHierarchyTemplate {
-                        sourceSetTrees(KotlinSourceSetTree.main, KotlinSourceSetTree.test)
-                        common {
-                            group("compose") {
-                                withJvm()
-                                group("web")
-                                @Suppress("UnstableApiUsage")
-                                withAndroid()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        "testBalloon" {
-            pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
-                apply(versions.plugins.testBalloon)
-                configure<KotlinJvmProjectExtension> {
-                    @Suppress("UNUSED_VARIABLE")
-                    sourceSets {
-                        getByName("test") {
-                            dependencies {
-                                implementation(versions.testBalloon.framework.core)
-                            }
-                        }
-                    }
-                }
-            }
-            pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
-                apply(versions.plugins.testBalloon)
-                configure<KotlinMultiplatformExtension> {
-                    sourceSets {
-                        commonTest {
-                            dependencies {
-                                implementation(versions.testBalloon.framework.core)
-                            }
-                        }
-//                        named("androidHostTest") {
-//                            dependencies {
-//                                implementation(versions.testBaloon.framework.core)
-//                                // TODO
-//                            }
-//                        }
-                    }
-                }
-            }
-        }
-        "kover" {
-            apply(versions.plugins.kotlinx.kover)
+        "gradle plugin" {
+            apply(plugin = "java-gradle-plugin")
+//            apply(plugin = "org.gradle.kotlin.kotlin-dsl")
+            
+            the<GradlePluginDevelopmentExtension>().commonSettings()
         }
         "libs main algorithms" {
             pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
@@ -764,6 +616,152 @@ stal {
                     }
                 }
             }
+        }
+        "plugins" {
+            configure<DevKitCompilerConfigExtension> {
+                companionLibrary(childProjects["runtime"]!!)
+            }
+        }
+        "plugins gradleWrapper" {
+            val pluginProject = project.parent!!
+            val runtimeProject = pluginProject.childProjects["runtime"]!!
+            
+            configure<GradlePluginConfigExtension> {
+                compilerPlugin(pluginProject)
+                companionLibrary(runtimeProject)
+            }
+            
+            configure<KotlinJvmProjectExtension> {
+                commonSettings()
+                sourceSets {
+                    named("functionalTest") {
+                        dependencies {
+                            runtimeOnly(runtimeProject)
+                        }
+                    }
+                }
+            }
+            
+            configure<BuildConfigExtension> {
+                forClass("KonePluginInfo") {
+                    useKotlinOutput { topLevelConstants = false }
+                    val pluginId =
+                        buildConfigField("PLUGIN_ID") {
+                            type(String::class)
+                            expression("\"${pluginProject.extra["koneGroup"]}.${pluginProject.extra["koneArtifactId"]}\"")
+                        }
+                    val pluginArtifact =
+                        buildConfigField("PLUGIN_ARTIFACT") {
+                            type("org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact")
+                            expression(
+                                """
+                                |SubpluginArtifact(
+                                |  groupId = "${pluginProject.extra["koneGroup"]}",
+                                |  artifactId = "${pluginProject.extra["koneArtifactId"]}",
+                                |  version = "${pluginProject.extra["koneVersion"]}",
+                                |)
+                                """.trimMargin()
+                            )
+                        }
+                    val companionLibraryCoordinates =
+                        buildConfigField("COMPANION_LIBRARY_COORDINATES") {
+                            type("List<String>")
+                            expression(
+                                "listOf(\"${runtimeProject.extra["koneGroup"]}:${runtimeProject.extra["koneArtifactId"]}:${runtimeProject.extra["koneVersion"]}\")"
+                            )
+                        }
+                    buildConfigField("PLUGIN_INFO") {
+                        type.value(BuildConfigType("org.jetbrains.kotlin.compiler.plugin.devkit.DevKitPluginInfo"))
+                        expression(
+                            """
+                            |DevKitPluginInfo(
+                            |  id = ${pluginId.name},
+                            |  artifact = ${pluginArtifact.name},
+                            |  companionLibraryCoordinates = ${companionLibraryCoordinates.name},
+                            |)
+                            """.trimMargin()
+                        )
+                    }
+                }
+            }
+            
+            tasks.withType<Test> {
+                systemProperty("kone.plugin.gradleWrapper.functionalTest.resources.path", project.projectDir.resolve("src/functionalTest/resources").absolutePath)
+            }
+            
+            configure<GradlePluginDevelopmentExtension> {
+                plugins {
+                    register("kotlinCompilerPluginGradleWrapper") {
+                        id = "${extra["koneGroup"]}.${extra["koneArtifactId"]}"
+//                        displayName = ""
+//                        description = ""
+//                        tags = listOf()
+                        implementationClass = "${extra["koneGroup"]}.${extra["koneArtifactId"]}.KoneCompilerPluginGradleWrapper"
+                    }
+                }
+            }
+        }
+        "atomicfu" {
+            apply(versions.plugins.kotlinx.atomicfu)
+            configure<AtomicFUPluginExtension> {
+                transformJvm = true
+                jvmVariant = "VH"
+            }
+        }
+        "compose" {
+            apply(versions.plugins.kotlin.compose)
+            apply(versions.plugins.compose.multiplatform)
+            pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
+                configure<KotlinMultiplatformExtension> {
+                    applyDefaultHierarchyTemplate {
+                        sourceSetTrees(KotlinSourceSetTree.main, KotlinSourceSetTree.test)
+                        common {
+                            group("compose") {
+                                withJvm()
+                                group("web")
+                                @Suppress("UnstableApiUsage")
+                                withAndroid()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        "testBalloon" {
+            pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
+                apply(versions.plugins.testBalloon)
+                configure<KotlinJvmProjectExtension> {
+                    @Suppress("UNUSED_VARIABLE")
+                    sourceSets {
+                        getByName("test") {
+                            dependencies {
+                                implementation(versions.testBalloon.framework.core)
+                            }
+                        }
+                    }
+                }
+            }
+            pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
+                apply(versions.plugins.testBalloon)
+                configure<KotlinMultiplatformExtension> {
+                    sourceSets {
+                        commonTest {
+                            dependencies {
+                                implementation(versions.testBalloon.framework.core)
+                            }
+                        }
+//                        named("androidHostTest") {
+//                            dependencies {
+//                                implementation(versions.testBaloon.framework.core)
+//                                // TODO
+//                            }
+//                        }
+                    }
+                }
+            }
+        }
+        "kover" {
+            apply(versions.plugins.kotlinx.kover)
         }
         "dokka" {
             val thisProject = this
