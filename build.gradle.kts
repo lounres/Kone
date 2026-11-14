@@ -416,6 +416,16 @@ stal {
                 companionLibrary(runtimeProject)
             }
             
+            configure<KotlinJvmProjectExtension> {
+                sourceSets {
+                    named("functionalTest") {
+                        dependencies {
+                            runtimeOnly(runtimeProject)
+                        }
+                    }
+                }
+            }
+            
             configure<BuildConfigExtension> {
                 forClass("KonePluginInfo") {
                     useKotlinOutput { topLevelConstants = false }
