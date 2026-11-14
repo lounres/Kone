@@ -190,7 +190,7 @@ val Project.versions: LibrariesForVersions get() = rootProject.extensions.getByN
 //val Project.libs: LibrariesForLibs get() = rootProject.extensions.getByName<LibrariesForLibs>("libs")
 val Project.projects: RootProjectAccessor get() = rootProject.extensions.getByName<RootProjectAccessor>("projects")
 
-val Project.artifact: String get() = extra["artifactId"] as String
+val Project.artifact: String get() = extra["koneArtifactId"] as String
 val Project.alias: String get() = extra["alias"] as String
 
 catalog.versionCatalog {
@@ -360,16 +360,16 @@ stal {
             apply<DevKitCompilerPlugin>()
 
             configure<DevKitCompilerConfigExtension> {
-                pluginPackage = "${extra["koneGroup"]}.${extra["artifactId"]}"
+                pluginPackage = "${extra["koneGroup"]}.${extra["koneArtifactId"]}"
                 
                 ideaSinceBuild = IdeBuildNumber("263")
                 
-                componentRegistrar = "${extra["koneGroup"]}.${extra["artifactId"]}.CompilerPluginRegistrar"
-                commandLineProcessor = "${extra["koneGroup"]}.${extra["artifactId"]}.CommandLineProcessor"
+                componentRegistrar = "${extra["koneGroup"]}.${extra["koneArtifactId"]}.CompilerPluginRegistrar"
+                commandLineProcessor = "${extra["koneGroup"]}.${extra["koneArtifactId"]}.CommandLineProcessor"
 
                 companionLibrary(childProjects["runtime"]!!)
 
-                generateTestsClass = "${extra["koneGroup"]}.${extra["artifactId"]}.GenerateTestsKt"
+                generateTestsClass = "${extra["koneGroup"]}.${extra["koneArtifactId"]}.GenerateTestsKt"
             }
 
             configure<KotlinMultiplatformExtension> {
@@ -422,7 +422,7 @@ stal {
                     val pluginId =
                         buildConfigField("PLUGIN_ID") {
                             type(String::class)
-                            expression("\"${pluginProject.extra["koneGroup"]}.${pluginProject.extra["artifactId"]}\"")
+                            expression("\"${pluginProject.extra["koneGroup"]}.${pluginProject.extra["koneArtifactId"]}\"")
                         }
                     val pluginArtifact =
                         buildConfigField("PLUGIN_ARTIFACT") {
@@ -431,7 +431,7 @@ stal {
                                 """
                                 |SubpluginArtifact(
                                 |  groupId = "${pluginProject.extra["koneGroup"]}",
-                                |  artifactId = "${pluginProject.extra["artifactId"]}",
+                                |  artifactId = "${pluginProject.extra["koneArtifactId"]}",
                                 |  version = "${pluginProject.extra["koneVersion"]}",
                                 |)
                                 """.trimMargin()
@@ -441,7 +441,7 @@ stal {
                         buildConfigField("COMPANION_LIBRARY_COORDINATES") {
                             type("List<String>")
                             expression(
-                                "listOf(\"${runtimeProject.extra["koneGroup"]}:${runtimeProject.extra["artifactId"]}:${runtimeProject.extra["koneVersion"]}\")"
+                                "listOf(\"${runtimeProject.extra["koneGroup"]}:${runtimeProject.extra["koneArtifactId"]}:${runtimeProject.extra["koneVersion"]}\")"
                             )
                         }
                     buildConfigField("PLUGIN_INFO") {
@@ -462,11 +462,11 @@ stal {
             configure<GradlePluginDevelopmentExtension> {
                 plugins {
                     register("kotlinCompilerPluginGradleWrapper") {
-                        id = "${extra["koneGroup"]}.${extra["artifactId"]}"
+                        id = "${extra["koneGroup"]}.${extra["koneArtifactId"]}"
 //                        displayName = ""
 //                        description = ""
 //                        tags = listOf()
-                        implementationClass = "${extra["koneGroup"]}.${extra["artifactId"]}.KoneCompilerPluginGradleWrapper"
+                        implementationClass = "${extra["koneGroup"]}.${extra["koneArtifactId"]}.KoneCompilerPluginGradleWrapper"
                     }
                 }
             }
@@ -830,8 +830,6 @@ stal {
                 publishToMavenCentral()
                 
                 signAllPublications()
-                
-                coordinates(groupId = koneGroup, artifactId = project.artifact, version = koneVersion)
 
                 pom {
                     name = "Kone library"
@@ -853,6 +851,16 @@ stal {
                     }
                     scm {
                         url = "https://github.com/lounres/Kone"
+                    }
+                }
+            }
+            
+            afterEvaluate {
+                configure<PublishingExtension> {
+                    publications.withType<MavenPublication> {
+                        groupId = project.extra["koneGroup"] as String
+                        if (artifactId.startsWith(project.name)) artifactId = "${project.extra["koneArtifactId"]}${artifactId.substring(project.name.length)}"
+                        version = project.extra["koneVersion"] as String
                     }
                 }
             }

@@ -17,14 +17,3 @@ kotlin {
         }
     }
 }
-
-//dependencies {
-//    companionLibrariesClasspath(projects.libs.misc.benchmarks) {
-//        isTransitive = true
-//    }
-//    companionLibrariesClasspath(versions.kotlinx.serialization.json) {
-//        isTransitive = true
-//    }
-//}
-
-println(configurations.names)
