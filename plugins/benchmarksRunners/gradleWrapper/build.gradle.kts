@@ -10,5 +10,10 @@ kotlin {
                 api(versions.kotlinx.serialization.json)
             }
         }
+        functionalTest {
+            dependencies {
+                runtimeOnly(projects.libs.misc.benchmarks)
+            }
+        }
     }
 }

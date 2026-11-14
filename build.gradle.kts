@@ -470,6 +470,12 @@ stal {
                 }
             }
             
+            tasks.withType<Test> {
+                useJUnitPlatform()
+                maxHeapSize = "4g"
+                systemProperty("kone.plugin.gradleWrapper.functionalTest.resources.path", project.projectDir.resolve("src/functionalTest/resources").absolutePath)
+            }
+            
             configure<GradlePluginDevelopmentExtension> {
                 plugins {
                     register("kotlinCompilerPluginGradleWrapper") {
