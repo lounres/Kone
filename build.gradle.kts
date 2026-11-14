@@ -420,6 +420,7 @@ stal {
                 sourceSets {
                     named("functionalTest") {
                         dependencies {
+                            implementation(versions.testBalloon.framework.core)
                             runtimeOnly(runtimeProject)
                         }
                     }

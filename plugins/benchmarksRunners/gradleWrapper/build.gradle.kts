@@ -10,10 +10,5 @@ kotlin {
                 api(versions.kotlinx.serialization.json)
             }
         }
-        functionalTest {
-            dependencies {
-                implementation(versions.testBalloon.framework.core)
-            }
-        }
     }
 }
