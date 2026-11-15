@@ -402,6 +402,27 @@ stal {
             
             the<GradlePluginDevelopmentExtension>().commonSettings()
         }
+        "libs main" {
+            pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
+                logger.error("libs main source set setting is not yet implemented for Kotlin/JVM plug-in")
+//                configure<KotlinJvmProjectExtension> {
+//                    // ...
+//                }
+            }
+            pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
+                @Suppress("UNUSED_VARIABLE")
+                configure<KotlinMultiplatformExtension> {
+                    sourceSets {
+                        commonTest {
+                            dependencies {
+                                implementation(projects.libs.util.assertions)
+                                implementation(childProjects["assertions"]!!)
+                            }
+                        }
+                    }
+                }
+            }
+        }
         "libs main algorithms" {
             pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
                 logger.error("algorithm source set setting is not yet implemented for Kotlin/JVM plug-in")
@@ -448,49 +469,7 @@ stal {
                         commonMain {
                             dependencies {
                                 api(projects.libs.util.assertions)
-                                val parentProject = project.parent
-                                if (parentProject != null) api(project(parentProject.path))
-                            }
-                        }
-                    }
-                }
-            }
-            val thisProject = project
-            project.parent?.run {
-                pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
-                    logger.error("assertions source set setting is not yet implemented for Kotlin/JVM plug-in")
-//                    configure<KotlinJvmProjectExtension> {
-//                        // ...
-//                    }
-                }
-                pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
-                    @Suppress("UNUSED_VARIABLE")
-                    configure<KotlinMultiplatformExtension> {
-                        sourceSets {
-                            commonTest {
-                                dependencies {
-                                    implementation(project(thisProject.path))
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        "libs main" {
-            pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
-                logger.error("libs main source set setting is not yet implemented for Kotlin/JVM plug-in")
-//                configure<KotlinJvmProjectExtension> {
-//                    // ...
-//                }
-            }
-            pluginManager.withPlugin(versions.plugins.kotlin.multiplatform) {
-                @Suppress("UNUSED_VARIABLE")
-                configure<KotlinMultiplatformExtension> {
-                    sourceSets {
-                        commonTest {
-                            dependencies {
-                                implementation(projects.libs.util.assertions)
+                                api(project.parent!!)
                             }
                         }
                     }
@@ -636,6 +615,7 @@ stal {
                 sourceSets {
                     named("functionalTest") {
                         dependencies {
+//                            implementation(projects.libs.util.assertions)
                             runtimeOnly(runtimeProject)
                         }
                     }
