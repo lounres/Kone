@@ -42,6 +42,7 @@ class BenchmarksRunnersFirBasedIrGenerationExtension(
             .filter {
                 it.name == entryPointCallableId.callableName && it.parameters.size == 1
             }
+            .also { if (it.size != 1) error("Expected one entry point, got ${it.size}") }
             .single()
         
         entryPointFunction.body = entryPointBody(

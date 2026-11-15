@@ -1,0 +1,22 @@
+FILE: runner1.kt
+    package foo.bar
+
+    @R|dev/lounres/kone/misc/benchmarks/runners/KoneBenchmarkRunner|() public final fun runner1(): R|kotlin/Unit| {
+        R|kotlin/io/println|(String(Hello from runner1!))
+    }
+FILE: runner2.kt
+    package foo.bar
+
+    @R|dev/lounres/kone/misc/benchmarks/runners/KoneBenchmarkRunner|() public final fun runner2(): R|kotlin/Unit| {
+        R|kotlin/io/println|(String(Hello from runner2!))
+    }
+FILE: runner3.kt
+    package foo.bar
+
+    @R|dev/lounres/kone/misc/benchmarks/runners/KoneBenchmarkRunner|() public final fun runner3(): R|kotlin/Unit| {
+        R|kotlin/io/println|(String(Hello from runner3!))
+    }
+FILE: dev/lounres/kone/plugins/benchmarksRunners/generated/__GENERATED__CALLABLES__.kt
+    package dev.lounres.kone.plugins.benchmarksRunners.generated
+
+    public final fun main(args: R|kotlin/Array<kotlin/String>|): R|kotlin/Unit|

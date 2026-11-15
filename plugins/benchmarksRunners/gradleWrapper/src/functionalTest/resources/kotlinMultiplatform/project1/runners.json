@@ -1,8 +1,10 @@
 {
     "common runner jvm execution": {
-        "taskName": "runJvmMainBenchmarkCommonRunner"
+        "taskName": ":runJvmMainBenchmarkCommonRunner",
+        "output": "Hello from common runner!"
     },
     "jvm runner jvm execution": {
-        "taskName": "runJvmMainBenchmarkJvmRunner"
+        "taskName": ":runJvmMainBenchmarkJvmRunner",
+        "output": "Hello from jvm runner!"
     }
 }

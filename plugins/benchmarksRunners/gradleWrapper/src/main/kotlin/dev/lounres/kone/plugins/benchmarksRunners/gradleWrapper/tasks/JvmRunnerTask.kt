@@ -32,8 +32,8 @@ object KoneBenchmarksJvmRunnersGenerator : KoneBenchmarksRunnersGenerator<Kotlin
         configuration: KoneBenchmarkRunnerConfiguration<KotlinJvmCompilation, JavaExec>,
     ): TaskProvider<JavaExec> =
         project.tasks.register<JavaExec>(taskName) {
-            group = "koneBenchmarksRunners"
-            description = "Execute runner '${configuration.runnerName}'."
+            group = "kone benchmarks runners"
+            description = "Execute runner '${configuration.runnerName.get()}' from compilation '${compilation.compilationName}'."
             
             mainClass.set("dev.lounres.kone.plugins.benchmarksRunners.generated.__GENERATED__CALLABLES__Kt")
             

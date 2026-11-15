@@ -37,7 +37,7 @@ val kotlinMultiplatformRunnerExecutionTests by testSuite {
             @Serializable
             data class RunnerDescription(
                 val taskName: String,
-//                val output: String,
+                val output: String,
             )
             
             val runnerDescriptions = Json.decodeFromStream<Map<String, RunnerDescription>>(resourceProject.resolve("runners.json").inputStream())
@@ -51,14 +51,8 @@ val kotlinMultiplatformRunnerExecutionTests by testSuite {
                         .forwardOutput()
                         .build()
                     
-                    println(
-                        buildString {
-                            appendLine(">>>")
-                            appendLine(result.task(runnerDescription.taskName)?.outcome)
-//                            appendLine(runnerDescription.output in result.output)
-                            appendLine("<<<")
-                        }
-                    )
+                    assert(runnerDescription.output in result.output) { "Did not found runner's output in the Gradle output!" }
+                    assert(result.task(runnerDescription.taskName).let { it != null && it.outcome == SUCCESS }) { "The main task is not found or didn't succeed!" }
                 }
             }
         }

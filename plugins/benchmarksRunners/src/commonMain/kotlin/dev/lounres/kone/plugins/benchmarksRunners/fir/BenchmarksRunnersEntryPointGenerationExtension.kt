@@ -18,11 +18,15 @@ import org.jetbrains.kotlin.fir.extensions.ExperimentalTopLevelDeclarationsGener
 import org.jetbrains.kotlin.fir.extensions.FirDeclarationGenerationExtension
 import org.jetbrains.kotlin.fir.extensions.MemberGenerationContext
 import org.jetbrains.kotlin.fir.moduleData
+import org.jetbrains.kotlin.fir.resolve.providers.dependenciesSymbolProvider
 import org.jetbrains.kotlin.fir.resolve.providers.symbolProvider
 import org.jetbrains.kotlin.fir.symbols.impl.FirNamedFunctionSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirValueParameterSymbol
+import org.jetbrains.kotlin.fir.types.ConeKotlinTypeProjectionOut
 import org.jetbrains.kotlin.fir.types.builder.buildResolvedTypeRef
 import org.jetbrains.kotlin.fir.types.constructType
+import org.jetbrains.kotlin.fir.types.createArrayType
+import org.jetbrains.kotlin.fir.types.equalTypes
 import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
@@ -37,7 +41,38 @@ class BenchmarksRunnersEntryPointGenerationExtension(session: FirSession) : FirD
     override fun hasPackage(packageFqName: FqName): Boolean = packageFqName == entryPointCallableId.packageName
     
     @ExperimentalTopLevelDeclarationsGenerationApi
-    override fun getTopLevelCallableIds(): Set<CallableId> = setOfNotNull(entryPointCallableId.takeIf { !session.moduleData.isCommon })
+    override fun getTopLevelCallableIds(): Set<CallableId> =
+        setOfNotNull(
+            entryPointCallableId.takeIf {
+                session.dependenciesSymbolProvider
+                    .getTopLevelFunctionSymbols(entryPointCallableId.packageName, entryPointCallableId.callableName)
+                    .all {
+                        if (it.typeParameterSymbols.isNotEmpty()) return@all true
+                        if (it.contextParameterSymbols.isNotEmpty()) return@all true
+                        if (it.receiverParameterSymbol != null) return@all true
+                        if (it.valueParameterSymbols.size != 1) return@all true
+                        if (
+                            it.valueParameterSymbols[0].resolvedReturnType.equalTypes(
+                                otherType = session.symbolProvider.getClassLikeSymbolByClassId(
+                                    ClassId(
+                                        packageFqName = FqName("kotlin"),
+                                        relativeClassName = FqName("Array"),
+                                        isLocal = false,
+                                    ),
+                                )!!.constructType(
+                                    typeArguments = arrayOf(
+                                        ConeKotlinTypeProjectionOut(session.builtinTypes.stringType.coneType).createArrayType()
+                                    ),
+                                    isMarkedNullable = false,
+                                ),
+                                session = session,
+                                errorTypesEqualToAnything = false,
+                            )
+                        ) return@all true
+                        false
+                    }
+            }
+        )
     
     override fun generateFunctions(
         callableId: CallableId,

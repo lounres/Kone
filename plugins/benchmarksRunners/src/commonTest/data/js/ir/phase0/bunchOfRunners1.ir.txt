@@ -1,0 +1,24 @@
+FILE fqName:foo.bar fileName:/runner1.kt
+  FUN name:runner1 visibility:public modality:FINAL returnType:kotlin.Unit
+    annotations:
+      KoneBenchmarkRunner(name = <null>)
+    BLOCK_BODY
+      CALL 'public final fun println (message: kotlin.Any?): kotlin.Unit declared in kotlin.io' type=kotlin.Unit origin=null
+        ARG message: CONST String type=kotlin.String value="Hello from runner1!"
+FILE fqName:foo.bar fileName:/runner2.kt
+  FUN name:runner2 visibility:public modality:FINAL returnType:kotlin.Unit
+    annotations:
+      KoneBenchmarkRunner(name = <null>)
+    BLOCK_BODY
+      CALL 'public final fun println (message: kotlin.Any?): kotlin.Unit declared in kotlin.io' type=kotlin.Unit origin=null
+        ARG message: CONST String type=kotlin.String value="Hello from runner2!"
+FILE fqName:foo.bar fileName:/runner3.kt
+  FUN name:runner3 visibility:public modality:FINAL returnType:kotlin.Unit
+    annotations:
+      KoneBenchmarkRunner(name = <null>)
+    BLOCK_BODY
+      CALL 'public final fun println (message: kotlin.Any?): kotlin.Unit declared in kotlin.io' type=kotlin.Unit origin=null
+        ARG message: CONST String type=kotlin.String value="Hello from runner3!"
+FILE fqName:dev.lounres.kone.plugins.benchmarksRunners.generated fileName:dev/lounres/kone/plugins/benchmarksRunners/generated/__GENERATED__CALLABLES__.kt
+  FUN GENERATED[dev.lounres.kone.plugins.benchmarksRunners.fir.BenchmarksRunnersEntryPointGenerationExtension.Key] name:main visibility:public modality:FINAL returnType:kotlin.Unit
+    VALUE_PARAMETER GENERATED[dev.lounres.kone.plugins.benchmarksRunners.fir.BenchmarksRunnersEntryPointGenerationExtension.Key] kind:Regular name:args index:0 type:kotlin.Array<kotlin.String>
