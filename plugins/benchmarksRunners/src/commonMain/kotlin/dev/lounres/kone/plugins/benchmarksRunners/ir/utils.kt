@@ -186,6 +186,17 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
         }
     }
     
+    // Kotlin/JS
+    val jsFunctionIrSimpleFunctionSymbol by lazy {
+        finder.referenceFunctionThatOrFail(CallableId(packageName = FqName("kotlin.js"), className = null, callableName = Name.identifier("js"))) {
+            val owner = it.owner
+            if (owner.typeParameters.size != 0 || owner.parameters.size != 1) return@referenceFunctionThatOrFail false
+            if (owner.parameters[0].kind != Regular) return@referenceFunctionThatOrFail false
+            if (owner.parameters[0].type != pluginContext.irBuiltIns.stringType) return@referenceFunctionThatOrFail false
+            true
+        }
+    }
+    
     // kotlinx.seerialization
     val jsonClassIrClassSymbol by lazy { finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlinx.serialization.json"), isLocal = false, relativeClassName = FqName("Json"))) }
     val jsonDefaultCompanionIrClassSymbol by lazy { jsonClassIrClassSymbol.owner.companionObject()!!.symbol }

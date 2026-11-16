@@ -51,9 +51,7 @@ kotlin {
                 runnerName = "js.doIt"
             }
         }
-        nodejs {
-            passCliArgumentsToMainFunction()
-        }
+        nodejs()
         binaries.executable()
         binaries.library()
     }
@@ -70,9 +68,7 @@ kotlin {
                 runnerName = "wasmJs.doIt"
             }
         }
-        nodejs {
-            passCliArgumentsToMainFunction()
-        }
+        nodejs()
         nodejs()
         binaries.executable()
         binaries.library()

@@ -45,7 +45,7 @@ class BenchmarksRunnersFirBasedIrGenerationExtension(
             .also { if (it.size != 1) error("Expected one entry point, got ${it.size}") }
             .single()
         
-        entryPointFunction.body = entryPointBody(
+        handleEntryPointFunction(
             pluginContext = pluginContext,
             irRuntimeReferences = irRuntimeReferences,
             entryPointFunction = entryPointFunction,
