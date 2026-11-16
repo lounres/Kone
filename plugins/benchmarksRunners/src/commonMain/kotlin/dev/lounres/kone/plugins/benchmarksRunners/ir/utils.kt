@@ -7,10 +7,13 @@ package dev.lounres.kone.plugins.benchmarksRunners.ir
 
 import org.jetbrains.kotlin.backend.common.extensions.DeclarationFinder
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
+import org.jetbrains.kotlin.ir.declarations.IrConstructor
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationWithName
+import org.jetbrains.kotlin.ir.declarations.IrParameterKind
 import org.jetbrains.kotlin.ir.declarations.IrProperty
 import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
+import org.jetbrains.kotlin.ir.symbols.IrConstructorSymbol
 import org.jetbrains.kotlin.ir.symbols.IrPropertySymbol
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.types.createType
@@ -33,6 +36,7 @@ fun benchmarksIrPluginException(message: String? = null, reason: Throwable? = nu
 
 fun couldNotFindClass(classId: ClassId): Nothing = error("Could not find class '${classId.asFqNameString()}'")
 fun couldNotFindCorrespondingCallable(callableId: CallableId): Nothing = error("Could not find corresponding callable '${callableId.asSingleFqName()}'.")
+fun couldNotFindCorrespondingConstructorInClass(classId: ClassId): Nothing = error("Could not find corresponding constructor in class '${classId.asFqNameString()}'.")
 fun couldNotFindCorrespondingFunctionInClass(classId: ClassId, functionName: Name): Nothing = error("Could not find corresponding function '$functionName' in class '${classId.asFqNameString()}'.")
 fun couldNotFindCorrespondingPropertyInClass(classId: ClassId, functionName: Name): Nothing = error("Could not find corresponding property '$functionName' in class '${classId.asFqNameString()}'.")
 
@@ -42,6 +46,8 @@ inline fun DeclarationFinder.referenceFunctionThatOrFail(callableId: CallableId,
     findFunctions(callableId).singleOrNull(predicate) ?: couldNotFindCorrespondingCallable(callableId)
 inline fun DeclarationFinder.referencePropertyThatOrFail(callableId: CallableId, predicate: (IrPropertySymbol) -> Boolean = { true }): IrPropertySymbol =
     findProperties(callableId).singleOrNull(predicate) ?: couldNotFindCorrespondingCallable(callableId)
+inline fun IrClassSymbol.referenceConstructorThatOrFail(predicate: (IrConstructorSymbol) -> Boolean = { true }): IrConstructorSymbol =
+    owner.declarations.asSequence().filterIsInstance<IrConstructor>().map { it.symbol }.singleOrNull(predicate) ?: couldNotFindCorrespondingConstructorInClass(owner.classIdOrFail)
 inline fun IrClassSymbol.referenceFunctionThatOrFail(name: Name, predicate: (IrSimpleFunctionSymbol) -> Boolean = { true }): IrSimpleFunctionSymbol =
     owner.declarations.asSequence().filterIsInstance<IrSimpleFunction>().map { it.symbol }.singleOrNull { it.owner.name == name && predicate(it) } ?: couldNotFindCorrespondingFunctionInClass(owner.classIdOrFail, name)
 inline fun IrClassSymbol.referenceFunctionThatOrFail(name: String, predicate: (IrSimpleFunctionSymbol) -> Boolean = { true }): IrSimpleFunctionSymbol =
@@ -69,6 +75,38 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
     val arrayGetFunctionIrSimpleFunctionSymbol by lazy { pluginContext.irBuiltIns.arrayClass.referenceFunctionThatOrFail(Name.identifier("get")) }
     val listGetFunctionIrSimpleFunctionSymbol by lazy { pluginContext.irBuiltIns.listClass.referenceFunctionThatOrFail(Name.identifier("get")) }
     val mapGetFunctionIrSimpleFunctionSymbol by lazy { pluginContext.irBuiltIns.mapClass.referenceFunctionThatOrFail(Name.identifier("get")) }
+    val arrayJoinToStringFunctionIrSimpleFunctionSymbol by lazy {
+        finder.referenceFunctionThatOrFail(CallableId(packageName = FqName("kotlin.collections"), className = null, callableName = Name.identifier("joinToString"))) {
+            val owner = it.owner
+            if (owner.typeParameters.size != 1 || owner.parameters.size != 7) return@referenceFunctionThatOrFail false
+            owner.parameters.forEachIndexed { index, parameter ->
+                if (parameter.kind != if (index == 0) IrParameterKind.ExtensionReceiver else IrParameterKind.Regular) return@referenceFunctionThatOrFail false
+            }
+            if (
+                owner.parameters[0].type != pluginContext.irBuiltIns.arrayClass.createType(
+                    hasQuestionMark = false,
+                    arguments = listOf(
+                        makeTypeProjection(owner.typeParameters[0].defaultType, OUT_VARIANCE),
+                    ),
+                )
+            ) return@referenceFunctionThatOrFail false
+            if (owner.parameters[1].type != pluginContext.irBuiltIns.charSequenceClass.defaultType) return@referenceFunctionThatOrFail false
+            if (owner.parameters[2].type != pluginContext.irBuiltIns.charSequenceClass.defaultType) return@referenceFunctionThatOrFail false
+            if (owner.parameters[3].type != pluginContext.irBuiltIns.charSequenceClass.defaultType) return@referenceFunctionThatOrFail false
+            if (owner.parameters[4].type != pluginContext.irBuiltIns.intType) return@referenceFunctionThatOrFail false
+            if (owner.parameters[5].type != pluginContext.irBuiltIns.charSequenceClass.defaultType) return@referenceFunctionThatOrFail false
+            if (
+                owner.parameters[6].type != pluginContext.irBuiltIns.functionN(1).symbol.createType(
+                    hasQuestionMark = true,
+                    arguments = listOf(
+                        owner.typeParameters[0].defaultType,
+                        pluginContext.irBuiltIns.charSequenceClass.defaultType,
+                    ),
+                )
+            ) return@referenceFunctionThatOrFail false
+            true
+        }
+    }
     val arrayDropFunctionIrSimpleFunctionSymbol by lazy {
         finder.referenceFunctionThatOrFail(CallableId(packageName = FqName("kotlin.collections"), className = null, callableName = Name.identifier("drop"))) {
             val owner = it.owner
@@ -103,6 +141,39 @@ class IrRuntimeReferences(private val pluginContext: IrPluginContext) {
                     arguments = listOf(
                         owner.typeParameters[0].defaultType,
                     )
+                )
+            ) return@referenceFunctionThatOrFail false
+            true
+        }
+    }
+    val regexClassIrClassSymbol by lazy { finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin.text"), isLocal = false, relativeClassName = FqName("Regex"))) }
+    val regexStringConstructorIrConstructorSymbol by lazy {
+        regexClassIrClassSymbol.referenceConstructorThatOrFail {
+            val owner = it.owner
+            if (owner.parameters.size != 1) return@referenceConstructorThatOrFail false
+            if (owner.parameters[0].type != pluginContext.irBuiltIns.stringType) return@referenceConstructorThatOrFail false
+            true
+        }
+    }
+    val matchResultClassIrClassSymbol by lazy { finder.referenceClassOrFail(ClassId(packageFqName = FqName("kotlin.text"), isLocal = false, relativeClassName = FqName("MatchResult"))) }
+    val matchResultValuePropertyIrPropertySymbol by lazy { matchResultClassIrClassSymbol.referencePropertyThatOrFail(Name.identifier("value")) }
+    val matchResultValueGetterIrSimpleFunctionSymbol by lazy { matchResultValuePropertyIrPropertySymbol.owner.getter!!.symbol }
+    val charSequenceReplaceFunctionIrSimpleFunctionSymbol by lazy {
+        finder.referenceFunctionThatOrFail(CallableId(packageName = FqName("kotlin.text"), className = null, callableName = Name.identifier("replace"))) {
+            val owner = it.owner
+            if (owner.typeParameters.size != 0 || owner.parameters.size != 3) return@referenceFunctionThatOrFail false
+            if (owner.parameters[0].kind != ExtensionReceiver) return@referenceFunctionThatOrFail false
+            if (owner.parameters[1].kind != Regular) return@referenceFunctionThatOrFail false
+            if (owner.parameters[2].kind != Regular) return@referenceFunctionThatOrFail false
+            if (owner.parameters[0].type != pluginContext.irBuiltIns.charSequenceClass.defaultType) return@referenceFunctionThatOrFail false
+            if (owner.parameters[1].type != regexClassIrClassSymbol.defaultType) return@referenceFunctionThatOrFail false
+            if (
+                owner.parameters[2].type != pluginContext.irBuiltIns.functionN(1).symbol.createType(
+                    hasQuestionMark = false,
+                    arguments = listOf(
+                        matchResultClassIrClassSymbol.defaultType,
+                        pluginContext.irBuiltIns.charSequenceClass.defaultType,
+                    ),
                 )
             ) return@referenceFunctionThatOrFail false
             true

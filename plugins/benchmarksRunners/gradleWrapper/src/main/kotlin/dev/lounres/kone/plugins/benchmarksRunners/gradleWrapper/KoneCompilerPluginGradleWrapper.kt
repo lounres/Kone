@@ -82,7 +82,7 @@ interface KoneBenchmarksRunnersGenerator<C : KotlinCompilation<*>, T : Task> {
         compilation: C,
         taskName: String,
         configuration: KoneBenchmarkRunnerConfiguration<C, T>,
-    ): TaskProvider<T>
+    ): List<TaskProvider<T>>
 }
 
 open class KoneBenchmarkRunnerConfiguration<out C : KotlinCompilation<*>, out T : Task>(
@@ -90,14 +90,15 @@ open class KoneBenchmarkRunnerConfiguration<out C : KotlinCompilation<*>, out T 
     private val runnersGenerator: KoneBenchmarksRunnersGenerator<C, T>,
     val name: String,
 ) {
-    private var taskProvider: TaskProvider<T>? = null
-    
+    private var taskProviders: List<TaskProvider<T>>? = null
     private val taskConfigurators = mutableListOf<T.() -> Unit>()
     
+    val taskName = kotlinCompilation.project.objects.property<String>()
+    
     fun configureTask(block: T.() -> Unit) {
-        val taskProvider = taskProvider
-        if (taskProvider != null) {
-            taskProvider.configure(block)
+        val taskProviders = taskProviders
+        if (taskProviders != null) {
+            taskProviders.forEach { it.configure(block) }
         } else {
             taskConfigurators += block
         }
@@ -123,11 +124,11 @@ open class KoneBenchmarkRunnerConfiguration<out C : KotlinCompilation<*>, out T 
         runnersGenerator.generateRunnerTask(
             project = kotlinCompilation.project,
             compilation = kotlinCompilation,
-            taskName = "run${kotlinCompilation.target.targetName.capitalize()}${kotlinCompilation.name.capitalize()}Benchmark${name.capitalize()}",
+            taskName = taskName.orNull ?: "run${kotlinCompilation.target.targetName.capitalize()}${kotlinCompilation.name.capitalize()}Benchmark${name.capitalize()}",
             configuration = this,
-        ).apply {
-            taskProvider = this
-            for (configurator in taskConfigurators) { configure(configurator) }
+        ).also {
+            taskProviders = it
+            for (taskProvider in it) for (configurator in taskConfigurators) { taskProvider.configure(configurator) }
             taskConfigurators.clear()
         }
     }

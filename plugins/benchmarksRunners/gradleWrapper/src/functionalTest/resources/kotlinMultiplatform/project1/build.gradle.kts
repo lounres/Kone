@@ -40,10 +40,41 @@ kotlin {
     }
     
     js {
-        nodejs()
+        koneBenchmarksRunners {
+            register("commonRunner") {
+                runnerName = "common.doIt"
+            }
+            register("webRunner") {
+                runnerName = "web.doIt"
+            }
+            register("jsRunner") {
+                runnerName = "js.doIt"
+            }
+        }
+        nodejs {
+            passCliArgumentsToMainFunction()
+        }
+        binaries.executable()
+        binaries.library()
     }
     
     wasmJs {
+        koneBenchmarksRunners {
+            register("commonRunner") {
+                runnerName = "common.doIt"
+            }
+            register("webRunner") {
+                runnerName = "web.doIt"
+            }
+            register("wasmJsRunner") {
+                runnerName = "wasmJs.doIt"
+            }
+        }
+        nodejs {
+            passCliArgumentsToMainFunction()
+        }
         nodejs()
+        binaries.executable()
+        binaries.library()
     }
 }

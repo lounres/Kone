@@ -18,6 +18,8 @@ import org.jetbrains.kotlin.ir.builders.irBlock
 import org.jetbrains.kotlin.ir.builders.irBlockBody
 import org.jetbrains.kotlin.ir.builders.irBranch
 import org.jetbrains.kotlin.ir.builders.irCall
+import org.jetbrains.kotlin.ir.builders.irConcat
+import org.jetbrains.kotlin.ir.builders.irElseBranch
 import org.jetbrains.kotlin.ir.builders.irEquals
 import org.jetbrains.kotlin.ir.builders.irEqualsNull
 import org.jetbrains.kotlin.ir.builders.irGet
@@ -34,6 +36,7 @@ import org.jetbrains.kotlin.ir.declarations.IrDeclarationOrigin
 import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 import org.jetbrains.kotlin.ir.expressions.IrBody
 import org.jetbrains.kotlin.ir.types.createType
+import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.types.makeNullable
 import org.jetbrains.kotlin.ir.util.invokeFun
 import org.jetbrains.kotlin.name.Name
@@ -52,6 +55,7 @@ fun entryPointBody(
         symbol = entryPointFunction.symbol,
     ).irBlockBody {
         +irIfThen(
+            // args.size % 2 != 1
             condition = irNotEquals(
                 arg1 = irCall(irRuntimeReferences.intRemIntFunctionIrSimpleFunctionSymbol).apply {
                     arguments[0] = irCall(irRuntimeReferences.arraySizeGetterIrSimpleFunctionSymbol).apply {
@@ -61,9 +65,149 @@ fun entryPointBody(
                 },
                 arg2 = irInt(1),
             ),
+            //args.joinToString(prefix = "[", postfix = "]") {
+            //    "".replace(Regex("[\t\b\n\r\'\"\\\\$]")) { matchResult ->
+            //        when (val value = matchResult.value) {
+            //            "\t" -> "\\t"
+            //            "\b" -> "\\b"
+            //            "\n" -> "\\n"
+            //            "\r" -> "\\r"
+            //            else -> "\\${value}"
+            //        }
+            //    }
+            //}
             thenPart = irThrow(
                 arg = irCall(irRuntimeReferences.illegalArgumentExceptionConstructorStringIrConstructorSymbol).apply {
-                    arguments[0] = irString("Expected odd number of arguments.")
+                    arguments[0] = irConcat().apply {
+                        with (arguments) {
+                            add(irString("Expected odd number of arguments. Actual arguments: "))
+                            add(
+                                irCall(irRuntimeReferences.arrayJoinToStringFunctionIrSimpleFunctionSymbol).apply {
+                                    typeArguments[0] = pluginContext.irBuiltIns.stringType
+                                    arguments[0] = irGet(argsValueParameter)
+                                    arguments[2] = irString("[")
+                                    arguments[3] = irString("]")
+                                    arguments[6] = irRichFunctionReference(
+                                        invokeFunction = pluginContext.irFactory.buildFun {
+                                            name = SpecialNames.ANONYMOUS
+                                            origin = IrDeclarationOrigin.LOCAL_FUNCTION_FOR_LAMBDA
+                                            visibility = DescriptorVisibilities.LOCAL
+                                            returnType = pluginContext.irBuiltIns.stringType
+                                        }.apply {
+                                            parent = entryPointFunction
+                                            val joinToStringLambda = this
+                                            val argParameter = addValueParameter {
+                                                name = Name.identifier("it")
+                                                type = pluginContext.irBuiltIns.stringType
+                                            }
+                                            body = DeclarationIrBuilder(
+                                                generatorContext = pluginContext,
+                                                symbol = symbol,
+                                            ).irBlockBody {
+                                                +irReturn(
+                                                    irCall(irRuntimeReferences.charSequenceReplaceFunctionIrSimpleFunctionSymbol).apply {
+                                                        arguments[0] = irGet(argParameter)
+                                                        arguments[1] = irCall(irRuntimeReferences.regexStringConstructorIrConstructorSymbol).apply {
+                                                            arguments[0] = irString("[\t\b\n\r\'\"\\\\$]")
+                                                        }
+                                                        arguments[2] = irRichFunctionReference(
+                                                            invokeFunction = pluginContext.irFactory.buildFun {
+                                                                name = SpecialNames.ANONYMOUS
+                                                                origin = IrDeclarationOrigin.LOCAL_FUNCTION_FOR_LAMBDA
+                                                                visibility = DescriptorVisibilities.LOCAL
+                                                                returnType = pluginContext.irBuiltIns.charSequenceClass.defaultType
+                                                            }.apply {
+                                                                parent = joinToStringLambda
+                                                                val matchResultParameter = addValueParameter {
+                                                                    name = Name.identifier("matchResult")
+                                                                    type = irRuntimeReferences.matchResultClassIrClassSymbol.defaultType
+                                                                }
+                                                                body = DeclarationIrBuilder(
+                                                                    generatorContext = pluginContext,
+                                                                    symbol = symbol,
+                                                                ).irBlockBody {
+                                                                    val valueVariable = irTemporary(
+                                                                        irCall(irRuntimeReferences.matchResultValueGetterIrSimpleFunctionSymbol).apply {
+                                                                            arguments[0] = irGet(matchResultParameter)
+                                                                        }
+                                                                    )
+                                                                    +irReturn(
+                                                                        irWhen(
+                                                                            type = pluginContext.irBuiltIns.stringType,
+                                                                            branches = listOf(
+                                                                                irBranch(
+                                                                                    condition = irEquals(
+                                                                                        arg1 = irGet(valueVariable),
+                                                                                        arg2 = irString("\t"),
+                                                                                    ),
+                                                                                    result = irString("\\t"),
+                                                                                ),
+                                                                                irBranch(
+                                                                                    condition = irEquals(
+                                                                                        arg1 = irGet(valueVariable),
+                                                                                        arg2 = irString("\b"),
+                                                                                    ),
+                                                                                    result = irString("\\b"),
+                                                                                ),
+                                                                                irBranch(
+                                                                                    condition = irEquals(
+                                                                                        arg1 = irGet(valueVariable),
+                                                                                        arg2 = irString("\n"),
+                                                                                    ),
+                                                                                    result = irString("\\n"),
+                                                                                ),
+                                                                                irBranch(
+                                                                                    condition = irEquals(
+                                                                                        arg1 = irGet(valueVariable),
+                                                                                        arg2 = irString("\r"),
+                                                                                    ),
+                                                                                    result = irString("\\r"),
+                                                                                ),
+                                                                                irElseBranch(
+                                                                                    expression = irConcat().apply {
+                                                                                        with (arguments) {
+                                                                                            add(irString("\\"))
+                                                                                            add(irGet(valueVariable))
+                                                                                        }
+                                                                                    }
+                                                                                ),
+                                                                            ),
+                                                                        )
+                                                                    )
+                                                                }
+                                                            },
+                                                            superType = pluginContext.irBuiltIns.functionN(1).symbol.createType(
+                                                                hasQuestionMark = true,
+                                                                arguments = listOf(
+                                                                    irRuntimeReferences.matchResultClassIrClassSymbol.defaultType,
+                                                                    pluginContext.irBuiltIns.charSequenceClass.defaultType,
+                                                                ),
+                                                            ),
+                                                            reflectionTargetSymbol = null,
+                                                            overriddenFunctionSymbol = pluginContext.irBuiltIns.functionN(1).invokeFun!!.symbol,
+                                                            captures = emptyList(),
+                                                            origin = null,
+                                                        )
+                                                    }
+                                                )
+                                            }
+                                        },
+                                        superType = pluginContext.irBuiltIns.functionN(1).symbol.createType(
+                                            hasQuestionMark = true,
+                                            arguments = listOf(
+                                                pluginContext.irBuiltIns.stringType,
+                                                pluginContext.irBuiltIns.charSequenceClass.defaultType,
+                                            ),
+                                        ),
+                                        reflectionTargetSymbol = null,
+                                        overriddenFunctionSymbol = pluginContext.irBuiltIns.functionN(1).invokeFun!!.symbol,
+                                        captures = emptyList(),
+                                        origin = null,
+                                    )
+                                }
+                            )
+                        }
+                    }
                 },
             ),
         )
@@ -197,49 +341,66 @@ fun entryPointBody(
         )
         +irWhen(
             type = pluginContext.irBuiltIns.unitType,
-            branches = runnerDescriptions.map { runnerDescription ->
-                irBranch(
-                    condition = irEquals(
-                        arg1 = irGet(nameVariable),
-                        arg2 = irString(runnerDescription.name),
-                    ),
-                    result = irBlock {
-                        +irCall(runnerDescription.theRunnerFunction).apply {
-                            for ([parameterIndex, parameter] in runnerDescription.theRunnerFunction.parameters.withIndex()) {
-                                arguments[parameterIndex] = when {
-                                    parameter.isDispatchReceiver -> irGetObject((runnerDescription.parent as IrClass).symbol)
-                                    else -> {
-                                        val argumentString = irTemporary(
-                                            irCall(irRuntimeReferences.mapGetFunctionIrSimpleFunctionSymbol).apply {
-                                                type = pluginContext.irBuiltIns.stringType.makeNullable()
-                                                arguments[0] = irGet(argumentsMapVariable)
-                                                arguments[1] = irString(parameter.name.asString())
-                                            }
-                                        )
-                                        +irIfThen(
-                                            condition = irEqualsNull(irGet(argumentString)),
-                                            thenPart = irThrow(
-                                                arg = irCall(irRuntimeReferences.illegalArgumentExceptionConstructorStringIrConstructorSymbol).apply {
-                                                    arguments[0] = irString("Did not found argument for parameter '${parameter.name}'.")
-                                                },
-                                            ),
-                                        )
-                                        irCall(irRuntimeReferences.jsonDecodeFromStringFunctionIrSimpleFunctionSymbol).apply {
-                                            type = parameter.type
-                                            typeArguments[0] = parameter.type
-                                            arguments[0] = irGetObject(irRuntimeReferences.jsonDefaultCompanionIrClassSymbol)
-                                            arguments[1] = irAs(
-                                                argument = irGet(argumentString),
-                                                type = pluginContext.irBuiltIns.stringType,
+            branches = buildList {
+                runnerDescriptions.mapTo(this) { runnerDescription ->
+                    irBranch(
+                        condition = irEquals(
+                            arg1 = irGet(nameVariable),
+                            arg2 = irString(runnerDescription.name),
+                        ),
+                        result = irBlock {
+                            +irCall(runnerDescription.theRunnerFunction).apply {
+                                for ([parameterIndex, parameter] in runnerDescription.theRunnerFunction.parameters.withIndex()) {
+                                    arguments[parameterIndex] = when {
+                                        parameter.isDispatchReceiver -> irGetObject((runnerDescription.parent as IrClass).symbol)
+                                        else -> {
+                                            val argumentString = irTemporary(
+                                                irCall(irRuntimeReferences.mapGetFunctionIrSimpleFunctionSymbol).apply {
+                                                    type = pluginContext.irBuiltIns.stringType.makeNullable()
+                                                    arguments[0] = irGet(argumentsMapVariable)
+                                                    arguments[1] = irString(parameter.name.asString())
+                                                }
                                             )
+                                            +irIfThen(
+                                                condition = irEqualsNull(irGet(argumentString)),
+                                                thenPart = irThrow(
+                                                    arg = irCall(irRuntimeReferences.illegalArgumentExceptionConstructorStringIrConstructorSymbol).apply {
+                                                        arguments[0] = irString("Did not found argument for parameter '${parameter.name}'.")
+                                                    },
+                                                ),
+                                            )
+                                            irCall(irRuntimeReferences.jsonDecodeFromStringFunctionIrSimpleFunctionSymbol).apply {
+                                                type = parameter.type
+                                                typeArguments[0] = parameter.type
+                                                arguments[0] = irGetObject(irRuntimeReferences.jsonDefaultCompanionIrClassSymbol)
+                                                arguments[1] = irAs(
+                                                    argument = irGet(argumentString),
+                                                    type = pluginContext.irBuiltIns.stringType,
+                                                )
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
+                    )
+                }
+                add(
+                    irElseBranch(
+                        expression = irThrow(
+                            arg = irCall(irRuntimeReferences.illegalArgumentExceptionConstructorStringIrConstructorSymbol).apply {
+                                arguments[0] = irConcat().apply {
+                                    with(arguments) {
+                                        add(irString("Did not found runner '"))
+                                        add(irGet(nameVariable))
+                                        add(irString("'."))
+                                    }
+                                }
+                            },
+                        ),
+                    )
                 )
-            } // TODO: Think about the case of unfound runner.
+            }
         )
     }
 }

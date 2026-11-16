@@ -1,4 +1,52 @@
 {
+    "common runner js execution developmentExecutable binary": {
+        "taskName": ":runJsMainBenchmarkCommonRunnerUsingDevelopmentExecutable",
+        "output": "Hello from common runner!"
+    },
+    "common runner js execution developmentLibrary binary": {
+        "taskName": ":runJsMainBenchmarkCommonRunnerUsingDevelopmentLibrary",
+        "output": "Hello from common runner!"
+    },
+    "common runner js execution productionExecutable binary": {
+        "taskName": ":runJsMainBenchmarkCommonRunnerUsingProductionExecutable",
+        "output": "Hello from common runner!"
+    },
+    "common runner js execution productionLibrary binary": {
+        "taskName": ":runJsMainBenchmarkCommonRunnerUsingProductionLibrary",
+        "output": "Hello from common runner!"
+    },
+    "js runner js execution developmentExecutable binary": {
+        "taskName": ":runJsMainBenchmarkJsRunnerUsingDevelopmentExecutable",
+        "output": "Hello from js runner!"
+    },
+    "js runner js execution developmentLibrary binary": {
+        "taskName": ":runJsMainBenchmarkJsRunnerUsingDevelopmentLibrary",
+        "output": "Hello from js runner!"
+    },
+    "js runner js execution productionExecutable binary": {
+        "taskName": ":runJsMainBenchmarkJsRunnerUsingProductionExecutable",
+        "output": "Hello from js runner!"
+    },
+    "js runner js execution productionLibrary binary": {
+        "taskName": ":runJsMainBenchmarkJsRunnerUsingProductionLibrary",
+        "output": "Hello from js runner!"
+    },
+    "web runner js execution developmentExecutable binary": {
+        "taskName": ":runJsMainBenchmarkWebRunnerUsingDevelopmentExecutable",
+        "output": "Hello from web runner!"
+    },
+    "web runner js execution developmentLibrary binary": {
+        "taskName": ":runJsMainBenchmarkWebRunnerUsingDevelopmentLibrary",
+        "output": "Hello from web runner!"
+    },
+    "web runner js execution productionExecutable binary": {
+        "taskName": ":runJsMainBenchmarkWebRunnerUsingProductionExecutable",
+        "output": "Hello from web runner!"
+    },
+    "web runner js execution productionLibrary binary": {
+        "taskName": ":runJsMainBenchmarkWebRunnerUsingProductionLibrary",
+        "output": "Hello from web runner!"
+    },
     "common runner jvm execution": {
         "taskName": ":runJvmMainBenchmarkCommonRunner",
         "output": "Hello from common runner!"
@@ -6,5 +54,53 @@
     "jvm runner jvm execution": {
         "taskName": ":runJvmMainBenchmarkJvmRunner",
         "output": "Hello from jvm runner!"
+    },
+    "common runner wasmJs execution developmentExecutable binary": {
+        "taskName": ":runWasmJsMainBenchmarkCommonRunnerUsingDevelopmentExecutable",
+        "output": "Hello from common runner!"
+    },
+    "common runner wasmJs execution developmentLibrary binary": {
+        "taskName": ":runWasmJsMainBenchmarkCommonRunnerUsingDevelopmentLibrary",
+        "output": "Hello from common runner!"
+    },
+    "common runner wasmJs execution productionExecutable binary": {
+        "taskName": ":runWasmJsMainBenchmarkCommonRunnerUsingProductionExecutable",
+        "output": "Hello from common runner!"
+    },
+    "common runner wasmJs execution productionLibrary binary": {
+        "taskName": ":runWasmJsMainBenchmarkCommonRunnerUsingProductionLibrary",
+        "output": "Hello from common runner!"
+    },
+    "wasmJs runner wasmJs execution developmentExecutable binary": {
+        "taskName": ":runWasmJsMainBenchmarkWasmJsRunnerUsingDevelopmentExecutable",
+        "output": "Hello from wasmJs runner!"
+    },
+    "wasmJs runner wasmJs execution developmentLibrary binary": {
+        "taskName": ":runWasmJsMainBenchmarkWasmJsRunnerUsingDevelopmentLibrary",
+        "output": "Hello from wasmJs runner!"
+    },
+    "wasmJs runner wasmJs execution productionExecutable binary": {
+        "taskName": ":runWasmJsMainBenchmarkWasmJsRunnerUsingProductionExecutable",
+        "output": "Hello from wasmJs runner!"
+    },
+    "wasmJs runner wasmJs execution productionLibrary binary": {
+        "taskName": ":runWasmJsMainBenchmarkWasmJsRunnerUsingProductionLibrary",
+        "output": "Hello from wasmJs runner!"
+    },
+    "web runner wasmJs execution developmentExecutable binary": {
+        "taskName": ":runWasmJsMainBenchmarkWebRunnerUsingDevelopmentExecutable",
+        "output": "Hello from web runner!"
+    },
+    "web runner wasmJs execution developmentLibrary binary": {
+        "taskName": ":runWasmJsMainBenchmarkWebRunnerUsingDevelopmentLibrary",
+        "output": "Hello from web runner!"
+    },
+    "web runner wasmJs execution productionExecutable binary": {
+        "taskName": ":runWasmJsMainBenchmarkWebRunnerUsingProductionExecutable",
+        "output": "Hello from web runner!"
+    },
+    "web runner wasmJs execution productionLibrary binary": {
+        "taskName": ":runWasmJsMainBenchmarkWebRunnerUsingProductionLibrary",
+        "output": "Hello from web runner!"
     }
 }

@@ -7,6 +7,7 @@ package dev.lounres.kone.plugins.benchmarksRunners.gradleWrapper.tasks
 
 import dev.lounres.kone.plugins.benchmarksRunners.gradleWrapper.KoneBenchmarkRunnerConfiguration
 import dev.lounres.kone.plugins.benchmarksRunners.gradleWrapper.KoneBenchmarksRunnersGenerator
+import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.provider.Provider
@@ -30,25 +31,29 @@ object KoneBenchmarksJvmRunnersGenerator : KoneBenchmarksRunnersGenerator<Kotlin
         compilation: KotlinJvmCompilation,
         taskName: String,
         configuration: KoneBenchmarkRunnerConfiguration<KotlinJvmCompilation, JavaExec>,
-    ): TaskProvider<JavaExec> =
-        project.tasks.register<JavaExec>(taskName) {
-            group = "kone benchmarks runners"
-            description = "Execute runner '${configuration.runnerName.get()}' from compilation '${compilation.compilationName}'."
-            
-            mainClass.set("dev.lounres.kone.plugins.benchmarksRunners.generated.__GENERATED__CALLABLES__Kt")
-            
-            classpath(compilation.output.allOutputs + compilation.runtimeDependencyFiles)
-            
-            dependsOn(compilation.compileTaskProvider)
-            
-            args = buildList {
-                add(configuration.runnerName.get())
-                for ([argumentName, argumentValue] in configuration.arguments.get()) {
-                    add(argumentName)
-                    add(argumentValue)
+    ): List<TaskProvider<JavaExec>> {
+        val runnerName = configuration.runnerName.orNull ?: throw GradleException("'${configuration::runnerName.name}' is not set for configuration '${configuration.name}'from compilation '${compilation.compilationName}' in target '${compilation.target.targetName}'.")
+        return listOf(
+            project.tasks.register<JavaExec>(taskName) {
+                group = "kone benchmarks runners"
+                description = "Execute runner '${runnerName}' via configuration '${configuration.name}' from compilation '${compilation.compilationName}' in target '${compilation.target.targetName}'."
+                
+                mainClass.set("dev.lounres.kone.plugins.benchmarksRunners.generated.__GENERATED__CALLABLES__Kt")
+                
+                classpath(compilation.output.allOutputs + compilation.runtimeDependencyFiles)
+                
+                dependsOn(compilation.compileTaskProvider)
+                
+                args = buildList {
+                    add(runnerName)
+                    for ([argumentName, argumentValue] in configuration.arguments.get()) {
+                        add(argumentName)
+                        add(argumentValue)
+                    }
                 }
-            }
-            
-            javaLauncher.set(project.javaLauncherProvider())
+                
+                javaLauncher.set(project.javaLauncherProvider())
+            },
+        )
         }
 }

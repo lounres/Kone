@@ -30,7 +30,6 @@ val kotlinMultiplatformRunnerExecutionTests by testSuite {
                 val result = GradleRunner.create()
                     .withProjectDir(newProjectDirectory().toFile())
                     .withPluginClasspath()
-                    .forwardOutput()
                     .build()
             }
             
@@ -48,7 +47,6 @@ val kotlinMultiplatformRunnerExecutionTests by testSuite {
                         .withProjectDir(newProjectDirectory().toFile())
                         .withPluginClasspath()
                         .withArguments(runnerDescription.taskName)
-                        .forwardOutput()
                         .build()
                     
                     assert(runnerDescription.output in result.output) { "Did not found runner's output in the Gradle output!" }
