@@ -28,7 +28,7 @@ class BenchmarksRunnersFirBasedIrGenerationExtension(
         
         val runnerDescriptions = buildList {
             moduleFragment.acceptVoid(
-                KotlinxRunnerFunctionsCollectorVisitor(
+                KoneRunnerFunctionsCollectorVisitor(
                     runnerDescriptions = this
                 )
             )

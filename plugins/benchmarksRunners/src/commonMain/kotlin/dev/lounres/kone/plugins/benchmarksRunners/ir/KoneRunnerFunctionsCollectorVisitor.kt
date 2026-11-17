@@ -16,7 +16,7 @@ import org.jetbrains.kotlin.ir.visitors.IrVisitorVoid
 import org.jetbrains.kotlin.ir.visitors.acceptChildrenVoid
 
 
-class KotlinxRunnerFunctionsCollectorVisitor(
+class KoneRunnerFunctionsCollectorVisitor(
     private val runnerDescriptions: MutableList<RunnerDescription>,
 ) : IrVisitorVoid() {
     override fun visitElement(element: IrElement) { element.acceptChildrenVoid(this) }
