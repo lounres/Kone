@@ -156,7 +156,7 @@ fun IrStatementsBuilder<*>.addRunnerExecution(
             arg2 = irInt(1),
         ),
         //args.joinToString(prefix = "[", postfix = "]") {
-        //    "".replace(Regex("[\t\b\n\r\'\"\\\\$]")) { matchResult ->
+        //    it.replace(Regex("[\t\b\n\r\'\"\\\\$]")) { matchResult ->
         //        when (val value = matchResult.value) {
         //            "\t" -> "\\t"
         //            "\b" -> "\\b"

@@ -31,10 +31,10 @@ object KoneBenchmarksJsRunnersGenerator : KoneBenchmarksRunnersGenerator<KotlinJ
                 inputFileProperty.set(binary.mainFileSyncPath)
                 
                 args = buildList {
-                    add(runnerName)
+                    add(runnerName.toCliArgument())
                     for ([argumentName, argumentValue] in configuration.arguments.get()) {
-                        add(argumentName)
-                        add(argumentValue)
+                        add(argumentName.toCliArgument())
+                        add(argumentValue.toCliArgument())
                     }
                 }
                 
