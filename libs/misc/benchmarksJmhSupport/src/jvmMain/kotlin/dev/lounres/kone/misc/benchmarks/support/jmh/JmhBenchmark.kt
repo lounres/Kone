@@ -5,10 +5,9 @@
 
 package dev.lounres.kone.misc.benchmarks.support.jmh
 
-import dev.lounres.kone.misc.benchmarks.support.jmh.internal.JmhSupportInternal
 
-
-public class JmhBenchmark @JmhSupportInternal constructor(
-    public val name: String,
+public class JmhBenchmark(
+    public val include: List<String>,
+    public val exclude: List<String>,
     public val parameters: Map<String, String>,
 )

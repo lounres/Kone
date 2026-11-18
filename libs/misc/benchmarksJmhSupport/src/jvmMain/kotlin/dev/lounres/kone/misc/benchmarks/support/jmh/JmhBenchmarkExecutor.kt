@@ -15,9 +15,10 @@ private data object JmhBenchmarkExecutor : KoneBenchmarkExecutor<JmhConfiguratio
         val runResult = Runner(
             OptionsBuilder()
                 .parent(configuration)
-                .include(benchmark.name)
                 .let {
                     var builder = it
+                    for (include in benchmark.include) builder = builder.include(include)
+                    for (exclude in benchmark.exclude) builder = builder.exclude(exclude)
                     for ((parameterName = key, parameterValue = value) in benchmark.parameters) {
                         builder = builder.param(parameterName, parameterValue)
                     }
