@@ -13,11 +13,9 @@ import kotlinx.benchmark.BenchmarkDescriptorWithBlackholeParameter
 import kotlinx.benchmark.Blackhole
 import kotlinx.benchmark.IterationTime
 import kotlinx.benchmark.SuiteDescriptor
-import kotlinx.benchmark.internal.KotlinxBenchmarkRuntimeInternalApi
 import kotlinx.benchmark.native.runBenchmarks
 
 
-@OptIn(KotlinxBenchmarkRuntimeInternalApi::class)
 private data object KotlinxBenchmarkBenchmarkExecutionDeclarationContext : KoneBenchmarkExecutionDeclarationContext<KotlinxBenchmarkConfiguration, KotlinxBenchmarkInjection, KotlinxBenchmarkResult> {
     override fun runBenchmark(configuration: KotlinxBenchmarkConfiguration, description: KoneGeneratedBenchmarkDescription<KotlinxBenchmarkInjection>) {
         runBenchmarks(

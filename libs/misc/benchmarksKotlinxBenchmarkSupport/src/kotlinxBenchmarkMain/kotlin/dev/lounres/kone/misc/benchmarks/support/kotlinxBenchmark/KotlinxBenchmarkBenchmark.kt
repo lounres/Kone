@@ -6,8 +6,6 @@
 package dev.lounres.kone.misc.benchmarks.support.kotlinxBenchmark
 
 import kotlinx.benchmark.SuiteDescriptor
-import kotlinx.benchmark.internal.KotlinxBenchmarkRuntimeInternalApi
 
 
-@OptIn(KotlinxBenchmarkRuntimeInternalApi::class)
-public typealias KotlinxBenchmarkBenchmark = SuiteDescriptor<*>
+public typealias KotlinxBenchmarkBenchmark = List<SuiteDescriptor<*>>

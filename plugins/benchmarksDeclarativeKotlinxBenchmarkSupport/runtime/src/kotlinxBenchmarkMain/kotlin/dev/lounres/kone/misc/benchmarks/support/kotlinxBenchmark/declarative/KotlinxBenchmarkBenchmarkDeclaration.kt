@@ -7,8 +7,6 @@ package dev.lounres.kone.misc.benchmarks.support.kotlinxBenchmark.declarative
 
 import dev.lounres.kone.misc.benchmarks.declarative.KoneBenchmarkDeclarationContext
 import dev.lounres.kone.misc.benchmarks.support.kotlinxBenchmark.KotlinxBenchmarkBenchmark
-import kotlinx.benchmark.internal.KotlinxBenchmarkRuntimeInternalApi
 
 
-@OptIn(KotlinxBenchmarkRuntimeInternalApi::class)
 public expect val KoneBenchmarkDeclarationContext.Companion.kotlinxBenchmark: KoneBenchmarkDeclarationContext<KotlinxBenchmarkInjection, KotlinxBenchmarkBenchmark>

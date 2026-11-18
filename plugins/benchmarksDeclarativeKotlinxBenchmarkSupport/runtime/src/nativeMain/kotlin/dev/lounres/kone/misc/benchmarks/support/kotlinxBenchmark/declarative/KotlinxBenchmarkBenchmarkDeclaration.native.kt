@@ -12,10 +12,8 @@ import kotlinx.benchmark.BenchmarkDescriptorWithBlackholeParameter
 import kotlinx.benchmark.Blackhole
 import kotlinx.benchmark.IterationTime
 import kotlinx.benchmark.SuiteDescriptor
-import kotlinx.benchmark.internal.KotlinxBenchmarkRuntimeInternalApi
 
 
-@OptIn(markerClass = [KotlinxBenchmarkRuntimeInternalApi::class])
 private data object KotlinxBenchmarkBenchmarkDeclarationContext : KoneBenchmarkDeclarationContext<KotlinxBenchmarkInjection, KotlinxBenchmarkBenchmark> {
     override fun assembleBenchmark(description: KoneGeneratedBenchmarkDescription<KotlinxBenchmarkInjection>): KotlinxBenchmarkBenchmark {
         val suiteDescriptor = SuiteDescriptor(
@@ -40,10 +38,9 @@ private data object KotlinxBenchmarkBenchmarkDeclarationContext : KoneBenchmarkD
                 function = { runBenchmark(it) }
             )
         )
-        return suiteDescriptor
+        return listOf(suiteDescriptor)
     }
 }
 
-@OptIn(KotlinxBenchmarkRuntimeInternalApi::class)
 public actual val KoneBenchmarkDeclarationContext.Companion.kotlinxBenchmark: KoneBenchmarkDeclarationContext<KotlinxBenchmarkInjection, KotlinxBenchmarkBenchmark>
     get() = KotlinxBenchmarkBenchmarkDeclarationContext

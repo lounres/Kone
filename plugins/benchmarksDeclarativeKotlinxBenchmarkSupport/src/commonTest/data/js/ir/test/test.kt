@@ -29,7 +29,6 @@ import kotlinx.benchmark.*
 import foo.bar.MyBenchmark
 
 
-@OptIn(kotlinx.benchmark.internal.KotlinxBenchmarkRuntimeInternalApi::class)
 fun main(args: Array<String>) {
     println("Hello, IR-generated benchmarks!")
     runBenchmarks("js", args) { executor ->

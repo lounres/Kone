@@ -5,12 +5,26 @@
 
 package dev.lounres.kone.misc.benchmarks.support.kotlinxBenchmark
 
+import kotlinx.benchmark.BenchmarkTimeUnit
 import kotlinx.benchmark.Mode
 
 
 public data class KotlinxBenchmarkConfiguration(
-    public val numberOfWarmups: UInt,
-    public val numberOfMeasurements: UInt,
-    public val mode: Mode,
-    // TODO: More... With expect-actuals as well...
+    val name: String,
+    val reportFile: String,
+    val traceFormat: String,
+    val reportFormat: String?,
+    val params: Map<String, List<String>>,
+    val include: List<String>,
+    val exclude: List<String>,
+    val iterations: Int?,
+    val warmups: Int?,
+    val iterationTime: Long?,
+    val iterationTimeUnit: BenchmarkTimeUnit?,
+    val advanced: Map<String, String>,
+    val outputTimeUnit: BenchmarkTimeUnit?,
+    val threads: Int?,
+    val mode: Mode?,
+    val compilationMode: String?,
+    val configurationName: String,
 )
