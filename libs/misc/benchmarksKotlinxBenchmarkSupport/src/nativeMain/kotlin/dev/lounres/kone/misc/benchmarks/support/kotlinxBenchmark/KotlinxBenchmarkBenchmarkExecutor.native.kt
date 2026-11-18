@@ -132,7 +132,7 @@ private data object KotlinxBenchmarkBenchmarkExecutor : KoneBenchmarkExecutor<Ko
                 name = targetName,
                 args = args,
             ) {
-                for (suite in benchmark) it.suite(suite)
+                for (suite in benchmark.suites) it.suite(suite)
                 it.run()
             }
         }

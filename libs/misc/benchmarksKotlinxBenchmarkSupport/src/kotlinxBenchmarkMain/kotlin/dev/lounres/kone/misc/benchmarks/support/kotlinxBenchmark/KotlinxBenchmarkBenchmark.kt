@@ -5,7 +5,5 @@
 
 package dev.lounres.kone.misc.benchmarks.support.kotlinxBenchmark
 
-import kotlinx.benchmark.SuiteDescriptor
 
-
-public typealias KotlinxBenchmarkBenchmark = List<SuiteDescriptor<*>>
+public expect class KotlinxBenchmarkBenchmark

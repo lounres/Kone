@@ -42,27 +42,29 @@ val ExecutorNativeTests by testSuite {
                 compilationMode = "Debug",
                 configurationName = "testConfiguration",
             ),
-            benchmark = listOf(
-                SuiteDescriptor(
-                    name = "testSuite",
-                    factory = { Test() },
-                    parametrize = { _, _ -> },
-                    setup = {},
-                    teardown = {},
-                    parameters = listOf(),
-                    defaultParameters = mapOf(),
-                ).apply {
-                    add(
-                        BenchmarkDescriptorWithBlackholeParameter(
-                            name = "testBenchmark",
-                            suite = this,
-                            blackhole = Blackhole(),
-                            function = { blackhole ->
-                                repeat(57) { blackhole.consume(it) }
-                            }
+            benchmark = KotlinxBenchmarkBenchmark(
+                    listOf(
+                    SuiteDescriptor(
+                        name = "testSuite",
+                        factory = { Test() },
+                        parametrize = { _, _ -> },
+                        setup = {},
+                        teardown = {},
+                        parameters = listOf(),
+                        defaultParameters = mapOf(),
+                    ).apply {
+                        add(
+                            BenchmarkDescriptorWithBlackholeParameter(
+                                name = "testBenchmark",
+                                suite = this,
+                                blackhole = Blackhole(),
+                                function = { blackhole ->
+                                    repeat(57) { blackhole.consume(it) }
+                                }
+                            )
                         )
-                    )
-                }
+                    }
+                )
             ),
         )
     }
