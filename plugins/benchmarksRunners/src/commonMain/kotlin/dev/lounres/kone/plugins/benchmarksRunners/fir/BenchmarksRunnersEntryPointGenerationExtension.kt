@@ -52,7 +52,7 @@ class BenchmarksRunnersEntryPointGenerationExtension(session: FirSession) : FirD
                         if (it.receiverParameterSymbol != null) return@all true
                         if (it.valueParameterSymbols.size != 1) return@all true
                         if (
-                            it.valueParameterSymbols[0].resolvedReturnType.equalTypes(
+                            !it.valueParameterSymbols[0].resolvedReturnType.equalTypes(
                                 otherType = session.symbolProvider.getClassLikeSymbolByClassId(
                                     ClassId(
                                         packageFqName = FqName("kotlin"),
@@ -61,7 +61,7 @@ class BenchmarksRunnersEntryPointGenerationExtension(session: FirSession) : FirD
                                     ),
                                 )!!.constructType(
                                     typeArguments = arrayOf(
-                                        ConeKotlinTypeProjectionOut(session.builtinTypes.stringType.coneType).createArrayType()
+                                        ConeKotlinTypeProjectionOut(session.builtinTypes.stringType.coneType)
                                     ),
                                     isMarkedNullable = false,
                                 ),
