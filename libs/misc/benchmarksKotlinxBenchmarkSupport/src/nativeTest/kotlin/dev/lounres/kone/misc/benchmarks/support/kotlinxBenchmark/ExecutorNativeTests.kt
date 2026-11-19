@@ -43,7 +43,7 @@ val ExecutorNativeTests by testSuite {
                 configurationName = "testConfiguration",
             ),
             benchmark = KotlinxBenchmarkBenchmark(
-                    listOf(
+                listOf(
                     SuiteDescriptor(
                         name = "testSuite",
                         factory = { Test() },
