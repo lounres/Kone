@@ -782,9 +782,7 @@ stal {
                 configure<MavenPublishBaseExtension> {
                     configure(
                         KotlinJvm(
-                            javadocJar =
-                                if (extra["isDokkaConfigured"] == true) JavadocJar.Dokka("dokkaGeneratePublicationHtml")
-                                else JavadocJar.Empty(),
+                            javadocJar = JavadocJar.Empty(),
                             sourcesJar = SourcesJar.Sources(),
                         )
                     )
@@ -796,9 +794,7 @@ stal {
                 configure<MavenPublishBaseExtension> {
                     configure(
                         KotlinMultiplatform(
-                            javadocJar =
-                                if (extra["isDokkaConfigured"] == true) JavadocJar.Dokka("dokkaGeneratePublicationHtml")
-                                else JavadocJar.Empty(),
+                            javadocJar = JavadocJar.Empty(),
                             sourcesJar = SourcesJar.Sources(),
                         )
                     )
@@ -810,9 +806,7 @@ stal {
                 configure<MavenPublishBaseExtension> {
                     configure(
                         GradlePlugin(
-                            javadocJar =
-                                if (extra["isDokkaConfigured"] == true) JavadocJar.Dokka("dokkaGeneratePublicationHtml")
-                                else JavadocJar.Empty(),
+                            javadocJar = JavadocJar.Empty(),
                             sourcesJar = SourcesJar.Sources(),
                         )
                     )
