@@ -1,6 +1,6 @@
 plugins {
-    kotlin("multiplatform")
-    id("dev.lounres.kone.plugins.benchmarksRunners.gradleWrapper")
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kone.benchmarksRunners)
 }
 
 kotlin {
