@@ -8,7 +8,6 @@ package dev.lounres.kone.plugins.benchmarksRunners.gradleWrapper
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.Json
 import org.gradle.api.NamedDomainObjectContainer
-import org.gradle.api.NamedDomainObjectFactory
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.provider.MapProperty
@@ -28,44 +27,29 @@ class KoneCompilerPluginGradleWrapper : DevKitSupportPlugin(KonePluginInfo.PLUGI
         target.extensions.add("koneBenchmarksRunners", extension)
         
         target.afterEvaluate {
-            for (runnerConfigurationsContainer in extension.finalize().values) {
-                for (configuration in runnerConfigurationsContainer.names.map { runnerConfigurationsContainer[it] }) {
-                    configuration.generateRunnerTask()
-                }
-            }
+            extension.finalize()
         }
     }
     
     override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean =
-        kotlinCompilation in kotlinCompilation.project.the<KoneBenchmarksRunnersGradleExtension>().finalize()
+        !kotlinCompilation.project.the<KoneBenchmarksRunnersGradleExtension>().finalize()[kotlinCompilation].isNullOrEmpty()
 }
 
 open class KoneBenchmarksRunnersGradleExtension(val project: Project) {
-    private class RunnerConfigurationNamedDomainObjectFactory<C : KotlinCompilation<*>, T : Task>(
-        private val kotlinCompilation: C,
-        private val runnersGenerator: KoneBenchmarksRunnersGenerator<C, T>,
-    ) : NamedDomainObjectFactory<KoneBenchmarkRunnerConfiguration<C, T>> {
-        override fun create(name: String): KoneBenchmarkRunnerConfiguration<C, T> {
-            return KoneBenchmarkRunnerConfiguration(
-                kotlinCompilation = kotlinCompilation,
-                runnersGenerator = runnersGenerator,
-                name = name,
-            )
-        }
-    }
+    private var isFinalized: Boolean = false
     
     private val compilationToRunners = mutableMapOf<KotlinCompilation<*>, NamedDomainObjectContainer<KoneBenchmarkRunnerConfiguration<*, *>>>()
     
     operator fun <C: KotlinCompilation<*>, T : Task> get(kotlinCompilation: C, runnersGenerator: KoneBenchmarksRunnersGenerator<C, T>): NamedDomainObjectContainer<KoneBenchmarkRunnerConfiguration<C, T>> =
         compilationToRunners
             .getOrPut(kotlinCompilation) {
-                project.objects.domainObjectContainer(
-                    KoneBenchmarkRunnerConfiguration::class.java.uncheckedCast(),
-                    RunnerConfigurationNamedDomainObjectFactory(
+                project.objects.domainObjectContainer(KoneBenchmarkRunnerConfiguration::class.java.uncheckedCast()) { name ->
+                    KoneBenchmarkRunnerConfiguration(
                         kotlinCompilation = kotlinCompilation,
                         runnersGenerator = runnersGenerator,
-                    ),
-                ).uncheckedCast()
+                        name = name,
+                    )
+                }.uncheckedCast()
             }
             .uncheckedCast()
     
@@ -73,7 +57,18 @@ open class KoneBenchmarksRunnersGradleExtension(val project: Project) {
         get<C, T>(this, runnersGenerator).configurator()
     }
     
-    internal fun finalize(): Map<KotlinCompilation<*>, NamedDomainObjectContainer<KoneBenchmarkRunnerConfiguration<KotlinCompilation<*>, Task>>> = compilationToRunners
+    @IgnorableReturnValue
+    internal fun finalize(): Map<KotlinCompilation<*>, NamedDomainObjectContainer<KoneBenchmarkRunnerConfiguration<KotlinCompilation<*>, Task>>> {
+        if (!isFinalized) {
+            isFinalized = true
+            for (runnerConfigurationsContainer in compilationToRunners.values) {
+                for (configuration in runnerConfigurationsContainer.names.map { runnerConfigurationsContainer[it] }) {
+                    configuration.finalize()
+                }
+            }
+        }
+        return compilationToRunners
+    }
 }
 
 interface KoneBenchmarksRunnersGenerator<C : KotlinCompilation<*>, T : Task> {
@@ -90,6 +85,7 @@ open class KoneBenchmarkRunnerConfiguration<out C : KotlinCompilation<*>, out T 
     private val runnersGenerator: KoneBenchmarksRunnersGenerator<C, T>,
     val name: String,
 ) {
+    private var isFinalized: Boolean = false
     private var taskProviders: List<TaskProvider<T>>? = null
     private val taskConfigurators = mutableListOf<T.() -> Unit>()
     
@@ -106,11 +102,10 @@ open class KoneBenchmarkRunnerConfiguration<out C : KotlinCompilation<*>, out T 
     
     val runnerName = kotlinCompilation.project.objects.property<String>()
     
-    private val _arguments: MutableMap<String, String> = mutableMapOf()
-    val arguments: MapProperty<String, String> = kotlinCompilation.project.objects.mapProperty()
+    val rawArguments: MapProperty<String, String> = kotlinCompilation.project.objects.mapProperty()
     
     fun rawArgument(key: String, value: String) {
-        arguments.put(key, value)
+        rawArguments.put(key, value)
     }
     fun <T> argument(name: String, valueSerializer: SerializationStrategy<T>, value: T) {
         rawArgument(name, Json.encodeToString(valueSerializer, value))
@@ -119,17 +114,25 @@ open class KoneBenchmarkRunnerConfiguration<out C : KotlinCompilation<*>, out T 
         rawArgument(name, Json.encodeToString(value))
     }
     
-    internal fun generateRunnerTask() {
-        fun String.capitalize(): String = replaceFirstChar { it.uppercaseChar() }
-        runnersGenerator.generateRunnerTask(
-            project = kotlinCompilation.project,
-            compilation = kotlinCompilation,
-            taskName = taskName.orNull ?: "run${kotlinCompilation.target.targetName.capitalize()}${kotlinCompilation.name.capitalize()}Benchmark${name.capitalize()}",
-            configuration = this,
-        ).also {
-            taskProviders = it
-            for (taskProvider in it) for (configurator in taskConfigurators) { taskProvider.configure(configurator) }
-            taskConfigurators.clear()
+    fun finalize() {
+        if (!isFinalized) {
+            isFinalized = true
+            
+            taskName.disallowChanges()
+            runnerName.disallowChanges()
+            rawArguments.disallowChanges()
+            
+            fun String.capitalize(): String = replaceFirstChar { it.uppercaseChar() }
+            runnersGenerator.generateRunnerTask(
+                project = kotlinCompilation.project,
+                compilation = kotlinCompilation,
+                taskName = taskName.orNull ?: "run${kotlinCompilation.target.targetName.capitalize()}${kotlinCompilation.name.capitalize()}Benchmark${name.capitalize()}",
+                configuration = this,
+            ).also {
+                taskProviders = it
+                for (taskProvider in it) for (configurator in taskConfigurators) taskProvider.configure(configurator)
+                taskConfigurators.clear()
+            }
         }
     }
 }

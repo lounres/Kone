@@ -32,7 +32,7 @@ object KoneBenchmarksJvmRunnersGenerator : KoneBenchmarksRunnersGenerator<Kotlin
         taskName: String,
         configuration: KoneBenchmarkRunnerConfiguration<KotlinJvmCompilation, JavaExec>,
     ): List<TaskProvider<JavaExec>> {
-        val runnerName = configuration.runnerName.orNull ?: throw GradleException("'${configuration::runnerName.name}' is not set for configuration '${configuration.name}'from compilation '${compilation.compilationName}' in target '${compilation.target.targetName}'.")
+        val runnerName = configuration.runnerName.orNull ?: throw GradleException("'${configuration::runnerName.name}' is not set for configuration '${configuration.name}' from compilation '${compilation.compilationName}' in target '${compilation.target.targetName}'.")
         return listOf(
             project.tasks.register<JavaExec>(taskName) {
                 group = "kone benchmarks runners"
@@ -46,7 +46,7 @@ object KoneBenchmarksJvmRunnersGenerator : KoneBenchmarksRunnersGenerator<Kotlin
                 
                 args = buildList {
                     add(runnerName.toCliArgument())
-                    for ([argumentName, argumentValue] in configuration.arguments.get()) {
+                    for ([argumentName, argumentValue] in configuration.rawArguments.get()) {
                         add(argumentName.toCliArgument())
                         add(argumentValue.toCliArgument())
                     }

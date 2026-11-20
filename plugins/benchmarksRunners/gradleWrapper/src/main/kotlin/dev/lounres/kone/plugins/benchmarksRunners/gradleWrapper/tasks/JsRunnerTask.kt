@@ -22,7 +22,7 @@ object KoneBenchmarksJsRunnersGenerator : KoneBenchmarksRunnersGenerator<KotlinJ
         configuration: KoneBenchmarkRunnerConfiguration<KotlinJsIrCompilation, NodeJsExec>
     ): List<TaskProvider<NodeJsExec>> {
         return compilation.binaries.map { binary ->
-            val runnerName = configuration.runnerName.orNull ?: throw GradleException("'${configuration::runnerName.name}' is not set for configuration '${configuration.name}'from compilation '${compilation.compilationName}' in target '${compilation.target.targetName}'.")
+            val runnerName = configuration.runnerName.orNull ?: throw GradleException("'${configuration::runnerName.name}' is not set for configuration '${configuration.name}' from compilation '${compilation.compilationName}' in target '${compilation.target.targetName}'.")
             NodeJsExec.register(compilation, "${taskName}Using${binary.name.replaceFirstChar { it.uppercaseChar() }}") {
                 group = "kone benchmarks runners"
                 description = "Execute runner '$runnerName' via configuration '${configuration.name}' by binary '${binary.name}' from compilation '${compilation.compilationName}' in target '${compilation.target.targetName}'."
@@ -32,7 +32,7 @@ object KoneBenchmarksJsRunnersGenerator : KoneBenchmarksRunnersGenerator<KotlinJ
                 
                 args = buildList {
                     add(runnerName.toCliArgument())
-                    for ([argumentName, argumentValue] in configuration.arguments.get()) {
+                    for ([argumentName, argumentValue] in configuration.rawArguments.get()) {
                         add(argumentName.toCliArgument())
                         add(argumentValue.toCliArgument())
                     }
