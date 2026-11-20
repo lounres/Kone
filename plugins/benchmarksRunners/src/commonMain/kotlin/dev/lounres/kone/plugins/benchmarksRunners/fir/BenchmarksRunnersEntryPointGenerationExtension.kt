@@ -25,7 +25,6 @@ import org.jetbrains.kotlin.fir.symbols.impl.FirValueParameterSymbol
 import org.jetbrains.kotlin.fir.types.ConeKotlinTypeProjectionOut
 import org.jetbrains.kotlin.fir.types.builder.buildResolvedTypeRef
 import org.jetbrains.kotlin.fir.types.constructType
-import org.jetbrains.kotlin.fir.types.createArrayType
 import org.jetbrains.kotlin.fir.types.equalTypes
 import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.name.ClassId
@@ -101,7 +100,7 @@ class BenchmarksRunnersEntryPointGenerationExtension(session: FirSession) : FirD
                             .getClassLikeSymbolByClassId(ClassId(packageFqName = FqName("kotlin"), topLevelName = Name.identifier("Array")))!!
                             .constructType(
                                 typeArguments = arrayOf(
-                                    session.builtinTypes.stringType.coneType,
+                                    ConeKotlinTypeProjectionOut(session.builtinTypes.stringType.coneType),
                                 ),
                                 isMarkedNullable = false,
                             )
