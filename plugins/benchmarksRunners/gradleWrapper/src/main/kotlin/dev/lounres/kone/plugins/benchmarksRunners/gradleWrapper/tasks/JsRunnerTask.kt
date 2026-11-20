@@ -15,7 +15,7 @@ import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsExec
 
 
 object KoneBenchmarksJsRunnersGenerator : KoneBenchmarksRunnersGenerator<KotlinJsIrCompilation, NodeJsExec> {
-    override fun generateRunnerTask(
+    override fun generateRunnerTasks(
         project: Project,
         compilation: KotlinJsIrCompilation,
         taskName: String,

@@ -26,7 +26,7 @@ object KoneBenchmarksJvmRunnersGenerator : KoneBenchmarksRunnersGenerator<Kotlin
         toolchainService.launcherFor(javaExtension.toolchain).orNull
     }
     
-    override fun generateRunnerTask(
+    override fun generateRunnerTasks(
         project: Project,
         compilation: KotlinJvmCompilation,
         taskName: String,

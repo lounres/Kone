@@ -72,7 +72,7 @@ open class KoneBenchmarksRunnersGradleExtension(val project: Project) {
 }
 
 interface KoneBenchmarksRunnersGenerator<C : KotlinCompilation<*>, T : Task> {
-    fun generateRunnerTask(
+    fun generateRunnerTasks(
         project: Project,
         compilation: C,
         taskName: String,
