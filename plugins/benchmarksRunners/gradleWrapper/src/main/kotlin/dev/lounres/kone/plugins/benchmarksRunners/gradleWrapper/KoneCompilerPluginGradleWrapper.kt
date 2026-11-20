@@ -123,7 +123,7 @@ open class KoneBenchmarkRunnerConfiguration<out C : KotlinCompilation<*>, out T 
             rawArguments.disallowChanges()
             
             fun String.capitalize(): String = replaceFirstChar { it.uppercaseChar() }
-            runnersGenerator.generateRunnerTask(
+            runnersGenerator.generateRunnerTasks(
                 project = kotlinCompilation.project,
                 compilation = kotlinCompilation,
                 taskName = taskName.orNull ?: "run${kotlinCompilation.target.targetName.capitalize()}${kotlinCompilation.name.capitalize()}Benchmark${name.capitalize()}",
