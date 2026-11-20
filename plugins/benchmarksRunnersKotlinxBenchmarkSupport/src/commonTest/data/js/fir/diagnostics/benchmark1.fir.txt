@@ -1,0 +1,31 @@
+FILE: benchmark1.kt
+    package foo.bar
+
+    public final var value: R|kotlin/Double| = Double(57.179)
+        public get(): R|kotlin/Double|
+        public set(value: R|kotlin/Double|): R|kotlin/Unit|
+    @R|kotlinx/benchmark/State|(value = Q|kotlinx/benchmark/Scope|.R|kotlinx/benchmark/Scope.Benchmark| [evaluated = Q|kotlinx/benchmark/Scope|.R|kotlinx/benchmark/Scope.Benchmark|]) @R|kotlinx/benchmark/Measurement|(iterations = Int(3) [evaluated = Int(3)], time = Int(1) [evaluated = Int(1)], timeUnit = Q|kotlinx/benchmark/BenchmarkTimeUnit|.R|kotlinx/benchmark/BenchmarkTimeUnit.SECONDS| [evaluated = Q|kotlinx/benchmark/BenchmarkTimeUnit|.R|kotlinx/benchmark/BenchmarkTimeUnit.SECONDS|]) @R|kotlinx/benchmark/OutputTimeUnit|(value = Q|kotlinx/benchmark/BenchmarkTimeUnit|.R|kotlinx/benchmark/BenchmarkTimeUnit.MILLISECONDS| [evaluated = Q|kotlinx/benchmark/BenchmarkTimeUnit|.R|kotlinx/benchmark/BenchmarkTimeUnit.MILLISECONDS|]) @R|kotlinx/benchmark/BenchmarkMode|(value = vararg(Q|kotlinx/benchmark/Mode|.R|kotlinx/benchmark/Mode.Throughput|) [evaluated = vararg(Q|kotlinx/benchmark/Mode|.R|kotlinx/benchmark/Mode.Throughput|)]) public final class MyBenchmark : R|kotlin/Any| {
+        public constructor(): R|foo/bar/MyBenchmark| {
+            super<R|kotlin/Any|>()
+        }
+
+        @R|kotlinx/benchmark/Param|(value = vararg(String(5), String(7)) [evaluated = vararg(String(5), String(7))]) public final var times: R|kotlin/UInt| = UInt(0)
+            public get(): R|kotlin/UInt|
+            public set(value: R|kotlin/UInt|): R|kotlin/Unit|
+
+        @R|kotlinx/benchmark/Benchmark|() public final fun benchmark(blackhole: R|kotlinx/benchmark/Blackhole|): R|kotlin/Unit| {
+             {
+                lval <iterator>: R|kotlin/collections/Iterator<kotlin/UInt>| = UInt(0).R|kotlin/UInt.rangeUntil|(this@R|foo/bar/MyBenchmark|.R|foo/bar/MyBenchmark.times|).R|kotlin/ranges/UIntProgression.iterator|()
+                while(R|<local>/<iterator>|.R|SubstitutionOverride<kotlin/collections/Iterator.hasNext: R|kotlin/Boolean|>|()) {
+                    lval <unused var>: R|kotlin/UInt| = R|<local>/<iterator>|.R|SubstitutionOverride<kotlin/collections/Iterator.next: R|kotlin/UInt|>|()
+                     {
+                        R|<local>/blackhole|.R|kotlinx/benchmark/Blackhole.consume|(R|kotlin/math/tanh|(R|foo/bar/value|))
+                    }
+
+                }
+
+            }
+
+        }
+
+    }

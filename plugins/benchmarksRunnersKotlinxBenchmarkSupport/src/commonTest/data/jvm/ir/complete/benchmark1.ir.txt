@@ -1,0 +1,159 @@
+FILE fqName:foo.bar fileName:/benchmark1.kt
+  PROPERTY name:value visibility:public modality:FINAL [var]
+    FIELD PROPERTY_BACKING_FIELD name:value type:kotlin.Double visibility:private [static]
+      EXPRESSION_BODY
+        CONST Double type=kotlin.Double value=57.179
+    FUN DEFAULT_PROPERTY_ACCESSOR name:<get-value> visibility:public modality:FINAL returnType:kotlin.Double
+      correspondingProperty: PROPERTY name:value visibility:public modality:FINAL [var]
+      BLOCK_BODY
+        RETURN type=kotlin.Nothing from='public final fun <get-value> (): kotlin.Double declared in foo.bar'
+          GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:value type:kotlin.Double visibility:private [static]' type=kotlin.Double origin=null
+    FUN DEFAULT_PROPERTY_ACCESSOR name:<set-value> visibility:public modality:FINAL returnType:kotlin.Unit
+      VALUE_PARAMETER kind:Regular name:<set-?> index:0 type:kotlin.Double
+      correspondingProperty: PROPERTY name:value visibility:public modality:FINAL [var]
+      BLOCK_BODY
+        SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:value type:kotlin.Double visibility:private [static]' type=kotlin.Unit origin=null
+          value: GET_VAR '<set-?>: kotlin.Double declared in foo.bar.<set-value>' type=kotlin.Double origin=null
+  CLASS CLASS name:MyBenchmark modality:FINAL visibility:public superTypes:[kotlin.Any]
+    annotations:
+      State(value = Scope.Benchmark)
+      Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS, batchSize = <null>)
+      OutputTimeUnit(value = TimeUnit.MILLISECONDS)
+      BenchmarkMode(value = [Mode.Throughput] type=kotlin.Array<out org.openjdk.jmh.annotations.Mode> varargElementType=org.openjdk.jmh.annotations.Mode)
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:foo.bar.MyBenchmark
+    PROPERTY name:times visibility:public modality:FINAL [var]
+      FIELD PROPERTY_BACKING_FIELD name:times type:kotlin.UInt visibility:private
+        annotations:
+          Param(value = ["5", "7"] type=kotlin.Array<out kotlin.String> varargElementType=kotlin.String)
+        EXPRESSION_BODY
+          CONST Int type=kotlin.UInt value=0
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-times> visibility:public modality:FINAL returnType:kotlin.UInt
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.MyBenchmark
+        correspondingProperty: PROPERTY name:times visibility:public modality:FINAL [var]
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public final fun <get-times> (): kotlin.UInt declared in foo.bar.MyBenchmark'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:times type:kotlin.UInt visibility:private' type=kotlin.UInt origin=null
+              receiver: GET_VAR '<this>: foo.bar.MyBenchmark declared in foo.bar.MyBenchmark.<get-times>' type=foo.bar.MyBenchmark origin=null
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<set-times> visibility:public modality:FINAL returnType:kotlin.Unit
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.MyBenchmark
+        VALUE_PARAMETER kind:Regular name:<set-?> index:1 type:kotlin.UInt
+        correspondingProperty: PROPERTY name:times visibility:public modality:FINAL [var]
+        BLOCK_BODY
+          SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:times type:kotlin.UInt visibility:private' type=kotlin.Unit origin=null
+            receiver: GET_VAR '<this>: foo.bar.MyBenchmark declared in foo.bar.MyBenchmark.<set-times>' type=foo.bar.MyBenchmark origin=null
+            value: GET_VAR '<set-?>: kotlin.UInt declared in foo.bar.MyBenchmark.<set-times>' type=kotlin.UInt origin=null
+    CONSTRUCTOR visibility:public returnType:foo.bar.MyBenchmark [primary]
+      BLOCK_BODY
+        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:MyBenchmark modality:FINAL visibility:public superTypes:[kotlin.Any]' type=kotlin.Unit
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in kotlin.Any
+    FUN name:benchmark visibility:public modality:FINAL returnType:kotlin.Unit
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:foo.bar.MyBenchmark
+      VALUE_PARAMETER kind:Regular name:blackhole index:1 type:org.openjdk.jmh.infra.Blackhole
+      annotations:
+        Benchmark
+      BLOCK_BODY
+        BLOCK type=kotlin.Unit origin=FOR_LOOP
+          VAR FOR_LOOP_ITERATOR name:tmp_0 type:kotlin.collections.Iterator<kotlin.UInt> [val]
+            CALL 'public final fun iterator (): kotlin.collections.Iterator<kotlin.UInt> declared in kotlin.ranges.UIntRange' type=kotlin.collections.Iterator<kotlin.UInt> origin=FOR_LOOP_ITERATOR
+              ARG <this>: CALL 'public final fun rangeUntil (other: kotlin.UInt): kotlin.ranges.UIntRange declared in kotlin.UInt' type=kotlin.ranges.UIntRange origin=RANGE_UNTIL
+                ARG <this>: CONST Int type=kotlin.UInt value=0
+                ARG other: CALL 'public final fun <get-times> (): kotlin.UInt declared in foo.bar.MyBenchmark' type=kotlin.UInt origin=GET_PROPERTY
+                  ARG <this>: GET_VAR '<this>: foo.bar.MyBenchmark declared in foo.bar.MyBenchmark.benchmark' type=foo.bar.MyBenchmark origin=IMPLICIT_ARGUMENT
+          WHILE label=null origin=FOR_LOOP_INNER_WHILE
+            condition: CALL 'public abstract fun hasNext (): kotlin.Boolean declared in kotlin.collections.Iterator' type=kotlin.Boolean origin=FOR_LOOP_HAS_NEXT
+              ARG <this>: GET_VAR 'val tmp_0: kotlin.collections.Iterator<kotlin.UInt> declared in foo.bar.MyBenchmark.benchmark' type=kotlin.collections.Iterator<kotlin.UInt> origin=null
+            body: BLOCK type=kotlin.Unit origin=FOR_LOOP_INNER_WHILE
+              VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:kotlin.UInt [val]
+                CALL 'public abstract fun next (): T of kotlin.collections.Iterator declared in kotlin.collections.Iterator' type=kotlin.UInt origin=FOR_LOOP_NEXT
+                  ARG <this>: GET_VAR 'val tmp_0: kotlin.collections.Iterator<kotlin.UInt> declared in foo.bar.MyBenchmark.benchmark' type=kotlin.collections.Iterator<kotlin.UInt> origin=null
+              CALL 'public final fun consume (p0: kotlin.Double): kotlin.Unit declared in org.openjdk.jmh.infra.Blackhole' type=kotlin.Unit origin=null
+                ARG <this>: GET_VAR 'blackhole: org.openjdk.jmh.infra.Blackhole declared in foo.bar.MyBenchmark.benchmark' type=org.openjdk.jmh.infra.Blackhole origin=null
+                ARG p0: CALL 'public final fun tanh (x: kotlin.Double): kotlin.Double declared in kotlin.math' type=kotlin.Double origin=null
+                  ARG x: CALL 'public final fun <get-value> (): kotlin.Double declared in foo.bar' type=kotlin.Double origin=GET_PROPERTY
+FILE fqName:dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated fileName:dev/lounres/kone/misc/benchmarks/runners/support/kotlinxBenchmark/generated/__GENERATED__CALLABLES__.kt
+  FUN GENERATED[dev.lounres.kone.plugins.benchmarksRunnersKotlinxBenchmarkSupport.fir.BenchmarksRunnersKotlinxBenchmarkSupportEntryPointGenerationExtension.Key] name:runKotlinxBenchmarkSupport visibility:public modality:FINAL returnType:kotlin.Unit
+    VALUE_PARAMETER GENERATED[dev.lounres.kone.plugins.benchmarksRunnersKotlinxBenchmarkSupport.fir.BenchmarksRunnersKotlinxBenchmarkSupportEntryPointGenerationExtension.Key] kind:Regular name:name index:0 type:kotlin.String
+    VALUE_PARAMETER GENERATED[dev.lounres.kone.plugins.benchmarksRunnersKotlinxBenchmarkSupport.fir.BenchmarksRunnersKotlinxBenchmarkSupportEntryPointGenerationExtension.Key] kind:Regular name:reportFile index:1 type:kotlin.String
+    VALUE_PARAMETER GENERATED[dev.lounres.kone.plugins.benchmarksRunnersKotlinxBenchmarkSupport.fir.BenchmarksRunnersKotlinxBenchmarkSupportEntryPointGenerationExtension.Key] kind:Regular name:traceFormat index:2 type:kotlin.String
+    VALUE_PARAMETER GENERATED[dev.lounres.kone.plugins.benchmarksRunnersKotlinxBenchmarkSupport.fir.BenchmarksRunnersKotlinxBenchmarkSupportEntryPointGenerationExtension.Key] kind:Regular name:reportFormat index:3 type:kotlin.String?
+    VALUE_PARAMETER GENERATED[dev.lounres.kone.plugins.benchmarksRunnersKotlinxBenchmarkSupport.fir.BenchmarksRunnersKotlinxBenchmarkSupportEntryPointGenerationExtension.Key] kind:Regular name:params index:4 type:kotlin.collections.Map<kotlin.String, kotlin.collections.List<kotlin.String>>
+    VALUE_PARAMETER GENERATED[dev.lounres.kone.plugins.benchmarksRunnersKotlinxBenchmarkSupport.fir.BenchmarksRunnersKotlinxBenchmarkSupportEntryPointGenerationExtension.Key] kind:Regular name:include index:5 type:kotlin.collections.List<kotlin.String>
+    VALUE_PARAMETER GENERATED[dev.lounres.kone.plugins.benchmarksRunnersKotlinxBenchmarkSupport.fir.BenchmarksRunnersKotlinxBenchmarkSupportEntryPointGenerationExtension.Key] kind:Regular name:exclude index:6 type:kotlin.collections.List<kotlin.String>
+    VALUE_PARAMETER GENERATED[dev.lounres.kone.plugins.benchmarksRunnersKotlinxBenchmarkSupport.fir.BenchmarksRunnersKotlinxBenchmarkSupportEntryPointGenerationExtension.Key] kind:Regular name:iterations index:7 type:kotlin.Int?
+    VALUE_PARAMETER GENERATED[dev.lounres.kone.plugins.benchmarksRunnersKotlinxBenchmarkSupport.fir.BenchmarksRunnersKotlinxBenchmarkSupportEntryPointGenerationExtension.Key] kind:Regular name:warmups index:8 type:kotlin.Int?
+    VALUE_PARAMETER GENERATED[dev.lounres.kone.plugins.benchmarksRunnersKotlinxBenchmarkSupport.fir.BenchmarksRunnersKotlinxBenchmarkSupportEntryPointGenerationExtension.Key] kind:Regular name:iterationTime index:9 type:kotlin.Long?
+    VALUE_PARAMETER GENERATED[dev.lounres.kone.plugins.benchmarksRunnersKotlinxBenchmarkSupport.fir.BenchmarksRunnersKotlinxBenchmarkSupportEntryPointGenerationExtension.Key] kind:Regular name:iterationTimeUnit index:10 type:dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.BenchmarkTimeUnitWrapper?
+    VALUE_PARAMETER GENERATED[dev.lounres.kone.plugins.benchmarksRunnersKotlinxBenchmarkSupport.fir.BenchmarksRunnersKotlinxBenchmarkSupportEntryPointGenerationExtension.Key] kind:Regular name:advanced index:11 type:kotlin.collections.Map<kotlin.String, kotlin.String>
+    VALUE_PARAMETER GENERATED[dev.lounres.kone.plugins.benchmarksRunnersKotlinxBenchmarkSupport.fir.BenchmarksRunnersKotlinxBenchmarkSupportEntryPointGenerationExtension.Key] kind:Regular name:outputTimeUnit index:12 type:dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.BenchmarkTimeUnitWrapper?
+    VALUE_PARAMETER GENERATED[dev.lounres.kone.plugins.benchmarksRunnersKotlinxBenchmarkSupport.fir.BenchmarksRunnersKotlinxBenchmarkSupportEntryPointGenerationExtension.Key] kind:Regular name:threads index:13 type:kotlin.Int?
+    VALUE_PARAMETER GENERATED[dev.lounres.kone.plugins.benchmarksRunnersKotlinxBenchmarkSupport.fir.BenchmarksRunnersKotlinxBenchmarkSupportEntryPointGenerationExtension.Key] kind:Regular name:mode index:14 type:dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.ModeWrapper?
+    VALUE_PARAMETER GENERATED[dev.lounres.kone.plugins.benchmarksRunnersKotlinxBenchmarkSupport.fir.BenchmarksRunnersKotlinxBenchmarkSupportEntryPointGenerationExtension.Key] kind:Regular name:compilationMode index:15 type:kotlin.String?
+    VALUE_PARAMETER GENERATED[dev.lounres.kone.plugins.benchmarksRunnersKotlinxBenchmarkSupport.fir.BenchmarksRunnersKotlinxBenchmarkSupportEntryPointGenerationExtension.Key] kind:Regular name:configurationName index:16 type:kotlin.String
+    annotations:
+      KoneBenchmarkRunner(name = <null>)
+    BLOCK_BODY
+      CALL 'public abstract fun execute (configuration: Configuration of dev.lounres.kone.misc.benchmarks.KoneBenchmarkExecutor, benchmark: Benchmark of dev.lounres.kone.misc.benchmarks.KoneBenchmarkExecutor): Result of dev.lounres.kone.misc.benchmarks.KoneBenchmarkExecutor declared in dev.lounres.kone.misc.benchmarks.KoneBenchmarkExecutor' type=kotlin.Unit origin=null
+        ARG <this>: CALL 'public final fun <get-kotlinxBenchmark> (<this>: dev.lounres.kone.misc.benchmarks.KoneBenchmarkExecutor.Companion): dev.lounres.kone.misc.benchmarks.KoneBenchmarkExecutor<dev.lounres.kone.misc.benchmarks.support.kotlinxBenchmark.KotlinxBenchmarkConfiguration, dev.lounres.kone.misc.benchmarks.support.kotlinxBenchmark.KotlinxBenchmarkBenchmark, kotlin.Unit> declared in dev.lounres.kone.misc.benchmarks.support.kotlinxBenchmark' type=dev.lounres.kone.misc.benchmarks.KoneBenchmarkExecutor<dev.lounres.kone.misc.benchmarks.support.kotlinxBenchmark.KotlinxBenchmarkConfiguration, dev.lounres.kone.misc.benchmarks.support.kotlinxBenchmark.KotlinxBenchmarkBenchmark, kotlin.Unit> origin=null
+          ARG <this>: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]' type=dev.lounres.kone.misc.benchmarks.KoneBenchmarkExecutor.Companion
+        ARG configuration: CONSTRUCTOR_CALL 'public constructor <init> (name: kotlin.String, reportFile: kotlin.String, traceFormat: kotlin.String, reportFormat: kotlin.String?, params: kotlin.collections.Map<kotlin.String, kotlin.collections.List<kotlin.String>>, include: kotlin.collections.List<kotlin.String>, exclude: kotlin.collections.List<kotlin.String>, iterations: kotlin.Int?, warmups: kotlin.Int?, iterationTime: kotlin.Long?, iterationTimeUnit: java.util.concurrent.TimeUnit?, advanced: kotlin.collections.Map<kotlin.String, kotlin.String>, outputTimeUnit: java.util.concurrent.TimeUnit?, threads: kotlin.Int?, mode: org.openjdk.jmh.annotations.Mode?, compilationMode: kotlin.String?, configurationName: kotlin.String) declared in dev.lounres.kone.misc.benchmarks.support.kotlinxBenchmark.KotlinxBenchmarkConfiguration' type=dev.lounres.kone.misc.benchmarks.support.kotlinxBenchmark.KotlinxBenchmarkConfiguration origin=null
+          ARG name: GET_VAR 'name: kotlin.String declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport' type=kotlin.String origin=null
+          ARG reportFile: GET_VAR 'reportFile: kotlin.String declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport' type=kotlin.String origin=null
+          ARG traceFormat: GET_VAR 'traceFormat: kotlin.String declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport' type=kotlin.String origin=null
+          ARG reportFormat: GET_VAR 'reportFormat: kotlin.String? declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport' type=kotlin.String? origin=null
+          ARG params: GET_VAR 'params: kotlin.collections.Map<kotlin.String, kotlin.collections.List<kotlin.String>> declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport' type=kotlin.collections.Map<kotlin.String, kotlin.collections.List<kotlin.String>> origin=null
+          ARG include: GET_VAR 'include: kotlin.collections.List<kotlin.String> declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport' type=kotlin.collections.List<kotlin.String> origin=null
+          ARG exclude: GET_VAR 'exclude: kotlin.collections.List<kotlin.String> declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport' type=kotlin.collections.List<kotlin.String> origin=null
+          ARG iterations: GET_VAR 'iterations: kotlin.Int? declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport' type=kotlin.Int? origin=null
+          ARG warmups: GET_VAR 'warmups: kotlin.Int? declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport' type=kotlin.Int? origin=null
+          ARG iterationTime: GET_VAR 'iterationTime: kotlin.Long? declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport' type=kotlin.Long? origin=null
+          ARG iterationTimeUnit: WHEN type=java.util.concurrent.TimeUnit? origin=null
+            BRANCH
+              if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+                ARG arg0: GET_VAR 'iterationTimeUnit: dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.BenchmarkTimeUnitWrapper? declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport' type=dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.BenchmarkTimeUnitWrapper? origin=null
+                ARG arg1: CONST Null type=kotlin.Nothing? value=null
+              then: CONST Null type=kotlin.Nothing? value=null
+            BRANCH
+              if: CONST Boolean type=kotlin.Boolean value=true
+              then: CALL 'public final fun <get-value> (): java.util.concurrent.TimeUnit declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.BenchmarkTimeUnitWrapper' type=java.util.concurrent.TimeUnit origin=null
+                ARG <this>: TYPE_OP type=dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.BenchmarkTimeUnitWrapper origin=CAST typeOperand=dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.BenchmarkTimeUnitWrapper
+                  GET_VAR 'iterationTimeUnit: dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.BenchmarkTimeUnitWrapper? declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport' type=dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.BenchmarkTimeUnitWrapper? origin=null
+          ARG advanced: GET_VAR 'advanced: kotlin.collections.Map<kotlin.String, kotlin.String> declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport' type=kotlin.collections.Map<kotlin.String, kotlin.String> origin=null
+          ARG outputTimeUnit: WHEN type=java.util.concurrent.TimeUnit? origin=null
+            BRANCH
+              if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+                ARG arg0: GET_VAR 'outputTimeUnit: dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.BenchmarkTimeUnitWrapper? declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport' type=dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.BenchmarkTimeUnitWrapper? origin=null
+                ARG arg1: CONST Null type=kotlin.Nothing? value=null
+              then: CONST Null type=kotlin.Nothing? value=null
+            BRANCH
+              if: CONST Boolean type=kotlin.Boolean value=true
+              then: CALL 'public final fun <get-value> (): java.util.concurrent.TimeUnit declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.BenchmarkTimeUnitWrapper' type=java.util.concurrent.TimeUnit origin=null
+                ARG <this>: TYPE_OP type=dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.BenchmarkTimeUnitWrapper origin=CAST typeOperand=dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.BenchmarkTimeUnitWrapper
+                  GET_VAR 'outputTimeUnit: dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.BenchmarkTimeUnitWrapper? declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport' type=dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.BenchmarkTimeUnitWrapper? origin=null
+          ARG threads: GET_VAR 'threads: kotlin.Int? declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport' type=kotlin.Int? origin=null
+          ARG mode: WHEN type=org.openjdk.jmh.annotations.BenchmarkMode? origin=null
+            BRANCH
+              if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+                ARG arg0: GET_VAR 'mode: dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.ModeWrapper? declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport' type=dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.ModeWrapper? origin=null
+                ARG arg1: CONST Null type=kotlin.Nothing? value=null
+              then: CONST Null type=kotlin.Nothing? value=null
+            BRANCH
+              if: CONST Boolean type=kotlin.Boolean value=true
+              then: CALL 'public final fun <get-value> (): org.openjdk.jmh.annotations.Mode declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.ModeWrapper' type=org.openjdk.jmh.annotations.Mode origin=null
+                ARG <this>: TYPE_OP type=dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.ModeWrapper origin=CAST typeOperand=dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.ModeWrapper
+                  GET_VAR 'mode: dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.ModeWrapper? declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport' type=dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.internal.ModeWrapper? origin=null
+          ARG compilationMode: GET_VAR 'compilationMode: kotlin.String? declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport' type=kotlin.String? origin=null
+          ARG configurationName: GET_VAR 'configurationName: kotlin.String declared in dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport' type=kotlin.String origin=null
+        ARG benchmark: GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:KotlinxBenchmarkBenchmark modality:FINAL visibility:public superTypes:[kotlin.Any]' type=dev.lounres.kone.misc.benchmarks.support.kotlinxBenchmark.KotlinxBenchmarkBenchmark

@@ -1,0 +1,31 @@
+FILE: benchmark1.kt
+    package foo.bar
+
+    public final var value: R|kotlin/Double| = Double(57.179)
+        public get(): R|kotlin/Double|
+        public set(value: R|kotlin/Double|): R|kotlin/Unit|
+    @R|{kotlinx/benchmark/State=} org/openjdk/jmh/annotations/State|(value = Q|kotlinx/benchmark/Scope|.R|org/openjdk/jmh/annotations/Scope.Benchmark| [evaluated = Q|kotlinx/benchmark/Scope|.R|org/openjdk/jmh/annotations/Scope.Benchmark|]) @R|{kotlinx/benchmark/Measurement=} org/openjdk/jmh/annotations/Measurement|(iterations = Int(3) [evaluated = Int(3)], time = Int(1) [evaluated = Int(1)], timeUnit = Q|kotlinx/benchmark/BenchmarkTimeUnit|.R|java/util/concurrent/TimeUnit.SECONDS| [evaluated = Q|kotlinx/benchmark/BenchmarkTimeUnit|.R|java/util/concurrent/TimeUnit.SECONDS|]) @R|{kotlinx/benchmark/OutputTimeUnit=} org/openjdk/jmh/annotations/OutputTimeUnit|(value = Q|kotlinx/benchmark/BenchmarkTimeUnit|.R|java/util/concurrent/TimeUnit.MILLISECONDS| [evaluated = Q|kotlinx/benchmark/BenchmarkTimeUnit|.R|java/util/concurrent/TimeUnit.MILLISECONDS|]) @R|{kotlinx/benchmark/BenchmarkMode=} org/openjdk/jmh/annotations/BenchmarkMode|(value = vararg(Q|kotlinx/benchmark/Mode|.R|org/openjdk/jmh/annotations/Mode.Throughput|) [evaluated = vararg(Q|kotlinx/benchmark/Mode|.R|org/openjdk/jmh/annotations/Mode.Throughput|)]) public final class MyBenchmark : R|kotlin/Any| {
+        public constructor(): R|foo/bar/MyBenchmark| {
+            super<R|kotlin/Any|>()
+        }
+
+        field:@R|{kotlinx/benchmark/Param=} org/openjdk/jmh/annotations/Param|(value = vararg(String(5), String(7)) [evaluated = vararg(String(5), String(7))]) public final var times: R|kotlin/UInt| = UInt(0)
+            public get(): R|kotlin/UInt|
+            public set(value: R|kotlin/UInt|): R|kotlin/Unit|
+
+        @R|{kotlinx/benchmark/Benchmark=} org/openjdk/jmh/annotations/Benchmark|() public final fun benchmark(blackhole: R|{kotlinx/benchmark/Blackhole=} org/openjdk/jmh/infra/Blackhole|): R|kotlin/Unit| {
+             {
+                lval <iterator>: R|kotlin/collections/Iterator<kotlin/UInt>| = UInt(0).R|kotlin/UInt.rangeUntil|(this@R|foo/bar/MyBenchmark|.R|foo/bar/MyBenchmark.times|).R|kotlin/ranges/UIntProgression.iterator|()
+                while(R|<local>/<iterator>|.R|SubstitutionOverride<kotlin/collections/Iterator.hasNext: R|kotlin/Boolean|>|()) {
+                    lval <unused var>: R|kotlin/UInt| = R|<local>/<iterator>|.R|SubstitutionOverride<kotlin/collections/Iterator.next: R|kotlin/UInt|>|()
+                     {
+                        R|<local>/blackhole|.R|org/openjdk/jmh/infra/Blackhole.consume|(R|kotlin/math/tanh|(R|foo/bar/value|))
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
