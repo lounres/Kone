@@ -58,6 +58,7 @@ kotlin {
                 argument("input", input)
             }
         }
+        browser()
         nodejs()
         binaries.executable()
         binaries.library()
@@ -78,8 +79,9 @@ kotlin {
                 argument("input", input)
             }
         }
+        browser()
         nodejs()
-        nodejs()
+        d8()
         binaries.executable()
         binaries.library()
     }

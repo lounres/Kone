@@ -51,6 +51,7 @@ kotlin {
                 runnerName = "js.doIt"
             }
         }
+        browser()
         nodejs()
         binaries.executable()
         binaries.library()
@@ -68,8 +69,9 @@ kotlin {
                 runnerName = "wasmJs.doIt"
             }
         }
+        browser()
         nodejs()
-        nodejs()
+        d8()
         binaries.executable()
         binaries.library()
     }

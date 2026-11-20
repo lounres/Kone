@@ -5,55 +5,47 @@
 
 package dev.lounres.kone.plugins.benchmarksRunners.gradleWrapper.tasks
 
-import dev.lounres.kone.plugins.benchmarksRunners.gradleWrapper.KoneBenchmarkRunnerConfiguration
-import dev.lounres.kone.plugins.benchmarksRunners.gradleWrapper.KoneBenchmarksRunnersGenerator
+import dev.lounres.kone.plugins.benchmarksRunners.gradleWrapper.KoneBenchmarkRunnerConfigurationBase
 import org.gradle.api.GradleException
-import org.gradle.api.Project
-import org.gradle.api.plugins.JavaPluginExtension
-import org.gradle.api.provider.Provider
+import org.gradle.api.NamedDomainObjectFactory
 import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.TaskProvider
-import org.gradle.jvm.toolchain.JavaLauncher
-import org.gradle.jvm.toolchain.JavaToolchainService
 import org.gradle.kotlin.dsl.register
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJvmCompilation
 
 
-object KoneBenchmarksJvmRunnersGenerator : KoneBenchmarksRunnersGenerator<KotlinJvmCompilation, JavaExec> {
-    private fun Project.javaLauncherProvider(): Provider<JavaLauncher> = provider {
-        val toolchainService = extensions.findByType(JavaToolchainService::class.java) ?: return@provider null
-        val javaExtension = extensions.findByType(JavaPluginExtension::class.java) ?: return@provider null
-        toolchainService.launcherFor(javaExtension.toolchain).orNull
+class KoneBenchmarksJvmRunnerConfiguration(
+    configurationName: String,
+    private val kotlinCompilation: KotlinJvmCompilation,
+) : KoneBenchmarkRunnerConfigurationBase<JavaExec>(configurationName, kotlinCompilation.project.objects) {
+    companion object {
+        fun namedDomainObjectFactory(kotlinCompilation: KotlinJvmCompilation) =
+            NamedDomainObjectFactory { KoneBenchmarksJvmRunnerConfiguration(it, kotlinCompilation) }
     }
     
-    override fun generateRunnerTasks(
-        project: Project,
-        compilation: KotlinJvmCompilation,
-        taskName: String,
-        configuration: KoneBenchmarkRunnerConfiguration<KotlinJvmCompilation, JavaExec>,
-    ): List<TaskProvider<JavaExec>> {
-        val runnerName = configuration.runnerName.orNull ?: throw GradleException("'${configuration::runnerName.name}' is not set for configuration '${configuration.name}' from compilation '${compilation.compilationName}' in target '${compilation.target.targetName}'.")
+    override fun generateRunnersTasks(): List<TaskProvider<JavaExec>> {
+        val runnerName = runnerName.orNull ?: throw GradleException("'${::runnerName.name}' is not set for configuration '${name}' from compilation '${kotlinCompilation.compilationName}' in target '${kotlinCompilation.target.targetName}'.")
         return listOf(
-            project.tasks.register<JavaExec>(taskName) {
+            kotlinCompilation.project.tasks.register<JavaExec>(computeTaskName(kotlinCompilation)) {
                 group = "kone benchmarks runners"
-                description = "Execute runner '${runnerName}' via configuration '${configuration.name}' from compilation '${compilation.compilationName}' in target '${compilation.target.targetName}'."
-                
+                description = "Execute runner '${runnerName}' via configuration '${kotlinCompilation.name}' from compilation '${kotlinCompilation.compilationName}' in target '${kotlinCompilation.target.targetName}'."
+
                 mainClass.set("dev.lounres.kone.plugins.benchmarksRunners.generated.__GENERATED__CALLABLES__Kt")
-                
-                classpath(compilation.output.allOutputs + compilation.runtimeDependencyFiles)
-                
-                dependsOn(compilation.compileTaskProvider)
-                
+
+                classpath(kotlinCompilation.output.allOutputs + kotlinCompilation.runtimeDependencyFiles)
+
+                dependsOn(kotlinCompilation.compileTaskProvider)
+
                 args = buildList {
                     add(runnerName.toCliArgument())
-                    for ([argumentName, argumentValue] in configuration.rawArguments.get()) {
+                    for ([argumentName, argumentValue] in rawArguments.get()) {
                         add(argumentName.toCliArgument())
                         add(argumentValue.toCliArgument())
                     }
                 }
-                
+
                 javaLauncher.set(project.javaLauncherProvider())
             },
         )
-        }
+    }
 }

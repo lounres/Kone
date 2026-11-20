@@ -5,34 +5,44 @@
 
 package dev.lounres.kone.plugins.benchmarksRunners.gradleWrapper.tasks
 
-import dev.lounres.kone.plugins.benchmarksRunners.gradleWrapper.KoneBenchmarkRunnerConfiguration
-import dev.lounres.kone.plugins.benchmarksRunners.gradleWrapper.KoneBenchmarksRunnersGenerator
+import dev.lounres.kone.plugins.benchmarksRunners.gradleWrapper.KoneBenchmarkRunnerConfigurationBase
 import org.gradle.api.GradleException
-import org.gradle.api.Project
+import org.gradle.api.NamedDomainObjectFactory
 import org.gradle.api.tasks.TaskProvider
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrCompilation
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsExec
 
 
-object KoneBenchmarksJsRunnersGenerator : KoneBenchmarksRunnersGenerator<KotlinJsIrCompilation, NodeJsExec> {
-    override fun generateRunnerTasks(
-        project: Project,
-        compilation: KotlinJsIrCompilation,
-        taskName: String,
-        configuration: KoneBenchmarkRunnerConfiguration<KotlinJsIrCompilation, NodeJsExec>
-    ): List<TaskProvider<NodeJsExec>> {
-        return compilation.binaries.map { binary ->
-            val runnerName = configuration.runnerName.orNull ?: throw GradleException("'${configuration::runnerName.name}' is not set for configuration '${configuration.name}' from compilation '${compilation.compilationName}' in target '${compilation.target.targetName}'.")
-            NodeJsExec.register(compilation, "${taskName}Using${binary.name.replaceFirstChar { it.uppercaseChar() }}") {
+class KoneBenchmarksJsRunnerConfiguration(
+    configurationName: String,
+    private val kotlinCompilation: KotlinJsIrCompilation,
+) : KoneBenchmarkRunnerConfigurationBase<NodeJsExec>(configurationName, kotlinCompilation.project.objects) {
+    companion object {
+        fun namedDomainObjectFactory(kotlinCompilation: KotlinJsIrCompilation) =
+            NamedDomainObjectFactory { KoneBenchmarksJsRunnerConfiguration(it, kotlinCompilation) }
+    }
+    
+    override fun generateRunnersTasks(): List<TaskProvider<NodeJsExec>> {
+//        compilation.target.subTargets.mapNotNull { subTarget ->
+//            when (subTarget) {
+//                is KotlinNodeJsIr -> {
+//
+//                }
+//                else -> null
+//            }
+//        }
+        return kotlinCompilation.binaries.map { binary ->
+            val runnerName = runnerName.orNull ?: throw GradleException("'${::runnerName.name}' is not set for configuration '$name' from compilation '${kotlinCompilation.compilationName}' in target '${kotlinCompilation.target.targetName}'.")
+            NodeJsExec.register(kotlinCompilation, "${computeTaskName(kotlinCompilation)}Using${binary.name.replaceFirstChar { it.uppercaseChar() }}") {
                 group = "kone benchmarks runners"
-                description = "Execute runner '$runnerName' via configuration '${configuration.name}' by binary '${binary.name}' from compilation '${compilation.compilationName}' in target '${compilation.target.targetName}'."
+                description = "Execute runner '$runnerName' via configuration '$name' by binary '${binary.name}' from compilation '${kotlinCompilation.compilationName}' in target '${kotlinCompilation.target.targetName}'."
                 
                 dependsOn(compilation.runtimeDependencyFiles)
                 inputFileProperty.set(binary.mainFileSyncPath)
                 
                 args = buildList {
                     add(runnerName.toCliArgument())
-                    for ([argumentName, argumentValue] in configuration.rawArguments.get()) {
+                    for ([argumentName, argumentValue] in rawArguments.get()) {
                         add(argumentName.toCliArgument())
                         add(argumentValue.toCliArgument())
                     }
