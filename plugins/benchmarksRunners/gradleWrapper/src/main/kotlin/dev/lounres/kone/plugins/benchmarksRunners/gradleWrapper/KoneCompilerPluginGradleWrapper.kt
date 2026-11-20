@@ -91,7 +91,7 @@ open class KoneBenchmarkRunnerConfiguration<out C : KotlinCompilation<*>, out T 
     
     val taskName = kotlinCompilation.project.objects.property<String>()
     
-    fun configureTask(block: T.() -> Unit) {
+    fun configureTasks(block: T.() -> Unit) {
         val taskProviders = taskProviders
         if (taskProviders != null) {
             taskProviders.forEach { it.configure(block) }
