@@ -663,6 +663,21 @@ stal {
                         )
                     }
                 }
+                sourceSets {
+                    named("functionalTest") {
+                        forClass("KoneConstants") {
+                            useKotlinOutput { topLevelConstants = false }
+                            buildConfigField("KONE_VERSION") {
+                                type.value(BuildConfigType("kotlin.String"))
+                                expression("\"${project.extra["koneVersion"]}\"")
+                            }
+                            buildConfigField("KOTLIN_VERSION") {
+                                type.value(BuildConfigType("kotlin.String"))
+                                expression("\"${versions.versions.kotlin.asProvider().get()}\"")
+                            }
+                        }
+                    }
+                }
             }
             
             tasks.withType<Test> {
@@ -819,6 +834,12 @@ stal {
                 publishToMavenCentral()
                 
                 signAllPublications()
+                
+                coordinates(
+                    groupId = project.extra["koneGroup"] as String,
+                    artifactId = project.extra["koneArtifactId"] as String,
+                    version = project.extra["koneVersion"] as String,
+                )
 
                 pom {
                     name = "Kone library"
@@ -840,16 +861,6 @@ stal {
                     }
                     scm {
                         url = "https://github.com/lounres/Kone"
-                    }
-                }
-            }
-            
-            afterEvaluate {
-                configure<PublishingExtension> {
-                    publications.withType<MavenPublication> {
-                        groupId = project.extra["koneGroup"] as String
-                        if (artifactId.startsWith(project.name)) artifactId = "${project.extra["koneArtifactId"]}${artifactId.substring(project.name.length)}"
-                        version = project.extra["koneVersion"] as String
                     }
                 }
             }
