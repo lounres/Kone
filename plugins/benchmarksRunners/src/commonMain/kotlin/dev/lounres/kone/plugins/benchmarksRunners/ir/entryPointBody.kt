@@ -44,6 +44,7 @@ import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.name.SpecialNames
 import org.jetbrains.kotlin.platform.isJs
 import org.jetbrains.kotlin.platform.jvm.isJvm
+import org.jetbrains.kotlin.platform.konan.isNative
 import org.jetbrains.kotlin.platform.wasm.isWasmJs
 
 
@@ -130,6 +131,20 @@ fun handleEntryPointFunction(
                     pluginContext = pluginContext,
                     irRuntimeReferences = irRuntimeReferences,
                     argsValueDeclaration = argsVariable,
+                    runnerDescriptions = runnerDescriptions,
+                )
+            }
+        }
+        platform.isNative() -> {
+            val argsValueParameter = entryPointFunction.parameters[0]
+            entryPointFunction.body = DeclarationIrBuilder(
+                generatorContext = pluginContext,
+                symbol = entryPointFunction.symbol,
+            ).irBlockBody {
+                addRunnerExecution(
+                    pluginContext = pluginContext,
+                    irRuntimeReferences = irRuntimeReferences,
+                    argsValueDeclaration = argsValueParameter,
                     runnerDescriptions = runnerDescriptions,
                 )
             }

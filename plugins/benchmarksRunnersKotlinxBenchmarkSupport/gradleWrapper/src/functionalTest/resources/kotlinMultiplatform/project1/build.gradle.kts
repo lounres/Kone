@@ -45,6 +45,11 @@ kotlin {
         binaries.executable()
         binaries.library()
     }
+    
+    linuxX64()
+    mingwX64()
+//    macosX64()
+//    macosArm64()
 }
 
 benchmark {
@@ -52,6 +57,10 @@ benchmark {
         register("jvm")
         register("js")
         register("wasmJs")
+        register("linuxX64")
+        register("mingwX64")
+//        register("macosX64")
+//        register("macosArm64")
     }
     configurations {
         register("custom") {

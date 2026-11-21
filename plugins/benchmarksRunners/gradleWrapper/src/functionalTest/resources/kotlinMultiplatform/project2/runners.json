@@ -47,6 +47,38 @@
         "taskName": ":runJsMainBenchmarkWebRunnerUsingProductionBrowser",
         "output": "Hello from web runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
+    "common runner mingwX64 execution debug binary": {
+        "taskName": ":runMingwX64MainBenchmarkCommonRunnerUsingDebug",
+        "output": "Hello from common runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
+    },
+    "common runner mingwX64 execution release binary": {
+        "taskName": ":runMingwX64MainBenchmarkCommonRunnerUsingRelease",
+        "output": "Hello from common runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
+    },
+    "native runner mingwX64 execution debug binary": {
+        "taskName": ":runMingwX64MainBenchmarkNativeRunnerUsingDebug",
+        "output": "Hello from native runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
+    },
+    "native runner mingwX64 execution release binary": {
+        "taskName": ":runMingwX64MainBenchmarkNativeRunnerUsingRelease",
+        "output": "Hello from native runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
+    },
+    "mingw runner mingwX64 execution debug binary": {
+        "taskName": ":runMingwX64MainBenchmarkMingwRunnerUsingDebug",
+        "output": "Hello from mingw runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
+    },
+    "mingw runner mingwX64 execution release binary": {
+        "taskName": ":runMingwX64MainBenchmarkMingwRunnerUsingRelease",
+        "output": "Hello from mingw runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
+    },
+    "mingwX64 runner mingwX64 execution debug binary": {
+        "taskName": ":runMingwX64MainBenchmarkMingwX64RunnerUsingDebug",
+        "output": "Hello from mingwX64 runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
+    },
+    "mingwX64 runner mingwX64 execution release binary": {
+        "taskName": ":runMingwX64MainBenchmarkMingwX64RunnerUsingRelease",
+        "output": "Hello from mingwX64 runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
+    },
     "common runner jvm execution": {
         "taskName": ":runJvmMainBenchmarkCommonRunner",
         "output": "Hello from common runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"

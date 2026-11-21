@@ -14,11 +14,8 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.mapProperty
 import org.gradle.kotlin.dsl.property
-import org.gradle.kotlin.dsl.register
-import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinJsBinaryMode
 import org.jetbrains.kotlin.gradle.targets.js.ir.*
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsExec
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 
 
 class KoneBenchmarksJsRunnerConfiguration(
@@ -59,8 +56,8 @@ class KoneBenchmarksJsRunnerConfiguration(
                 is KotlinNodeJsIr -> {
                     kotlinCompilation.binaries.filterIsInstance<Executable>().map { binary ->
                         val mode = when (binary.mode) {
-                            KotlinJsBinaryMode.PRODUCTION -> "Production"
-                            KotlinJsBinaryMode.DEVELOPMENT -> "Development"
+                            PRODUCTION -> "Production"
+                            DEVELOPMENT -> "Development"
                         }
                         NodeJsExec.register(kotlinCompilation, "${taskNamePrefix}Using${mode}NodeJs") {
                             group = "kone benchmarks runners"

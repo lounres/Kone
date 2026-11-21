@@ -241,31 +241,31 @@ class BenchmarksExtension(
                     }
                 }
                 is NativeBenchmarkTarget -> {
-//                    target.compilation.koneBenchmarksRunners {
-//                        for (configuration in configurations) {
-//                            create(configuration.name) {
-//                                runnerName.set("dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport")
-//                                argument<String>("name", target.name)
-//                                argument<String>("reportFile", project.layout.buildDirectory.get().asFile.toPath().resolve(reportsDir).resolve(target.name).resolve(configuration.name).absolutePathString())
-//                                argument<String>("traceFormat", if (project.providers.systemProperty("idea.active").orNull.toBoolean()) "xml" else "text")
-//                                argument<String?>("reportFormat", configuration.reportFormat)
-//                                argument<Map<String, List<String>>>("params", configuration.params.mapValues { it.value.map { it.toString() } })
-//                                argument<List<String>>("include", configuration.includes)
-//                                argument<List<String>>("exclude", configuration.excludes)
-//                                argument<Int?>("iterations", configuration.iterations)
-//                                argument<Int?>("warmups", configuration.warmups)
-//                                argument<Long?>("iterationTime", configuration.iterationTime)
-//                                argument<String?>("iterationTimeUnit", configuration.iterationTimeUnit)
-//                                argument<Map<String, String>>("advanced", configuration.advanced.mapValues { it.value.toString() })
-//                                argument<String?>("outputTimeUnit", configuration.outputTimeUnit)
-//                                argument<Int?>("threads", configuration.threads)
-//                                argument<String?>("mode", configuration.mode)
-//                                argument<String?>("compilationMode", null)
-//                                argument<String>("configurationName", configuration.name)
-//                                finalize()
-//                            }
-//                        }
-//                    }
+                    target.compilation.koneBenchmarksRunners {
+                        for (configuration in configurations) {
+                            create(configuration.name) {
+                                runnerName.set("dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport")
+                                argument<String>("name", target.name)
+                                argument<String>("reportFile", project.layout.buildDirectory.get().asFile.toPath().resolve(reportsDir).resolve(target.name).resolve(configuration.name).absolutePathString())
+                                argument<String>("traceFormat", if (project.providers.systemProperty("idea.active").orNull.toBoolean()) "xml" else "text")
+                                argument<String?>("reportFormat", configuration.reportFormat)
+                                argument<Map<String, List<String>>>("params", configuration.params.mapValues { it.value.map { it.toString() } })
+                                argument<List<String>>("include", configuration.includes)
+                                argument<List<String>>("exclude", configuration.excludes)
+                                argument<Int?>("iterations", configuration.iterations)
+                                argument<Int?>("warmups", configuration.warmups)
+                                argument<Long?>("iterationTime", configuration.iterationTime)
+                                argument<String?>("iterationTimeUnit", configuration.iterationTimeUnit)
+                                argument<Map<String, String>>("advanced", configuration.advanced.mapValues { it.value.toString() })
+                                argument<String?>("outputTimeUnit", configuration.outputTimeUnit)
+                                argument<Int?>("threads", configuration.threads)
+                                argument<String?>("mode", configuration.mode)
+                                argument<String?>("compilationMode", null)
+                                argument<String>("configurationName", configuration.name)
+                                finalize()
+                            }
+                        }
+                    }
                 }
             }
         }

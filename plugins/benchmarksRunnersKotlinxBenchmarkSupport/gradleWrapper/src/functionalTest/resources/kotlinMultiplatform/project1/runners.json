@@ -19,6 +19,14 @@
         "taskName": ":runJvmMainBenchmarkCustom",
         "output": ""
     },
+    "custom benchmark mingwX64 execution debug binary": {
+        "taskName": ":runMingwX64MainBenchmarkCustomUsingDebug",
+        "output": ""
+    },
+    "custom benchmark mingwX64 execution debug release": {
+        "taskName": ":runMingwX64MainBenchmarkCustomUsingRelease",
+        "output": ""
+    },
     "custom benchmark wasmJs execution development NodeJs binary": {
         "taskName": ":runWasmJsMainBenchmarkCustomUsingDevelopmentNodeJs",
         "output": ""

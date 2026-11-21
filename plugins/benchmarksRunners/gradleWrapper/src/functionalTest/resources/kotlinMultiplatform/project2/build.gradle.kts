@@ -85,4 +85,51 @@ kotlin {
         binaries.executable()
         binaries.library()
     }
+    
+    linuxX64 {
+        koneBenchmarksRunners {
+            register("commonRunner") {
+                runnerName = "common.doIt"
+                argument("input", input)
+            }
+            register("nativeRunner") {
+                runnerName = "native.doIt"
+                argument("input", input)
+            }
+            register("linuxRunner") {
+                runnerName = "linux.doIt"
+                argument("input", input)
+            }
+            register("linuxX64Runner") {
+                runnerName = "linuxX64.doIt"
+                argument("input", input)
+            }
+        }
+    }
+    mingwX64 {
+        koneBenchmarksRunners {
+            register("commonRunner") {
+                runnerName = "common.doIt"
+                argument("input", input)
+            }
+            register("nativeRunner") {
+                runnerName = "native.doIt"
+                argument("input", input)
+            }
+            register("mingwRunner") {
+                runnerName = "mingw.doIt"
+                argument("input", input)
+            }
+            register("mingwX64Runner") {
+                runnerName = "mingwX64.doIt"
+                argument("input", input)
+            }
+        }
+    }
+//    macosX64 {
+//
+//    }
+//    macosArm64 {
+//
+//    }
 }

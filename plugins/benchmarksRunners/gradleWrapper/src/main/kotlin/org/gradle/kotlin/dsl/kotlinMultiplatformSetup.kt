@@ -8,9 +8,12 @@ package org.gradle.kotlin.dsl
 import dev.lounres.kone.plugins.benchmarksRunners.gradleWrapper.KoneBenchmarksRunnersGradleExtension
 import dev.lounres.kone.plugins.benchmarksRunners.gradleWrapper.tasks.KoneBenchmarksJsRunnerConfiguration
 import dev.lounres.kone.plugins.benchmarksRunners.gradleWrapper.tasks.KoneBenchmarksJvmRunnerConfiguration
+import dev.lounres.kone.plugins.benchmarksRunners.gradleWrapper.tasks.KoneBenchmarksNativeRunnerConfiguration
 import org.gradle.api.NamedDomainObjectContainer
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJvmCompilation
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinJsTargetDsl
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrCompilation
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
@@ -33,5 +36,15 @@ fun KotlinJsIrCompilation.koneBenchmarksRunners(block: NamedDomainObjectContaine
 
 @JvmName("koneBenchmarksRunnersJs")
 fun KotlinJsTargetDsl.koneBenchmarksRunners(block: NamedDomainObjectContainer<KoneBenchmarksJsRunnerConfiguration>.() -> Unit) {
+    this.compilations.named(KotlinCompilation.MAIN_COMPILATION_NAME) { this.koneBenchmarksRunners(block) }
+}
+
+@JvmName("koneBenchmarksRunnersNative")
+fun KotlinNativeCompilation.koneBenchmarksRunners(block: NamedDomainObjectContainer<KoneBenchmarksNativeRunnerConfiguration>.() -> Unit) {
+    project.the<KoneBenchmarksRunnersGradleExtension>()[this, KoneBenchmarksNativeRunnerConfiguration.namedDomainObjectFactory(this)].block()
+}
+
+@JvmName("koneBenchmarksRunnersNative")
+fun KotlinNativeTarget.koneBenchmarksRunners(block: NamedDomainObjectContainer<KoneBenchmarksNativeRunnerConfiguration>.() -> Unit) {
     this.compilations.named(KotlinCompilation.MAIN_COMPILATION_NAME) { this.koneBenchmarksRunners(block) }
 }
