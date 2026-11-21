@@ -12,23 +12,30 @@ import kotlin.reflect.KClass
 
 
 open class KoneBenchmarksRunnersGradleExtension(val project: Project) {
-    private val _compilationToRunnersConfigurations = mutableMapOf<KotlinCompilation<*>, ExtensiblePolymorphicDomainObjectContainer<KoneBenchmarkRunnerConfiguration>>()
-    val compilationToRunnersConfigurations: Map<KotlinCompilation<*>, ExtensiblePolymorphicDomainObjectContainer<KoneBenchmarkRunnerConfiguration>>
-        get() = _compilationToRunnersConfigurations
+    private data class RunnersConfigurations(
+        val container: ExtensiblePolymorphicDomainObjectContainer<KoneBenchmarkRunnerConfiguration>,
+        val registeredClasses: MutableSet<Class<*>>
+    )
+    private val compilationToRunnersConfigurations = mutableMapOf<KotlinCompilation<*>, RunnersConfigurations>()
     
     operator fun <C: KoneBenchmarkRunnerConfiguration> get(
         kotlinCompilation: KotlinCompilation<*>,
         configurationClass: Class<C>,
         configurationFactory: NamedDomainObjectFactory<C>,
     ): NamedDomainObjectContainer<C> =
-        _compilationToRunnersConfigurations
+        compilationToRunnersConfigurations
             .getOrPut(kotlinCompilation) {
-                project.objects.polymorphicDomainObjectContainer(KoneBenchmarkRunnerConfiguration::class.java)
+                RunnersConfigurations(
+                    container = project.objects.polymorphicDomainObjectContainer(KoneBenchmarkRunnerConfiguration::class.java),
+                    registeredClasses = mutableSetOf()
+                )
             }
-            .let {
-                project.objects.domainObjectContainer(configurationClass, configurationFactory).apply {
-                    whenObjectAdded { it.add(this) }
+            .run {
+                if (configurationClass !in registeredClasses) {
+                    container.registerFactory(configurationClass, configurationFactory)
+                    registeredClasses.add(configurationClass)
                 }
+                container.containerWithType(configurationClass)
             }
     
     operator fun <C: KoneBenchmarkRunnerConfiguration> get(
@@ -68,7 +75,7 @@ open class KoneBenchmarksRunnersGradleExtension(val project: Project) {
     ): NamedDomainObjectContainer<C> = get(this, configurationFactory).apply(configurator)
     
     fun finalizeCurrentConfigurations() {
-        for (runnerConfigurationsContainer in _compilationToRunnersConfigurations.values) {
+        for ((runnerConfigurationsContainer = container) in compilationToRunnersConfigurations.values) {
             for (configuration in runnerConfigurationsContainer.names.map { runnerConfigurationsContainer[it] }) {
                 configuration.finalize()
             }
