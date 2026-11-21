@@ -36,34 +36,32 @@ val kotlinMultiplatformRunnerExecutionTests by testSuite {
             test("project sync") {
                 val result = GradleRunner.create()
                     .withProjectDir(newProjectDirectory().toFile())
-                    .forwardOutput()
-                    .withArguments(":runJvmMainBenchmarkCustom")
                     .build()
             }
             
-//            @Serializable
-//            data class RunnerDescription(
-//                val taskName: String,
-//                val output: String,
-//            )
-//
-//            val runnerDescriptions = Json.decodeFromStream<Map<String, RunnerDescription>>(resourceProject.resolve("runners.json").inputStream())
-//
-//            for ([runnerName, runnerDescription] in runnerDescriptions) {
-//                test(runnerName) {
-//                    val projectDirectory = newProjectDirectory()
-//
-//                    val result = GradleRunner.create()
-//                        .withProjectDir(projectDirectory.toFile())
-//                        .withArguments(runnerDescription.taskName)
-//                        .build()
-//
-//                    assert(runnerDescription.output in result.output) { "Did not found runner's output in the Gradle output!" }
-//                    assert(result.task(runnerDescription.taskName).let { it != null && it.outcome == SUCCESS }) { "The main task is not found or didn't succeed!" }
-//
-//                    projectDirectory.deleteRecursively()
-//                }
-//            }
+            @Serializable
+            data class RunnerDescription(
+                val taskName: String,
+                val output: String,
+            )
+
+            val runnerDescriptions = Json.decodeFromStream<Map<String, RunnerDescription>>(resourceProject.resolve("runners.json").inputStream())
+
+            for ([runnerName, runnerDescription] in runnerDescriptions) {
+                test(runnerName) {
+                    val projectDirectory = newProjectDirectory()
+
+                    val result = GradleRunner.create()
+                        .withProjectDir(projectDirectory.toFile())
+                        .withArguments(runnerDescription.taskName)
+                        .build()
+
+                    assert(runnerDescription.output in result.output) { "Did not found runner's output in the Gradle output!" }
+                    assert(result.task(runnerDescription.taskName).let { it != null && it.outcome == SUCCESS }) { "The main task is not found or didn't succeed!" }
+
+                    projectDirectory.deleteRecursively()
+                }
+            }
         }
     }
 }

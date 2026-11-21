@@ -39,10 +39,6 @@ class KoneCompilerPluginGradleWrapper : DevKitSupportPlugin(KonePluginInfo.PLUGI
         }
     }
     
-    override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean {
-        return super.isApplicable(kotlinCompilation)
-    }
-    
     override fun Project.applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
         kotlinCompilation.compileTaskProvider.configure {
             compilerOptions.freeCompilerArgs.add(
@@ -247,7 +243,7 @@ class BenchmarksExtension(
                 is NativeBenchmarkTarget -> {
 //                    target.compilation.koneBenchmarksRunners {
 //                        for (configuration in configurations) {
-//                            register(configuration.name) {
+//                            create(configuration.name) {
 //                                runnerName.set("dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport")
 //                                argument<String>("name", target.name)
 //                                argument<String>("reportFile", project.layout.buildDirectory.get().asFile.toPath().resolve(reportsDir).resolve(target.name).resolve(configuration.name).absolutePathString())

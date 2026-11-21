@@ -29,29 +29,9 @@ kotlin {
         )
     }
     
-    jvm {
-//        koneBenchmarksRunners {
-//            register("commonRunner") {
-//                runnerName = "common.doIt"
-//            }
-//            register("jvmRunner") {
-//                runnerName = "jvm.doIt"
-//            }
-//        }
-    }
+    jvm()
     
     js {
-//        koneBenchmarksRunners {
-//            register("commonRunner") {
-//                runnerName = "common.doIt"
-//            }
-//            register("webRunner") {
-//                runnerName = "web.doIt"
-//            }
-//            register("jsRunner") {
-//                runnerName = "js.doIt"
-//            }
-//        }
         browser()
         nodejs()
         binaries.executable()
@@ -59,17 +39,6 @@ kotlin {
     }
     
     wasmJs {
-//        koneBenchmarksRunners {
-//            register("commonRunner") {
-//                runnerName = "common.doIt"
-//            }
-//            register("webRunner") {
-//                runnerName = "web.doIt"
-//            }
-//            register("wasmJsRunner") {
-//                runnerName = "wasmJs.doIt"
-//            }
-//        }
         browser()
         nodejs()
         d8()
@@ -81,12 +50,14 @@ kotlin {
 benchmark {
     targets {
         register("jvm")
+        register("js")
+        register("wasmJs")
     }
     configurations {
         register("custom") {
-            warmups = 20
-            iterations = 10
-            iterationTime = 3
+            warmups = 3
+            iterations = 3
+            iterationTime = 1
             iterationTimeUnit = "SECONDS"
         }
     }

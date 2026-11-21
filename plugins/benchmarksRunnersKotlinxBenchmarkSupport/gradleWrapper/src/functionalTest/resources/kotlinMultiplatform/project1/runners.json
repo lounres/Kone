@@ -1,0 +1,38 @@
+{
+    "custom benchmark js execution development NodeJs binary": {
+        "taskName": ":runJsMainBenchmarkCustomUsingDevelopmentNodeJs",
+        "output": ""
+    },
+    "custom benchmark js execution development browser binary": {
+        "taskName": ":runJsMainBenchmarkCustomUsingDevelopmentBrowser",
+        "output": ""
+    },
+    "custom benchmark js execution production NodeJs binary": {
+        "taskName": ":runJsMainBenchmarkCustomUsingProductionNodeJs",
+        "output": ""
+    },
+    "custom benchmark js execution production browser binary": {
+        "taskName": ":runJsMainBenchmarkCustomUsingProductionBrowser",
+        "output": ""
+    },
+    "custom benchmark jvm execution": {
+        "taskName": ":runJvmMainBenchmarkCustom",
+        "output": ""
+    },
+    "custom benchmark wasmJs execution development NodeJs binary": {
+        "taskName": ":runWasmJsMainBenchmarkCustomUsingDevelopmentNodeJs",
+        "output": ""
+    },
+    "custom benchmark wasmJs execution development browser binary": {
+        "taskName": ":runWasmJsMainBenchmarkCustomUsingDevelopmentBrowser",
+        "output": ""
+    },
+    "custom benchmark wasmJs execution production NodeJs binary": {
+        "taskName": ":runWasmJsMainBenchmarkCustomUsingProductionNodeJs",
+        "output": ""
+    },
+    "custom benchmark wasmJs execution production browser binary": {
+        "taskName": ":runWasmJsMainBenchmarkCustomUsingProductionBrowser",
+        "output": ""
+    }
+}
