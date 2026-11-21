@@ -12,15 +12,15 @@ import kotlin.reflect.KClass
 
 
 open class KoneBenchmarksRunnersGradleExtension(val project: Project) {
-    private val _compilationToRunnersConfigurations = mutableMapOf<KotlinCompilation<*>, ExtensiblePolymorphicDomainObjectContainer<KoneBenchmarkRunnerConfiguration<*>>>()
-    val compilationToRunnersConfigurations: Map<KotlinCompilation<*>, ExtensiblePolymorphicDomainObjectContainer<KoneBenchmarkRunnerConfiguration<*>>>
+    private val _compilationToRunnersConfigurations = mutableMapOf<KotlinCompilation<*>, ExtensiblePolymorphicDomainObjectContainer<KoneBenchmarkRunnerConfiguration>>()
+    val compilationToRunnersConfigurations: Map<KotlinCompilation<*>, ExtensiblePolymorphicDomainObjectContainer<KoneBenchmarkRunnerConfiguration>>
         get() = _compilationToRunnersConfigurations
     
-    operator fun <T : Task, RG: KoneBenchmarkRunnerConfiguration<T>> get(
+    operator fun <C: KoneBenchmarkRunnerConfiguration> get(
         kotlinCompilation: KotlinCompilation<*>,
-        configurationClass: Class<RG>,
-        configurationFactory: NamedDomainObjectFactory<out RG>,
-    ): NamedDomainObjectContainer<RG> =
+        configurationClass: Class<C>,
+        configurationFactory: NamedDomainObjectFactory<out C>,
+    ): NamedDomainObjectContainer<C> =
         _compilationToRunnersConfigurations
             .getOrPut(kotlinCompilation) {
                 project.objects.polymorphicDomainObjectContainer(KoneBenchmarkRunnerConfiguration::class.java)
@@ -30,41 +30,41 @@ open class KoneBenchmarksRunnersGradleExtension(val project: Project) {
             }
             .containerWithType(configurationClass)
     
-    operator fun <T : Task, RG: KoneBenchmarkRunnerConfiguration<T>> get(
+    operator fun <C: KoneBenchmarkRunnerConfiguration> get(
         kotlinCompilation: KotlinCompilation<*>,
-        configurationKClass: KClass<RG>,
-        configurationFactory: NamedDomainObjectFactory<out RG>,
-    ): NamedDomainObjectContainer<RG> = get(
+        configurationKClass: KClass<C>,
+        configurationFactory: NamedDomainObjectFactory<out C>,
+    ): NamedDomainObjectContainer<C> = get(
         kotlinCompilation = kotlinCompilation,
         configurationClass = configurationKClass.java,
         configurationFactory = configurationFactory,
     )
     
-    inline operator fun <T : Task, reified RG: KoneBenchmarkRunnerConfiguration<T>> get(
+    inline operator fun <reified C: KoneBenchmarkRunnerConfiguration> get(
         kotlinCompilation: KotlinCompilation<*>,
-        configurationFactory: NamedDomainObjectFactory<out RG>,
-    ): NamedDomainObjectContainer<RG> = get(
+        configurationFactory: NamedDomainObjectFactory<out C>,
+    ): NamedDomainObjectContainer<C> = get(
         kotlinCompilation = kotlinCompilation,
-        configurationKClass = RG::class,
+        configurationKClass = C::class,
         configurationFactory = configurationFactory,
     )
     
-    inline operator fun <T : Task, RG: KoneBenchmarkRunnerConfiguration<T>> KotlinCompilation<*>.invoke(
-        configurationClass: Class<RG>,
-        configurationFactory: NamedDomainObjectFactory<out RG>,
-        configurator: NamedDomainObjectContainer<RG>.() -> Unit
-    ): NamedDomainObjectContainer<RG> = get(this, configurationClass, configurationFactory).apply(configurator)
+    inline operator fun <C: KoneBenchmarkRunnerConfiguration> KotlinCompilation<*>.invoke(
+        configurationClass: Class<C>,
+        configurationFactory: NamedDomainObjectFactory<out C>,
+        configurator: NamedDomainObjectContainer<C>.() -> Unit
+    ): NamedDomainObjectContainer<C> = get(this, configurationClass, configurationFactory).apply(configurator)
     
-    inline operator fun <T : Task, RG: KoneBenchmarkRunnerConfiguration<T>> KotlinCompilation<*>.invoke(
-        configurationClass: KClass<RG>,
-        configurationFactory: NamedDomainObjectFactory<out RG>,
-        configurator: NamedDomainObjectContainer<RG>.() -> Unit
-    ): NamedDomainObjectContainer<RG> = get(this, configurationClass, configurationFactory).apply(configurator)
+    inline operator fun <C: KoneBenchmarkRunnerConfiguration> KotlinCompilation<*>.invoke(
+        configurationClass: KClass<C>,
+        configurationFactory: NamedDomainObjectFactory<out C>,
+        configurator: NamedDomainObjectContainer<C>.() -> Unit
+    ): NamedDomainObjectContainer<C> = get(this, configurationClass, configurationFactory).apply(configurator)
     
-    inline operator fun <T : Task, reified RG: KoneBenchmarkRunnerConfiguration<T>> KotlinCompilation<*>.invoke(
-        configurationFactory: NamedDomainObjectFactory<out RG>,
-        configurator: NamedDomainObjectContainer<RG>.() -> Unit
-    ): NamedDomainObjectContainer<RG> = get(this, configurationFactory).apply(configurator)
+    inline operator fun <reified C: KoneBenchmarkRunnerConfiguration> KotlinCompilation<*>.invoke(
+        configurationFactory: NamedDomainObjectFactory<out C>,
+        configurator: NamedDomainObjectContainer<C>.() -> Unit
+    ): NamedDomainObjectContainer<C> = get(this, configurationFactory).apply(configurator)
     
     fun finalizeCurrentConfigurations() {
         for (runnerConfigurationsContainer in _compilationToRunnersConfigurations.values) {

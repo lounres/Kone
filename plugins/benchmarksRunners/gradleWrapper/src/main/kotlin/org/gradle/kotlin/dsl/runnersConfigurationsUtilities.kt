@@ -10,12 +10,12 @@ import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.Json
 
 
-fun KoneBenchmarkRunnerConfiguration<*>.rawArgument(key: String, value: String) {
+fun KoneBenchmarkRunnerConfiguration.rawArgument(key: String, value: String) {
     rawArguments.put(key, value)
 }
-fun <V> KoneBenchmarkRunnerConfiguration<*>.argument(name: String, valueSerializer: SerializationStrategy<V>, value: V) {
+fun <V> KoneBenchmarkRunnerConfiguration.argument(name: String, valueSerializer: SerializationStrategy<V>, value: V) {
     rawArgument(name, Json.encodeToString(valueSerializer, value))
 }
-inline fun <reified V> KoneBenchmarkRunnerConfiguration<*>.argument(name: String, value: V) {
+inline fun <reified V> KoneBenchmarkRunnerConfiguration.argument(name: String, value: V) {
     rawArgument(name, Json.encodeToString(value))
 }

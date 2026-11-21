@@ -16,7 +16,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 
 internal fun String.capitalize(): String = replaceFirstChar { it.uppercaseChar() }
 
-internal fun KoneBenchmarkRunnerConfiguration<*>.computeTaskName(kotlinCompilation: KotlinCompilation<*>): String =
+internal fun KoneBenchmarkRunnerConfiguration.computeTaskName(taskName: Provider<String>, kotlinCompilation: KotlinCompilation<*>): String =
     taskName.orNull ?: "run${kotlinCompilation.target.targetName.capitalize()}${kotlinCompilation.name.capitalize()}Benchmark${name.capitalize()}"
 
 internal fun String.toCliArgument(): String = "\"${this.replace("\"", "\\\"")}\""

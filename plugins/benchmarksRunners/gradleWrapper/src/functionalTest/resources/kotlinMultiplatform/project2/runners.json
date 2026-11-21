@@ -1,50 +1,50 @@
 {
-    "common runner js execution developmentExecutable binary": {
-        "taskName": ":runJsMainBenchmarkCommonRunnerUsingDevelopmentExecutable",
+    "common runner js execution development NodeJs binary": {
+        "taskName": ":runJsMainBenchmarkCommonRunnerUsingDevelopmentNodeJs",
         "output": "Hello from common runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "common runner js execution developmentLibrary binary": {
-        "taskName": ":runJsMainBenchmarkCommonRunnerUsingDevelopmentLibrary",
+    "common runner js execution development browser binary": {
+        "taskName": ":runJsMainBenchmarkCommonRunnerUsingDevelopmentBrowser",
         "output": "Hello from common runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "common runner js execution productionExecutable binary": {
-        "taskName": ":runJsMainBenchmarkCommonRunnerUsingProductionExecutable",
+    "common runner js execution production NodeJs binary": {
+        "taskName": ":runJsMainBenchmarkCommonRunnerUsingProductionNodeJs",
         "output": "Hello from common runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "common runner js execution productionLibrary binary": {
-        "taskName": ":runJsMainBenchmarkCommonRunnerUsingProductionLibrary",
+    "common runner js execution production browser binary": {
+        "taskName": ":runJsMainBenchmarkCommonRunnerUsingProductionBrowser",
         "output": "Hello from common runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "js runner js execution developmentExecutable binary": {
-        "taskName": ":runJsMainBenchmarkJsRunnerUsingDevelopmentExecutable",
+    "js runner js execution development NodeJs binary": {
+        "taskName": ":runJsMainBenchmarkJsRunnerUsingDevelopmentNodeJs",
         "output": "Hello from js runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "js runner js execution developmentLibrary binary": {
-        "taskName": ":runJsMainBenchmarkJsRunnerUsingDevelopmentLibrary",
+    "js runner js execution development browser binary": {
+        "taskName": ":runJsMainBenchmarkJsRunnerUsingDevelopmentBrowser",
         "output": "Hello from js runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "js runner js execution productionExecutable binary": {
-        "taskName": ":runJsMainBenchmarkJsRunnerUsingProductionExecutable",
+    "js runner js execution production NodeJs binary": {
+        "taskName": ":runJsMainBenchmarkJsRunnerUsingProductionNodeJs",
         "output": "Hello from js runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "js runner js execution productionLibrary binary": {
-        "taskName": ":runJsMainBenchmarkJsRunnerUsingProductionLibrary",
+    "js runner js execution production browser binary": {
+        "taskName": ":runJsMainBenchmarkJsRunnerUsingProductionBrowser",
         "output": "Hello from js runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "web runner js execution developmentExecutable binary": {
-        "taskName": ":runJsMainBenchmarkWebRunnerUsingDevelopmentExecutable",
+    "web runner js execution development NodeJs binary": {
+        "taskName": ":runJsMainBenchmarkWebRunnerUsingDevelopmentNodeJs",
         "output": "Hello from web runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "web runner js execution developmentLibrary binary": {
-        "taskName": ":runJsMainBenchmarkWebRunnerUsingDevelopmentLibrary",
+    "web runner js execution development browser binary": {
+        "taskName": ":runJsMainBenchmarkWebRunnerUsingDevelopmentBrowser",
         "output": "Hello from web runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "web runner js execution productionExecutable binary": {
-        "taskName": ":runJsMainBenchmarkWebRunnerUsingProductionExecutable",
+    "web runner js execution production NodeJs binary": {
+        "taskName": ":runJsMainBenchmarkWebRunnerUsingProductionNodeJs",
         "output": "Hello from web runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "web runner js execution productionLibrary binary": {
-        "taskName": ":runJsMainBenchmarkWebRunnerUsingProductionLibrary",
+    "web runner js execution production browser binary": {
+        "taskName": ":runJsMainBenchmarkWebRunnerUsingProductionBrowser",
         "output": "Hello from web runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
     "common runner jvm execution": {
@@ -55,52 +55,52 @@
         "taskName": ":runJvmMainBenchmarkJvmRunner",
         "output": "Hello from jvm runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "common runner wasmJs execution developmentExecutable binary": {
-        "taskName": ":runWasmJsMainBenchmarkCommonRunnerUsingDevelopmentExecutable",
+    "common runner wasmJs execution development NodeJs binary": {
+        "taskName": ":runWasmJsMainBenchmarkCommonRunnerUsingDevelopmentNodeJs",
         "output": "Hello from common runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "common runner wasmJs execution developmentLibrary binary": {
-        "taskName": ":runWasmJsMainBenchmarkCommonRunnerUsingDevelopmentLibrary",
+    "common runner wasmJs execution development browser binary": {
+        "taskName": ":runWasmJsMainBenchmarkCommonRunnerUsingDevelopmentBrowser",
         "output": "Hello from common runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "common runner wasmJs execution productionExecutable binary": {
-        "taskName": ":runWasmJsMainBenchmarkCommonRunnerUsingProductionExecutable",
+    "common runner wasmJs execution production NodeJs binary": {
+        "taskName": ":runWasmJsMainBenchmarkCommonRunnerUsingProductionNodeJs",
         "output": "Hello from common runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "common runner wasmJs execution productionLibrary binary": {
-        "taskName": ":runWasmJsMainBenchmarkCommonRunnerUsingProductionLibrary",
+    "common runner wasmJs execution production browser binary": {
+        "taskName": ":runWasmJsMainBenchmarkCommonRunnerUsingProductionBrowser",
         "output": "Hello from common runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "wasmJs runner wasmJs execution developmentExecutable binary": {
-        "taskName": ":runWasmJsMainBenchmarkWasmJsRunnerUsingDevelopmentExecutable",
+    "wasmJs runner wasmJs execution development NodeJs binary": {
+        "taskName": ":runWasmJsMainBenchmarkWasmJsRunnerUsingDevelopmentNodeJs",
         "output": "Hello from wasmJs runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "wasmJs runner wasmJs execution developmentLibrary binary": {
-        "taskName": ":runWasmJsMainBenchmarkWasmJsRunnerUsingDevelopmentLibrary",
+    "wasmJs runner wasmJs execution development browser binary": {
+        "taskName": ":runWasmJsMainBenchmarkWasmJsRunnerUsingDevelopmentBrowser",
         "output": "Hello from wasmJs runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "wasmJs runner wasmJs execution productionExecutable binary": {
-        "taskName": ":runWasmJsMainBenchmarkWasmJsRunnerUsingProductionExecutable",
+    "wasmJs runner wasmJs execution production NodeJs binary": {
+        "taskName": ":runWasmJsMainBenchmarkWasmJsRunnerUsingProductionNodeJs",
         "output": "Hello from wasmJs runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "wasmJs runner wasmJs execution productionLibrary binary": {
-        "taskName": ":runWasmJsMainBenchmarkWasmJsRunnerUsingProductionLibrary",
+    "wasmJs runner wasmJs execution production browser binary": {
+        "taskName": ":runWasmJsMainBenchmarkWasmJsRunnerUsingProductionBrowser",
         "output": "Hello from wasmJs runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "web runner wasmJs execution developmentExecutable binary": {
-        "taskName": ":runWasmJsMainBenchmarkWebRunnerUsingDevelopmentExecutable",
+    "web runner wasmJs execution development NodeJs binary": {
+        "taskName": ":runWasmJsMainBenchmarkWebRunnerUsingDevelopmentNodeJs",
         "output": "Hello from web runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "web runner wasmJs execution developmentLibrary binary": {
-        "taskName": ":runWasmJsMainBenchmarkWebRunnerUsingDevelopmentLibrary",
+    "web runner wasmJs execution development browser binary": {
+        "taskName": ":runWasmJsMainBenchmarkWebRunnerUsingDevelopmentBrowser",
         "output": "Hello from web runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "web runner wasmJs execution productionExecutable binary": {
-        "taskName": ":runWasmJsMainBenchmarkWebRunnerUsingProductionExecutable",
+    "web runner wasmJs execution production NodeJs binary": {
+        "taskName": ":runWasmJsMainBenchmarkWebRunnerUsingProductionNodeJs",
         "output": "Hello from web runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     },
-    "web runner wasmJs execution productionLibrary binary": {
-        "taskName": ":runWasmJsMainBenchmarkWebRunnerUsingProductionLibrary",
+    "web runner wasmJs execution production browser binary": {
+        "taskName": ":runWasmJsMainBenchmarkWebRunnerUsingProductionBrowser",
         "output": "Hello from web runner! You said:\nCan't read my, can't read my\nNo, he can't read my poker face"
     }
 }
