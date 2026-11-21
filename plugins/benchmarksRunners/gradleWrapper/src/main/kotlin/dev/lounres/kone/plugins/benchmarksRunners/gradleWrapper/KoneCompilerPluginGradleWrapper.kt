@@ -6,9 +6,7 @@
 package dev.lounres.kone.plugins.benchmarksRunners.gradleWrapper
 
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.the
 import org.jetbrains.kotlin.compiler.plugin.devkit.DevKitSupportPlugin
-import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 
 
 class KoneCompilerPluginGradleWrapper : DevKitSupportPlugin(KonePluginInfo.PLUGIN_INFO) {
@@ -20,7 +18,4 @@ class KoneCompilerPluginGradleWrapper : DevKitSupportPlugin(KonePluginInfo.PLUGI
             extension.finalizeCurrentConfigurations()
         }
     }
-    
-    override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean =
-        !kotlinCompilation.project.the<KoneBenchmarksRunnersGradleExtension>().compilationToRunnersConfigurations[kotlinCompilation].isNullOrEmpty()
 }

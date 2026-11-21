@@ -1,0 +1,8 @@
+[versions]
+kotlin = "<kotlin>"
+kone = "<kone>"
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kone-benchmarksRunners = { id = "dev.lounres.kone.plugins.benchmarksRunners.gradleWrapper", version.ref = "kone" }
+kone-benchmarksRunnersKotlinxBenchmarkSupport = { id = "dev.lounres.kone.plugins.benchmarksRunnersKotlinxBenchmarkSupport.gradleWrapper", version.ref = "kone" }
