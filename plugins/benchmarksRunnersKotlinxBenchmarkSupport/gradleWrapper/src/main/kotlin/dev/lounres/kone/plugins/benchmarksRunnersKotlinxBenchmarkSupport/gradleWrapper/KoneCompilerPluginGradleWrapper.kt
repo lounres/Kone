@@ -25,6 +25,9 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinJsBinaryMode
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrCompilation
 import kotlin.io.path.absolutePathString
+import kotlin.io.path.createFile
+import kotlin.io.path.createParentDirectories
+import kotlin.io.path.exists
 
 
 class KoneCompilerPluginGradleWrapper : DevKitSupportPlugin(KonePluginInfo.PLUGIN_INFO) {
@@ -246,7 +249,8 @@ class BenchmarksExtension(
                             create(configuration.name) {
                                 runnerName.set("dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport")
                                 argument<String>("name", target.name)
-                                argument<String>("reportFile", project.layout.buildDirectory.get().asFile.toPath().resolve(reportsDir).resolve(target.name).resolve(configuration.name).absolutePathString())
+                                val reportFile = project.layout.buildDirectory.get().asFile.toPath().resolve(reportsDir).resolve(target.name).resolve(configuration.name)
+                                argument<String>("reportFile", reportFile.absolutePathString())
                                 argument<String>("traceFormat", if (project.providers.systemProperty("idea.active").orNull.toBoolean()) "xml" else "text")
                                 argument<String?>("reportFormat", configuration.reportFormat)
                                 argument<Map<String, List<String>>>("params", configuration.params.mapValues { it.value.map { it.toString() } })
@@ -262,6 +266,14 @@ class BenchmarksExtension(
                                 argument<String?>("mode", configuration.mode)
                                 argument<String?>("compilationMode", null)
                                 argument<String>("configurationName", configuration.name)
+                                configureRunnersTasks {
+                                    doFirst {
+                                        if (!reportFile.exists()) {
+                                            reportFile.createParentDirectories()
+                                            reportFile.createFile()
+                                        }
+                                    }
+                                }
                                 finalize()
                             }
                         }
