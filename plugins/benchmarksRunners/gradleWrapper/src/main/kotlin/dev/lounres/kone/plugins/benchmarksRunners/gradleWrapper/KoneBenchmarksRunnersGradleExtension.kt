@@ -19,21 +19,22 @@ open class KoneBenchmarksRunnersGradleExtension(val project: Project) {
     operator fun <C: KoneBenchmarkRunnerConfiguration> get(
         kotlinCompilation: KotlinCompilation<*>,
         configurationClass: Class<C>,
-        configurationFactory: NamedDomainObjectFactory<out C>,
+        configurationFactory: NamedDomainObjectFactory<C>,
     ): NamedDomainObjectContainer<C> =
         _compilationToRunnersConfigurations
             .getOrPut(kotlinCompilation) {
                 project.objects.polymorphicDomainObjectContainer(KoneBenchmarkRunnerConfiguration::class.java)
             }
-            .apply {
-                registerFactory(configurationClass, configurationFactory)
+            .let {
+                project.objects.domainObjectContainer(configurationClass, configurationFactory).apply {
+                    whenObjectAdded { it.add(this) }
+                }
             }
-            .containerWithType(configurationClass)
     
     operator fun <C: KoneBenchmarkRunnerConfiguration> get(
         kotlinCompilation: KotlinCompilation<*>,
         configurationKClass: KClass<C>,
-        configurationFactory: NamedDomainObjectFactory<out C>,
+        configurationFactory: NamedDomainObjectFactory<C>,
     ): NamedDomainObjectContainer<C> = get(
         kotlinCompilation = kotlinCompilation,
         configurationClass = configurationKClass.java,
@@ -42,7 +43,7 @@ open class KoneBenchmarksRunnersGradleExtension(val project: Project) {
     
     inline operator fun <reified C: KoneBenchmarkRunnerConfiguration> get(
         kotlinCompilation: KotlinCompilation<*>,
-        configurationFactory: NamedDomainObjectFactory<out C>,
+        configurationFactory: NamedDomainObjectFactory<C>,
     ): NamedDomainObjectContainer<C> = get(
         kotlinCompilation = kotlinCompilation,
         configurationKClass = C::class,
@@ -51,18 +52,18 @@ open class KoneBenchmarksRunnersGradleExtension(val project: Project) {
     
     inline operator fun <C: KoneBenchmarkRunnerConfiguration> KotlinCompilation<*>.invoke(
         configurationClass: Class<C>,
-        configurationFactory: NamedDomainObjectFactory<out C>,
+        configurationFactory: NamedDomainObjectFactory<C>,
         configurator: NamedDomainObjectContainer<C>.() -> Unit
     ): NamedDomainObjectContainer<C> = get(this, configurationClass, configurationFactory).apply(configurator)
     
     inline operator fun <C: KoneBenchmarkRunnerConfiguration> KotlinCompilation<*>.invoke(
         configurationClass: KClass<C>,
-        configurationFactory: NamedDomainObjectFactory<out C>,
+        configurationFactory: NamedDomainObjectFactory<C>,
         configurator: NamedDomainObjectContainer<C>.() -> Unit
     ): NamedDomainObjectContainer<C> = get(this, configurationClass, configurationFactory).apply(configurator)
     
     inline operator fun <reified C: KoneBenchmarkRunnerConfiguration> KotlinCompilation<*>.invoke(
-        configurationFactory: NamedDomainObjectFactory<out C>,
+        configurationFactory: NamedDomainObjectFactory<C>,
         configurator: NamedDomainObjectContainer<C>.() -> Unit
     ): NamedDomainObjectContainer<C> = get(this, configurationFactory).apply(configurator)
     
