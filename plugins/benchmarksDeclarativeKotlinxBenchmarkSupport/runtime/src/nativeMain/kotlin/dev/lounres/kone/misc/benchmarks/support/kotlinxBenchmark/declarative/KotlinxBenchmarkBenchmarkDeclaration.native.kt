@@ -38,7 +38,7 @@ private data object KotlinxBenchmarkBenchmarkDeclarationContext : KoneBenchmarkD
                 function = { runBenchmark(it) }
             )
         )
-        return listOf(suiteDescriptor)
+        return KotlinxBenchmarkBenchmark(listOf(suiteDescriptor))
     }
 }
 

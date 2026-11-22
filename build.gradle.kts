@@ -830,6 +830,7 @@ stal {
         }
         "publishing" {
             apply(versions.plugins.gradle.maven.publish.plugin)
+            apply<DevKitFunctionalTestPublishingPlugin>()
             configure<MavenPublishBaseExtension> {
                 publishToMavenCentral()
                 

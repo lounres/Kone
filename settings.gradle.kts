@@ -55,7 +55,7 @@ pluginManagement {
 plugins {
     id("dev.lounres.gradle.stal") version "0.4.0"
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
-    kotlin("compiler.plugin.devkit") version "0.1.0"
+    kotlin("compiler.plugin.devkit") version "0.1.0" apply false
 }
 
 stal {
@@ -82,8 +82,8 @@ stal {
         }
 //        "bom"("bom", "kotlin multiplatform", "kotlin library settings", "publishing")
         "plugins" {
-            "util"("plugins util", "kotlin compiler library", "kotlin library settings")
-            "testUtil"("plugins testUtil", "kotlin compiler library", "kotlin library settings")
+            "util"("plugins util", "kotlin compiler library", "kotlin library settings", "publishing")
+            "testUtil"("plugins testUtil", "kotlin compiler library", "kotlin library settings", "publishing")
             subdirs("plugins", "kotlin compiler plugin", "publishing") {
                 "runtime"("plugins runtime", "kotlin compiler plugin runtime", "kotlin multiplatform", "kotlin library settings", "publishing", "dokka")
                 "gradleWrapper"("plugins gradleWrapper", "kotlin compiler plugin gradle wrapper", "publishing", "testBalloon")
