@@ -33,7 +33,6 @@ dependencyResolutionManagement {
         mavenCentral()
         gradlePluginPortal()
         maven("https://repo.kotlin.link")
-        maven("https://packages.jetbrains.team/maven/p/compiler-plugin-dev-kit/eap")
         mavenLocal()
     }
     
@@ -50,14 +49,13 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
-        maven("https://packages.jetbrains.team/maven/p/compiler-plugin-dev-kit/eap")
     }
 }
 
 plugins {
     id("dev.lounres.gradle.stal") version "0.4.0"
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
-    kotlin("compiler.plugin.devkit") version "0.0.4-dev-403"
+    kotlin("compiler.plugin.devkit") version "0.1.0"
 }
 
 stal {

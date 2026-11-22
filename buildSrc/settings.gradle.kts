@@ -16,10 +16,6 @@ dependencyResolutionManagement {
         mavenCentral()
         gradlePluginPortal()
         maven("https://repo.kotlin.link")
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-        maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")
-        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev")
-        maven("https://packages.jetbrains.team/maven/p/ij/intellij-dependencies/")
         mavenLocal()
     }
     
@@ -35,6 +31,5 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
-        maven("https://packages.jetbrains.team/maven/p/ij/intellij-dependencies/")
     }
 }
