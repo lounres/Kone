@@ -67,7 +67,7 @@ fun IrBlockBuilder.suiteDescriptorVariable(
         // parametrize: (T, Map<String, String>) -> Unit
         arguments[2] = irRichFunctionReference(
             invokeFunction = pluginContext.irFactory.buildFun {
-                returnType = benchmarkClass.theClass.defaultType
+                returnType = pluginContext.irBuiltIns.unitType
                 name = SpecialNames.ANONYMOUS
             }.apply {
                 parent = scope.getLocalDeclarationParent()
