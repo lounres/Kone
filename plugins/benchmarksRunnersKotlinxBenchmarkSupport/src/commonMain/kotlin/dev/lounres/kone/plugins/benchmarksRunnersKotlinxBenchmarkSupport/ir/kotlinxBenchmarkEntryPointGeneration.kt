@@ -989,16 +989,27 @@ fun IrBlockBodyBuilder.nativeRunBenchmarkExecutor(
         arguments[0] = irGetObject(irRuntimeReferences.koneBenchmarkExecutorClassIrClassSymbol.owner.companionObject()!!.symbol)
     }
     arguments[1] = irCall(irRuntimeReferences.kotlinxBenchmarkConfigurationConstructorIrConstructorSymbol).apply {
+        // name: String
         arguments[0] = irGet(valueParameters[0])
+        // reportFile: String
         arguments[1] = irGet(valueParameters[1])
+        // traceFormat: String
         arguments[2] = irGet(valueParameters[2])
+        // reportFormat: String?
         arguments[3] = irGet(valueParameters[3])
+        // params: Map<String, List<String>>
         arguments[4] = irGet(valueParameters[4])
+        // include: List<String>
         arguments[5] = irGet(valueParameters[5])
+        // exclude: List<String>
         arguments[6] = irGet(valueParameters[6])
+        // iterations: Int?
         arguments[7] = irGet(valueParameters[7])
+        // warmups: Int?
         arguments[8] = irGet(valueParameters[8])
+        // iterationTime: Long?
         arguments[9] = irGet(valueParameters[9])
+        // iterationTimeUnit: BenchmarkTimeUnit?
         arguments[10] = irIfNull(
             type = irRuntimeReferences.kotlinxBenchmarkTimeUnitEnumIrClassSymbol.createType(
                 hasQuestionMark = true,
@@ -1013,7 +1024,9 @@ fun IrBlockBodyBuilder.nativeRunBenchmarkExecutor(
                 )
             },
         )
+        // advanced: Map<String, String>
         arguments[11] = irGet(valueParameters[11])
+        // outputTimeUnit: BenchmarkTimeUnit?
         arguments[12] = irIfNull(
             type = irRuntimeReferences.kotlinxBenchmarkTimeUnitEnumIrClassSymbol.createType(
                 hasQuestionMark = true,
@@ -1028,7 +1041,9 @@ fun IrBlockBodyBuilder.nativeRunBenchmarkExecutor(
                 )
             },
         )
+        // threads: Int?
         arguments[13] = irGet(valueParameters[13])
+        // mode: Mode?
         arguments[14] = irIfNull(
             type = irRuntimeReferences.kotlinxModeClassIrClassSymbol.createType(
                 hasQuestionMark = true,
@@ -1043,7 +1058,9 @@ fun IrBlockBodyBuilder.nativeRunBenchmarkExecutor(
                 )
             },
         )
+        // compilationMode: String?
         arguments[15] = irGet(valueParameters[15])
+        // configurationName: String
         arguments[16] = irGet(valueParameters[16])
     }
     arguments[2] = irCall(irRuntimeReferences.kotlinxBenchmarkBenchmarkConstructorIrConstructorSymbol).apply {
@@ -1090,7 +1107,7 @@ fun IrBlockBodyBuilder.nativeRunBenchmarkExecutor(
                         }
                         +irGet(suite)
                     }
-                }
+                },
             )
         }
     }
