@@ -11,8 +11,13 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.SourceSet
+import org.gradle.api.tasks.compile.JavaCompile
+import org.gradle.jvm.toolchain.JavaCompiler
+import org.gradle.jvm.toolchain.JavaLauncher
+import org.gradle.jvm.toolchain.JavaToolchainService
 import org.gradle.kotlin.dsl.argument
 import org.gradle.kotlin.dsl.koneBenchmarksRunners
+import org.gradle.kotlin.dsl.register
 import org.jetbrains.kotlin.compiler.plugin.devkit.DevKitSupportPlugin
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
@@ -162,13 +167,56 @@ class BenchmarksExtension(
             configurations.disallowChanges()
             for (target in targets) when (target) {
                 is JavaBenchmarkTarget -> {}
-                is KotlinJvmBenchmarkTarget -> {
+                is KotlinJvmBenchmarkTarget -> { // TODO: Refactor this mess.
+                    fun String.capitalize(): String = replaceFirstChar { it.uppercaseChar() }
+                    fun Project.javaLauncherProvider(): Provider<JavaLauncher> = provider {
+                        val toolchainService = extensions.findByType(JavaToolchainService::class.java) ?: return@provider null
+                        val javaExtension = extensions.findByType(JavaPluginExtension::class.java) ?: return@provider null
+                        toolchainService.launcherFor(javaExtension.toolchain).orNull
+                    }
+                    fun Project.javaCompilerProvider(): Provider<JavaCompiler> = provider {
+                        val toolchainService = extensions.findByType(JavaToolchainService::class.java) ?: return@provider null
+                        val javaExtension = extensions.findByType(JavaPluginExtension::class.java) ?: return@provider null
+                        toolchainService.compilerFor(javaExtension.toolchain).orNull
+                    }
+                    val jmhWorkerConfiguration = project.configurations.create("jmhGenerationClasspathFor${target.compilation.target.targetName.capitalize()}${target.compilation.compilationName.capitalize()}${target.name.capitalize()}").apply {
+                        description = "JMH Generator classpath for target '${target.compilation.target.targetName}' compilation '${target.compilation.compilationName}' benchmark target '${target.name}'"
+                        
+                        val dependencies = project.dependencies
+                        defaultDependencies {
+                            add(dependencies.create("org.openjdk.jmh:jmh-generator-bytecode:1.37")) // TODO: Replace with settings
+                        }
+                    }
+                    val jmhBuildDir = project.layout.buildDirectory.dir("${target.extension.buildDir}/${target.name}").get().asFile
+                    val jmhSourcesDir = project.file("$jmhBuildDir/sources")
+                    val jmhResourcesDir = project.file("$jmhBuildDir/resources")
+                    val jmhClasses = project.file("$jmhBuildDir/classes")
+                    val jmhGeneratorTask = project.tasks.register<JmhGeneratorTask>("generateJmhFor${target.compilation.target.targetName.capitalize()}${target.compilation.compilationName.capitalize()}${target.name.capitalize()}") {
+                        description = "Generate JMH for target '${target.compilation.target.targetName}' compilation '${target.compilation.compilationName}' benchmark target '${target.name}'"
+                        dependsOn(target.compilation.compileAllTaskName)
+                        runtimeClasspath = jmhWorkerConfiguration
+                        inputCompileClasspath = target.compilation.compileDependencyFiles
+                        inputClassesDirs = target.compilation.output.allOutputs
+                        outputResourcesDir = jmhResourcesDir
+                        outputSourcesDir = jmhSourcesDir
+                        javaLauncher.set(project.javaLauncherProvider())
+                    }
+                    val runtimeClasspath = target.compilation.output.allOutputs + target.compilation.runtimeDependencyFiles
+                    val jmhCompilationTask = project.tasks.register<JavaCompile>("compileJmhFor${target.compilation.target.targetName.capitalize()}${target.compilation.compilationName.capitalize()}${target.name.capitalize()}") {
+                        description = "Compile JMH source files for target '${target.compilation.target.targetName}' compilation '${target.compilation.compilationName}' benchmark target '${target.name}'"
+                        dependsOn(jmhGeneratorTask)
+                        classpath = runtimeClasspath
+                        source = project.fileTree(jmhSourcesDir)
+                        destinationDirectory.set(jmhClasses)
+                        javaCompiler.set(project.javaCompilerProvider())
+                    }
                     target.compilation.koneBenchmarksRunners {
                         for (configuration in configurations) {
                             create(configuration.name) {
                                 runnerName.set("dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport")
                                 argument<String>("name", target.name)
-                                argument<String>("reportFile", project.layout.buildDirectory.get().asFile.toPath().resolve(reportsDir).resolve(target.name).resolve(configuration.name).absolutePathString())
+                                val reportFile = project.layout.buildDirectory.get().asFile.toPath().resolve(reportsDir).resolve(target.name).resolve(configuration.name)
+                                argument<String>("reportFile", reportFile.absolutePathString())
                                 argument<String>("traceFormat", if (project.providers.systemProperty("idea.active").orNull.toBoolean()) "xml" else "text")
                                 argument<String?>("reportFormat", configuration.reportFormat)
                                 argument<Map<String, List<String>>>("params", configuration.params.mapValues { it.value.map { it.toString() } })
@@ -185,6 +233,17 @@ class BenchmarksExtension(
                                 argument<String?>("compilationMode", null)
                                 argument<String>("configurationName", configuration.name)
                                 finalize()
+                                configureRunnersTasks {
+                                    dependsOn(jmhCompilationTask)
+                                    classpath(jmhResourcesDir, jmhClasses)
+                                    
+                                    doFirst {
+                                        if (!reportFile.exists()) {
+                                            reportFile.createParentDirectories()
+                                            reportFile.createFile()
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -195,7 +254,8 @@ class BenchmarksExtension(
                             create(configuration.name) {
                                 runnerName.set("dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport")
                                 argument<String>("name", target.name)
-                                argument<String>("reportFile", project.layout.buildDirectory.get().asFile.toPath().resolve(reportsDir).resolve(target.name).resolve(configuration.name).absolutePathString())
+                                val reportFile = project.layout.buildDirectory.get().asFile.toPath().resolve(reportsDir).resolve(target.name).resolve(configuration.name)
+                                argument<String>("reportFile", reportFile.absolutePathString())
                                 argument<String>("traceFormat", if (project.providers.systemProperty("idea.active").orNull.toBoolean()) "xml" else "text")
                                 argument<String?>("reportFormat", configuration.reportFormat)
                                 argument<Map<String, List<String>>>("params", configuration.params.mapValues { it.value.map { it.toString() } })
@@ -212,6 +272,14 @@ class BenchmarksExtension(
                                 argument<String?>("compilationMode", null)
                                 argument<String>("configurationName", configuration.name)
                                 finalize()
+                                configureRunnersTasks {
+                                    doFirst {
+                                        if (!reportFile.exists()) {
+                                            reportFile.createParentDirectories()
+                                            reportFile.createFile()
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -222,7 +290,8 @@ class BenchmarksExtension(
                             create(configuration.name) {
                                 runnerName.set("dev.lounres.kone.misc.benchmarks.runners.support.kotlinxBenchmark.generated.runKotlinxBenchmarkSupport")
                                 argument<String>("name", target.name)
-                                argument<String>("reportFile", project.layout.buildDirectory.get().asFile.toPath().resolve(reportsDir).resolve(target.name).resolve(configuration.name).absolutePathString())
+                                val reportFile = project.layout.buildDirectory.get().asFile.toPath().resolve(reportsDir).resolve(target.name).resolve(configuration.name)
+                                argument<String>("reportFile", reportFile.absolutePathString())
                                 argument<String>("traceFormat", if (project.providers.systemProperty("idea.active").orNull.toBoolean()) "xml" else "text")
                                 argument<String?>("reportFormat", configuration.reportFormat)
                                 argument<Map<String, List<String>>>("params", configuration.params.mapValues { it.value.map { it.toString() } })
@@ -239,6 +308,14 @@ class BenchmarksExtension(
                                 argument<String?>("compilationMode", null)
                                 argument<String>("configurationName", configuration.name)
                                 finalize()
+                                configureRunnersTasks {
+                                    doFirst {
+                                        if (!reportFile.exists()) {
+                                            reportFile.createParentDirectories()
+                                            reportFile.createFile()
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -266,6 +343,7 @@ class BenchmarksExtension(
                                 argument<String?>("mode", configuration.mode)
                                 argument<String?>("compilationMode", null)
                                 argument<String>("configurationName", configuration.name)
+                                finalize()
                                 configureRunnersTasks {
                                     doFirst {
                                         if (!reportFile.exists()) {
@@ -274,7 +352,6 @@ class BenchmarksExtension(
                                         }
                                     }
                                 }
-                                finalize()
                             }
                         }
                     }

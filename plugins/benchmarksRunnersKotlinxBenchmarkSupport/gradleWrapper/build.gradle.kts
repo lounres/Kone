@@ -9,6 +9,7 @@ kotlin {
             dependencies {
                 compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.versions.kotlin.asProvider().get()}")
                 compileOnly(projects.plugins.benchmarksRunners.gradleWrapper)
+                compileOnly("org.openjdk.jmh:jmh-generator-bytecode:${versions.versions.jmh.get()}")
                 api(versions.kotlinx.serialization.json)
             }
         }

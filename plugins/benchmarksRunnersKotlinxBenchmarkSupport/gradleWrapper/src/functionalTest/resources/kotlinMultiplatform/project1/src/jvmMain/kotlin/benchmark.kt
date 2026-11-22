@@ -10,7 +10,7 @@ var value = 57.179
 @Measurement(iterations = 3, time = 1, timeUnit = BenchmarkTimeUnit.SECONDS)
 @OutputTimeUnit(BenchmarkTimeUnit.MILLISECONDS)
 @BenchmarkMode(Mode.Throughput)
-class BenchmarkClass {
+open class BenchmarkClass {
     @Param("5", "7")
     var times = 0u
     
