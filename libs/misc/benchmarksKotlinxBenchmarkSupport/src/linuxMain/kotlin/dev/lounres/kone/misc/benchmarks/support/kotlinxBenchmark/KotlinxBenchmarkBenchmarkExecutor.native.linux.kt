@@ -19,5 +19,5 @@ internal actual val tempDirectory: String by lazy {
 }
 
 internal actual fun String.makeDir() {
-    mkdir(this, 755u)
+    mkdir(this, 0b111011011u)
 }
