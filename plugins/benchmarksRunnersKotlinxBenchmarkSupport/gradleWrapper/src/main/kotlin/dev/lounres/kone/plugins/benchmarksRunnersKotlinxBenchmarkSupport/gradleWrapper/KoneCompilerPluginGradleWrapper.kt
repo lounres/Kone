@@ -5,19 +5,16 @@
 
 package dev.lounres.kone.plugins.benchmarksRunnersKotlinxBenchmarkSupport.gradleWrapper
 
+import dev.lounres.kone.gradleLibs.jmhTaskPatch.applyJmhPatch
+import dev.lounres.kone.gradleLibs.jmhTaskPatch.jmhPatchFor
 import groovy.lang.Closure
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.SourceSet
-import org.gradle.api.tasks.compile.JavaCompile
-import org.gradle.jvm.toolchain.JavaCompiler
-import org.gradle.jvm.toolchain.JavaLauncher
-import org.gradle.jvm.toolchain.JavaToolchainService
 import org.gradle.kotlin.dsl.argument
 import org.gradle.kotlin.dsl.koneBenchmarksRunners
-import org.gradle.kotlin.dsl.register
 import org.jetbrains.kotlin.compiler.plugin.devkit.DevKitSupportPlugin
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
@@ -35,7 +32,7 @@ import kotlin.io.path.createParentDirectories
 import kotlin.io.path.exists
 
 
-class KoneCompilerPluginGradleWrapper : DevKitSupportPlugin(KonePluginInfo.PLUGIN_INFO) {
+public class KoneCompilerPluginGradleWrapper : DevKitSupportPlugin(KonePluginInfo.PLUGIN_INFO) {
     override fun apply(target: Project) {
         target.pluginManager.withPlugin("dev.lounres.kone.plugins.benchmarksRunners.gradleWrapper") {
             val extension = BenchmarksExtension(target)
@@ -67,34 +64,34 @@ internal fun <T> Any.tryGetClass(className: String): Class<T>? {
     }
 }
 
-class BenchmarksExtension(
-    val project: Project
+public class BenchmarksExtension(
+    public val project: Project
 ) {
     private var isFinalized = false
     
-    var buildDir: String = "benchmarks"
+    public var buildDir: String = "benchmarks"
         set(value) {
             require(!isFinalized) { "BenchmarksExtension is finalized. Cannot change 'buildDir'." }
             field = value
         }
-    var reportsDir: String = "reports/benchmarks"
+    public var reportsDir: String = "reports/benchmarks"
         set(value) {
             require(!isFinalized) { "BenchmarksExtension is finalized. Cannot change 'reportsDir'." }
             field = value
         }
     
-    fun configurations(configureClosure: Closure<NamedDomainObjectContainer<BenchmarkConfiguration>>): NamedDomainObjectContainer<BenchmarkConfiguration> =
+    public fun configurations(configureClosure: Closure<NamedDomainObjectContainer<BenchmarkConfiguration>>): NamedDomainObjectContainer<BenchmarkConfiguration> =
         configurations.configure(configureClosure)
     
-    val configurations: NamedDomainObjectContainer<BenchmarkConfiguration> =
+    public val configurations: NamedDomainObjectContainer<BenchmarkConfiguration> =
         project.objects.domainObjectContainer(BenchmarkConfiguration::class.java) { name ->
             BenchmarkConfiguration(this, name)
         }
     
-    fun targets(configureClosure: Closure<NamedDomainObjectContainer<BenchmarkTarget>>): NamedDomainObjectContainer<BenchmarkTarget> =
+    public fun targets(configureClosure: Closure<NamedDomainObjectContainer<BenchmarkTarget>>): NamedDomainObjectContainer<BenchmarkTarget> =
         targets.configure(configureClosure)
     
-    val targets: NamedDomainObjectContainer<BenchmarkTarget> =
+    public val targets: NamedDomainObjectContainer<BenchmarkTarget> =
         project.objects.domainObjectContainer(BenchmarkTarget::class.java) { name ->
             val multiplatformClass = tryGetClass<KotlinMultiplatformExtension>("org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension")
             val multiplatform = multiplatformClass?.let { project.extensions.findByType(it) }
@@ -167,49 +164,13 @@ class BenchmarksExtension(
             configurations.disallowChanges()
             for (target in targets) when (target) {
                 is JavaBenchmarkTarget -> {}
-                is KotlinJvmBenchmarkTarget -> { // TODO: Refactor this mess.
+                is KotlinJvmBenchmarkTarget -> {
                     fun String.capitalize(): String = replaceFirstChar { it.uppercaseChar() }
-                    fun Project.javaLauncherProvider(): Provider<JavaLauncher> = provider {
-                        val toolchainService = extensions.findByType(JavaToolchainService::class.java) ?: return@provider null
-                        val javaExtension = extensions.findByType(JavaPluginExtension::class.java) ?: return@provider null
-                        toolchainService.launcherFor(javaExtension.toolchain).orNull
-                    }
-                    fun Project.javaCompilerProvider(): Provider<JavaCompiler> = provider {
-                        val toolchainService = extensions.findByType(JavaToolchainService::class.java) ?: return@provider null
-                        val javaExtension = extensions.findByType(JavaPluginExtension::class.java) ?: return@provider null
-                        toolchainService.compilerFor(javaExtension.toolchain).orNull
-                    }
-                    val jmhWorkerConfiguration = project.configurations.create("jmhGenerationClasspathFor${target.compilation.target.targetName.capitalize()}${target.compilation.compilationName.capitalize()}${target.name.capitalize()}").apply {
-                        description = "JMH Generator classpath for target '${target.compilation.target.targetName}' compilation '${target.compilation.compilationName}' benchmark target '${target.name}'"
-                        
-                        val dependencies = project.dependencies
-                        defaultDependencies {
-                            add(dependencies.create("org.openjdk.jmh:jmh-generator-bytecode:1.37")) // TODO: Replace with settings
-                        }
-                    }
-                    val jmhBuildDir = project.layout.buildDirectory.dir("${target.extension.buildDir}/${target.name}").get().asFile
-                    val jmhSourcesDir = project.file("$jmhBuildDir/sources")
-                    val jmhResourcesDir = project.file("$jmhBuildDir/resources")
-                    val jmhClasses = project.file("$jmhBuildDir/classes")
-                    val jmhGeneratorTask = project.tasks.register<JmhGeneratorTask>("generateJmhFor${target.compilation.target.targetName.capitalize()}${target.compilation.compilationName.capitalize()}${target.name.capitalize()}") {
-                        description = "Generate JMH for target '${target.compilation.target.targetName}' compilation '${target.compilation.compilationName}' benchmark target '${target.name}'"
-                        dependsOn(target.compilation.compileAllTaskName)
-                        runtimeClasspath = jmhWorkerConfiguration
-                        inputCompileClasspath = target.compilation.compileDependencyFiles
-                        inputClassesDirs = target.compilation.output.allOutputs
-                        outputResourcesDir = jmhResourcesDir
-                        outputSourcesDir = jmhSourcesDir
-                        javaLauncher.set(project.javaLauncherProvider())
-                    }
-                    val runtimeClasspath = target.compilation.output.allOutputs + target.compilation.runtimeDependencyFiles
-                    val jmhCompilationTask = project.tasks.register<JavaCompile>("compileJmhFor${target.compilation.target.targetName.capitalize()}${target.compilation.compilationName.capitalize()}${target.name.capitalize()}") {
-                        description = "Compile JMH source files for target '${target.compilation.target.targetName}' compilation '${target.compilation.compilationName}' benchmark target '${target.name}'"
-                        dependsOn(jmhGeneratorTask)
-                        classpath = runtimeClasspath
-                        source = project.fileTree(jmhSourcesDir)
-                        destinationDirectory.set(jmhClasses)
-                        javaCompiler.set(project.javaCompilerProvider())
-                    }
+                    val jmhPatch = project.jmhPatchFor(
+                        patchName = "${target.compilation.target.targetName.capitalize()}${target.compilation.compilationName.capitalize()}${target.name.capitalize()}",
+                        compilation = target.compilation,
+                        buildDir = project.layout.buildDirectory.dir("${target.extension.buildDir}/${target.name}").get().asFile,
+                    )
                     target.compilation.koneBenchmarksRunners {
                         for (configuration in configurations) {
                             create(configuration.name) {
@@ -234,8 +195,7 @@ class BenchmarksExtension(
                                 argument<String>("configurationName", configuration.name)
                                 finalize()
                                 configureRunnersTasks {
-                                    dependsOn(jmhCompilationTask)
-                                    classpath(jmhResourcesDir, jmhClasses)
+                                    applyJmhPatch(jmhPatch)
                                     
                                     doFirst {
                                         if (!reportFile.exists()) {
@@ -361,42 +321,42 @@ class BenchmarksExtension(
     }
 }
 
-open class BenchmarkConfiguration
+public open class BenchmarkConfiguration
 internal constructor(
     internal val extension: BenchmarksExtension,
-    val name: String,
+    public val name: String,
 ) {
-    var iterations: Int? = null
-    var warmups: Int? = null
-    var iterationTime: Long? = null
-    var iterationTimeUnit: String? = null
-    var mode: String? = null
-    var outputTimeUnit: String? = null
-    var reportFormat: String? = null
-    var threads: Int? = null
+    public var iterations: Int? = null
+    public var warmups: Int? = null
+    public var iterationTime: Long? = null
+    public var iterationTimeUnit: String? = null
+    public var mode: String? = null
+    public var outputTimeUnit: String? = null
+    public var reportFormat: String? = null
+    public var threads: Int? = null
     
-    var includes: MutableList<String> = mutableListOf()
-    var excludes: MutableList<String> = mutableListOf()
-    var params: MutableMap<String, MutableList<Any?>> = mutableMapOf()
-    var advanced: MutableMap<String, Any?> = mutableMapOf()
+    public var includes: MutableList<String> = mutableListOf()
+    public var excludes: MutableList<String> = mutableListOf()
+    public var params: MutableMap<String, MutableList<Any?>> = mutableMapOf()
+    public var advanced: MutableMap<String, Any?> = mutableMapOf()
     
 //    @KotlinxBenchmarkPluginExperimentalApi
 //    public var customEngine: CustomEngine? = null
     
-    fun include(pattern: String) {
+    public fun include(pattern: String) {
         includes.add(pattern)
     }
     
-    fun exclude(pattern: String) {
+    public fun exclude(pattern: String) {
         excludes.add(pattern)
     }
     
-    fun param(name: String, vararg value: Any?) {
+    public fun param(name: String, vararg value: Any?) {
         val values = params.getOrPut(name) { mutableListOf() }
         values.addAll(value)
     }
     
-    fun advanced(name: String, value: Any?) {
+    public fun advanced(name: String, value: Any?) {
         advanced[name] = value
     }
     
@@ -407,65 +367,65 @@ internal constructor(
     internal fun reportFileExt(): String = reportFormat?.lowercase() ?: "json"
 }
 
-open class BenchmarkTarget
+public open class BenchmarkTarget
 internal constructor(
     internal val extension: BenchmarksExtension,
-    val name: String,
+    public val name: String,
 ) {
-    var workingDir: String? = null
+    public var workingDir: String? = null
 }
 
-abstract class JvmBenchmarkTarget
+public abstract class JvmBenchmarkTarget
 internal constructor(
     extension: BenchmarksExtension,
     name: String
 ) : BenchmarkTarget(extension, name) {
-    var jmhVersion: String = extension.project.providers.gradleProperty("benchmarks_jmh_version").orElse("1.37").get()
+    public var jmhVersion: String = extension.project.providers.gradleProperty("benchmarks_jmh_version").orElse("1.37").get()
 }
 
-class JavaBenchmarkTarget
+public class JavaBenchmarkTarget
 internal constructor(
     extension: BenchmarksExtension,
     name: String,
     internal val sourceSet: SourceSet
 ) : JvmBenchmarkTarget(extension, name)
 
-open class KotlinJvmBenchmarkTarget
+public open class KotlinJvmBenchmarkTarget
 internal constructor(
     extension: BenchmarksExtension,
     name: String,
     internal val compilation: KotlinJvmCompilation
 ) : JvmBenchmarkTarget(extension, name)
 
-enum class JsBenchmarksExecutor {
+public enum class JsBenchmarksExecutor {
     BenchmarkJs,
     BuiltIn
 }
 
-class JsBenchmarkTarget
+public class JsBenchmarkTarget
 internal constructor(
     extension: BenchmarksExtension,
     name: String,
     internal val compilation: KotlinJsIrCompilation
 ) : BenchmarkTarget(extension, name) {
-    var jsBenchmarksExecutor: JsBenchmarksExecutor = JsBenchmarksExecutor.BenchmarkJs
-    var buildType: KotlinJsBinaryMode = KotlinJsBinaryMode.PRODUCTION
+    public var jsBenchmarksExecutor: JsBenchmarksExecutor = JsBenchmarksExecutor.BenchmarkJs
+    public var buildType: KotlinJsBinaryMode = KotlinJsBinaryMode.PRODUCTION
 }
 
-class WasmBenchmarkTarget
+public class WasmBenchmarkTarget
 internal constructor(
     extension: BenchmarksExtension,
     name: String,
     internal val compilation: KotlinJsIrCompilation
 ) : BenchmarkTarget(extension, name) {
-    var buildType: KotlinJsBinaryMode = KotlinJsBinaryMode.PRODUCTION
+    public var buildType: KotlinJsBinaryMode = KotlinJsBinaryMode.PRODUCTION
 }
 
-class NativeBenchmarkTarget
+public class NativeBenchmarkTarget
 internal constructor(
     extension: BenchmarksExtension,
     name: String,
     internal val compilation: KotlinNativeCompilation
 ) : BenchmarkTarget(extension, name) {
-    var buildType: NativeBuildType = NativeBuildType.RELEASE
+    public var buildType: NativeBuildType = NativeBuildType.RELEASE
 }

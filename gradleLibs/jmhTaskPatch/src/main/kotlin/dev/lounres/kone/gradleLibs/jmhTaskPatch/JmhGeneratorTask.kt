@@ -3,7 +3,7 @@
  * All rights reserved. Licensed under the Apache License, Version 2.0. See the license in file LICENSE
  */
 
-package dev.lounres.kone.plugins.benchmarksRunnersKotlinxBenchmarkSupport.gradleWrapper
+package dev.lounres.kone.gradleLibs.jmhTaskPatch
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
@@ -11,14 +11,7 @@ import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileCollection
 import org.gradle.api.logging.Logging
 import org.gradle.api.provider.Property
-import org.gradle.api.provider.Provider
-import org.gradle.api.tasks.CacheableTask
-import org.gradle.api.tasks.Classpath
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.Nested
-import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.*
 import org.gradle.jvm.toolchain.JavaLauncher
 import org.gradle.workers.WorkAction
 import org.gradle.workers.WorkParameters
@@ -63,20 +56,12 @@ internal constructor(
     @Nested
     public val javaLauncher: Property<JavaLauncher> = project.objects.property(JavaLauncher::class.java)
     
-    @Deprecated(message = "Use jvmLauncher property instead.", level = DeprecationLevel.ERROR)
-    @Optional
-    @Input
-    public var executableProvider: Provider<String> = project.provider { null }
-    
     @TaskAction
     public fun generate() {
         val workQueue = workerExecutor.processIsolation {
             classpath.setFrom(runtimeClasspath.files)
-            @Suppress("DEPRECATION_ERROR")
             if (javaLauncher.isPresent) {
                 forkOptions.executable = javaLauncher.get().executablePath.asFile.absolutePath
-            } else if (executableProvider.isPresent) {
-                forkOptions.executable = executableProvider.get()
             }
         }
         workQueue.submit(JmhBytecodeGeneratorWorker::class.java) {

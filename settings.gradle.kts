@@ -80,13 +80,16 @@ stal {
                 subdirs("libs util", "libs", "kotlin multiplatform", "kotlin library settings", "publishing", "dokka")
             }
         }
+        "gradleLibs" {
+            subdirs("gradle libs", "gradle plugin library", "kotlin jvm", "kotlin library settings", "publishing", "testBalloon")
+        }
 //        "bom"("bom", "kotlin multiplatform", "kotlin library settings", "publishing")
         "plugins" {
             "util"("plugins util", "kotlin compiler library", "kotlin library settings", "publishing")
             "testUtil"("plugins testUtil", "kotlin compiler library", "kotlin library settings", "publishing")
             subdirs("plugins", "kotlin compiler plugin", "publishing") {
                 "runtime"("plugins runtime", "kotlin compiler plugin runtime", "kotlin multiplatform", "kotlin library settings", "publishing", "dokka")
-                "gradleWrapper"("plugins gradleWrapper", "kotlin compiler plugin gradle wrapper", "publishing", "testBalloon")
+                "gradleWrapper"("plugins gradleWrapper", "kotlin compiler plugin gradle wrapper", "kotlin library settings", "publishing", "testBalloon")
             }
         }
         "docs"()

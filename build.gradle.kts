@@ -402,6 +402,14 @@ stal {
             
             the<GradlePluginDevelopmentExtension>().commonSettings()
         }
+        "gradle plugin library" {
+            apply(plugin = "org.gradle.kotlin.kotlin-dsl")
+            dependencies {
+                add("compileOnly", gradleApi())
+                add("compileOnly", gradleKotlinDsl())
+                add("testImplementation", gradleApi())
+            }
+        }
         "libs main" {
             pluginManager.withPlugin(versions.plugins.kotlin.jvm) {
                 logger.error("libs main source set setting is not yet implemented for Kotlin/JVM plug-in")
