@@ -23,7 +23,7 @@
         "taskName": ":runMingwX64MainBenchmarkCustomUsingDebug",
         "output": ""
     },
-    "custom benchmark mingwX64 execution debug release": {
+    "custom benchmark mingwX64 execution release binary": {
         "taskName": ":runMingwX64MainBenchmarkCustomUsingRelease",
         "output": ""
     },

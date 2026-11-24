@@ -8,3 +8,13 @@ kotlin {
         }
     }
 }
+
+afterEvaluate {
+    tasks.named("publishMavenPublicationToFunctionalTestRepository") {
+        dependsOn(tasks.named("signPluginMavenPublication"))
+    }
+    
+    tasks.named("publishPluginMavenPublicationToFunctionalTestRepository") {
+        dependsOn(tasks.named("signMavenPublication"))
+    }
+}

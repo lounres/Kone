@@ -142,13 +142,17 @@ stal {
             extra["alias"] = "util-${project.name}"
             extra["androidNamespace"] = "dev.lounres.kone.util.${project.name}"
         }
+        "gradle libs" {
+            extra["koneArtifactId"] = "kone.gradleLibs.${project.name}"
+            extra["alias"] = "gradleLibs-${project.name}"
+        }
         case { hasAnyOf("plugins util", "plugins testUtil") } implies {
             extra["koneArtifactId"] = "kone.plugins.${project.name}"
-//            extra["alias"] = "plugins-${project.name}"
+            extra["alias"] = "plugins-${project.name}"
         }
         "plugins" {
             extra["koneArtifactId"] = "kone.plugins.${project.name}"
-//            extra["alias"] = "plugins-${project.name}"
+            extra["alias"] = "plugins-${project.name}"
         }
         "plugins runtime" {
             extra["koneArtifactId"] = "kone.plugins.${project.parent!!.name}.runtime"
